@@ -20,6 +20,9 @@ class HomeJobCVC: UICollectionViewCell {
     override func awakeFromNib() {
            super.awakeFromNib()
            setupUI()
+        
+        
+        
        }
 
        private func setupUI() {
