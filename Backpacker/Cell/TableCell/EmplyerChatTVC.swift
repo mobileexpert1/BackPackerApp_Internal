@@ -36,19 +36,6 @@ class EmplyerChatTVC: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func handleApeearcnceForImage(isShow: Bool = true){
-        if isShow  == false {
-            self.imgWidth.constant = 45.0
-            self.TimeLbl_Height.constant = 20.0
-        }else{
-            self.imgWidth.constant = 0.0
-            self.TimeLbl_Height.constant = 0.0
-        }
-       
-    }
-    func handleApeearcnceForLblTime(){
-        self.TimeLbl_Height.constant = 0.0
-    }
     func handleAppearanceForImage(isShow: Bool) {
         if isShow  == true {
             self.imgWidth.constant = 45.0
@@ -57,6 +44,6 @@ class EmplyerChatTVC: UITableViewCell {
             self.imgWidth.constant = 0.0
             self.TimeLbl_Height.constant = 0.0
         }
-        //Latest Comit
+        
     }
 }
