@@ -1,0 +1,29 @@
+PODS:
+  - Alamofire (5.10.2)
+  - CountryPickerView (3.3.0)
+  - PhoneNumberKit (4.1.1):
+    - PhoneNumberKit/PhoneNumberKitCore (= 4.1.1)
+    - PhoneNumberKit/UIKit (= 4.1.1)
+  - PhoneNumberKit/PhoneNumberKitCore (4.1.1)
+  - PhoneNumberKit/UIKit (4.1.1):
+    - PhoneNumberKit/PhoneNumberKitCore
+
+DEPENDENCIES:
+  - Alamofire
+  - CountryPickerView
+  - PhoneNumberKit (~> 4.0)
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - CountryPickerView
+    - PhoneNumberKit
+
+SPEC CHECKSUMS:
+  Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
+  CountryPickerView: 6322ada32a80b0cd721b0267282a5c24f406f263
+  PhoneNumberKit: 09da86ca598ebc8289e5a194898c28e7a7adf702
+
+PODFILE CHECKSUM: 2118043963e140d25cbbcf2dca7d1c31abfb6ece
+
+COCOAPODS: 1.16.2
