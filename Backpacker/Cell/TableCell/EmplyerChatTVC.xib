@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="137" id="KGk-i7-Jjw" customClass="EmplyerChatTVC" customModule="Backpacker" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="360" height="137"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="360" height="137"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RXI-6q-ehh">
+                        <rect key="frame" x="0.0" y="0.0" width="360" height="137"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Profile" translatesAutoresizingMaskIntoConstraints="NO" id="dna-nX-5cy">
+                                <rect key="frame" x="15" y="66" width="42" height="46"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="42" id="4yf-MK-LH5"/>
+                                </constraints>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Pi-pc-1pk">
+                                <rect key="frame" x="72" y="12" width="57.333333333333343" height="100"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i9q-b6-Txu">
+                                        <rect key="frame" x="8" y="8" width="41.333333333333336" height="84"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" red="0.94901960784313721" green="0.96862745098039216" blue="0.98431372549019602" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="i9q-b6-Txu" secondAttribute="trailing" constant="8" id="3NI-qe-D78"/>
+                                    <constraint firstItem="i9q-b6-Txu" firstAttribute="top" secondItem="8Pi-pc-1pk" secondAttribute="top" constant="8" id="X8y-LR-HCh"/>
+                                    <constraint firstAttribute="bottom" secondItem="i9q-b6-Txu" secondAttribute="bottom" constant="8" id="ZvW-ZV-yK7"/>
+                                    <constraint firstItem="i9q-b6-Txu" firstAttribute="leading" secondItem="8Pi-pc-1pk" secondAttribute="leading" constant="8" id="w6X-vq-Odh"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uom-Ii-6hK">
+                                <rect key="frame" x="87.333333333333329" y="117" width="41.999999999999986" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="edz-Ao-BeB"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.47450980392156861" green="0.48627450980392156" blue="0.4823529411764706" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="8Pi-pc-1pk" firstAttribute="leading" secondItem="dna-nX-5cy" secondAttribute="trailing" constant="15" id="6c0-oa-eaQ"/>
+                            <constraint firstItem="dna-nX-5cy" firstAttribute="leading" secondItem="RXI-6q-ehh" secondAttribute="leading" constant="15" id="E0z-1o-ZBl"/>
+                            <constraint firstAttribute="bottom" secondItem="uom-Ii-6hK" secondAttribute="bottom" id="FBe-ZN-Bmm"/>
+                            <constraint firstItem="dna-nX-5cy" firstAttribute="bottom" secondItem="8Pi-pc-1pk" secondAttribute="bottom" id="OHI-JJ-rbc"/>
+                            <constraint firstItem="uom-Ii-6hK" firstAttribute="top" secondItem="8Pi-pc-1pk" secondAttribute="bottom" constant="5" id="SWy-F2-Cez"/>
+                            <constraint firstItem="8Pi-pc-1pk" firstAttribute="top" secondItem="RXI-6q-ehh" secondAttribute="top" constant="12" id="grt-bs-e2b"/>
+                            <constraint firstItem="uom-Ii-6hK" firstAttribute="trailing" secondItem="8Pi-pc-1pk" secondAttribute="trailing" id="kaa-p3-lWw"/>
+                            <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="8Pi-pc-1pk" secondAttribute="trailing" constant="15" id="wDJ-Ar-xJt"/>
+                        </constraints>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="RXI-6q-ehh" secondAttribute="trailing" id="200-b8-q2v"/>
+                    <constraint firstItem="RXI-6q-ehh" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="9qS-0j-UOO"/>
+                    <constraint firstItem="RXI-6q-ehh" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="K0j-bq-oNl"/>
+                    <constraint firstAttribute="bottom" secondItem="RXI-6q-ehh" secondAttribute="bottom" id="rBP-lw-9Kk"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="TimeLbl_Height" destination="edz-Ao-BeB" id="fUW-rK-1px"/>
+                <outlet property="imgWidth" destination="4yf-MK-LH5" id="XP9-s9-Be1"/>
+                <outlet property="img_profile" destination="dna-nX-5cy" id="Nnf-K4-XZA"/>
+                <outlet property="lbl_Time" destination="uom-Ii-6hK" id="61W-fC-Jfx"/>
+                <outlet property="msgVw" destination="8Pi-pc-1pk" id="SsW-Gl-qNg"/>
+                <outlet property="txtLbl" destination="i9q-b6-Txu" id="g7O-HU-mG7"/>
+            </connections>
+            <point key="canvasLocation" x="-10.687022900763358" y="21.47887323943662"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="Profile" width="46" height="46"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
