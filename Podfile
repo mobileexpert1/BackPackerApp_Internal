@@ -9,4 +9,8 @@ target 'Backpacker' do
   pod 'CountryPickerView'
   pod 'PhoneNumberKit', '~> 4.0'
   pod 'Alamofire'
+  pod 'Cosmos', '~> 23.0'
+  pod 'FSCalendar'
+
+
 end

@@ -1,29 +1,37 @@
 PODS:
   - Alamofire (5.10.2)
+  - Cosmos (23.0.0)
   - CountryPickerView (3.3.0)
-  - PhoneNumberKit (4.1.1):
-    - PhoneNumberKit/PhoneNumberKitCore (= 4.1.1)
-    - PhoneNumberKit/UIKit (= 4.1.1)
-  - PhoneNumberKit/PhoneNumberKitCore (4.1.1)
-  - PhoneNumberKit/UIKit (4.1.1):
+  - FSCalendar (2.8.4)
+  - PhoneNumberKit (4.1.2):
+    - PhoneNumberKit/PhoneNumberKitCore (= 4.1.2)
+    - PhoneNumberKit/UIKit (= 4.1.2)
+  - PhoneNumberKit/PhoneNumberKitCore (4.1.2)
+  - PhoneNumberKit/UIKit (4.1.2):
     - PhoneNumberKit/PhoneNumberKitCore
 
 DEPENDENCIES:
   - Alamofire
+  - Cosmos (~> 23.0)
   - CountryPickerView
+  - FSCalendar
   - PhoneNumberKit (~> 4.0)
 
 SPEC REPOS:
   trunk:
     - Alamofire
+    - Cosmos
     - CountryPickerView
+    - FSCalendar
     - PhoneNumberKit
 
 SPEC CHECKSUMS:
   Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
+  Cosmos: b5c6a9a637e28a061b54c8f8b1d8529d7d4db73f
   CountryPickerView: 6322ada32a80b0cd721b0267282a5c24f406f263
-  PhoneNumberKit: 09da86ca598ebc8289e5a194898c28e7a7adf702
+  FSCalendar: 2d1d0d9398f12d439f55c1fe0f01525b151b8260
+  PhoneNumberKit: 8e3ee3f82a5494284070a386ed321e0f281738cf
 
-PODFILE CHECKSUM: 2118043963e140d25cbbcf2dca7d1c31abfb6ece
+PODFILE CHECKSUM: 7af541e7c09fd1446e23755c74b548ea07b9b1e6
 
 COCOAPODS: 1.16.2
