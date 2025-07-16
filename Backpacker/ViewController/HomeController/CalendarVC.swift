@@ -21,21 +21,48 @@ class CalendarVC: UIViewController {
     @IBOutlet weak var lbl_headerWorkinHour: UILabel!
     @IBOutlet weak var lbl_HeaderAvailable: UILabel!
     @IBOutlet weak var lbl_headrDate: UILabel!
-    var monthsArray: [Date] = []
+    
+    
+    @IBOutlet weak var lbl_MainHeader: UILabel!
+    
+    @IBOutlet weak var settingBgVw: UIView!
+    
+    @IBOutlet weak var lbl_Header_SelectDate: UILabel!
+    @IBOutlet weak var lbl_SetAvailibily: UILabel!
+    
+    @IBOutlet weak var lbl_HeaderSelectMonth: UILabel!
+    
+    var selectedDate: Date?
     var selectedMonthIndex = Calendar.current.component(.month, from: Date()) - 1
+
+    var monthsArray: [Date] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        if selectedDate == nil {
+                selectedDate = Date()
+            calendarVw.select(selectedDate)
+            }
         bgVwMonth.addShadowAllSides(radius:2)
         bgVwAvailibility.addShadowAllSides(radius:2)
         let nib = UINib(nibName: "CalendarMonthCell", bundle: nil)
         monthCollectionVw.register(nib, forCellWithReuseIdentifier: "CalendarMonthCell")
-        let selectedYear = Calendar.current.component(.year, from: Date()) // or any selected year
-        monthsArray = getAllMonths(for: selectedYear) // replace with your year
+//        let selectedYear = Calendar.current.component(.year, from: Date()) // or any selected year
+//        monthsArray = getAllMonths(for: selectedYear) // replace with your year
+        monthsArray = getAllMonths(from: 2015, to: 2035)
+
         monthCollectionVw.delegate = self
         monthCollectionVw.dataSource = self
         monthCollectionVw.reloadData()
+        let currentMonthIndex = monthsArray.firstIndex(where: {
+            Calendar.current.isDate($0, equalTo: Date(), toGranularity: .month)
+        }) ?? 0
 
+        selectedMonthIndex = currentMonthIndex
+
+        DispatchQueue.main.async {
+            self.monthCollectionVw.scrollToItem(at: IndexPath(item: currentMonthIndex, section: 0), at: .centeredHorizontally, animated: false)
+        }
         calendarVw.addShadowAllSides(radius:2)
         calendarVw.appearance.headerTitleFont = FontManager.inter(.semiBold, size: 22.0)
         calendarVw.appearance.weekdayFont = FontManager.inter(.semiBold, size: 12.0)
@@ -58,7 +85,15 @@ class CalendarVC: UIViewController {
         calendarVw.appearance.headerMinimumDissolvedAlpha = 0.0
         calendarVw.delegate = self
         calendarVw.dataSource = self
-        
+        self.setUpFonts()
+      
+    }
+    private func setUpFonts(){
+        self.settingBgVw.addShadowAllSides(radius:2)
+        self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)
+        self.lbl_SetAvailibily.font = FontManager.inter(.medium, size: 14.0)
+        lbl_HeaderSelectMonth.font = FontManager.inter(.medium, size: 14.0)
+        self.lbl_Header_SelectDate.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_headrDate.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_HeaderAvailable.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_headerWorkinHour.font = FontManager.inter(.medium, size: 14.0)
@@ -66,28 +101,71 @@ class CalendarVC: UIViewController {
         self.lbl_Value_Date.font = FontManager.inter(.regular, size: 14.0)
         self.lbl_Value_Hour.font = FontManager.inter(.regular, size: 14.0)
         self.lbl_Value_Time.font = FontManager.inter(.regular, size: 14.0)
+        self.lbl_Value_Date.text = dateToString(selectedDate ?? Date())
+    }
+
+    @IBAction func btn_previous(_ sender: Any) {
+        if selectedMonthIndex > 0 {
+                selectedMonthIndex -= 1
+                scrollToSelectedMonth()
+            }
+    }
+    @IBAction func btn_Next(_ sender: Any) {
+        if selectedMonthIndex < monthsArray.count - 1 {
+               selectedMonthIndex += 1
+               scrollToSelectedMonth()
+           }
     }
     
+    func scrollToSelectedMonth() {
+        let indexPath = IndexPath(item: selectedMonthIndex, section: 0)
+        monthCollectionVw.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
 
-    func getAllMonths(for year: Int) -> [Date] {
+        let selectedMonthDate = monthsArray[selectedMonthIndex]
+        calendarVw.setCurrentPage(selectedMonthDate, animated: true)
+
+        monthCollectionVw.reloadData()
+    }
+    @IBAction func action_Setting(_ sender: Any) {
+    }
+//    func getAllMonths(for year: Int) -> [Date] {
+//        var months: [Date] = []
+//        let calendar = Calendar.current
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "MMMM"
+//
+//        for month in 1...12 {
+//            var components = DateComponents()
+//            components.year = year
+//            components.month = month
+//            components.day = 1
+//
+//            if let date = calendar.date(from: components) {
+//                months.append(date)
+//            }
+//        }
+//        return months
+//    }
+
+    func getAllMonths(from startYear: Int, to endYear: Int) -> [Date] {
         var months: [Date] = []
         let calendar = Calendar.current
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMMM"
 
-        for month in 1...12 {
-            var components = DateComponents()
-            components.year = year
-            components.month = month
-            components.day = 1
+        for year in startYear...endYear {
+            for month in 1...12 {
+                var components = DateComponents()
+                components.year = year
+                components.month = month
+                components.day = 1
 
-            if let date = calendar.date(from: components) {
-                months.append(date)
+                if let date = calendar.date(from: components) {
+                    months.append(date)
+                }
             }
         }
+
         return months
     }
-
 
 }
 extension CalendarVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
@@ -103,14 +181,10 @@ extension CalendarVC : UICollectionViewDelegate,UICollectionViewDataSource,UICol
             let monthDate = monthsArray[indexPath.row]
             let formatter = DateFormatter()
             formatter.dateFormat = "MMM" // Short name like Jan, Feb
-            cell.lbl_Month.text = formatter.string(from: monthDate)
-
+          let month = formatter.string(from: monthDate)
             // Highlight selected
             let isSelected = indexPath.row == selectedMonthIndex
-            cell.bgVw.backgroundColor = isSelected ? UIColor.systemBlue : UIColor.systemGray6
-            cell.lbl_Month.textColor = isSelected ? .white : .black
-            cell.lbl_Month.font = isSelected ? .boldSystemFont(ofSize: 17) : .systemFont(ofSize: 17)
-
+        cell.configure(month: month, isSelected: isSelected)
             return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -127,57 +201,20 @@ extension CalendarVC : UICollectionViewDelegate,UICollectionViewDataSource,UICol
         
         let height = collectionView.frame.height
         let width = collectionView.frame.width
-        return CGSize(width: width / 4, height: height)
+        return CGSize(width: width / 3.75, height: height)
     }
 
 
 }
 extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegateAppearance {
-    func calendar(_ calendar: FSCalendar, willDisplayHeader header: UIView, for date: Date) {
-        // Add a line under the header
-        let line = UIView(frame: CGRect(x: 0, y: header.bounds.height - 1, width: header.bounds.width, height: 1))
-        line.backgroundColor = .gray // Change color as needed
-        header.addSubview(line)
-    }
-    
-    
-    
-//    private func calendar(_ calendar: FSCalendar, headerFor date: Date) -> UIView {
-//        let headerView = UIView()
-//        headerView.backgroundColor = .clear
-//        
-//        let label = UILabel()
-//        label.text = "Week" // Add your week title here
-//        label.textAlignment = .center
-//        label.font = UIFont.systemFont(ofSize: 16, weight: .semibold)
-//        
-//        let line = UIView()
-//        line.backgroundColor = .gray // Change color as needed
-//        line.translatesAutoresizingMaskIntoConstraints = false
-//        
-//        headerView.addSubview(label)
-//        headerView.addSubview(line)
-//        
-//        // Set up constraints
-//        label.translatesAutoresizingMaskIntoConstraints = false
-//        NSLayoutConstraint.activate([
-//            label.topAnchor.constraint(equalTo: headerView.topAnchor),
-//            label.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
-//            label.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
-//            
-//            line.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 4),
-//            line.leadingAnchor.constraint(equalTo: headerView.leadingAnchor),
-//            line.trailingAnchor.constraint(equalTo: headerView.trailingAnchor),
-//            line.heightAnchor.constraint(equalToConstant: 1),
-//            line.bottomAnchor.constraint(equalTo: headerView.bottomAnchor)
-//        ])
-//        
-//        return headerView
-//    }
-    
-    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-        let dateString = dateToString(date)
-    }
+    func minimumDate(for calendar: FSCalendar) -> Date {
+            return Calendar.current.date(from: DateComponents(year: 2015, month: 1, day: 1))!
+        }
+
+        func maximumDate(for calendar: FSCalendar) -> Date {
+            return Calendar.current.date(from: DateComponents(year: 2035, month: 12, day: 31))!
+        }
+   
     // FSCalendarDataSource method
     
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at position: FSCalendarMonthPosition) {
@@ -198,18 +235,33 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
             return UIColor(hex: "#C9C9C9") // Other months
         }
     }
+   
+    func calendar(_ calendar: FSCalendar, shouldSelect date: Date, at position: FSCalendarMonthPosition) -> Bool {
+        // Prevent user from selecting today
+//        if Calendar.current.isDateInToday(date) {
+//            return false
+//        }
+
+        // Only allow current month's dates
+        return position == .current
+    }
+
 
     
     
-    func dateToString(_ date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter.string(from: date)
+    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+        // Deselect previously selected date (if any)
+        if let previous = selectedDate {
+            calendar.deselect(previous)
+        }
+
+        // Update to new selected date
+        selectedDate = date
+        calendar.today = nil
+        print("User selected: \(dateToString(date))")
+        self.lbl_Value_Date.text = dateToString(date)
     }
-    func calendar(_ calendar: FSCalendar, shouldSelect date: Date, at position: FSCalendarMonthPosition) -> Bool {
-        // Only allow selection for dates in the current month
-        return position == .current
-    }
+
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
         let visibleMonth = calendar.currentPage
            let components = Calendar.current.dateComponents([.year, .month], from: visibleMonth)
@@ -227,7 +279,12 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
 
            calendarVw.reloadData()
     }
-    
+    func dateToString(_ date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat =  "dd-MM-yyyy"
+        return dateFormatter.string(from: date)
+    }
+   
 }
 
 //extension CalendarVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {

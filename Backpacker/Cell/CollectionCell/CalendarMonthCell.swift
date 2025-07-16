@@ -21,7 +21,7 @@ class CalendarMonthCell: UICollectionViewCell {
            lbl_Month.text = month
            bgVw.backgroundColor = isSelected ? UIColor(hex: "#299EF5") : UIColor(hex: "#F0F7FB")
            lbl_Month.textColor = isSelected ? .white : .black
-           lbl_Month.font = isSelected ? .boldSystemFont(ofSize: 17) : .systemFont(ofSize: 17)
+           lbl_Month.font = FontManager.inter(.semiBold, size: 25.0) 
        }
 
 }
