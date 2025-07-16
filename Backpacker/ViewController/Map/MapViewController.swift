@@ -21,6 +21,7 @@ class MapViewController: UIViewController {
     
     @IBOutlet weak var header_StrtDate: UILabel!
     
+    @IBOutlet weak var btmVwHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var header_EndDate: UILabel!
     
     @IBOutlet weak var lbl_Timing_Val: UILabel!
@@ -39,8 +40,35 @@ class MapViewController: UIViewController {
         LocationManager.shared.requestLocationPermission()
         LocationManager.shared.startUpdatingLocation()
         self.setUpUI()
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(_:)))
+           bottomVw.addGestureRecognizer(panGesture)
     }
-    
+    @objc func handlePanGesture(_ gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: self.view)
+
+        // Invert the Y translation because dragging upwards decreases y
+        let newHeight = btmVwHeightConstraint.constant - translation.y
+
+        // Set minimum and maximum height limits
+        let minHeight: CGFloat = 234
+        let maxHeight: CGFloat = self.view.frame.height - 100 // adjust as needed
+
+        // Clamp height within bounds
+        btmVwHeightConstraint.constant = max(minHeight, min(newHeight, maxHeight))
+
+        // Reset translation to avoid compounding
+        gesture.setTranslation(.zero, in: self.view)
+
+        // Animate on end of gesture
+        if gesture.state == .ended {
+            UIView.animate(withDuration: 0.25) {
+                self.view.layoutIfNeeded()
+            }
+        } else {
+            self.view.layoutIfNeeded()
+        }
+    }
+
     private func setUpUI(){
         
         self.lbl_Header.font = FontManager.inter(.semiBold, size: 16.0)

@@ -2,9 +2,8 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rhw-lk-gls">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -85,34 +84,6 @@
             </objects>
             <point key="canvasLocation" x="621" y="2001"/>
         </scene>
-        <!--CalendarVC-->
-        <scene sceneID="NDS-qZ-VJc">
-            <objects>
-                <viewController id="Eco-8A-pIq" customClass="CalendarVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="nv8-6x-O4D">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="In Progress" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TGr-zL-Bgy">
-                                <rect key="frame" x="153.66666666666666" y="425.66666666666669" width="85.666666666666657" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="7cw-dd-7VY"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="TGr-zL-Bgy" firstAttribute="centerY" secondItem="7cw-dd-7VY" secondAttribute="centerY" id="X18-s9-SgM"/>
-                            <constraint firstItem="TGr-zL-Bgy" firstAttribute="centerX" secondItem="7cw-dd-7VY" secondAttribute="centerX" id="u9k-8P-T9c"/>
-                        </constraints>
-                    </view>
-                    <navigationItem key="navigationItem" id="h9l-qF-Nwt"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="UdA-QR-EXU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1517" y="2807"/>
-        </scene>
         <!--Calendar-->
         <scene sceneID="EPw-DV-eJb">
             <objects>
@@ -125,12 +96,22 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="Eco-8A-pIq" kind="relationship" relationship="rootViewController" id="y2D-Ex-wzx"/>
+                        <segue destination="UMu-Q3-Y2K" kind="relationship" relationship="rootViewController" id="WPO-hk-1jM"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="il2-hz-4ph" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="671" y="2807"/>
+        </scene>
+        <!--CalendarVC-->
+        <scene sceneID="cCV-QT-Ddn">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Calendar" referencedIdentifier="CalendarVC" id="UMu-Q3-Y2K" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="7we-Qi-cQ0"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gIU-Bk-WOl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1648" y="2809"/>
         </scene>
         <!--Map-->
         <scene sceneID="vKh-kW-oZ8">
@@ -196,8 +177,5 @@
         <image name="Home" width="24" height="24"/>
         <image name="Job Seeker" width="22.666666030883789" height="17"/>
         <image name="Resume" width="19.666666030883789" height="18"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
     </resources>
 </document>
