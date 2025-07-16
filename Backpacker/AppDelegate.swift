@@ -114,6 +114,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
           UserDefaultsManager.shared.fcmToken = token
           // Save or send to server
           UserDefaults.standard.set(token, forKey: "device_token")
+          
+          
+          
+          
+          
+          
       }
 
 }
