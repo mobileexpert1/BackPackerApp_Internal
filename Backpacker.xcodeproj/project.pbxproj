@@ -25,6 +25,7 @@
 		75D1E3BA2E28D2F9005CDFC8 /* Backpacker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Backpacker.entitlements; sourceTree = "<group>"; };
 		75D1E3BB2E28D2F9005CDFC8 /* BackpackerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BackpackerDebug.entitlements; sourceTree = "<group>"; };
 		94E2E739E993863FB9BC37EF /* Pods_BackpackerPods_BackpackerHire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BackpackerPods_BackpackerHire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C9D125322E28F3F70046B6B1 /* BackpackerHire.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BackpackerHire.entitlements; sourceTree = "<group>"; };
 		E753AD62741FECB4DA43E410 /* Pods_BackpackerPods_Backpacker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BackpackerPods_Backpacker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -89,6 +90,7 @@
 		7580D0312E279472000335C8 = {
 			isa = PBXGroup;
 			children = (
+				C9D125322E28F3F70046B6B1 /* BackpackerHire.entitlements */,
 				75AE5A832E28E49C00CEA82B /* BackpackerHireRelease.entitlements */,
 				75D1E3BB2E28D2F9005CDFC8 /* BackpackerDebug.entitlements */,
 				75D1E3BA2E28D2F9005CDFC8 /* Backpacker.entitlements */,
@@ -252,9 +254,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BackpackerPods-Backpacker/Pods-BackpackerPods-Backpacker-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BackpackerPods-Backpacker/Pods-BackpackerPods-Backpacker-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -269,9 +275,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BackpackerPods-BackpackerHire/Pods-BackpackerPods-BackpackerHire-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BackpackerPods-BackpackerHire/Pods-BackpackerPods-BackpackerHire-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -522,7 +532,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
-				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_ENTITLEMENTS = BackpackerHire.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 39725U3KYU;
