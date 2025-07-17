@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Y6W-OH-hqX">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Map view configurations" minToolsVersion="14.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
@@ -50,10 +49,10 @@
                                         </userDefinedRuntimeAttributes>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R3E-tP-hHj">
-                                        <rect key="frame" x="0.0" y="21" width="393" height="114"/>
+                                        <rect key="frame" x="10" y="21" width="373" height="114"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6PR-43-oUb">
-                                                <rect key="frame" x="10" y="5" width="373" height="18"/>
+                                                <rect key="frame" x="10" y="5" width="353" height="18"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="18" id="p70-Zx-mhG"/>
                                                 </constraints>
@@ -80,7 +79,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="26/03/2025" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gBQ-5J-Clf">
-                                                <rect key="frame" x="316" y="33" width="67" height="15"/>
+                                                <rect key="frame" x="296" y="33" width="67" height="15"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="15" id="XD8-eg-0aK"/>
                                                 </constraints>
@@ -89,7 +88,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="9:00 AM to 6:00 PM" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i0z-Ff-bRn">
-                                                <rect key="frame" x="268.66666666666669" y="79" width="114.33333333333331" height="15"/>
+                                                <rect key="frame" x="248.66666666666671" y="79" width="114.33333333333334" height="15"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="15" id="tnD-MO-7MU"/>
                                                 </constraints>
@@ -98,7 +97,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="26/09/2025" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cA2-QV-79F">
-                                                <rect key="frame" x="316" y="56" width="67" height="15"/>
+                                                <rect key="frame" x="296" y="56" width="67" height="15"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="15" id="LEw-HI-B4K"/>
                                                 </constraints>
@@ -140,10 +139,10 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nda-dU-gzO">
-                                        <rect key="frame" x="0.0" y="135" width="393" height="100"/>
+                                        <rect key="frame" x="10" y="135" width="373" height="100"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Employer Details" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FD3-qI-px1">
-                                                <rect key="frame" x="10" y="10" width="373" height="20"/>
+                                                <rect key="frame" x="10" y="10" width="353" height="20"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="20" id="FB3-sG-hlK"/>
                                                 </constraints>
@@ -168,7 +167,7 @@
                                                 </constraints>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="19 Woronora Ave NSW 2560 AUS" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yJK-mb-yB1">
-                                                <rect key="frame" x="27" y="64.666666666666629" width="356" height="16"/>
+                                                <rect key="frame" x="27" y="64.666666666666629" width="336" height="16"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="16" id="Y6f-Db-d5k"/>
                                                 </constraints>
@@ -198,12 +197,12 @@
                                     <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Nda-dU-gzO" secondAttribute="bottom" id="05s-S9-GKX"/>
                                     <constraint firstItem="R3E-tP-hHj" firstAttribute="top" secondItem="eHr-rw-CRW" secondAttribute="bottom" constant="8" id="27g-WA-A54"/>
                                     <constraint firstAttribute="height" constant="235" id="4Ke-4K-xai"/>
-                                    <constraint firstAttribute="trailing" secondItem="R3E-tP-hHj" secondAttribute="trailing" id="9C4-Fl-9WP"/>
+                                    <constraint firstAttribute="trailing" secondItem="R3E-tP-hHj" secondAttribute="trailing" constant="10" id="9C4-Fl-9WP"/>
                                     <constraint firstItem="Nda-dU-gzO" firstAttribute="top" secondItem="R3E-tP-hHj" secondAttribute="bottom" id="AEl-yd-sZJ"/>
-                                    <constraint firstItem="R3E-tP-hHj" firstAttribute="leading" secondItem="w4T-No-y4V" secondAttribute="leading" id="PTN-Pr-sHv"/>
+                                    <constraint firstItem="R3E-tP-hHj" firstAttribute="leading" secondItem="w4T-No-y4V" secondAttribute="leading" constant="10" id="PTN-Pr-sHv"/>
                                     <constraint firstItem="eHr-rw-CRW" firstAttribute="top" secondItem="w4T-No-y4V" secondAttribute="top" constant="8" id="WA9-14-a3I"/>
-                                    <constraint firstItem="Nda-dU-gzO" firstAttribute="leading" secondItem="w4T-No-y4V" secondAttribute="leading" id="nXD-yF-jtD"/>
-                                    <constraint firstAttribute="trailing" secondItem="Nda-dU-gzO" secondAttribute="trailing" id="woF-mM-dFQ"/>
+                                    <constraint firstItem="Nda-dU-gzO" firstAttribute="leading" secondItem="w4T-No-y4V" secondAttribute="leading" constant="10" id="nXD-yF-jtD"/>
+                                    <constraint firstAttribute="trailing" secondItem="Nda-dU-gzO" secondAttribute="trailing" constant="10" id="woF-mM-dFQ"/>
                                     <constraint firstItem="eHr-rw-CRW" firstAttribute="centerX" secondItem="w4T-No-y4V" secondAttribute="centerX" id="zeM-Bg-0SD"/>
                                 </constraints>
                             </view>

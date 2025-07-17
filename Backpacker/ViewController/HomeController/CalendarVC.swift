@@ -9,7 +9,7 @@ import UIKit
 import FSCalendar
 
 class CalendarVC: UIViewController {
-
+    
     @IBOutlet weak var monthCollectionVw: UICollectionView!
     @IBOutlet weak var calendarVw: FSCalendar!
     
@@ -34,36 +34,46 @@ class CalendarVC: UIViewController {
     
     var selectedDate: Date?
     var selectedMonthIndex = Calendar.current.component(.month, from: Date()) - 1
-
+    
     var monthsArray: [Date] = []
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         if selectedDate == nil {
-                selectedDate = Date()
+            selectedDate = Date()
             calendarVw.select(selectedDate)
-            }
-        bgVwMonth.addShadowAllSides(radius:2)
-        bgVwAvailibility.addShadowAllSides(radius:2)
+        }
+        bgVwMonth.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
+        bgVwAvailibility.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
+        self.registerCell()
+        self.setUpCalendar()
+        self.setUpFonts()
+        
+    }
+    private func registerCell(){
+        calendarVw.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
         let nib = UINib(nibName: "CalendarMonthCell", bundle: nil)
         monthCollectionVw.register(nib, forCellWithReuseIdentifier: "CalendarMonthCell")
-//        let selectedYear = Calendar.current.component(.year, from: Date()) // or any selected year
-//        monthsArray = getAllMonths(for: selectedYear) // replace with your year
+        
+    }
+    private func setUpCalendar(){
+        //        let selectedYear = Calendar.current.component(.year, from: Date()) // or any selected year
+        //        monthsArray = getAllMonths(for: selectedYear) // replace with your year
         monthsArray = getAllMonths(from: 2015, to: 2035)
-
+        
         monthCollectionVw.delegate = self
         monthCollectionVw.dataSource = self
         monthCollectionVw.reloadData()
         let currentMonthIndex = monthsArray.firstIndex(where: {
             Calendar.current.isDate($0, equalTo: Date(), toGranularity: .month)
         }) ?? 0
-
+        
         selectedMonthIndex = currentMonthIndex
-
+        
         DispatchQueue.main.async {
             self.monthCollectionVw.scrollToItem(at: IndexPath(item: currentMonthIndex, section: 0), at: .centeredHorizontally, animated: false)
         }
-        calendarVw.addShadowAllSides(radius:2)
+        
         calendarVw.appearance.headerTitleFont = FontManager.inter(.semiBold, size: 22.0)
         calendarVw.appearance.weekdayFont = FontManager.inter(.semiBold, size: 12.0)
         calendarVw.appearance.titleFont = FontManager.inter(.semiBold, size: 17.0)
@@ -74,7 +84,7 @@ class CalendarVC: UIViewController {
         calendarVw.appearance.weekdayTextColor = UIColor.black
         calendarVw.appearance.headerTitleColor = UIColor.black
         calendarVw.appearance.eventSelectionColor = UIColor.black
-            self.calendarVw.appearance.headerMinimumDissolvedAlpha = 0.0
+        self.calendarVw.appearance.headerMinimumDissolvedAlpha = 0.0
         calendarVw.appearance.headerDateFormat = "MMMM"
         calendarVw.appearance.selectionColor = UIColor(red: 41/255, green: 158/255, blue: 245/255, alpha: 1)
         calendarVw.firstWeekday = 1
@@ -85,9 +95,19 @@ class CalendarVC: UIViewController {
         calendarVw.appearance.headerMinimumDissolvedAlpha = 0.0
         calendarVw.delegate = self
         calendarVw.dataSource = self
-        self.setUpFonts()
-      
+        let bottomLine = UIView()
+        bottomLine.backgroundColor = UIColor(hex:"#EBEBEB")
+        bottomLine.translatesAutoresizingMaskIntoConstraints = false
+        calendarVw.addSubview(bottomLine)
+        
+        NSLayoutConstraint.activate([
+            bottomLine.topAnchor.constraint(equalTo: calendarVw.calendarWeekdayView.bottomAnchor),
+            bottomLine.leadingAnchor.constraint(equalTo: calendarVw.leadingAnchor),
+            bottomLine.trailingAnchor.constraint(equalTo: calendarVw.trailingAnchor),
+            bottomLine.heightAnchor.constraint(lessThanOrEqualToConstant: 1)
+        ])
     }
+
     private func setUpFonts(){
         self.settingBgVw.addShadowAllSides(radius:2)
         self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)

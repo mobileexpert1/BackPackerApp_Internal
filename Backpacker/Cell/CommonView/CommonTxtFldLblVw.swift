@@ -23,6 +23,7 @@ class CommonTxtFldLblVw: UIView , UITextFieldDelegate{
     
     @IBOutlet weak var lbl_Error: UILabel!
    
+    @IBOutlet weak var lblErrHeight: NSLayoutConstraint!
     var nibName = "CommonTxtFldLblVw"
     var contentView: UIView?
     var filterItemSelected: ((String) -> Void)?
@@ -75,7 +76,14 @@ class CommonTxtFldLblVw: UIView , UITextFieldDelegate{
         self.lbl_Error.isHidden = val
     }
     func setError(_ err: String) {
-        self.lbl_Error.text = err
+        if err.isEmpty == true{
+            self.lbl_Error.text = ""
+            self.lblErrHeight.constant = 0.0
+        }else{
+            self.lbl_Error.text = err
+            self.lblErrHeight.constant  = 10.0
+        }
+       
     }
     func getTextFieldValue() -> String {
         return txtFld.text ?? ""
@@ -97,6 +105,9 @@ class CommonTxtFldLblVw: UIView , UITextFieldDelegate{
         return true
     }
 
-    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
 }
 

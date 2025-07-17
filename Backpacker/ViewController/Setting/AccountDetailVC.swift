@@ -24,10 +24,13 @@ class AccountDetailVC: UIViewController {
     @IBOutlet weak var btn_Edit: UIButton!
     @IBOutlet weak var lbl_VisaTitle: UILabel!
     
+    @IBOutlet weak var BgVwTbl: UIView!
     @IBOutlet weak var lbl_MainHeader: UILabel!
     @IBOutlet weak var visaVw: UIView!
     
     @IBOutlet weak var stckBotmHeight: NSLayoutConstraint!
+    //heightConstraint
+    
     let visaTypes = [
         "Tourist Visa",
         "Business Visa",
@@ -54,6 +57,7 @@ class AccountDetailVC: UIViewController {
         handleBottomBtn()
     }
     private func setUPFLDS(){
+       
         self.lblzHeaderVisa.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_VisaTitle.font = FontManager.inter(.regular, size: 12.0)
         self.visaVw.addShadowAllSides(radius:2)
@@ -89,15 +93,13 @@ class AccountDetailVC: UIViewController {
         btn_Save.titleLabel?.font = FontManager.inter(.semiBold, size: 14.0)
         
         // Corner Radius
-        btn_Cancel.layer.cornerRadius = 10.0
         btn_Save.layer.cornerRadius = 10.0
         // Border
-        btn_Cancel.layer.borderWidth = 1
         applyGradientButtonStyle(to: btn_Save)
         // Optional: Clip to bounds for corner radius to work
         btn_Cancel.clipsToBounds = true
         self.tblVwHeight.constant = 0.0
-        self.btn_Edit.titleLabel?.font = FontManager.inter(.medium, size: 12.0)
+        self.btn_Edit.titleLabel?.font = FontManager.inter(.medium, size: 16.0)
     }
     @IBAction func action_VisaDrpDwn(_ sender: Any) {
         
@@ -112,9 +114,10 @@ class AccountDetailVC: UIViewController {
         if self.btn_drpdwn.tag == 0{
             self.tblVwHeight.constant = 0.0
             self.vWHeightContraint.constant = 0.0
-            
+            self.BgVwTbl.addShadowAllSides(radius: 0)
         }else{
-            self.tblVwHeight.constant = 190.0
+            self.BgVwTbl.addShadowAllSides(radius: 1.5)
+            self.tblVwHeight.constant = 176.0
             self.vWHeightContraint.constant = 190.0
         }
     }
@@ -159,6 +162,7 @@ class AccountDetailVC: UIViewController {
     
     
     @IBAction func action_Cancelk(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
     }
     
 }

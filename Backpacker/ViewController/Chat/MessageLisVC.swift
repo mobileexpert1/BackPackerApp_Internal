@@ -22,11 +22,11 @@ class MessageLisVC: UIViewController {
     
     // MARK: - Sample Array
     var userList: [MessageUser] = [
-        MessageUser(userId: UUID().uuidString, name: "John Doe", subHeader: "Hey, got your message!", seenTime: "2 min ago"),
-        MessageUser(userId: UUID().uuidString, name: "Jane Smith", subHeader: "Let's catch up tomorrow.", seenTime: "5 min ago"),
-        MessageUser(userId: UUID().uuidString, name: "Admin Team", subHeader: "Your request was approved.", seenTime: "Yesterday"),
-        MessageUser(userId: UUID().uuidString, name: "Michael Scott", subHeader: "Meeting rescheduled to 3 PM", seenTime: "Just now"),
-        MessageUser(userId: UUID().uuidString, name: "Pam Beesly", subHeader: "Artwork is ready!", seenTime: "10 min ago")
+        MessageUser(userId: UUID().uuidString, name: "John Doe", subHeader: "Hey, got your message!", seenTime: "29 Mar"),
+        MessageUser(userId: UUID().uuidString, name: "Jane Smith", subHeader: "Let's catch up tomorrow.", seenTime: "25 Mar"),
+        MessageUser(userId: UUID().uuidString, name: "Admin Team", subHeader: "Your request was approved.", seenTime: "29 Feb"),
+        MessageUser(userId: UUID().uuidString, name: "Michael Scott", subHeader: "Meeting rescheduled to 3 PM", seenTime: "25 Feb"),
+        MessageUser(userId: UUID().uuidString, name: "Pam Beesly", subHeader: "Artwork is ready!", seenTime: "20 Jan")
     ]
 
     override func viewDidLoad() {
@@ -54,7 +54,7 @@ class MessageLisVC: UIViewController {
         txtFldSearch.attributedPlaceholder = NSAttributedString(
             string: "Search",
             attributes: [
-                .foregroundColor: UIColor.gray,                     // Placeholder color
+                .foregroundColor: UIColor(hex:"#000000"),                     // Placeholder color
                 .font: FontManager.inter(.regular, size: 14.0)             // Replace with your custom font if needed
             ]
         )

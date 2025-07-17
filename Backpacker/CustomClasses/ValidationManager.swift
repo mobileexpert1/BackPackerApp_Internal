@@ -8,19 +8,15 @@
 import Foundation
 import PhoneNumberKit
 
-import PhoneNumberKit
-
 struct ValidationManager {
+    static let phoneNumberKit = PhoneNumberUtility()
 
-    static let phoneNumberUtility = PhoneNumberUtility()
-    static func isValidPhoneNumber(_ number: String, countryCode: String) -> Bool {
+    static func isValidPhoneNumber(_ number: String, regionCode: String) -> Bool {
         let trimmedNumber = number.trimmingCharacters(in: .whitespacesAndNewlines)
-        let formattedNumber = countryCode + trimmedNumber
 
         do {
-            _ = try phoneNumberUtility.parse(formattedNumber)
-            // If parsing succeeds, number is valid
-            return true
+            let parsedNumber = try phoneNumberKit.parse(trimmedNumber, withRegion: regionCode, ignoreType: false)
+            return phoneNumberKit.isValidPhoneNumber(trimmedNumber, withRegion: regionCode)
         } catch {
             print("❌ PhoneNumber parsing failed: \(error.localizedDescription)")
             return false

@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CommonTxtFldLblVw" customModule="Backpacker" customModuleProvider="target">
             <connections>
+                <outlet property="lblErrHeight" destination="sxg-LA-GcG" id="qhZ-xU-Mpb"/>
                 <outlet property="lbl_Error" destination="k85-dv-mqZ" id="lpQ-uj-lRW"/>
                 <outlet property="lbl_Title" destination="Db4-zw-FAT" id="igd-u6-a3a"/>
                 <outlet property="txtFld" destination="gFG-SV-jx3" id="T3b-8S-nCq"/>
@@ -56,7 +57,10 @@
                             </userDefinedRuntimeAttributes>
                         </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k85-dv-mqZ">
-                            <rect key="frame" x="10" y="74" width="485" height="21"/>
+                            <rect key="frame" x="10" y="74" width="485" height="10"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="10" id="sxg-LA-GcG"/>
+                            </constraints>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>

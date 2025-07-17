@@ -53,6 +53,7 @@ extension UIView {
         self.layer.shadowOpacity = opacity
         self.layer.shadowOffset = offset
         self.layer.shadowRadius = radius
+
         self.layer.masksToBounds = false
         
         // Optional: Improves performance

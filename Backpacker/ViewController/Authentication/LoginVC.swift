@@ -136,8 +136,8 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
             return false
         }
         // Validate format
-        let isValid = ValidationManager.isValidPhoneNumber(phoneNumber, countryCode: phoneCode)
-        
+        let region = picker_Vw.selectedCountry.code
+        let  isValid   = ValidationManager.isValidPhoneNumber(phoneNumber, regionCode: region)
         if isValid {
             print("✅ Valid number")
             self.lbl_Error.isHidden = true

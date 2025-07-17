@@ -66,6 +66,7 @@ class ChatVC: UIViewController {
     ]
 
     
+    @IBOutlet weak var txtFldChat: UITextField!
     var chatMessageList = [ChatMessage]()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -88,6 +89,13 @@ class ChatVC: UIViewController {
         self.tblVw.register(Enib, forCellReuseIdentifier: "EmplyerChatTVC")
         self.tblVw.delegate = self
         self.tblVw.dataSource = self
+        txtFldChat.attributedPlaceholder = NSAttributedString(
+            string: "Write your message",
+            attributes: [
+                .foregroundColor: UIColor(hex:"#797C7B"),                     // Placeholder color
+                .font: FontManager.inter(.regular, size: 14.0)             // Replace with your custom font if needed
+            ]
+        )
     }
 
 }

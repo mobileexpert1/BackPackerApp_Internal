@@ -19,8 +19,8 @@ class EmployerTVC: UITableViewCell {
     }
     
     func SetUpFonts(){
-        self.lblHeader.font = FontManager.poppins(.medium, size: 18.0)
-        self.lbl_Subheader.font = FontManager.poppins(.medium, size: 16.0)
+        self.lblHeader.font = FontManager.poppins(.semiBold, size: 18.0)
+        self.lbl_Subheader.font = FontManager.poppins(.semiBold, size: 16.0)
         self.lbl_SeenTime.font = FontManager.poppins(.regular, size: 14)
     }
 

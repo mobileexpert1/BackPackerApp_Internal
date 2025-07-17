@@ -30,6 +30,8 @@ class ReportIssueVC: UIViewController {
     @IBOutlet weak var lbl_IssueTitle: UILabel!
     @IBOutlet weak var tblVw: UITableView!
     @IBOutlet weak var lbl_title: UILabel!
+    @IBOutlet weak var BgVw_Table: UIView!
+    @IBOutlet weak var BgVwheight: NSLayoutConstraint!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
@@ -44,6 +46,8 @@ class ReportIssueVC: UIViewController {
         self.lbl_IssueTitle.text = "Reason"
         self.lbl_IssueTitle.font = FontManager.inter(.regular, size: 14.0)
         self.ttbl_HeightConstraint.constant = 0.0
+        self.BgVw_Table.addShadowAllSides(radius:0.0)
+        self.BgVwheight.constant = 0.0
         self.btn_Expand.tag = 0
         let nib = UINib(nibName: "ReportIssueTVC", bundle: nil)
         self.tblVw.register(nib, forCellReuseIdentifier: "ReportIssueTVC")
@@ -72,13 +76,19 @@ class ReportIssueVC: UIViewController {
     func manageHeightOfTable(){
         if self.btn_Expand.tag == 0{
             self.ttbl_HeightConstraint.constant = 0.0
+            self.BgVw_Table.addShadowAllSides(radius:0.0)
+            self.BgVwheight.constant = 0.0
         }else{
-            self.ttbl_HeightConstraint.constant = 200.0
+            self.ttbl_HeightConstraint.constant = 196.0
+            self.BgVw_Table.addShadowAllSides(radius:1.5)
+            self.BgVwheight.constant = 200.0
         }
     }
     @IBAction func action_Cancel(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
     }
     @IBAction func action_Save(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
     }
     
     @IBAction func action_Back(_ sender: Any) {
