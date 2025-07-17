@@ -1,0 +1,6 @@
+framework module CountryPickerView {
+  umbrella header "CountryPickerView-iOS15.6-umbrella.h"
+
+  export *
+  module * { export * }
+}

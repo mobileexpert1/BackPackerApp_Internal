@@ -7,14 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		688619D3BE49D81B0C3C02B5 /* Pods_Backpacker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B5173DA0C70FCFD3B00CA3E /* Pods_Backpacker.framework */; };
+		F67A4AFAD87433A72D8FF438 /* Pods_BackpackerPods_Backpacker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E753AD62741FECB4DA43E410 /* Pods_BackpackerPods_Backpacker.framework */; };
+		FD4329EF97145302B7C91BAE /* Pods_BackpackerPods_BackpackerHire.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94E2E739E993863FB9BC37EF /* Pods_BackpackerPods_BackpackerHire.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5B5173DA0C70FCFD3B00CA3E /* Pods_Backpacker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Backpacker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1298C7DFEBAD88B784B1E46B /* Pods-BackpackerPods-Backpacker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BackpackerPods-Backpacker.release.xcconfig"; path = "Target Support Files/Pods-BackpackerPods-Backpacker/Pods-BackpackerPods-Backpacker.release.xcconfig"; sourceTree = "<group>"; };
+		1363C6A009B2DDAD9818E46F /* Pods-Backpacker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Backpacker.release.xcconfig"; path = "Target Support Files/Pods-Backpacker/Pods-Backpacker.release.xcconfig"; sourceTree = "<group>"; };
+		2CEE1BAB93270E0498AA06BF /* Pods-BackpackerPods-BackpackerHire.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BackpackerPods-BackpackerHire.release.xcconfig"; path = "Target Support Files/Pods-BackpackerPods-BackpackerHire/Pods-BackpackerPods-BackpackerHire.release.xcconfig"; sourceTree = "<group>"; };
+		339083B171D13D031C6332D0 /* Pods-BackpackerPods-BackpackerHire.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BackpackerPods-BackpackerHire.debug.xcconfig"; path = "Target Support Files/Pods-BackpackerPods-BackpackerHire/Pods-BackpackerPods-BackpackerHire.debug.xcconfig"; sourceTree = "<group>"; };
+		3F7B2215353403F707EB3836 /* Pods-BackpackerPods-Backpacker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BackpackerPods-Backpacker.debug.xcconfig"; path = "Target Support Files/Pods-BackpackerPods-Backpacker/Pods-BackpackerPods-Backpacker.debug.xcconfig"; sourceTree = "<group>"; };
+		6F6FD1A7D892C86D27E06D79 /* Pods-Backpacker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Backpacker.debug.xcconfig"; path = "Target Support Files/Pods-Backpacker/Pods-Backpacker.debug.xcconfig"; sourceTree = "<group>"; };
 		7580D03A2E279472000335C8 /* Backpacker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Backpacker.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C32EFA82F65A6B109D93EA40 /* Pods-Backpacker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Backpacker.debug.xcconfig"; path = "Target Support Files/Pods-Backpacker/Pods-Backpacker.debug.xcconfig"; sourceTree = "<group>"; };
-		EB2175A9DE4D285446316CE3 /* Pods-Backpacker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Backpacker.release.xcconfig"; path = "Target Support Files/Pods-Backpacker/Pods-Backpacker.release.xcconfig"; sourceTree = "<group>"; };
+		75AE5A832E28E49C00CEA82B /* BackpackerHireRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BackpackerHireRelease.entitlements; sourceTree = "<group>"; };
+		75D1DEB22E28D08C005CDFC8 /* BackpackerHire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BackpackerHire.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		75D1DEB42E28D08C005CDFC8 /* BackpackerHire-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BackpackerHire-Info.plist"; sourceTree = "<group>"; };
+		75D1E3BA2E28D2F9005CDFC8 /* Backpacker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Backpacker.entitlements; sourceTree = "<group>"; };
+		75D1E3BB2E28D2F9005CDFC8 /* BackpackerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BackpackerDebug.entitlements; sourceTree = "<group>"; };
+		94E2E739E993863FB9BC37EF /* Pods_BackpackerPods_BackpackerHire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BackpackerPods_BackpackerHire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E753AD62741FECB4DA43E410 /* Pods_BackpackerPods_Backpacker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BackpackerPods_Backpacker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -25,6 +36,13 @@
 			);
 			target = 7580D0392E279472000335C8 /* Backpacker */;
 		};
+		75D1DEB32E28D08C005CDFC8 /* Exceptions for "Backpacker" folder in "BackpackerHire" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 75D1DEA82E28D08C005CDFC8 /* BackpackerHire */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -32,6 +50,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				7580D04C2E279473000335C8 /* Exceptions for "Backpacker" folder in "Backpacker" target */,
+				75D1DEB32E28D08C005CDFC8 /* Exceptions for "Backpacker" folder in "BackpackerHire" target */,
 			);
 			path = Backpacker;
 			sourceTree = "<group>";
@@ -43,7 +62,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				688619D3BE49D81B0C3C02B5 /* Pods_Backpacker.framework in Frameworks */,
+				F67A4AFAD87433A72D8FF438 /* Pods_BackpackerPods_Backpacker.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		75D1DEAB2E28D08C005CDFC8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FD4329EF97145302B7C91BAE /* Pods_BackpackerPods_BackpackerHire.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,7 +80,8 @@
 		645F7D32D58C77E1BE27EABA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				5B5173DA0C70FCFD3B00CA3E /* Pods_Backpacker.framework */,
+				E753AD62741FECB4DA43E410 /* Pods_BackpackerPods_Backpacker.framework */,
+				94E2E739E993863FB9BC37EF /* Pods_BackpackerPods_BackpackerHire.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -61,10 +89,14 @@
 		7580D0312E279472000335C8 = {
 			isa = PBXGroup;
 			children = (
+				75AE5A832E28E49C00CEA82B /* BackpackerHireRelease.entitlements */,
+				75D1E3BB2E28D2F9005CDFC8 /* BackpackerDebug.entitlements */,
+				75D1E3BA2E28D2F9005CDFC8 /* Backpacker.entitlements */,
 				7580D03C2E279472000335C8 /* Backpacker */,
 				7580D03B2E279472000335C8 /* Products */,
 				8A1A1B9F09A587AC97B9911B /* Pods */,
 				645F7D32D58C77E1BE27EABA /* Frameworks */,
+				75D1DEB42E28D08C005CDFC8 /* BackpackerHire-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -72,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				7580D03A2E279472000335C8 /* Backpacker.app */,
+				75D1DEB22E28D08C005CDFC8 /* BackpackerHire.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -79,8 +112,12 @@
 		8A1A1B9F09A587AC97B9911B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				C32EFA82F65A6B109D93EA40 /* Pods-Backpacker.debug.xcconfig */,
-				EB2175A9DE4D285446316CE3 /* Pods-Backpacker.release.xcconfig */,
+				6F6FD1A7D892C86D27E06D79 /* Pods-Backpacker.debug.xcconfig */,
+				1363C6A009B2DDAD9818E46F /* Pods-Backpacker.release.xcconfig */,
+				3F7B2215353403F707EB3836 /* Pods-BackpackerPods-Backpacker.debug.xcconfig */,
+				1298C7DFEBAD88B784B1E46B /* Pods-BackpackerPods-Backpacker.release.xcconfig */,
+				339083B171D13D031C6332D0 /* Pods-BackpackerPods-BackpackerHire.debug.xcconfig */,
+				2CEE1BAB93270E0498AA06BF /* Pods-BackpackerPods-BackpackerHire.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -108,6 +145,28 @@
 			name = Backpacker;
 			productName = Backpacker;
 			productReference = 7580D03A2E279472000335C8 /* Backpacker.app */;
+			productType = "com.apple.product-type.application";
+		};
+		75D1DEA82E28D08C005CDFC8 /* BackpackerHire */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 75D1DEAF2E28D08C005CDFC8 /* Build configuration list for PBXNativeTarget "BackpackerHire" */;
+			buildPhases = (
+				EF9A965A4C159D3EBFD25B14 /* [CP] Check Pods Manifest.lock */,
+				75D1DEAA2E28D08C005CDFC8 /* Sources */,
+				75D1DEAB2E28D08C005CDFC8 /* Frameworks */,
+				75D1DEAD2E28D08C005CDFC8 /* Resources */,
+				7AE1706F673745019C165277 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				7580D03C2E279472000335C8 /* Backpacker */,
+			);
+			name = BackpackerHire;
+			productName = Backpacker;
+			productReference = 75D1DEB22E28D08C005CDFC8 /* BackpackerHire.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -140,12 +199,20 @@
 			projectRoot = "";
 			targets = (
 				7580D0392E279472000335C8 /* Backpacker */,
+				75D1DEA82E28D08C005CDFC8 /* BackpackerHire */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		7580D0382E279472000335C8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		75D1DEAD2E28D08C005CDFC8 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -170,7 +237,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Backpacker-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-BackpackerPods-Backpacker-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -183,19 +250,54 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Backpacker/Pods-Backpacker-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BackpackerPods-Backpacker/Pods-BackpackerPods-Backpacker-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Backpacker/Pods-Backpacker-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			outputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BackpackerPods-Backpacker/Pods-BackpackerPods-Backpacker-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Backpacker/Pods-Backpacker-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BackpackerPods-Backpacker/Pods-BackpackerPods-Backpacker-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		7AE1706F673745019C165277 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 12;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BackpackerPods-BackpackerHire/Pods-BackpackerPods-BackpackerHire-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-BackpackerPods-BackpackerHire/Pods-BackpackerPods-BackpackerHire-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BackpackerPods-BackpackerHire/Pods-BackpackerPods-BackpackerHire-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EF9A965A4C159D3EBFD25B14 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-BackpackerPods-BackpackerHire-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -208,24 +310,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		75D1DEAA2E28D08C005CDFC8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
 		7580D04E2E279473000335C8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C32EFA82F65A6B109D93EA40 /* Pods-Backpacker.debug.xcconfig */;
+			baseConfigurationReference = 3F7B2215353403F707EB3836 /* Pods-BackpackerPods-Backpacker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = Backpacker/BackpackerDebug.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Backpacker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 39725U3KYU;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Backpacker/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
@@ -235,6 +345,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D Backapacker";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mycompany.path2profitmvp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -249,18 +360,20 @@
 		};
 		7580D04F2E279473000335C8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = EB2175A9DE4D285446316CE3 /* Pods-Backpacker.release.xcconfig */;
+			baseConfigurationReference = 1298C7DFEBAD88B784B1E46B /* Pods-BackpackerPods-Backpacker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Backpacker/BackpackerRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 39725U3KYU;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Backpacker/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
@@ -270,6 +383,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D Backapacker";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mycompany.path2profitmvp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -401,6 +515,86 @@
 			};
 			name = Release;
 		};
+		75D1DEB02E28D08C005CDFC8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 339083B171D13D031C6332D0 /* Pods-BackpackerPods-BackpackerHire.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 39725U3KYU;
+				ENABLE_DEBUG_DYLIB = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				EXCLUDED_ARCHS = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "BackpackerHire-Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D BackpackerHire";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mycompany.path2profitmvp1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		75D1DEB12E28D08C005CDFC8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2CEE1BAB93270E0498AA06BF /* Pods-BackpackerPods-BackpackerHire.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = BackpackerHireRelease.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 39725U3KYU;
+				ENABLE_DEBUG_DYLIB = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				EXCLUDED_ARCHS = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "BackpackerHire-Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D BackpackerHire";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mycompany.path2profitmvp1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -418,6 +612,15 @@
 			buildConfigurations = (
 				7580D04E2E279473000335C8 /* Debug */,
 				7580D04F2E279473000335C8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		75D1DEAF2E28D08C005CDFC8 /* Build configuration list for PBXNativeTarget "BackpackerHire" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				75D1DEB02E28D08C005CDFC8 /* Debug */,
+				75D1DEB12E28D08C005CDFC8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

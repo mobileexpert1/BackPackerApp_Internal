@@ -33,13 +33,8 @@ class LoginVC: UIViewController {
         self.setUI()
         self.setupRoundedBorder(for: vwTxtFld)
         self.setupRoundedBorder(for: phoneNumberVw)
-        
-#if BACKPACKER
-        print("Backpacker logic")
-#elseif BackpackerHire
-        print("Backpacker Hire logic")
-#endif
     }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         applyGradientButtonStyle(to: btn_Continue)

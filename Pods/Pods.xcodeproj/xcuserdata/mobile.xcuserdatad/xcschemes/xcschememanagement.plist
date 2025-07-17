@@ -4,68 +4,95 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>Alamofire-Alamofire.xcscheme</key>
+		<key>Alamofire-iOS15.0-Alamofire.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>1</integer>
 		</dict>
-		<key>Alamofire.xcscheme</key>
+		<key>Alamofire-iOS15.0.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>0</integer>
 		</dict>
-		<key>Cosmos.xcscheme</key>
+		<key>Alamofire-iOS15.6-Alamofire.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>2</integer>
 		</dict>
-		<key>CountryPickerView-CountryPickerView_CountryPickerView.xcscheme</key>
+		<key>Alamofire-iOS15.6.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>4</integer>
 		</dict>
-		<key>CountryPickerView.xcscheme</key>
+		<key>Cosmos-iOS15.0.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>3</integer>
 		</dict>
-		<key>FSCalendar.xcscheme</key>
+		<key>Cosmos-iOS15.6.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>5</integer>
 		</dict>
-		<key>PhoneNumberKit-PhoneNumberKitPrivacy.xcscheme</key>
+		<key>CountryPickerView-iOS15.0-CountryPickerView_CountryPickerView.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>7</integer>
 		</dict>
-		<key>PhoneNumberKit.xcscheme</key>
+		<key>CountryPickerView-iOS15.0.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>6</integer>
 		</dict>
-		<key>Pods-Backpacker.xcscheme</key>
+		<key>CountryPickerView-iOS15.6-CountryPickerView_CountryPickerView.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
-			<key>orderHint</key>
-			<integer>8</integer>
+		</dict>
+		<key>CountryPickerView-iOS15.6.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>FSCalendar-iOS15.0.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>FSCalendar-iOS15.6.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>PhoneNumberKit-iOS15.0-PhoneNumberKitPrivacy.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>PhoneNumberKit-iOS15.0.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>PhoneNumberKit-iOS15.6-PhoneNumberKitPrivacy.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>PhoneNumberKit-iOS15.6.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-BackpackerPods-Backpacker.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Pods-BackpackerPods-BackpackerHire.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>

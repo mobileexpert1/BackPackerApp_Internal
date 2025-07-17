@@ -1,0 +1,6 @@
+${PODS_ROOT}/Target Support Files/Pods-BackpackerPods-Backpacker/Pods-BackpackerPods-Backpacker-frameworks.sh
+${BUILT_PRODUCTS_DIR}/Alamofire-iOS15.0/Alamofire.framework
+${BUILT_PRODUCTS_DIR}/Cosmos-iOS15.0/Cosmos.framework
+${BUILT_PRODUCTS_DIR}/CountryPickerView-iOS15.0/CountryPickerView.framework
+${BUILT_PRODUCTS_DIR}/FSCalendar-iOS15.0/FSCalendar.framework
+${BUILT_PRODUCTS_DIR}/PhoneNumberKit-iOS15.0/PhoneNumberKit.framework

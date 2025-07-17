@@ -203,7 +203,7 @@ extension OtpVC {
         let req = OtpRequest(
             userId: self.userId,
             otp: self.getOTP(),
-            fcmToken: fcmToken ?? "",
+            fcmToken: fcmToken ?? "dfsdf",
             appVersion: deviceInfo.appVersion,
             osType: deviceInfo.osType,
             osVersion: deviceInfo.osVersion,
