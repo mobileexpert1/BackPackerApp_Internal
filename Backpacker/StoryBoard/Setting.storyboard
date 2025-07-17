@@ -535,7 +535,7 @@ nec turpis facilisis hendrerit</string>
                                 <rect key="frame" x="0.0" y="99.333333333333314" width="393" height="698.66666666666674"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zkA-JV-mJx">
-                                        <rect key="frame" x="0.0" y="0.0" width="393" height="862"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="1142"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="tR9-1p-U6n">
                                                 <rect key="frame" x="10" y="10" width="373" height="762"/>
@@ -728,7 +728,7 @@ nec turpis facilisis hendrerit</string>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstAttribute="bottom" secondItem="H0k-lX-OBz" secondAttribute="bottom" constant="20" id="GGV-qc-cH4"/>
+                                            <constraint firstAttribute="bottom" secondItem="H0k-lX-OBz" secondAttribute="bottom" constant="300" id="GGV-qc-cH4"/>
                                             <constraint firstItem="tR9-1p-U6n" firstAttribute="top" secondItem="zkA-JV-mJx" secondAttribute="top" constant="10" id="aVy-hg-jsU"/>
                                             <constraint firstAttribute="trailing" secondItem="H0k-lX-OBz" secondAttribute="trailing" constant="20" id="abx-kK-LOG"/>
                                             <constraint firstAttribute="trailing" secondItem="tR9-1p-U6n" secondAttribute="trailing" constant="10" id="bhl-dE-xGI"/>
