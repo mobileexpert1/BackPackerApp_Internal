@@ -414,7 +414,7 @@ extension ServiceManager {
 
             case .failure(let error, let statusCode):
                 print("❌ API Failure – \(error.customDescription), Status Code: \(statusCode ?? -1)")
-                completion(false, nil, statusCode)
+                completion(true, nil, statusCode)
             }
         }
     }

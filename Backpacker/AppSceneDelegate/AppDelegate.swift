@@ -18,6 +18,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         requestNotificationPermission()    //com.Backpacker
         // Register for remote notifications
         sleep(2)
+        CalendarEventManager.shared.requestAccess { granted in
+            print(granted ? "✅ Calendar access granted" : "❌ Calendar access denied")
+        }
+        
         application.registerForRemoteNotifications()
         return true
     }
@@ -101,7 +105,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         print("🔔 Notification tapped with info: \(userInfo)")
         
         // Handle navigation or deep linking here if needed
-        
+        NotificationManager.shared.handleNotification(userInfo: userInfo)
         completionHandler()
     }
     

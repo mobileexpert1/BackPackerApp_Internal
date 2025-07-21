@@ -2,15 +2,14 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rhw-lk-gls">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--JobPostVC-->
+        <!--MainJobController-->
         <scene sceneID="I8b-bS-fTg">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="JobPostVC" storyboardName="Job" referencedIdentifier="JobPostVC" id="6qI-4T-dlT" sceneMemberID="viewController">
+                <viewControllerPlaceholder storyboardIdentifier="MainJobController" storyboardName="Job" referencedIdentifier="MainJobController" id="6qI-4T-dlT" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="n06-gz-sjd"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tja-3V-kjT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

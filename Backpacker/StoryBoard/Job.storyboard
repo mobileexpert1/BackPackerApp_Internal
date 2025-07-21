@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="gyq-Ow-43l">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="pzq-fG-zhY">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
@@ -1034,6 +1034,62 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BUg-hm-fqn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2352" y="442"/>
+        </scene>
+        <!--Main Job Controller-->
+        <scene sceneID="mDP-38-xQH">
+            <objects>
+                <viewController storyboardIdentifier="MainJobController" id="pzq-fG-zhY" customClass="MainJobController" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="wOg-QK-rO8">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Jobs" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jXn-L9-rka">
+                                <rect key="frame" x="15" y="58.999999999999993" width="37" height="20.666666666666664"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="3aS-qI-xI3">
+                                <rect key="frame" x="20" y="84.666666666666671" width="353" height="50.000000000000014"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="uHM-kO-twQ"/>
+                                </constraints>
+                                <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="zbY-cu-G5C">
+                                    <size key="itemSize" width="147" height="47"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells/>
+                            </collectionView>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PIV-KS-kcL">
+                                <rect key="frame" x="0.0" y="139.66666666666669" width="393" height="678.33333333333326"/>
+                            </containerView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="wbF-Jv-kFm"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="wbF-Jv-kFm" firstAttribute="trailing" secondItem="3aS-qI-xI3" secondAttribute="trailing" constant="20" id="CdJ-um-a04"/>
+                            <constraint firstItem="PIV-KS-kcL" firstAttribute="leading" secondItem="wbF-Jv-kFm" secondAttribute="leading" id="VF8-gj-6ts"/>
+                            <constraint firstItem="PIV-KS-kcL" firstAttribute="top" secondItem="3aS-qI-xI3" secondAttribute="bottom" constant="5" id="eam-qP-AzW"/>
+                            <constraint firstItem="jXn-L9-rka" firstAttribute="leading" secondItem="wbF-Jv-kFm" secondAttribute="leading" constant="15" id="hcV-0n-daY"/>
+                            <constraint firstItem="3aS-qI-xI3" firstAttribute="top" secondItem="jXn-L9-rka" secondAttribute="bottom" constant="5" id="jH1-kU-SQU"/>
+                            <constraint firstItem="wbF-Jv-kFm" firstAttribute="bottom" secondItem="PIV-KS-kcL" secondAttribute="bottom" id="mfV-0a-FXG"/>
+                            <constraint firstItem="jXn-L9-rka" firstAttribute="top" secondItem="wbF-Jv-kFm" secondAttribute="top" id="rCw-HI-YbB"/>
+                            <constraint firstItem="wbF-Jv-kFm" firstAttribute="trailing" secondItem="PIV-KS-kcL" secondAttribute="trailing" id="x1M-2X-ZFy"/>
+                            <constraint firstItem="3aS-qI-xI3" firstAttribute="leading" secondItem="wbF-Jv-kFm" secondAttribute="leading" constant="20" id="x8B-57-1w9"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="collVw" destination="3aS-qI-xI3" id="raq-lW-lIj"/>
+                        <outlet property="containerVw" destination="PIV-KS-kcL" id="S5Z-JC-evl"/>
+                        <outlet property="title_Header" destination="jXn-L9-rka" id="niJ-jW-YXa"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="UUW-LI-VOk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1240" y="958"/>
         </scene>
     </scenes>
     <resources>

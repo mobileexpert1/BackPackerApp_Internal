@@ -40,5 +40,7 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
+	<key>NSCalendarsUsageDescription</key>
+	<string>This app needs calendar access to add tasks to your calendar.</string>
 </dict>
 </plist>

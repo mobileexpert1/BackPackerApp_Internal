@@ -290,9 +290,53 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
         // Update to new selected date
         selectedDate = date
         calendar.today = nil
+
         print("User selected: \(dateToString(date))")
         self.lbl_Value_Date.text = dateToString(date)
+
+        // Combine date and time (10:15 AM as example)
+        let selectedDateWithTime = CalendarEventManager.combine(date: date, hour: 9, minute: 0)!
+            self.showEventEditUI(with: selectedDateWithTime)
+        /*
+         guard let fullDate = CalendarEventManager.combine(date: selectedDate ?? Date(), hour: 10, minute: 15) else {
+               print("❌ Failed to combine date and time.")
+               return
+           }
+
+           // Request calendar access before saving
+           CalendarEventManager.shared.requestAccess { granted in
+               DispatchQueue.main.async {
+                   if granted {
+                       // Save to calendar
+                       CalendarEventManager.shared.addEvent(
+                           title: "My Task",
+                           startDate: fullDate,
+                           durationMinutes: 90,
+                           notes: "Task created from FSCalendar"
+                       )
+                   } else {
+                       // Show default iOS calendar permission prompt
+                       self.promptCalendarAccess()
+                   }
+               }
+           }
+         */
     }
+    func promptCalendarAccess() {
+        let alert = UIAlertController(
+            title: "Calendar Access Required",
+            message: "Please allow calendar access to save tasks.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Open Settings", style: .default, handler: { _ in
+            if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(appSettings)
+            }
+        }))
+        UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true)
+    }
+
 
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
         let visibleMonth = calendar.currentPage
@@ -564,3 +608,47 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
 //
 //
 
+import UIKit
+import EventKit
+import EventKitUI
+
+extension CalendarVC: EKEventEditViewDelegate {
+    
+    func showEventEditUI(with date: Date, durationMinutes: Int = 60) {
+        let eventStore = EKEventStore()
+        eventStore.requestAccess(to: .event) { granted, error in
+            if granted {
+                let event = EKEvent(eventStore: eventStore)
+                event.title = "Backpacker"
+                event.notes = "Job Added to your calendar"
+                event.startDate = date
+                event.endDate = Calendar.current.date(byAdding: .minute, value: durationMinutes, to: date)
+                event.calendar = eventStore.defaultCalendarForNewEvents
+
+                DispatchQueue.main.async {
+                    let eventController = EKEventEditViewController()
+                    eventController.eventStore = eventStore
+                    eventController.event = event
+                    eventController.editViewDelegate = self
+                    self.present(eventController, animated: true)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.promptCalendarAccess()
+                }
+            }
+        }
+    }
+
+    // MARK: - EKEventEditViewDelegate
+    public func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
+        controller.dismiss(animated: true)
+        if action == .saved {
+            print("Event saved")
+        } else if action == .canceled {
+            print("event creation cancelled")
+        } else if action == .deleted {
+            print("Event deleted")
+        }
+    }
+}

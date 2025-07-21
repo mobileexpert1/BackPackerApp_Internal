@@ -76,14 +76,8 @@ class LoginVC: UIViewController {
     @IBAction func action_Continue(_ sender: Any) {
         self.view.endEditing(true)
         if self.validatePhoneNumber() {
-        
             self.loginApiCall()
         }
-        
-        
-        
-        
-        
     }
     func setupRoundedBorder(for view: UIView) {
         view.layer.cornerRadius = 10
@@ -102,7 +96,7 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
         self.lbl_phoneCode.text  = country.phoneCode
         self.imgFlg.image = country.flag
         if txtFld_PhoneNumber.text?.isEmpty == false{
-            self.validatePhoneNumber()
+          let _ =   self.validatePhoneNumber()
         }
         
     }
@@ -178,7 +172,7 @@ extension LoginVC {
         viewModel.loginUser(loginRequest: loginRequest) { success, response, statusCode in
             if let statusCode = statusCode {
                 let httpStatus = HTTPStatusCode(rawValue: statusCode)
-
+                LoaderManager.shared.hide()
                 switch httpStatus {
                 case .ok, .created:
                     print("✅ Success:", httpStatus.description)
@@ -218,6 +212,8 @@ extension LoginVC {
                     print("❓ Unknown status:", httpStatus.description)
                     AlertManager.showAlert(on: self, title: "Error", message: httpStatus.description)
                 }
+            }else{
+                AlertManager.showAlert(on: self, title: "Error", message: "Something went wrong.")
             }
             
         }

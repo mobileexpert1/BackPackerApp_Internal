@@ -215,7 +215,7 @@ extension OtpVC {
         viewModel.SendOtp(otpRequest: req) { success, result, statusCode in
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()
-                AlertManager.showAlert(on: self, title: "Error", message: "No status code received.")
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
                 return
             }
 
