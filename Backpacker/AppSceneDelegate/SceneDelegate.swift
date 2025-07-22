@@ -47,8 +47,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             rootVC = navController
         } else {
             // Logged in → Go to MainTabBarController
+#if BackpackerHire
+            let storyboard = UIStoryboard(name: "MainTabBarEmpStoryboard", bundle: nil)
+            rootVC = storyboard.instantiateViewController(withIdentifier: "MainTabBarEmpController")
+            #else
             let storyboard = UIStoryboard(name: "TabBarController", bundle: nil)
             rootVC = storyboard.instantiateViewController(withIdentifier: "MainTabBarController")
+            
+#endif
+            
         }
 
         window?.rootViewController = rootVC

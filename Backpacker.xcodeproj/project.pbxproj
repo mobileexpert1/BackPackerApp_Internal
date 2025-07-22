@@ -33,7 +33,13 @@
 		7580D04C2E279473000335C8 /* Exceptions for "Backpacker" folder in "Backpacker" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Cell/EmpCollectionCell/AddAccomodationCVC.swift,
+				EmpAssets.xcassets,
+				EmployerStoryboard/Accomodation.storyboard,
+				EmployerStoryboard/EmployerHome.storyboard,
+				EmployerStoryboard/MainTabBarEmpStoryboard.storyboard,
 				Info.plist,
+				ViewController/Employer/Accomodation/EmployerAccomodationVC.swift,
 			);
 			target = 7580D0392E279472000335C8 /* Backpacker */;
 		};
@@ -41,6 +47,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
+				ViewController/BackPacker/TabBar/MainTabBarController.swift,
 			);
 			target = 75D1DEA82E28D08C005CDFC8 /* BackpackerHire */;
 		};

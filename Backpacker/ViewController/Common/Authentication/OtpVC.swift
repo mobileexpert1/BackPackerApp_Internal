@@ -115,9 +115,9 @@ class OtpVC: UIViewController {
     
     
     @IBAction func action_Resend(_ sender: Any) {
-       
+        
         self.ResendOtpApiCall()
-       
+        
     }
     
     
@@ -196,7 +196,7 @@ extension OtpVC {
     private func VerifyOtpApiCall() {
         LoaderManager.shared.show()
         lbl_Error.isHidden = true
-
+        
         let fcmToken = UserDefaultsManager.shared.fcmToken
         let deviceInfo = getDeviceInfo()
         
@@ -211,29 +211,40 @@ extension OtpVC {
             deviceModel: deviceInfo.deviceModel,
             deviceId: deviceInfo.deviceId
         )
-
+        
         viewModel.SendOtp(otpRequest: req) { success, result, statusCode in
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()
                 AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
                 return
             }
-
+            
             let httpStatus = HTTPStatusCode(rawValue: statusCode)
-
+            
             DispatchQueue.main.async {
                 LoaderManager.shared.hide()
                 switch httpStatus {
                 case .ok, .created:
                     if result?.success == true {
                         AlertManager.showSingleButtonAlert(on: self, message: result?.message ?? "Success") {
+                            
+                            
+#if BackpackerHire
+                            let storyboard = UIStoryboard(name: "MainTabBarEmpStoryboard", bundle: nil)
+                            let rootVC = storyboard.instantiateViewController(withIdentifier: "MainTabBarEmpController")
+                            UIApplication.setRootViewController(rootVC)
+#else
                             let tabBarVC = UIStoryboard(name: "TabBarController", bundle: nil).instantiateViewController(withIdentifier: "MainTabBarController")
                             UIApplication.setRootViewController(tabBarVC)
+                            
+#endif
+                            
+                            
                         }
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Invalid OTP")
                     }
-
+                    
                 case .badRequest:
                     self.viewModel.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -247,7 +258,7 @@ extension OtpVC {
                             }
                         }
                     }
-
+                    
                 case .unauthorized, .unauthorizedToken, .methodNotAllowed, .internalServerError:
                     print("⚠️ \(httpStatus.description)")
                 case .unknown:
@@ -256,7 +267,7 @@ extension OtpVC {
             }
         }
     }
-
+    
     private func ResendOtpApiCall(){
         let req = ResendOtpRequest(userId: userId)
         viewModel.ReSendOtp(otpRequest: req) { success, result, statusCode in
@@ -266,7 +277,7 @@ extension OtpVC {
                     return
                 }
                 let httpStatus = HTTPStatusCode(rawValue: statusCode)
-
+                
                 switch httpStatus {
                 case .ok, .created:
                     if success, let message = result?.message {
@@ -284,12 +295,12 @@ extension OtpVC {
                     UIApplication.setRootViewController(nav)
                 case .internalServerError:
                     AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
-
+                    
                 default:
                     AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
                 }
             }
         }
-
+        
     }
 }

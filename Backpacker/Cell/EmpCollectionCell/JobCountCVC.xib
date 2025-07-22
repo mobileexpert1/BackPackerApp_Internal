@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="JobCountCVC" customModule="Backpacker" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="308" height="213"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="308" height="213"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DoW-O1-vW8">
+                        <rect key="frame" x="15" y="10" width="293" height="193"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PDF-dR-nMu">
+                                <rect key="frame" x="136.33333333333334" y="86" width="20.333333333333343" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" name="blackColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Job Offer" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="apb-y3-CiW">
+                                <rect key="frame" x="10" y="117" width="273" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" name="blackColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.91764705882352937" green="0.96470588235294119" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="PDF-dR-nMu" firstAttribute="centerX" secondItem="DoW-O1-vW8" secondAttribute="centerX" id="Ao8-8r-sPW"/>
+                            <constraint firstItem="apb-y3-CiW" firstAttribute="top" secondItem="PDF-dR-nMu" secondAttribute="bottom" constant="10" id="Qdi-ki-b2x"/>
+                            <constraint firstItem="apb-y3-CiW" firstAttribute="centerX" secondItem="PDF-dR-nMu" secondAttribute="centerX" id="Uq9-XK-WAJ"/>
+                            <constraint firstItem="apb-y3-CiW" firstAttribute="leading" secondItem="DoW-O1-vW8" secondAttribute="leading" constant="10" id="Wq1-KA-blU"/>
+                            <constraint firstAttribute="trailing" secondItem="apb-y3-CiW" secondAttribute="trailing" constant="10" id="ecD-uG-Gzt"/>
+                            <constraint firstItem="PDF-dR-nMu" firstAttribute="centerY" secondItem="DoW-O1-vW8" secondAttribute="centerY" id="xEz-UX-THv"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                <integer key="value" value="10"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                </subviews>
+            </view>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <constraints>
+                <constraint firstItem="DoW-O1-vW8" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="15" id="950-RB-Omi"/>
+                <constraint firstItem="DoW-O1-vW8" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="10" id="WCC-Sb-RQR"/>
+                <constraint firstAttribute="trailing" secondItem="DoW-O1-vW8" secondAttribute="trailing" id="fi4-V1-IJE"/>
+                <constraint firstAttribute="bottom" secondItem="DoW-O1-vW8" secondAttribute="bottom" constant="10" id="uhd-Ka-yFs"/>
+            </constraints>
+            <size key="customSize" width="308" height="213"/>
+            <connections>
+                <outlet property="lbl_Count" destination="PDF-dR-nMu" id="n1m-gv-xVv"/>
+                <outlet property="lbl_title" destination="apb-y3-CiW" id="R3p-oq-bsT"/>
+                <outlet property="mainBgVw" destination="DoW-O1-vW8" id="qwf-3n-xpV"/>
+            </connections>
+            <point key="canvasLocation" x="326.71755725190837" y="46.126760563380287"/>
+        </collectionViewCell>
+    </objects>
+    <resources>
+        <namedColor name="blackColor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

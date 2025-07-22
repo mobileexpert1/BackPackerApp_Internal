@@ -888,7 +888,7 @@ nec turpis facilisis hendrerit</string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yY9-wS-c1K" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4857" y="-35"/>
+            <point key="canvasLocation" x="4855.7251908396947" y="-35.211267605633807"/>
         </scene>
     </scenes>
     <resources>
