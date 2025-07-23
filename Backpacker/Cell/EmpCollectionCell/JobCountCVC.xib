@@ -18,16 +18,16 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DoW-O1-vW8">
-                        <rect key="frame" x="15" y="10" width="293" height="193"/>
+                        <rect key="frame" x="10" y="10" width="293" height="198"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PDF-dR-nMu">
-                                <rect key="frame" x="136.33333333333334" y="86" width="20.333333333333343" height="21"/>
+                                <rect key="frame" x="136.33333333333334" y="88.666666666666671" width="20.333333333333343" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Job Offer" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="apb-y3-CiW">
-                                <rect key="frame" x="10" y="117" width="273" height="21"/>
+                                <rect key="frame" x="10" y="119.66666666666666" width="273" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
@@ -52,10 +52,10 @@
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
-                <constraint firstItem="DoW-O1-vW8" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="15" id="950-RB-Omi"/>
+                <constraint firstItem="DoW-O1-vW8" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="950-RB-Omi"/>
                 <constraint firstItem="DoW-O1-vW8" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="10" id="WCC-Sb-RQR"/>
-                <constraint firstAttribute="trailing" secondItem="DoW-O1-vW8" secondAttribute="trailing" id="fi4-V1-IJE"/>
-                <constraint firstAttribute="bottom" secondItem="DoW-O1-vW8" secondAttribute="bottom" constant="10" id="uhd-Ka-yFs"/>
+                <constraint firstAttribute="trailing" secondItem="DoW-O1-vW8" secondAttribute="trailing" constant="5" id="fi4-V1-IJE"/>
+                <constraint firstAttribute="bottom" secondItem="DoW-O1-vW8" secondAttribute="bottom" constant="5" id="uhd-Ka-yFs"/>
             </constraints>
             <size key="customSize" width="308" height="213"/>
             <connections>

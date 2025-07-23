@@ -19,7 +19,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Mio-31-gJf">
-                        <rect key="frame" x="12" y="5" width="446" height="167"/>
+                        <rect key="frame" x="1" y="5" width="457" height="167"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="aCCOMODATION" translatesAutoresizingMaskIntoConstraints="NO" id="uWo-Mk-f7K">
                                 <rect key="frame" x="12" y="12" width="150" height="143"/>
@@ -32,14 +32,14 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Manager" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LHu-Zd-4Xz">
-                                <rect key="frame" x="172" y="17" width="229" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Manager" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LHu-Zd-4Xz">
+                                <rect key="frame" x="172" y="17" width="240" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eeY-K4-nsI">
-                                <rect key="frame" x="411" y="12" width="25" height="25"/>
+                                <rect key="frame" x="422" y="12" width="25" height="25"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Heart" translatesAutoresizingMaskIntoConstraints="NO" id="nXA-1f-qxr">
                                         <rect key="frame" x="1.6666666666666856" y="1.6666666666666679" width="22" height="22"/>
@@ -74,18 +74,18 @@
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sB9-rF-mZU">
-                                <rect key="frame" x="172" y="46" width="254" height="61"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sB9-rF-mZU">
+                                <rect key="frame" x="172" y="46" width="265" height="61"/>
                                 <string key="text">Akshya Nagar 1st Block 1st Cross,
 Rammurthy nagar, Bangalore-560016</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.60392156862745094" green="0.60392156862745094" blue="0.60392156862745094" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rmm-TE-Y6o">
-                                <rect key="frame" x="314.33333333333331" y="119" width="121.66666666666669" height="34"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rmm-TE-Y6o">
+                                <rect key="frame" x="325.33333333333331" y="119" width="121.66666666666669" height="34"/>
                                 <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Duration - 8hr" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fhp-eu-FJe">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration - 8hr" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fhp-eu-FJe">
                                         <rect key="frame" x="7" y="7" width="107.66666666666667" height="20"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" name="blackColor"/>
@@ -137,7 +137,7 @@ Rammurthy nagar, Bangalore-560016</string>
                     </view>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="Mio-31-gJf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="1wZ-ZT-YnV"/>
+                    <constraint firstItem="Mio-31-gJf" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="1" id="1wZ-ZT-YnV"/>
                     <constraint firstAttribute="trailing" secondItem="Mio-31-gJf" secondAttribute="trailing" constant="12" id="hls-IS-OnN"/>
                     <constraint firstItem="Mio-31-gJf" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="iIU-hf-ob8"/>
                     <constraint firstAttribute="bottom" secondItem="Mio-31-gJf" secondAttribute="bottom" constant="5" id="uL0-J0-BLe"/>

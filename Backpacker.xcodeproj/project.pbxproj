@@ -35,17 +35,16 @@
 			membershipExceptions = (
 				Cell/EmpCollectionCell/AddAccomodationCVC.swift,
 				EmpAssets.xcassets,
-				EmployerStoryboard/Accomodation.storyboard,
 				EmployerStoryboard/EmployerHome.storyboard,
 				EmployerStoryboard/MainTabBarEmpStoryboard.storyboard,
 				Info.plist,
-				ViewController/Employer/Accomodation/EmployerAccomodationVC.swift,
 			);
 			target = 7580D0392E279472000335C8 /* Backpacker */;
 		};
 		75D1DEB32E28D08C005CDFC8 /* Exceptions for "Backpacker" folder in "BackpackerHire" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Assets.xcassets,
 				Info.plist,
 				ViewController/BackPacker/TabBar/MainTabBarController.swift,
 			);
@@ -536,7 +535,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 339083B171D13D031C6332D0 /* Pods-BackpackerPods-BackpackerHire.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = EmpAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = BackpackerHire.entitlements;
@@ -548,8 +547,11 @@
 				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BackpackerHire-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera access to take photos.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "This app requires permission to save images to your photo library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to your photo library to choose photos.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UILaunchStoryboardName = "HireLaunch Screen.storyboard";
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
@@ -568,7 +570,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -576,7 +578,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2CEE1BAB93270E0498AA06BF /* Pods-BackpackerPods-BackpackerHire.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = EmpAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = BackpackerHireRelease.entitlements;
@@ -588,8 +590,11 @@
 				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BackpackerHire-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "This app requires camera access to take photos.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "This app requires permission to save images to your photo library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "This app requires access to your photo library to choose photos.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
+				INFOPLIST_KEY_UILaunchStoryboardName = "HireLaunch Screen.storyboard";
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
@@ -608,7 +613,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

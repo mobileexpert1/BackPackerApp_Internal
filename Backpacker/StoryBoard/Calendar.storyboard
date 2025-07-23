@@ -17,55 +17,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Calendar" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YFA-hW-kIm">
-                                <rect key="frame" x="15" y="58" width="68.5" height="25"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="25" id="bv4-Sd-qPQ"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" name="blackColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5Eu-rP-IC9">
-                                <rect key="frame" x="359" y="50.5" width="40" height="40"/>
-                                <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Setting" translatesAutoresizingMaskIntoConstraints="NO" id="sGu-Vy-CMN">
-                                        <rect key="frame" x="7.5" y="7.5" width="25" height="25"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="25" id="QhT-gW-eaA"/>
-                                            <constraint firstAttribute="width" constant="25" id="o5D-uA-Mcw"/>
-                                        </constraints>
-                                    </imageView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vgo-lq-hc6">
-                                        <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
-                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <connections>
-                                            <action selector="action_Setting:" destination="Ouf-7J-ySj" eventType="touchUpInside" id="dTw-KK-aqp"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstItem="sGu-Vy-CMN" firstAttribute="centerY" secondItem="5Eu-rP-IC9" secondAttribute="centerY" id="As6-zL-V6I"/>
-                                    <constraint firstItem="sGu-Vy-CMN" firstAttribute="centerX" secondItem="5Eu-rP-IC9" secondAttribute="centerX" id="Ax9-Er-dSL"/>
-                                    <constraint firstItem="Vgo-lq-hc6" firstAttribute="top" secondItem="5Eu-rP-IC9" secondAttribute="top" id="E2P-IY-1G4"/>
-                                    <constraint firstAttribute="trailing" secondItem="Vgo-lq-hc6" secondAttribute="trailing" id="FWF-Hl-T58"/>
-                                    <constraint firstAttribute="height" constant="40" id="HYT-Yc-zpX"/>
-                                    <constraint firstAttribute="width" constant="40" id="RPa-55-HT1"/>
-                                    <constraint firstAttribute="bottom" secondItem="Vgo-lq-hc6" secondAttribute="bottom" id="WXQ-8a-rdH"/>
-                                    <constraint firstItem="Vgo-lq-hc6" firstAttribute="leading" secondItem="5Eu-rP-IC9" secondAttribute="leading" id="hS5-Lf-eHT"/>
-                                </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                        <integer key="value" value="5"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qva-yC-sB6">
-                                <rect key="frame" x="0.0" y="105.5" width="414" height="756.5"/>
+                                <rect key="frame" x="0.0" y="48" width="414" height="814"/>
                                 <subviews>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="75P-Cb-GQY">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="756.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="814"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WrC-6K-T4O">
                                                 <rect key="frame" x="0.0" y="0.0" width="414" height="914.5"/>
@@ -381,13 +337,9 @@
                         <viewLayoutGuide key="safeArea" id="gvY-hg-3X7"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="qva-yC-sB6" firstAttribute="top" secondItem="gvY-hg-3X7" secondAttribute="top" id="49u-a2-Pwx"/>
                             <constraint firstAttribute="trailing" secondItem="qva-yC-sB6" secondAttribute="trailing" id="5Iv-6k-Huq"/>
-                            <constraint firstItem="5Eu-rP-IC9" firstAttribute="centerY" secondItem="YFA-hW-kIm" secondAttribute="centerY" id="7nd-0l-WHU"/>
-                            <constraint firstItem="gvY-hg-3X7" firstAttribute="trailing" secondItem="5Eu-rP-IC9" secondAttribute="trailing" constant="15" id="Jut-Y5-NH1"/>
-                            <constraint firstItem="qva-yC-sB6" firstAttribute="top" secondItem="5Eu-rP-IC9" secondAttribute="bottom" constant="15" id="N0H-PV-fh1"/>
                             <constraint firstItem="qva-yC-sB6" firstAttribute="leading" secondItem="zOz-YQ-hVR" secondAttribute="leading" id="Pu0-ID-rkR"/>
-                            <constraint firstItem="YFA-hW-kIm" firstAttribute="top" secondItem="gvY-hg-3X7" secondAttribute="top" constant="10" id="UqF-xz-Gkn"/>
-                            <constraint firstItem="YFA-hW-kIm" firstAttribute="leading" secondItem="gvY-hg-3X7" secondAttribute="leading" constant="15" id="fQu-xO-VHp"/>
                             <constraint firstItem="gvY-hg-3X7" firstAttribute="bottom" secondItem="qva-yC-sB6" secondAttribute="bottom" id="l9j-Cr-m2r"/>
                         </constraints>
                     </view>
@@ -398,7 +350,6 @@
                         <outlet property="lbl_HeaderAvailable" destination="eX3-Uu-BvR" id="Nuw-Sa-cav"/>
                         <outlet property="lbl_HeaderSelectMonth" destination="hIt-2B-1RY" id="2hC-Cg-2xf"/>
                         <outlet property="lbl_Header_SelectDate" destination="Pbx-fu-jkF" id="tbe-Pb-H6E"/>
-                        <outlet property="lbl_MainHeader" destination="YFA-hW-kIm" id="Wv3-to-1ha"/>
                         <outlet property="lbl_SetAvailibily" destination="vJY-xO-xc1" id="91Z-KQ-mHU"/>
                         <outlet property="lbl_Value_Date" destination="0Kx-UI-mwh" id="JGl-nX-b6W"/>
                         <outlet property="lbl_Value_Hour" destination="Pj1-Zo-KpV" id="6Zu-x8-0Ow"/>
@@ -406,7 +357,6 @@
                         <outlet property="lbl_headerWorkinHour" destination="Rwk-dP-6PF" id="RKK-vB-4Yr"/>
                         <outlet property="lbl_headrDate" destination="rC1-YY-Dnl" id="497-Ly-jS3"/>
                         <outlet property="monthCollectionVw" destination="wRQ-9w-aGl" id="7wN-tF-mH4"/>
-                        <outlet property="settingBgVw" destination="5Eu-rP-IC9" id="IlA-VT-lby"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xZM-Qn-bIc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -415,7 +365,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Setting" width="26" height="26"/>
         <image name="backward2" width="10.333333015441895" height="17.333333969116211"/>
         <image name="forward2" width="22" height="22"/>
         <namedColor name="blackColor">

@@ -28,10 +28,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="8MY-O5-Uih">
-                                <rect key="frame" x="10" y="168" width="148" height="1"/>
+                                <rect key="frame" x="10" y="164" width="148" height="2"/>
                                 <color key="backgroundColor" name="blackColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="1" id="egS-er-Jv2"/>
+                                    <constraint firstAttribute="height" constant="2" id="egS-er-Jv2"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -43,7 +43,7 @@
                             <constraint firstItem="a9A-iB-zKP" firstAttribute="centerX" secondItem="8kP-Kn-jk1" secondAttribute="centerX" id="JiE-Ja-caE"/>
                             <constraint firstAttribute="trailing" relation="lessThanOrEqual" secondItem="a9A-iB-zKP" secondAttribute="trailing" constant="10" id="Sth-bd-jog"/>
                             <constraint firstItem="8MY-O5-Uih" firstAttribute="leading" secondItem="a9A-iB-zKP" secondAttribute="leading" id="ZWO-Jw-zxz"/>
-                            <constraint firstAttribute="bottom" secondItem="8MY-O5-Uih" secondAttribute="bottom" constant="2" id="hec-66-BYA"/>
+                            <constraint firstAttribute="bottom" secondItem="8MY-O5-Uih" secondAttribute="bottom" constant="5" id="hec-66-BYA"/>
                         </constraints>
                     </view>
                 </subviews>

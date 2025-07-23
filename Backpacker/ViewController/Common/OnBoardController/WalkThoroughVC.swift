@@ -16,6 +16,25 @@ class WalkThoroughVC: UIViewController {
     
     @IBOutlet weak var btn_Back: UIButton!
     @IBOutlet weak var btn_Skip: UIButton!
+    
+#if BackpackerHire
+    private let walkthroughItems: [WalkthroughItem] = [
+        WalkthroughItem(title: Constants.Walkthrough.screen2Title, subTitle: Constants.Walkthrough.screen2SubTitle,
+                        image: UIImage(named: Constants.Walkthrough.screen2Image)!),
+        WalkthroughItem(title: Constants.Walkthrough.screen1Title, subTitle: Constants.Walkthrough.screen1SubTitle,
+                        image: UIImage(named: Constants.Walkthrough.screen1Image)!),
+        
+        WalkthroughItem(title: Constants.Walkthrough.screen3Title, subTitle: Constants.Walkthrough.screen3SubTitle,
+                        image: UIImage(named: Constants.Walkthrough.screen3Image)!),
+        
+        WalkthroughItem(title: Constants.Walkthrough.screen4Title, subTitle: Constants.Walkthrough.screen4SubTitle,
+                        image: UIImage(named: Constants.Walkthrough.screen4Image)!),
+        WalkthroughItem(title: Constants.Walkthrough.screen5Title, subTitle: Constants.Walkthrough.screen5SubTitle,
+                        image: UIImage(named: Constants.Walkthrough.screen5Image)!)
+    ]
+    
+#else
+    
     private let walkthroughItems: [WalkthroughItem] = [
         WalkthroughItem(title: Constants.Walkthrough.screen2Title, subTitle: Constants.Walkthrough.screen2SubTitle,
                         image: UIImage(named: Constants.Walkthrough.screen2Image)!),
@@ -28,6 +47,9 @@ class WalkThoroughVC: UIViewController {
         WalkthroughItem(title: Constants.Walkthrough.screen4Title, subTitle: Constants.Walkthrough.screen4SubTitle,
                         image: UIImage(named: Constants.Walkthrough.screen4Image)!)
     ]
+#endif
+    
+   
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +65,13 @@ class WalkThoroughVC: UIViewController {
         collectionVw.showsHorizontalScrollIndicator = false
         
         // Setup Page Control
+#if BackpackerHire
         pageController.numberOfPages = walkthroughItems.count
+        #else
+        
+        pageController.numberOfPages = walkthroughItems.count
+#endif
+       
         pageController.currentPage = 0
         pageController.pageIndicatorTintColor = UIColor(named: "subTitleColor")
         pageController.currentPageIndicatorTintColor = UIColor(named: "themeColor")

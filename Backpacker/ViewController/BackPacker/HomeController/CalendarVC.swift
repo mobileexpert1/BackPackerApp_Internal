@@ -23,10 +23,7 @@ class CalendarVC: UIViewController {
     @IBOutlet weak var lbl_headrDate: UILabel!
     
     
-    @IBOutlet weak var lbl_MainHeader: UILabel!
-    
-    @IBOutlet weak var settingBgVw: UIView!
-    
+   
     @IBOutlet weak var lbl_Header_SelectDate: UILabel!
     @IBOutlet weak var lbl_SetAvailibily: UILabel!
     
@@ -109,8 +106,8 @@ class CalendarVC: UIViewController {
     }
 
     private func setUpFonts(){
-        self.settingBgVw.addShadowAllSides(radius:2)
-        self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)
+//        self.settingBgVw.addShadowAllSides(radius:2)
+//        self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.lbl_SetAvailibily.font = FontManager.inter(.medium, size: 14.0)
         lbl_HeaderSelectMonth.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_Header_SelectDate.font = FontManager.inter(.medium, size: 14.0)

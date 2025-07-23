@@ -12,7 +12,8 @@ class HomeTVC: UITableViewCell {
     @IBOutlet weak var home_CollectionVw: UICollectionView!
     var items: [String] = []
     var tableSection: Int = 0
-    
+    var onAddAccommodation: (() -> Void)?
+    var isComeFromJob : Bool = false
     override func awakeFromNib() {
         super.awakeFromNib()
         self.preservesSuperviewLayoutMargins = false
@@ -20,32 +21,22 @@ class HomeTVC: UITableViewCell {
         self.layoutMargins = .zero
         
 #if BackpackerHire
-        let nib = UINib(nibName: "AccomodationCVC", bundle: nil)
-        home_CollectionVw.register(nib, forCellWithReuseIdentifier: "AccomodationCVC")
-        
         let nib2 = UINib(nibName: "AddAccomodationCVC", bundle: nil)
         home_CollectionVw.register(nib2, forCellWithReuseIdentifier: "AddAccomodationCVC")
-        
-        
         let nib3 = UINib(nibName: "JobCountCVC", bundle: nil)
         home_CollectionVw.register(nib3, forCellWithReuseIdentifier: "JobCountCVC")
-        
-        home_CollectionVw.dataSource = self
-        home_CollectionVw.delegate = self
-        if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.scrollDirection = .horizontal
-        }
 #else
         let nib = UINib(nibName: "HomeJobCVC", bundle: nil)
         home_CollectionVw.register(nib, forCellWithReuseIdentifier: "HomeJobCVC")
+#endif
+        
+        let nib4 = UINib(nibName: "AccomodationCVC", bundle: nil)
+        home_CollectionVw.register(nib4, forCellWithReuseIdentifier: "AccomodationCVC")
         home_CollectionVw.dataSource = self
         home_CollectionVw.delegate = self
         if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.scrollDirection = .horizontal
         }
-        
-#endif
-       
             home_CollectionVw.showsHorizontalScrollIndicator = false
             home_CollectionVw.showsVerticalScrollIndicator = false
     }
@@ -89,13 +80,17 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 }
               //  let item = items[indexPath.item]
                 // cell.titleLabel.text = item
+              
                 return cell
             }else{
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddAccomodationCVC", for: indexPath) as? AddAccomodationCVC else {
                     return UICollectionViewCell()
                 }
-              //  let item = items[indexPath.item]
-                // cell.titleLabel.text = item
+                cell.onAddAccommodationTapped = {
+                       print("Add button tapped at index \(indexPath.row)")
+                       // Call your function or navigate here
+                    self.onAddAccommodation?()
+                   }
                 return cell
             }
         }else{
@@ -108,14 +103,22 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         }
       
 #else
-        
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
-            return UICollectionViewCell()
+        if isComeFromJob == false{
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
+                return UICollectionViewCell()
+            }
+            // Assign item to your label/image inside the cell
+            // cell.titleLabel.text = item
+            return cell
+        }else{
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
+                return UICollectionViewCell()
+            }
+            // Assign item to your label/image inside the cell
+            // cell.titleLabel.text = item
+            return cell
         }
-        let item = items[indexPath.item]
-        // Assign item to your label/image inside the cell
-        // cell.titleLabel.text = item
-        return cell
+      
 #endif
        
     }
@@ -127,7 +130,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
 #if BackpackerHire
         
         if tableSection == 0 {
-            return CGSize(width: (width / 2) - 5, height: 200)
+            return CGSize(width: (width / 2) - 5, height: 180)
         }else if tableSection == 1 {
             return CGSize(width: (width / 2) - 12, height: 250)
         }else{
@@ -137,8 +140,29 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         
        
 #else
-        
-        return CGSize(width: (width / 2) - 12, height: 180)
+        if tableSection == 0 {
+            if isComeFromJob == false{
+                return CGSize(width: (width / 2) - 12, height: 150)
+            }else{
+                return CGSize(width: (width / 2) - 12, height: 180)
+            }
+            
+        }else if tableSection == 1 || tableSection == 2 {
+            if isComeFromJob == false{
+                return CGSize(width: (width / 2) - 12, height: 250)
+            }else{
+                return CGSize(width: (width / 2) - 12, height: 180)
+            }
+           
+        }else{
+            if isComeFromJob == false{
+                return CGSize(width: (width / 2) - 12, height: 150)
+            }else{
+                return CGSize(width: (width / 2) - 12, height: 180)
+            }
+            
+        }
+      
         
 #endif
         
@@ -157,7 +181,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         if tableSection == 0 {
-            return 0
+            if isComeFromJob == true{
+                return 10
+            }else{
+                return 0
+            }
+            
         }else{
             return 10
         }
@@ -169,12 +198,16 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
         if tableSection == 0 {
-            return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            if isComeFromJob == true{
+                return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
+            }else{
+                return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+            }
+           
         }else{
             return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
         }
       
     }
-    
-    
+   
 }

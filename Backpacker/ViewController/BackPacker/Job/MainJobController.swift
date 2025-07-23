@@ -13,7 +13,7 @@ class MainJobController: UIViewController {
     
     @IBOutlet weak var containerVw: UIView!
     @IBOutlet weak var collVw: UICollectionView!
-    let colArray = ["Jobs","Job Post","Calendar","History"]
+    let colArray = ["Jobs","Employer","Backpackers","Calendar","History"]
     var selectedIndex =  0
     
     override func viewDidLoad() {
@@ -82,11 +82,14 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
             vcIdentifier = "HomeVC"
         case 1:
             storyboardName = "Job"
-            vcIdentifier = "JobPostVC"
+            vcIdentifier = "EmployerBackPackerListVC"
         case 2:
+            storyboardName = "Job"
+            vcIdentifier = "EmployerBackPackerListVC"
+        case 3:
             storyboardName = "Calendar"
             vcIdentifier = "CalendarVC"
-        case 3:
+        case 4:
             storyboardName = "History"
             vcIdentifier = "HistoryVC"
         default:
@@ -94,10 +97,30 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
         }
         
         if let newVC = loadViewController(from: storyboardName, identifier: vcIdentifier) {
-            addChild(newVC)
-            newVC.view.frame = containerVw.bounds
-            containerVw.addSubview(newVC.view)
-            newVC.didMove(toParent: self)
+            // Pass data based on controller type
+                switch newVC {
+                case let homeVC as HomeVC:
+                    break
+
+                case let listVC as EmployerBackPackerListVC:
+                    if selectedIndex == 1 {
+                        listVC.iscomeFromEmployer = true
+                    }else{
+                        listVC.iscomeFromEmployer = false
+                    }
+                case let calendarVC as CalendarVC:
+                    break
+
+                case let historyVC as HistoryVC:
+                    break
+                default:
+                    break
+                }
+
+                addChild(newVC)
+                newVC.view.frame = containerVw.bounds
+                containerVw.addSubview(newVC.view)
+                newVC.didMove(toParent: self)
         }
     }
     

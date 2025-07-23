@@ -62,7 +62,16 @@ class CommonTxtFldLblVw: UIView , UITextFieldDelegate{
 
     
     private func setUpfontUI(){
+#if BackpackerHire
+        
+        self.txtFld_BgVw.layer.cornerRadius = 10.0
+        self.txtFld_BgVw.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        self.txtFld_BgVw.layer.borderWidth = 1.0
+#else
         self.txtFld_BgVw.addShadowAllSides(radius:2)
+        
+#endif
+       
         lbl_Title.font = FontManager.inter(.medium, size: 14.0)
         self.txtFld.font = FontManager.inter(.regular, size: 12.0)
         lbl_Error.font = FontManager.inter(.regular, size: 8.0)

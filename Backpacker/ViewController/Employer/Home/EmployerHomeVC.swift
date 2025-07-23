@@ -65,6 +65,10 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
             }
     //        let sectionItems = itemsPerSection[indexPath.section]
             cell.configure(with: sectionTitles,section: indexPath.section)
+            // Handle final callback here
+                cell.onAddAccommodation = { [weak self] in
+                    self?.moveToAddAccomodationVC()
+                }
             return cell
         }else{
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmployerJobTVC", for: indexPath) as? EmployerJobTVC else {
@@ -101,7 +105,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0  {
-            return 400
+            return 360
         }else if   indexPath.section == 1  {
             return 260
             
@@ -110,7 +114,15 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         }
       
     }
-    
+    private func moveToAddAccomodationVC() {
+        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+        if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewAccomodationVC") as? AddNewAccomodationVC {
+            self.navigationController?.pushViewController(accVC, animated: true)
+        } else {
+            print("❌ Could not instantiate AddNewAccomodationVC")
+        }
+    }
+
 //    private func setupPullToRefresh() {
 //        refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
 //        refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)

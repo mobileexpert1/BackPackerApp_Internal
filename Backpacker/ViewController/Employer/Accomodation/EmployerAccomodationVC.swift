@@ -9,10 +9,14 @@ import UIKit
 
 class EmployerAccomodationVC: UIViewController {
 
+    @IBOutlet weak var lbl_sortBy: UILabel!
     @IBOutlet weak var coollVw: UICollectionView!
     @IBOutlet weak var txtFld_Search: UITextField!
     @IBOutlet weak var searchBgVw: UIView!
     @IBOutlet weak var lbl_MainHeader: UILabel!
+    
+    @IBOutlet weak var filterImgWidth: NSLayoutConstraint!
+    
     let hotels = [
         "Little National Hotel Sydney",
         "Dorsett Melbourne",
@@ -29,7 +33,14 @@ class EmployerAccomodationVC: UIViewController {
     var filteredDesignations: [String] = []
     override func viewDidLoad() {
         super.viewDidLoad()
-
+#if Backapacker
+        self.filterImgWidth.constant = 35.0
+        self.lbl_sortBy.isHidden = false
+        self.lbl_sortBy.font = FontManager.inter(.medium, size: 14.0)
+        #else
+        self.filterImgWidth.constant = 0.0
+        self.lbl_sortBy.isHidden = true
+#endif
         self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.searchBgVw.layer.borderColor = UIColor.black.cgColor
         self.searchBgVw.layer.borderWidth = 1.0
@@ -63,6 +74,10 @@ class EmployerAccomodationVC: UIViewController {
         coollVw.reloadData()
     }
 
+    @IBAction func action_Sort(_ sender: Any) {
+        
+        
+    }
 }
 extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
@@ -105,5 +120,13 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
                         layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "AccomodationDetailVC") as? AccomodationDetailVC {
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("❌ Could not instantiate SettingVC")
+        }
     }
 }

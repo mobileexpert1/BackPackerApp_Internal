@@ -34,18 +34,18 @@ class HomeVC: UIViewController {
     //HeaderOutLets
     @IBOutlet weak var Vw_Chat: UIView!
     
-    @IBOutlet weak var mainVw_Settings: UIView!
-    @IBOutlet weak var lbl_BckPAcker: UILabel!
-    
-    @IBOutlet weak var mainVew_Notification: UIView!
-    @IBOutlet weak var Vw_Ntification: UIView!
-    
-    @IBOutlet weak var lbl_Notification: UILabel!
+//    @IBOutlet weak var mainVw_Settings: UIView!
+//    @IBOutlet weak var lbl_BckPAcker: UILabel!
+//    
+//    @IBOutlet weak var mainVew_Notification: UIView!
+//    @IBOutlet weak var Vw_Ntification: UIView!
+//    
+//    @IBOutlet weak var lbl_Notification: UILabel!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.setUpUI()
+       // self.setUpUI()
         //  LoaderManager.shared.show()
         self.setupPullToRefresh()
         LocationManager.shared.requestLocationPermission()
@@ -75,13 +75,13 @@ override func viewWillAppear(_ animated: Bool) {
     //            LoaderManager.shared.hide()
     //        }
 }
-private func setUpUI(){
-    self.lbl_BckPAcker.font = FontManager.inter(.bold, size: 14.0)
-    self.lbl_Notification.font = FontManager.inter(.medium, size: 8.0)
-    Vw_Ntification.backgroundColor = #colorLiteral(red: 1, green: 0.1491003036, blue: 0, alpha: 1)
-    self.mainVw_Settings.addShadowAllSides()
-    self.mainVew_Notification.addShadowAllSides()
-}
+//private func setUpUI(){
+//    self.lbl_BckPAcker.font = FontManager.inter(.bold, size: 14.0)
+//    self.lbl_Notification.font = FontManager.inter(.medium, size: 8.0)
+//    Vw_Ntification.backgroundColor = #colorLiteral(red: 1, green: 0.1491003036, blue: 0, alpha: 1)
+//    self.mainVw_Settings.addShadowAllSides()
+//    self.mainVew_Notification.addShadowAllSides()
+//}
 @IBAction func actionNotification(_ sender: Any) {
     let storyboard = UIStoryboard(name: "Setting", bundle: nil)
     if let settingVC = storyboard.instantiateViewController(withIdentifier: "NotificationVC") as? NotificationVC {
@@ -125,6 +125,7 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         }
         let sectionItems = itemsPerSection[indexPath.section]
         cell.configure(with: sectionItems,section: indexPath.section)
+        cell.isComeFromJob = true
         return cell
     }
     

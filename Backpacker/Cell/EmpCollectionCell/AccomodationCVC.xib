@@ -19,13 +19,13 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OSy-Wj-S94">
-                        <rect key="frame" x="2" y="0.0" width="355" height="271"/>
+                        <rect key="frame" x="0.0" y="0.0" width="359" height="271"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ocE-du-ygS">
-                                <rect key="frame" x="4" y="2" width="347" height="179"/>
+                                <rect key="frame" x="4" y="2" width="351" height="179"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="aCCOMODATION" translatesAutoresizingMaskIntoConstraints="NO" id="xSd-dj-o5T">
-                                        <rect key="frame" x="0.0" y="0.0" width="347" height="179"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="351" height="179"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                                 <integer key="value" value="10"/>
@@ -33,7 +33,7 @@
                                         </userDefinedRuntimeAttributes>
                                     </imageView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AWf-EH-8NT">
-                                        <rect key="frame" x="312" y="10" width="25" height="25"/>
+                                        <rect key="frame" x="316" y="10" width="25" height="25"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Heart" translatesAutoresizingMaskIntoConstraints="NO" id="Til-re-tjw">
                                                 <rect key="frame" x="5" y="5" width="15" height="15"/>
@@ -85,7 +85,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Little National Hotel Sydney" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xDq-kt-vY1">
-                                <rect key="frame" x="4" y="186" width="347" height="21"/>
+                                <rect key="frame" x="4" y="186" width="351" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
@@ -97,7 +97,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eJt-O0-gve" customClass="CosmosView" customModule="Cosmos">
-                                <rect key="frame" x="33.333333333333329" y="218" width="205.66666666666669" height="15"/>
+                                <rect key="frame" x="33.333333333333329" y="218" width="209.66666666666669" height="15"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="15" id="m01-vh-HDZ"/>
@@ -128,13 +128,13 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="From $,1500 per adult" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="liG-R0-8HC">
-                                <rect key="frame" x="4" y="238" width="347" height="21"/>
+                                <rect key="frame" x="4" y="238" width="351" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(202 review)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e7U-Dk-jXD">
-                                <rect key="frame" x="249" y="212" width="96" height="21"/>
+                                <rect key="frame" x="253" y="212" width="96" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.46666666670000001" green="0.46666666670000001" blue="0.46666666670000001" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
@@ -165,8 +165,8 @@
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
-                <constraint firstItem="OSy-Wj-S94" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="2" id="H0S-RF-MZi"/>
-                <constraint firstAttribute="trailing" secondItem="OSy-Wj-S94" secondAttribute="trailing" constant="2" id="Xgw-XV-B3w"/>
+                <constraint firstItem="OSy-Wj-S94" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="H0S-RF-MZi"/>
+                <constraint firstAttribute="trailing" secondItem="OSy-Wj-S94" secondAttribute="trailing" id="Xgw-XV-B3w"/>
                 <constraint firstItem="OSy-Wj-S94" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="fDS-L0-ElP"/>
                 <constraint firstAttribute="bottom" secondItem="OSy-Wj-S94" secondAttribute="bottom" id="z9d-hM-l3e"/>
             </constraints>

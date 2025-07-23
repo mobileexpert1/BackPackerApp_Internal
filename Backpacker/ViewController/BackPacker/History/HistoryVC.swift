@@ -10,9 +10,9 @@ import UIKit
 class HistoryVC: UIViewController {
 
     @IBOutlet weak var historyCV: UICollectionView!
-    @IBOutlet weak var Main_SettinhgVw: UIView!
+  //  @IBOutlet weak var Main_SettinhgVw: UIView!
     @IBOutlet weak var lbl_SubHeader: UILabel!
-    @IBOutlet weak var lblHeader: UILabel!
+ //   @IBOutlet weak var lblHeader: UILabel!
     let designations = [
         "Software Engineer",
         "UI/UX Designer",
@@ -28,8 +28,8 @@ class HistoryVC: UIViewController {
     var filteredDesignations: [String] = []
     override func viewDidLoad() {
         super.viewDidLoad()
-        Main_SettinhgVw.addShadowAllSides()
-        self.lblHeader.font = FontManager.inter(.semiBold, size: 16.0)
+//        Main_SettinhgVw.addShadowAllSides()
+//        self.lblHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.lbl_SubHeader.font = FontManager.inter(.semiBold, size: 16.0)
         let nib = UINib(nibName: "HomeJobCVC", bundle: nil)
         historyCV.register(nib, forCellWithReuseIdentifier: "HomeJobCVC")
