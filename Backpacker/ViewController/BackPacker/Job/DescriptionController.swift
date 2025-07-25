@@ -20,21 +20,26 @@ class DescriptionController: UIViewController {
     @IBOutlet weak var lbl_Requirment: UILabel!
     @IBOutlet weak var lbl_JobDescription: UILabel!
     
-    @IBOutlet weak var lbl_Timing: UILabel!
-    @IBOutlet weak var lbl_EndDtae: UILabel!
-    @IBOutlet weak var lbl_StrtDate: UILabel!
+   
     
     //Value Outlets
-    @IBOutlet weak var lbl_StrtDate_Value: UILabel!
-    @IBOutlet weak var lbl_EndDate_Value: UILabel!
-    @IBOutlet weak var lbl_Timeing_Value: UILabel!
+ 
+    @IBOutlet weak var lbl_Val_EndTime: UILabel!
+    @IBOutlet weak var lbl_Val_StartTime: UILabel!
+    @IBOutlet weak var lbl_Val_StartDate: UILabel!
+    @IBOutlet weak var lbl_EndTime: UILabel!
+    @IBOutlet weak var lblStartTime: UILabel!
+    @IBOutlet weak var lblDate: UILabel!
     @IBOutlet weak var lbl_Description_Value: UILabel!
     @IBOutlet weak var lbl_RequirmentValue: UILabel!
     
     @IBOutlet weak var lbl_MapLocation_Value: UILabel!
     @IBOutlet weak var btn_VwOnMap: UIButton!
     
+    @IBOutlet weak var vwStartTime: UIView!
+    @IBOutlet weak var vwDate: UIView!
     
+    @IBOutlet weak var vwEndTime: UIView!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -46,6 +51,9 @@ class DescriptionController: UIViewController {
          btn_Accept.layer.cornerRadius = 10
          btn_Decline.layer.cornerRadius = 10
          applyGradientButtonStyle(to: btn_Accept)
+         self.vwDate.addShadowAllSides(radius: 2)
+         self.vwStartTime.addShadowAllSides(radius: 2)
+         self.vwEndTime.addShadowAllSides(radius: 2)
      }
     
     
@@ -55,17 +63,18 @@ class DescriptionController: UIViewController {
         lbl_Requirment.font = FontManager.inter(.semiBold, size: 14.0)
         lbl_JobDescription.font = FontManager.inter(.semiBold, size: 14.0)
         btn_VwOnMap.titleLabel?.font = FontManager.inter(.regular, size: 12.0)
-        lbl_Timing.font = FontManager.inter(.regular, size: 12.0)
-        lbl_EndDtae.font = FontManager.inter(.regular, size: 12.0)
-        lbl_Timing.font = FontManager.inter(.regular, size: 12.0)
-        lbl_StrtDate.font = FontManager.inter(.regular, size: 12.0)
-        //Value
-        lbl_StrtDate_Value.font = FontManager.inter(.regular, size: 12.0)
-        lbl_EndDate_Value.font = FontManager.inter(.regular, size: 12.0)
-        lbl_Timeing_Value.font = FontManager.inter(.regular, size: 12.0)
+     
         lbl_Description_Value.font = FontManager.inter(.regular, size: 12.0)
         lbl_RequirmentValue.font = FontManager.inter(.regular, size: 12.0)
         lbl_MapLocation_Value.font = FontManager.inter(.regular, size: 12.0)
+        
+        self.lblDate.font = FontManager.inter(.regular, size: 12.0)
+        self.lblStartTime.font = FontManager.inter(.regular, size: 12.0)
+        self.lbl_EndTime.font = FontManager.inter(.regular, size: 12.0)
+        
+        self.lbl_Val_EndTime.font = FontManager.inter(.semiBold, size: 12.0)
+        self.lbl_Val_StartTime.font = FontManager.inter(.semiBold, size: 12.0)
+        self.lbl_Val_StartDate.font = FontManager.inter(.semiBold, size: 12.0)
     }
     
     @IBAction func action_Accept(_ sender: Any) {

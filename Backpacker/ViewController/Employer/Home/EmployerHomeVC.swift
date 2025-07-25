@@ -63,6 +63,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
                 return UITableViewCell()
             }
+            cell.isComeForHireDetailPage = false
     //        let sectionItems = itemsPerSection[indexPath.section]
             cell.configure(with: sectionTitles,section: indexPath.section)
             // Handle final callback here

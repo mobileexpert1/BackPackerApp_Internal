@@ -59,12 +59,23 @@ extension EmployerBackPackerListVC : UITableViewDelegate,UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+#if BackpackerHire
+        
+        let storyboard = UIStoryboard(name: "EmployerHome", bundle: nil)
+           if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "BackPackerDetailVC") as? BackPackerDetailVC {
+             //  jobDescriptionVC.isComeFrom = iscomeFromEmployer
+               // Optional: pass selected job title
+               self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+           }
+#else
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
            if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "EmployerDetailVC") as? EmployerDetailVC {
                jobDescriptionVC.isComeFrom = iscomeFromEmployer
                // Optional: pass selected job title
                self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
            }
+#endif
+       
     }
     
 }

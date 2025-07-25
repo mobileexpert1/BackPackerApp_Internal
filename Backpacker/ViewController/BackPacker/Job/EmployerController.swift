@@ -24,17 +24,18 @@ class EmployerController: UIViewController {
         super.viewDidLoad()
         ///  setUpAttributedText()
         setUpFonts()
+        self.lbl_Emplyeer_Detail.isHidden = true
     }
     
     private func setUpFonts(){
         lbl_Emplyeer_Detail.font = FontManager.inter(.semiBold, size: 14.0)
         lbl_Location.font = FontManager.inter(.semiBold, size: 14.0)
-        lbl_Name_Value.font = FontManager.inter(.regular, size: 12.0)
-        lbl_CompletedJobsValue.font = FontManager.inter(.regular, size: 12.0)
-        lbl_Address_Value.font = FontManager.inter(.regular, size: 12.0)
-        lblName.font = FontManager.inter(.regular, size: 12.0)
-        lbl_CompletedJobs.font = FontManager.inter(.regular, size: 12.0)
-        lbl_Address.font = FontManager.inter(.regular, size: 12.0)
+        lbl_Name_Value.font = FontManager.inter(.semiBold, size: 13.0)
+        lbl_CompletedJobsValue.font = FontManager.inter(.semiBold, size: 13.0)
+        lbl_Address_Value.font = FontManager.inter(.semiBold, size: 13.0)
+        lblName.font = FontManager.inter(.regular, size: 13.0)
+        lbl_CompletedJobs.font = FontManager.inter(.regular, size: 13.0)
+        lbl_Address.font = FontManager.inter(.regular, size: 13.0)
         
     }
     

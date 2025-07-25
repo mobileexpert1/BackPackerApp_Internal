@@ -118,6 +118,7 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         let sectionItems = itemsPerSection[indexPath.section]
         cell.configure(with: sectionItems,section: indexPath.section)
         cell.isComeFromJob = true
+        cell.isComeForHireDetailPage = false
         cell.onTap = { [weak self] in
                 guard let self = self else { return }
                 print("Cell tapped at index: \(indexPath.item)")

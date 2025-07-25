@@ -16,7 +16,7 @@ class HomeTVC: UITableViewCell {
     var isComeFromJob : Bool = false
     var onTap: (() -> Void)?
     var onTapAcceptJob: ((Int) -> Void)?
-
+    var isComeForHireDetailPage : Bool = false
     override func awakeFromNib() {
         super.awakeFromNib()
         self.preservesSuperviewLayoutMargins = false
@@ -29,10 +29,10 @@ class HomeTVC: UITableViewCell {
         let nib3 = UINib(nibName: "JobCountCVC", bundle: nil)
         home_CollectionVw.register(nib3, forCellWithReuseIdentifier: "JobCountCVC")
 #else
+      
+#endif
         let nib = UINib(nibName: "HomeJobCVC", bundle: nil)
         home_CollectionVw.register(nib, forCellWithReuseIdentifier: "HomeJobCVC")
-#endif
-        
         let nib4 = UINib(nibName: "AccomodationCVC", bundle: nil)
         home_CollectionVw.register(nib4, forCellWithReuseIdentifier: "AccomodationCVC")
         home_CollectionVw.dataSource = self
@@ -75,45 +75,63 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 #if BackpackerHire
-        if tableSection == 0{
-            if indexPath.item == 0 || indexPath.item == 1 || indexPath.item == 2{
-               
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JobCountCVC", for: indexPath) as? JobCountCVC else {
-                    return UICollectionViewCell()
+        
+        if isComeForHireDetailPage == true  {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
+                return UICollectionViewCell()
+            }
+            cell.onTap = { [weak self]  index in
+                  guard let self = self else { return }
+                  print("Cell tapped at index: \(indexPath.item)")
+                  // Navigate or perform any action
+                self.onTap?()
+              }
+            // Assign item to your label/image inside the cell
+            // cell.titleLabel.text = item
+            cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: isComeForHireDetailPage)
+            return cell
+        }else{
+            if tableSection == 0{
+                if indexPath.item == 0 || indexPath.item == 1 || indexPath.item == 2{
+                   
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JobCountCVC", for: indexPath) as? JobCountCVC else {
+                        return UICollectionViewCell()
+                    }
+                    if indexPath.item == 0{
+                        cell.lbl_Count.text = "20"
+                        cell.lbl_title.text = "Total Job Offer"
+                    }else if indexPath.item == 1{
+                        cell.lbl_Count.text = "12"
+                        cell.lbl_title.text = "Declined"
+                    }else if indexPath.item == 2{
+                        cell.lbl_Count.text = "8"
+                        cell.lbl_title.text = "Accepted"
+                    }
+                  //  let item = items[indexPath.item]
+                    // cell.titleLabel.text = item
+                  
+                    return cell
+                }else{
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddAccomodationCVC", for: indexPath) as? AddAccomodationCVC else {
+                        return UICollectionViewCell()
+                    }
+                    cell.onAddAccommodationTapped = {
+                           print("Add button tapped at index \(indexPath.row)")
+                           // Call your function or navigate here
+                        self.onAddAccommodation?()
+                       }
+                    return cell
                 }
-                if indexPath.item == 0{
-                    cell.lbl_Count.text = "20"
-                    cell.lbl_title.text = "Total Job Offer"
-                }else if indexPath.item == 1{
-                    cell.lbl_Count.text = "12"
-                    cell.lbl_title.text = "Declined"
-                }else if indexPath.item == 2{
-                    cell.lbl_Count.text = "8"
-                    cell.lbl_title.text = "Accepted"
+            }else{
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
+                    return UICollectionViewCell()
                 }
               //  let item = items[indexPath.item]
                 // cell.titleLabel.text = item
-              
-                return cell
-            }else{
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddAccomodationCVC", for: indexPath) as? AddAccomodationCVC else {
-                    return UICollectionViewCell()
-                }
-                cell.onAddAccommodationTapped = {
-                       print("Add button tapped at index \(indexPath.row)")
-                       // Call your function or navigate here
-                    self.onAddAccommodation?()
-                   }
                 return cell
             }
-        }else{
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
-                return UICollectionViewCell()
-            }
-          //  let item = items[indexPath.item]
-            // cell.titleLabel.text = item
-            return cell
         }
+      
       
 #else
         if isComeFromJob == false{
@@ -127,7 +145,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
                 return UICollectionViewCell()
             }
-            cell.onTap = { [weak self] in
+            cell.onTap = { [weak self]  index in
                   guard let self = self else { return }
                   print("Cell tapped at index: \(indexPath.item)")
                   // Navigate or perform any action
@@ -169,7 +187,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         if tableSection == 0 {
             return CGSize(width: (width / 2) - 5, height: 180)
         }else if tableSection == 1 {
-            return CGSize(width: (width / 2) - 12, height: 250)
+            if isComeForHireDetailPage  == true{
+                return CGSize(width: (width / 2) - 5, height: 180)
+            }else{
+                return CGSize(width: (width / 2) - 12, height: 250)
+            }
+           
         }else{
             return CGSize(width: (width / 2) - 12, height: 150)
         }
@@ -221,7 +244,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             if isComeFromJob == true{
                 return 10
             }else{
-                return 0
+                if isComeForHireDetailPage == true{
+                    return 10
+                }else{
+                    return 0
+                }
+               
             }
             
         }else{
@@ -238,7 +266,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             if isComeFromJob == true{
                 return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
             }else{
-                return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                if isComeForHireDetailPage == true{
+                    return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
+                }else{
+                    return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+                }
+               
             }
            
         }else{

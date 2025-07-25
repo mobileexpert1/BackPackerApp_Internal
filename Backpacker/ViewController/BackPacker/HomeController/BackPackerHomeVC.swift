@@ -111,6 +111,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 }
                 cell.configure(with: sectionTitles,section: indexPath.section)
               cell.isComeFromJob = false
+              cell.isComeForHireDetailPage = false
                 // Handle final callback here
                     cell.onAddAccommodation = { [weak self] in
                     }

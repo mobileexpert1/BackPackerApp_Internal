@@ -24,8 +24,10 @@ class HomeJobCVC: UICollectionViewCell {
     
     @IBOutlet weak var statusVw: UIView!
     @IBOutlet weak var lbl_jobStatus: UILabel!
-    var onTap: (() -> Void)?
+    var onTap: ((Int) -> Void)?
     var isComeFormAccpetedJobs : Bool = false
+    var isComeForHiredetailpage : Bool = false
+    var indexPath : Int = 0
     override func awakeFromNib() {
            super.awakeFromNib()
            setupUI()
@@ -33,7 +35,7 @@ class HomeJobCVC: UICollectionViewCell {
         
 
        }
-    func setUpUI(iscomeFromAccept : Bool = false){
+    func setUpUI(iscomeFromAccept : Bool = false,isComeForHiredetailpagee : Bool = false){
 #if BackpackerHire
         
         if iscomeFromAccept {
@@ -41,9 +43,16 @@ class HomeJobCVC: UICollectionViewCell {
             self.lbl_jobStatus.isHidden = false
             self.statusVw.isHidden = false
         }else{
-            self.lbl_AmountHeight.constant = 0.0
-            self.lbl_jobStatus.isHidden = true
-            self.statusVw.isHidden = true
+            if isComeForHiredetailpagee == true{
+                self.lbl_AmountHeight.constant = 20.0
+                self.lbl_jobStatus.isHidden = true
+                self.statusVw.isHidden = true
+            }else{
+                self.lbl_AmountHeight.constant = 0.0
+                self.lbl_jobStatus.isHidden = true
+                self.statusVw.isHidden = true
+            }
+            
         }
     
         #else
@@ -73,6 +82,6 @@ class HomeJobCVC: UICollectionViewCell {
            
        }
     @objc private func tapButtonTapped() {
-        onTap?()
+        onTap?(indexPath)
     }
 }

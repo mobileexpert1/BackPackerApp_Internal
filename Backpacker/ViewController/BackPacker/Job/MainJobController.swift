@@ -13,7 +13,25 @@ class MainJobController: UIViewController {
     
     @IBOutlet weak var containerVw: UIView!
     @IBOutlet weak var collVw: UICollectionView!
+#if BackpackerHire
+    let colArray = ["Job Post","Backpackers"]
+ 
+        let designationsJobs : [JobsDesignation] = [
+            JobsDesignation(Name: "Software Engineer", star: "5 Star",distance: "10 Km"),
+            JobsDesignation(Name: "UI/UX Designer", star: "2 Star",distance: "2 Km"),
+            JobsDesignation(Name: "Product Manager", star: "3 Star",distance: "5 Km"),
+            JobsDesignation(Name: "Data Analyst", star: "4 Star",distance: "10 Km"),
+            JobsDesignation(Name: "Mobile Developer", star: "5 Star",distance: "15 Km"),
+            JobsDesignation(Name: "QA Tester", star: "3 Star",distance: "10 Km"),
+            JobsDesignation(Name: "DevOps Engineer", star: "1 Star",distance: "25 Km"),
+            JobsDesignation(Name: "Project Coordinator", star: "22 Star",distance: "10 Km"),
+            JobsDesignation(Name: "Backend Developer", star: "4 Star",distance: "20 Km"),
+            JobsDesignation(Name: "Technical Lead", star: "4 Star",distance: "10 Km"),
+        ]
+#else
     let colArray = ["Jobs","Employer","Backpackers","Calendar","History"]
+#endif
+  
     var selectedIndex =  0
     
     override func viewDidLoad() {
@@ -75,7 +93,38 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
         // Load new VC from respective storyboard
         var storyboardName = ""
         var vcIdentifier = ""
+#if BackpackerHire
+        switch selectedIndex {
+        case 0:
+            storyboardName = "Job"
+            vcIdentifier = "JobCollectionVC"
+        case 1:
+            storyboardName = "Job"
+            vcIdentifier = "EmployerBackPackerListVC"
+        default:
+            return
+        }
         
+        if let newVC = loadViewController(from: storyboardName, identifier: vcIdentifier) {
+            // Pass data based on controller type
+                switch newVC {
+                case let listVC as JobCollectionVC:
+                    listVC.filteredDesignations = designationsJobs
+                    listVC.isSearchViewVisible = true
+                    
+                case let listVC as EmployerBackPackerListVC:
+                    listVC.iscomeFromEmployer = false
+                default:
+                    break
+                }
+
+                addChild(newVC)
+                newVC.view.frame = containerVw.bounds
+                containerVw.addSubview(newVC.view)
+                newVC.didMove(toParent: self)
+        }
+        
+        #else
         switch selectedIndex {
         case 0:
             storyboardName = "Home"
@@ -122,6 +171,9 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
                 containerVw.addSubview(newVC.view)
                 newVC.didMove(toParent: self)
         }
+        
+#endif
+       
     }
     
     func collectionView(_ collectionView: UICollectionView,

@@ -6,36 +6,24 @@
 //
 
 import UIKit
+import CoreLocation
+
 
 class AddNewAccomodationVC: UIViewController {
 
+    @IBOutlet weak var scroolHeight: NSLayoutConstraint!
     @IBOutlet weak var lbl_MainHeader: UILabel!
-    @IBOutlet weak var addressVw: CommonTxtFldLblVw!
-    @IBOutlet weak var nameVw: CommonTxtFldLblVw!
     
     @IBOutlet weak var tblVw: UITableView!
     
+   // @IBOutlet weak var tblHeight: NSLayoutConstraint!
     @IBOutlet weak var btn_Cancle: UIButton!
     @IBOutlet weak var btn_Save: UIButton!
     @IBOutlet weak var BgVwDescription: UIView!
     @IBOutlet weak var txtVwDescription: UITextView!
     @IBOutlet weak var lbl_description: UILabel!
     
-    @IBOutlet weak var lbl_Requirnement: UILabel!
     
-    @IBOutlet weak var bgVwRequirnment: UIView!
-    @IBOutlet weak var TxtVw_Requirnment: UITextView!
-    
-    
-    //VisaType Outlets
-    
-    @IBOutlet weak var lblSelecVisaType: UILabel!
-    @IBOutlet weak var tblHeight: NSLayoutConstraint!
-    
-    @IBOutlet weak var lbl_TitleVisaType: UILabel!
-    @IBOutlet weak var btnVisa: UIButton!
-    
-    @IBOutlet weak var BgVwVisa: UIView!
     //UploadImage outlets
     @IBOutlet weak var uploadedImage: UIImageView!
     @IBOutlet weak var mainBgVw: UIView!
@@ -44,28 +32,48 @@ class AddNewAccomodationVC: UIViewController {
     @IBOutlet weak var uploadImgVw: UIView!
     var mediaPicker: MediaPickerManager?
     
-    @IBOutlet weak var vWHeightContraint: NSLayoutConstraint!
-    @IBOutlet weak var BgVwTbl: UIView!
-    let visaTypes = [
-        "Tourist Visa",
-        "Business Visa",
-        "Student Visa",
-        "Work Visa",
-        "Transit Visa",
-        "Spouse/Partner Visa",
-        "Diplomatic Visa",
-        "Refugee Visa",
-        "Permanent Residency",
-        "Investor Visa"
-    ]
+    @IBOutlet weak var txtFldName: UITextField!
+    
+    @IBOutlet weak var txtFldPrice: UITextField!
+    @IBOutlet weak var headerPrice: UILabel!
+    @IBOutlet weak var headerFacilities: UILabel!
+    @IBOutlet weak var headerName: UILabel!
+    
+    @IBOutlet weak var txtFldAddress: UITextField!
+    @IBOutlet weak var valLocation: UILabel!
+    @IBOutlet weak var headerAddress: UILabel!
+    @IBOutlet weak var headerLocation: UILabel!
+    
+    @IBOutlet weak var BgVwName: UIView!
+    
+    @IBOutlet weak var BgVwLocation: UIView!
+    
+    @IBOutlet weak var BgVwPrice: UIView!
+    @IBOutlet weak var BgVwAddress: UIView!
+    var selectedFilterIndex: Int?
+    let filterArrya = ["Free Wifi","Swimming Pool","Parking"]
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.setupui()
-        self.manageHeightOfTable()
-        let nib = UINib(nibName: "ReportIssueTVC", bundle: nil)
-        self.tblVw.register(nib, forCellReuseIdentifier: "ReportIssueTVC")
+        let nib = UINib(nibName: "FacilityTVC", bundle: nil)
+        self.tblVw.register(nib, forCellReuseIdentifier: "FacilityTVC")
         self.tblVw.delegate = self
         self.tblVw.dataSource = self
+        tblVw.isScrollEnabled = false
+        tblVw.rowHeight = 30
+          tblVw.estimatedRowHeight = 0
+          tblVw.tableHeaderView = UIView()
+          tblVw.tableFooterView = UIView()
+        txtFldAddress.isUserInteractionEnabled = false
+          tblVw.reloadData()
+
+          DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+              self.tblVw.layoutIfNeeded()
+              self.scroolHeight.constant = self.tblVw.contentSize.height
+              self.view.layoutIfNeeded()
+          }
+
+        self.setupui()
+        self.setUpTxtFlds()
     }
     
     @IBAction func action_Back(_ sender: Any) {
@@ -73,54 +81,108 @@ class AddNewAccomodationVC: UIViewController {
     }
     
     private func setupui(){
-        self.btnVisa.tag = 0
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
-        self.nameVw.setTitleLabel("Name")
-        self.nameVw.setPlaceholder("Name")
-        self.nameVw.lblErrorVisibility(val: true)
-        self.addressVw.setTitleLabel("Address")
-        self.addressVw.setPlaceholder("Address")
-        self.addressVw.lblErrorVisibility(val: true)
-        self.nameVw.txtFld.delegate = self
-        self.addressVw.txtFld.delegate = self
         self.txtVwDescription.delegate = self
-        self.TxtVw_Requirnment.delegate = self
-        self.nameVw.setError("dfs")
-        self.addressVw.setError("sffjl")
         self.lbl_description.font = FontManager.inter(.medium, size: 14.0)
-        self.lbl_Requirnement.font = FontManager.inter(.medium, size: 14.0)
-        self.lbl_TitleVisaType.font = FontManager.inter(.medium, size: 14.0)
-        self.lblSelecVisaType.font = FontManager.inter(.regular, size: 14.0)
         self.lbl_UploadImg.font = FontManager.inter(.medium, size: 13.0)
-        
-        
-        self.bgVwRequirnment.layer.cornerRadius = 10.0
-        self.bgVwRequirnment.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        self.bgVwRequirnment.layer.borderWidth = 1.0
-        
         self.BgVwDescription.layer.cornerRadius = 10.0
         self.BgVwDescription.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
         self.BgVwDescription.layer.borderWidth = 1.0
-        self.BgVwVisa.layer.cornerRadius = 10.0
-        self.BgVwVisa.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        self.BgVwVisa.layer.borderWidth = 1.0
         self.addDottedBorder(to: self.mainBgVw, color: UIColor(hex: "#93A3C3"), cornerRadius: 10)
         applyGradientButtonStyle(to: self.btn_Save)
+        
+        headerName.font = FontManager.inter(.medium, size: 14.0)
+        headerLocation.font = FontManager.inter(.medium, size: 14.0)
+        headerAddress.font = FontManager.inter(.medium, size: 14.0)
+        headerFacilities.font = FontManager.inter(.medium, size: 14.0)
+        headerPrice.font = FontManager.inter(.medium, size: 14.0)
+        
+        BgVwName.layer.cornerRadius = 10.0
+        BgVwName.layer.borderWidth = 1.0
+        BgVwName.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        
+        BgVwName.layer.cornerRadius = 10.0
+        BgVwName.layer.borderWidth = 1.0
+        BgVwName.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        
+        BgVwName.layer.cornerRadius = 10.0
+        BgVwName.layer.borderWidth = 1.0
+        BgVwName.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        
+        BgVwName.layer.cornerRadius = 10.0
+        BgVwName.layer.borderWidth = 1.0
+        BgVwName.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        
+        BgVwName.layer.cornerRadius = 10.0
+        BgVwName.layer.borderWidth = 1.0
+        BgVwName.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        
+        BgVwLocation.layer.cornerRadius = 10.0
+        BgVwLocation.layer.borderWidth = 1.0
+        BgVwLocation.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        
+        BgVwAddress.layer.cornerRadius = 10.0
+        BgVwAddress.layer.borderWidth = 1.0
+        BgVwAddress.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        
+        
+        BgVwPrice.layer.cornerRadius = 10.0
+        BgVwPrice.layer.borderWidth = 1.0
+        BgVwPrice.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        
+        
     }
-    
+    func setUpTxtFlds(){
+        if valLocation.text == "Current Location"{
+            valLocation.textColor = UIColor(hex: "#9D9D9D")
+        }else{
+            valLocation.textColor = UIColor(hex: "#9D9D9D")
+        }
+        
+        txtFldName.attributedPlaceholder = NSAttributedString(
+                   string: "Name",
+                   attributes: [
+                    .foregroundColor: UIColor(hex: "#9D9D9D"),
+                       .font: FontManager.inter(.regular, size: 14.0)
+                   ])
+        
+        
+        txtFldName.delegate = self
+        
+        txtFldPrice.attributedPlaceholder = NSAttributedString(
+                   string: "Price",
+                   attributes: [
+                    .foregroundColor: UIColor(hex: "#9D9D9D"),
+                       .font: FontManager.inter(.regular, size: 14.0)
+                   ])
+        
+        
+        txtFldPrice.delegate = self
+        
+        
+        txtFldAddress.attributedPlaceholder = NSAttributedString(
+                   string: "Address",
+                   attributes: [
+                    .foregroundColor: UIColor(hex: "#9D9D9D"),
+                       .font: FontManager.inter(.regular, size: 14.0)
+                   ])
+        
+        
+        txtFldAddress.delegate = self
+    }
+   
    
     
-    
-    @IBAction func action_BtnAssignBackpacker(_ sender: Any) {
-        if self.btnVisa.tag == 0{
-            self.btnVisa.tag = 1
-        }else{
-            self.btnVisa.tag = 0
+    @IBAction func action_Location(_ sender: Any) {
+        
+        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
+            settingVC.delegate = self
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("❌ Could not instantiate SettingVC")
         }
-        self.manageHeightOfTable()
     }
-    
-    
     
     
     func addDottedBorder(to view: UIView, color: UIColor = .black, cornerRadius: CGFloat = 8.0) {
@@ -164,43 +226,38 @@ class AddNewAccomodationVC: UIViewController {
 
 extension AddNewAccomodationVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return visaTypes.count
+        return filterArrya.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ReportIssueTVC", for: indexPath) as? ReportIssueTVC else {
-            return UITableViewCell()
-        }
 
-        cell.lbl_Issue.text = visaTypes[indexPath.row] // assuming your cell has `lbl_title`
-        return cell
+             let cell = tableView.dequeueReusableCell(withIdentifier: "FacilityTVC", for: indexPath) as! FacilityTVC
+             cell.lblTitle.text = filterArrya[indexPath.row]
+             
+             if selectedFilterIndex == indexPath.row {
+                 cell.imgCheckBox.image = UIImage(named: "Checkbox2")
+             } else {
+                 cell.imgCheckBox.image = UIImage(named: "Checkbox")
+             }
+             return cell
+
+     
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedIssue = visaTypes[indexPath.row]
-            print("Selected issue: \(selectedIssue)")
-        self.lblSelecVisaType.text = selectedIssue
-        self.btnVisa.tag = 0
-        self.manageHeightOfTable()
-
+                // Toggle selection for filter section
+                if selectedFilterIndex == indexPath.row {
+                    selectedFilterIndex = nil // unselect
+                } else {
+                    selectedFilterIndex = indexPath.row // select new
+                }
+          
+            
+        tblVw.reloadSections(IndexSet(integer: indexPath.section), with: .none)
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50.0
+        return 30.0
     }
-    func manageHeightOfTable(){
-        if self.btnVisa.tag == 0{
-            self.tblHeight.constant = 0.0
-            self.vWHeightContraint.constant = 0.0
-            self.BgVwTbl.layer.cornerRadius = 0.0
-            self.BgVwTbl.layer.borderColor = UIColor.clear.cgColor
-                self.BgVwTbl.layer.borderWidth = 0.0
-        }else{
-            self.BgVwTbl.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-            self.BgVwTbl.layer.cornerRadius = 10.0
-                self.BgVwTbl.layer.borderWidth = 1.0
-            self.tblHeight.constant = 176.0
-            self.vWHeightContraint.constant = 190.0
-        }
-    }
+   
 }
 extension AddNewAccomodationVC: UITextFieldDelegate, UITextViewDelegate {
 
@@ -218,4 +275,13 @@ extension AddNewAccomodationVC: UITextFieldDelegate, UITextViewDelegate {
         }
         return true
     }
+}
+
+
+extension AddNewAccomodationVC : SetLocationDelegate{
+    func didSelectLocation(locationName: String, fullAddress: String, coordinate: CLLocationCoordinate2D) {
+        valLocation.text = locationName
+        txtFldAddress.text = fullAddress
+           print("Lat: \(coordinate.latitude), Long: \(coordinate.longitude)")
+       }
 }

@@ -4,15 +4,13 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
         <!--Main Tab Bar Emp Controller-->
         <scene sceneID="M64-Ra-VON">
             <objects>
-                <tabBarController storyboardIdentifier="MainTabBarEmpController" id="pD9-XK-eMg" customClass="MainTabBarEmpController" customModule="BackpackerHire" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="MainTabBarEmpController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="pD9-XK-eMg" customClass="MainTabBarEmpController" customModule="BackpackerHire" customModuleProvider="target" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="1EK-pm-YKq">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -100,22 +98,6 @@
             </objects>
             <point key="canvasLocation" x="1427" y="-62"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="Gmw-6X-UQC">
-            <objects>
-                <viewController id="udQ-tr-oWH" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="fr6-1y-3cN">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="4Ys-qc-iix"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="1DV-9z-UkX"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="e6h-r4-vTX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1018" y="839"/>
-        </scene>
         <!--Jobs-->
         <scene sceneID="oHz-Eo-3Gx">
             <objects>
@@ -127,12 +109,22 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="udQ-tr-oWH" kind="relationship" relationship="rootViewController" id="EJH-dY-qei"/>
+                        <segue destination="89y-W8-1Ht" kind="relationship" relationship="rootViewController" id="6VA-aU-IQX"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GlI-6X-Efu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="166" y="839"/>
+        </scene>
+        <!--MainJobController-->
+        <scene sceneID="550-Pa-ZCa">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Job" referencedIdentifier="MainJobController" id="89y-W8-1Ht" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="YJY-cc-2Ap"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Y59-5C-Pwy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1641" y="837"/>
         </scene>
         <!--Settings-->
         <scene sceneID="BMM-3f-7hs">
@@ -168,8 +160,5 @@
         <image name="Home" width="24" height="24"/>
         <image name="Job Seeker" width="22.666666030883789" height="17"/>
         <image name="Setting" width="26" height="26"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
     </resources>
 </document>

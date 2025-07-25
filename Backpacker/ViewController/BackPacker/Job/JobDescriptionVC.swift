@@ -21,6 +21,7 @@ class JobDescriptionVC: UIViewController {
     
     @IBOutlet weak var lblTitle: UILabel!
     
+    @IBOutlet weak var segmentHeight: NSLayoutConstraint!
     @IBOutlet weak var lbl_Address: UILabel!
     
     @IBOutlet weak var lbl_Time: UILabel!
@@ -37,6 +38,15 @@ class JobDescriptionVC: UIViewController {
            self.setUPBtns()
            self.showChild(firstVC)
         // Do any additional setup after loading the view.
+#if Backapacker
+        
+        self.segmentHeight.constant = 50.0
+        #else
+        
+        self.segmentHeight.constant = 0.0
+        self.lbl_Description.isHidden = true
+        self.lblEmployer.isHidden = true
+#endif
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
