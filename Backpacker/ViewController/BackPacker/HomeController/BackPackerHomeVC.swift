@@ -31,6 +31,15 @@ class BackPackerHomeVC: UIViewController {
         self.homeTblVw.register(nib3, forCellReuseIdentifier: "EmployerJobTVC")
         homeTblVw.register(UINib(nibName: "HomeHeaderView", bundle: nil),
                             forHeaderFooterViewReuseIdentifier: "HomeHeaderView")
+        txtFldVw.attributedPlaceholder = NSAttributedString(
+                   string: "Search",
+                   attributes: [
+                    .foregroundColor: UIColor.black,
+                       .font: FontManager.inter(.regular, size: 14.0)
+                   ])
+        
+        
+        txtFldVw.delegate = self
     }
     
     func setUpUI(){
@@ -50,7 +59,25 @@ class BackPackerHomeVC: UIViewController {
         self.txtFldVw.delegate = self
     }
     
-
+    @IBAction func action_Chat(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Chat", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("❌ Could not instantiate SettingVC")
+        }
+        
+    }
+    @IBAction func action_Notification(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "NotificationVC") as? NotificationVC {
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("❌ Could not instantiate SettingVC")
+        }
+        
+    }  
+    
 }
 extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
     
@@ -71,8 +98,8 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                    }
 
                    cell.ads = [
-                    Advertisement(name: "Hotel Paradise", address: "New York", image: UIImage(named: "advertiesment")!),
-                    Advertisement(name: "Dream Stay", address: "Los Angeles", image: UIImage(named: "advertiesment")!),
+                    Advertisement(name: "Flat 50%", address: "New York", image: UIImage(named: "advertiesment")!),
+                    Advertisement(name: "Flat 70%", address: "Los Angeles", image: UIImage(named: "advertiesment")!),
                        // Add more...
                    ]
 

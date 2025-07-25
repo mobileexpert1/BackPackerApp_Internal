@@ -69,6 +69,12 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                 cell.onAddAccommodation = { [weak self] in
                     self?.moveToAddAccomodationVC()
                 }
+            
+            cell.onTapAcceptJob = { index in
+                print("Tapped index total: \(index)")
+                self.HandleNavigationforAcceptDelinedJob(in: index)
+            }
+
             return cell
         }else{
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmployerJobTVC", for: indexPath) as? EmployerJobTVC else {
@@ -142,5 +148,21 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         print("Button tapped in section \(section)")
     }
     
-    
+    private func HandleNavigationforAcceptDelinedJob(in index: Int) {
+        print("Button tapped in section \(index)")
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let accVC = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
+            accVC.isComeFromAcceptDeclineJobs = true
+            if index == 0 {
+                accVC.selectedIndexHeader = 0
+            }else if index == 1{
+                accVC.selectedIndexHeader = 1
+            }else{
+                accVC.selectedIndexHeader = 0
+            }
+            self.navigationController?.pushViewController(accVC, animated: true)
+        } else {
+            print("❌ Could not instantiate AddNewAccomodationVC")
+        }
+    }
 }

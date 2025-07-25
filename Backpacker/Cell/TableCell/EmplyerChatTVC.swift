@@ -10,11 +10,9 @@ import UIKit
 class EmplyerChatTVC: UITableViewCell {
 
     @IBOutlet weak var TimeLbl_Height: NSLayoutConstraint!
-    @IBOutlet weak var imgWidth: NSLayoutConstraint!
     @IBOutlet weak var lbl_Time: UILabel!
     @IBOutlet weak var txtLbl: UILabel!
     @IBOutlet weak var msgVw: UIView!
-    @IBOutlet weak var img_profile: UIImageView!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -36,27 +34,27 @@ class EmplyerChatTVC: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func handleApeearcnceForImage(isShow: Bool = true){
-        if isShow  == false {
-            self.imgWidth.constant = 45.0
-            self.TimeLbl_Height.constant = 20.0
-        }else{
-            self.imgWidth.constant = 0.0
-            self.TimeLbl_Height.constant = 0.0
-        }
-       
-    }
+//    func handleApeearcnceForImage(isShow: Bool = true){
+//        if isShow  == false {
+//            self.imgWidth.constant = 45.0
+//            self.TimeLbl_Height.constant = 20.0
+//        }else{
+//            self.imgWidth.constant = 0.0
+//            self.TimeLbl_Height.constant = 0.0
+//        }
+//       
+//    }
     func handleApeearcnceForLblTime(){
         self.TimeLbl_Height.constant = 0.0
     }
-    func handleAppearanceForImage(isShow: Bool) {
-        if isShow  == true {
-            self.imgWidth.constant = 45.0
-            self.TimeLbl_Height.constant = 20.0
-        }else{
-            self.imgWidth.constant = 0.0
-            self.TimeLbl_Height.constant = 0.0
-        }
-        //Latest Comit
-    }
+//    func handleAppearanceForImage(isShow: Bool) {
+//        if isShow  == true {
+//            self.imgWidth.constant = 45.0
+//            self.TimeLbl_Height.constant = 20.0
+//        }else{
+//            self.imgWidth.constant = 0.0
+//            self.TimeLbl_Height.constant = 0.0
+//        }
+//        //Latest Comit
+//    }
 }

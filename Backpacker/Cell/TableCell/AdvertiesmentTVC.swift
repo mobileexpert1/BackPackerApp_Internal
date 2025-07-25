@@ -57,8 +57,6 @@ extension AdvertiesmentTVC: UICollectionViewDelegate, UICollectionViewDataSource
         }
         let ad = ads[indexPath.item]
         cell.lbl_Name.text = ad.name
-        cell.lbl_Address.text = ad.address
-     //   cell.imageVw.image = ad.image
         return cell
     }
 

@@ -16,13 +16,46 @@ class HomeJobCVC: UICollectionViewCell {
     @IBOutlet weak var lbl_Title: UILabel!
     @IBOutlet weak var mainView: UIView!
    
+    @IBOutlet weak var lblAmount: UILabel!
+    @IBOutlet weak var tap_Button: UIButton!
     @IBOutlet weak var lbl_SubTitle: UILabel!
+    // Closure to handle tap
+    @IBOutlet weak var lbl_AmountHeight: NSLayoutConstraint!  // 20 in UI
+    
+    @IBOutlet weak var statusVw: UIView!
+    @IBOutlet weak var lbl_jobStatus: UILabel!
+    var onTap: (() -> Void)?
+    var isComeFormAccpetedJobs : Bool = false
     override func awakeFromNib() {
            super.awakeFromNib()
            setupUI()
-       }
+        tap_Button.addTarget(self, action: #selector(tapButtonTapped), for: .touchUpInside)
+        
 
+       }
+    func setUpUI(iscomeFromAccept : Bool = false){
+#if BackpackerHire
+        
+        if iscomeFromAccept {
+            self.lbl_AmountHeight.constant = 20.0
+            self.lbl_jobStatus.isHidden = false
+            self.statusVw.isHidden = false
+        }else{
+            self.lbl_AmountHeight.constant = 0.0
+            self.lbl_jobStatus.isHidden = true
+            self.statusVw.isHidden = true
+        }
+    
+        #else
+        self.lbl_AmountHeight.constant = 0.0
+        self.lbl_jobStatus.isHidden = true
+        self.statusVw.isHidden = true
+        
+#endif
+    }
        private func setupUI() {
+           self.lbl_jobStatus.font = FontManager.inter(.medium, size: 10.0)
+           self.lblAmount.font = FontManager.inter(.medium, size: 12.0)
            lbl_Title.font = FontManager.inter(.medium, size: 14.0)
            lbl_Address.font = FontManager.inter(.regular, size: 12.0)
            lbl_duration.font = FontManager.inter(.regular, size: 10.0)
@@ -39,4 +72,7 @@ class HomeJobCVC: UICollectionViewCell {
            duration_Vw.clipsToBounds = true
            
        }
+    @objc private func tapButtonTapped() {
+        onTap?()
+    }
 }

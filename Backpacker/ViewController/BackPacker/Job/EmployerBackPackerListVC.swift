@@ -54,16 +54,19 @@ extension EmployerBackPackerListVC : UITableViewDelegate,UITableViewDataSource{
         }
         print("iscomeForm",iscomeFromEmployer)
         cell.setupConstraint(iscomeFormEmloyeeee: iscomeFromEmployer)
-        // Configure your cell here
-        // Example:
-        // cell.titleLabel.text = "Employee \(indexPath.row + 1)"
         
         return cell
     }
     
-//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-//        return 80
-//    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+           if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "EmployerDetailVC") as? EmployerDetailVC {
+               jobDescriptionVC.isComeFrom = iscomeFromEmployer
+               // Optional: pass selected job title
+               self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+           }
+    }
+    
 }
 
 

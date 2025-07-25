@@ -19,6 +19,15 @@ class MainJobCVC: UICollectionViewCell {
     // MARK: - Helper Methods
     func showBottomView(_ show: Bool) {
             bottomVw.isHidden = !show
+        if show {
+            bottomVw.backgroundColor = .black
+            self.title_header.textColor = .black
+            self.title_header.font = FontManager.inter(.semiBold, size: 14.0)
+        }else{
+            bottomVw.backgroundColor = UIColor(hex: "#9E9E9E")
+            self.title_header.textColor = UIColor(hex: "#9E9E9E")
+            self.title_header.font = FontManager.inter(.regular, size: 14.0)
+        }
         }
     
     

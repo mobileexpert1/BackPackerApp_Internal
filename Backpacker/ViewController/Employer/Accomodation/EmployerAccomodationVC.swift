@@ -9,7 +9,6 @@ import UIKit
 
 class EmployerAccomodationVC: UIViewController {
 
-    @IBOutlet weak var lbl_sortBy: UILabel!
     @IBOutlet weak var coollVw: UICollectionView!
     @IBOutlet weak var txtFld_Search: UITextField!
     @IBOutlet weak var searchBgVw: UIView!
@@ -33,14 +32,6 @@ class EmployerAccomodationVC: UIViewController {
     var filteredDesignations: [String] = []
     override func viewDidLoad() {
         super.viewDidLoad()
-#if Backapacker
-        self.filterImgWidth.constant = 35.0
-        self.lbl_sortBy.isHidden = false
-        self.lbl_sortBy.font = FontManager.inter(.medium, size: 14.0)
-        #else
-        self.filterImgWidth.constant = 0.0
-        self.lbl_sortBy.isHidden = true
-#endif
         self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.searchBgVw.layer.borderColor = UIColor.black.cgColor
         self.searchBgVw.layer.borderWidth = 1.0
@@ -58,7 +49,7 @@ class EmployerAccomodationVC: UIViewController {
                 .font:FontManager.inter(.regular, size: 14.0)
             ]
         )
-
+        txtFld_Search.delegate = self
         filteredDesignations = hotels  // Initialize with full data
         txtFld_Search.addTarget(self, action: #selector(searchTextChanged), for: .editingChanged)
     }
@@ -75,7 +66,11 @@ class EmployerAccomodationVC: UIViewController {
     }
 
     @IBAction func action_Sort(_ sender: Any) {
-        
+        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "FilterVC")
+        vc.modalPresentationStyle = .overFullScreen
+        self.present(vc, animated: true, completion: nil)
+
         
     }
 }
@@ -91,6 +86,9 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
         }
         cell.lbl_Title.text = filteredDesignations[indexPath.row]
         return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+       
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -129,4 +127,11 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
             print("❌ Could not instantiate SettingVC")
         }
     }
+}
+extension EmployerAccomodationVC : UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+          textField.resignFirstResponder()
+          print("Search for: \(textField.text ?? "")")
+          return true
+      }
 }

@@ -131,3 +131,11 @@ class NotificationManager {
     }
 }
 
+class AppState {
+    static let shared = AppState()  // Singleton instance
+
+    private init() {} // Prevent external initialization
+
+    // Example stored variable
+    var selectedJobIndex: Int = 0
+}

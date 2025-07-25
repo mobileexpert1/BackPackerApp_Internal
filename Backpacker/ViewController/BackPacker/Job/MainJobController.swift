@@ -23,15 +23,15 @@ class MainJobController: UIViewController {
         collVw.dataSource = self
         collVw.scrollToItem(at: IndexPath(item: selectedIndex, section: 0), at: .centeredHorizontally, animated: false)
         self.title_Header.font = FontManager.inter(.semiBold, size: 16.0)
-       
+        selectedIndex  =  AppState.shared.selectedJobIndex
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         collVw.reloadData()
           // Select and trigger index 0 after reload
-          DispatchQueue.main.async {
-              let defaultIndexPath = IndexPath(item: 0, section: 0)
+        DispatchQueue.main.async { [self] in
+              let defaultIndexPath = IndexPath(item: selectedIndex, section: 0)
               self.collVw.selectItem(at: defaultIndexPath, animated: false, scrollPosition: [])
               self.collectionView(self.collVw, didSelectItemAt: defaultIndexPath)
           }
@@ -57,7 +57,7 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let previousIndex = selectedIndex
         selectedIndex = indexPath.item
-        
+        AppState.shared.selectedJobIndex = selectedIndex
         let indexesToReload = [
             IndexPath(item: previousIndex, section: 0),
             IndexPath(item: selectedIndex, section: 0)

@@ -14,6 +14,9 @@ class HomeTVC: UITableViewCell {
     var tableSection: Int = 0
     var onAddAccommodation: (() -> Void)?
     var isComeFromJob : Bool = false
+    var onTap: (() -> Void)?
+    var onTapAcceptJob: ((Int) -> Void)?
+
     override func awakeFromNib() {
         super.awakeFromNib()
         self.preservesSuperviewLayoutMargins = false
@@ -78,6 +81,16 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JobCountCVC", for: indexPath) as? JobCountCVC else {
                     return UICollectionViewCell()
                 }
+                if indexPath.item == 0{
+                    cell.lbl_Count.text = "20"
+                    cell.lbl_title.text = "Total Job Offer"
+                }else if indexPath.item == 1{
+                    cell.lbl_Count.text = "12"
+                    cell.lbl_title.text = "Declined"
+                }else if indexPath.item == 2{
+                    cell.lbl_Count.text = "8"
+                    cell.lbl_title.text = "Accepted"
+                }
               //  let item = items[indexPath.item]
                 // cell.titleLabel.text = item
               
@@ -114,13 +127,37 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
                 return UICollectionViewCell()
             }
+            cell.onTap = { [weak self] in
+                  guard let self = self else { return }
+                  print("Cell tapped at index: \(indexPath.item)")
+                  // Navigate or perform any action
+                self.onTap?()
+              }
             // Assign item to your label/image inside the cell
             // cell.titleLabel.text = item
+            cell.setUpUI(iscomeFromAccept: false)
             return cell
         }
       
 #endif
        
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+#if Backapacker
+        
+        #else
+        if tableSection == 0 {
+            if indexPath.item == 0{
+                self.onTapAcceptJob?(0)
+            }else if indexPath.item == 1{
+                self.onTapAcceptJob?(1)
+            }else if indexPath.item == 2{
+                self.onTapAcceptJob?(2)
+            }
+        }
+        
+#endif
     }
     // Size of each item (4 per row)
     func collectionView(_ collectionView: UICollectionView,

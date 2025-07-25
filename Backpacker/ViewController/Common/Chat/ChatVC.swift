@@ -135,7 +135,6 @@ extension ChatVC: UITableViewDelegate, UITableViewDataSource {
             }
             cell.txtLbl.text = chat.message
             cell.lbl_Time.text = chat.time
-            cell.handleAppearanceForImage(isShow: shouldShowImage) // <- implement this
             return cell
         }
     }

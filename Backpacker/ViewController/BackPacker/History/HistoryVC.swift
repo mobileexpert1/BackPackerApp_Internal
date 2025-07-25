@@ -64,6 +64,12 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
             return UICollectionViewCell()
         }
         cell.lbl_Title.text = filteredDesignations[indexPath.row]
+#if Backapacker
+        cell.setUpUI(iscomeFromAccept: false)
+        
+#else
+        cell.setUpUI(iscomeFromAccept: true)
+#endif
         return cell
     }
     

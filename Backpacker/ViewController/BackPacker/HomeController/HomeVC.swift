@@ -34,14 +34,6 @@ class HomeVC: UIViewController {
     //HeaderOutLets
     @IBOutlet weak var Vw_Chat: UIView!
     
-//    @IBOutlet weak var mainVw_Settings: UIView!
-//    @IBOutlet weak var lbl_BckPAcker: UILabel!
-//    
-//    @IBOutlet weak var mainVew_Notification: UIView!
-//    @IBOutlet weak var Vw_Ntification: UIView!
-//    
-//    @IBOutlet weak var lbl_Notification: UILabel!
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -126,6 +118,13 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         let sectionItems = itemsPerSection[indexPath.section]
         cell.configure(with: sectionItems,section: indexPath.section)
         cell.isComeFromJob = true
+        cell.onTap = { [weak self] in
+                guard let self = self else { return }
+                print("Cell tapped at index: \(indexPath.item)")
+                // Navigate or perform any action
+            self.navigateToDescriptionVC()
+            }
+
         return cell
     }
     
@@ -170,5 +169,14 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     }
     private func handleHeaderButtonTap(in section: Int) {
         print("Button tapped in section \(section)")
+    }
+    
+    private func navigateToDescriptionVC(){
+        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+           if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
+               
+               // Optional: pass selected job title
+               self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+           }
     }
 }

@@ -134,22 +134,6 @@
             </objects>
             <point key="canvasLocation" x="166" y="839"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="idb-6y-TOU">
-            <objects>
-                <viewController id="aJ0-HX-CR5" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="paG-lu-bwe">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <viewLayoutGuide key="safeArea" id="4kz-Tp-93i"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="1bO-Hr-hLl"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="VkH-6R-ZId" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1105" y="1625"/>
-        </scene>
         <!--Settings-->
         <scene sceneID="BMM-3f-7hs">
             <objects>
@@ -161,12 +145,22 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="aJ0-HX-CR5" kind="relationship" relationship="rootViewController" id="EXk-P9-XnG"/>
+                        <segue destination="ocM-s9-gsh" kind="relationship" relationship="rootViewController" id="m0c-Va-CxT"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rO6-j4-Mo7" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="166" y="1625"/>
+        </scene>
+        <!--SettingVC-->
+        <scene sceneID="r6h-E3-R9e">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Setting" referencedIdentifier="SettingVC" id="ocM-s9-gsh" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="Yiy-XS-HVa"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ks2-Hr-w5p" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1371" y="1654"/>
         </scene>
     </scenes>
     <resources>

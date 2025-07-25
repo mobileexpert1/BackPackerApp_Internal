@@ -24,21 +24,8 @@
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New York, USA" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bUE-Pm-G6K">
-                        <rect key="frame" x="35" y="153.33333333333334" width="299" height="15.666666666666657"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="white_Address" translatesAutoresizingMaskIntoConstraints="NO" id="gr9-mf-Vn0">
-                        <rect key="frame" x="15" y="155" width="12" height="12"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="12" id="5mT-wM-igi"/>
-                            <constraint firstAttribute="height" constant="12" id="Izb-RM-ilo"/>
-                        </constraints>
-                    </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New York Marriot Marquis" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pn8-kX-e1Z">
-                        <rect key="frame" x="15" y="129" width="312" height="19.333333333333343"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Flat 50%" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pn8-kX-e1Z">
+                        <rect key="frame" x="15" y="81.333333333333329" width="312" height="19.333333333333329"/>
                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="16"/>
                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
@@ -47,15 +34,11 @@
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <constraints>
-                <constraint firstItem="bUE-Pm-G6K" firstAttribute="leading" secondItem="gr9-mf-Vn0" secondAttribute="trailing" constant="8" id="AKl-ad-Cyl"/>
-                <constraint firstAttribute="trailing" secondItem="bUE-Pm-G6K" secondAttribute="trailing" constant="8" id="NZn-b7-UH0"/>
                 <constraint firstItem="MFW-La-8ZD" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="2" id="VSX-dD-mRr"/>
                 <constraint firstAttribute="bottom" secondItem="MFW-La-8ZD" secondAttribute="bottom" constant="2" id="Y2D-dG-uih"/>
                 <constraint firstAttribute="trailing" secondItem="MFW-La-8ZD" secondAttribute="trailing" constant="2" id="YJm-WT-QoY"/>
-                <constraint firstItem="bUE-Pm-G6K" firstAttribute="top" secondItem="pn8-kX-e1Z" secondAttribute="bottom" constant="5" id="eiH-PH-wZ0"/>
-                <constraint firstAttribute="bottom" secondItem="gr9-mf-Vn0" secondAttribute="bottom" constant="15" id="fqf-t4-9nU"/>
-                <constraint firstItem="gr9-mf-Vn0" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="15" id="hsv-9n-t86"/>
-                <constraint firstItem="bUE-Pm-G6K" firstAttribute="centerY" secondItem="gr9-mf-Vn0" secondAttribute="centerY" id="l8H-6m-vgD"/>
+                <constraint firstItem="pn8-kX-e1Z" firstAttribute="centerX" secondItem="MFW-La-8ZD" secondAttribute="centerX" id="Zoa-ZK-a1o"/>
+                <constraint firstItem="pn8-kX-e1Z" firstAttribute="centerY" secondItem="MFW-La-8ZD" secondAttribute="centerY" id="iUG-59-AhT"/>
                 <constraint firstItem="MFW-La-8ZD" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="2" id="rMS-gg-7zq"/>
                 <constraint firstAttribute="trailing" secondItem="pn8-kX-e1Z" secondAttribute="trailing" constant="15" id="uSb-6H-Udt"/>
                 <constraint firstItem="pn8-kX-e1Z" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="15" id="wBo-1I-BvD"/>
@@ -63,7 +46,6 @@
             <size key="customSize" width="342" height="182"/>
             <connections>
                 <outlet property="imageVw" destination="MFW-La-8ZD" id="Zbp-s2-FS3"/>
-                <outlet property="lbl_Address" destination="bUE-Pm-G6K" id="GsR-PC-W0o"/>
                 <outlet property="lbl_Name" destination="pn8-kX-e1Z" id="jy4-cF-vWT"/>
             </connections>
             <point key="canvasLocation" x="187.78625954198472" y="34.507042253521128"/>
@@ -71,6 +53,5 @@
     </objects>
     <resources>
         <image name="advertiesment" width="368" height="160"/>
-        <image name="white_Address" width="10" height="13"/>
     </resources>
 </document>

@@ -12,6 +12,7 @@ class JobCountCVC: UICollectionViewCell {
     @IBOutlet weak var lbl_title: UILabel!
     @IBOutlet weak var lbl_Count: UILabel!
     @IBOutlet weak var mainBgVw: UIView!
+    var onAddAccommodationTapped: (() -> Void)?
     override func awakeFromNib() {
         super.awakeFromNib()
         self.setUpFonts()

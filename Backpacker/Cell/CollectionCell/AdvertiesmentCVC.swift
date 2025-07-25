@@ -18,8 +18,7 @@ class AdvertiesmentCVC: UICollectionViewCell {
         self.setUpUI()
     }
     private func setUpUI(){
-        self.lbl_Name.font = FontManager.inter(.semiBold, size: 16.0)
-        self.lbl_Address.font = FontManager.inter(.regular, size: 12.0)
+        self.lbl_Name.font = FontManager.inter(.semiBold, size: 24.0)
     }
 }
 struct Advertisement {
