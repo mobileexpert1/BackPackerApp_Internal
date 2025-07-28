@@ -16,6 +16,7 @@ class EmployerAccomodationVC: UIViewController {
     
     @IBOutlet weak var filterImgWidth: NSLayoutConstraint!
     
+    @IBOutlet weak var btn_AddAccomodation: UIButton!
     let hotels = [
         "Little National Hotel Sydney",
         "Dorsett Melbourne",
@@ -32,6 +33,14 @@ class EmployerAccomodationVC: UIViewController {
     var filteredDesignations: [String] = []
     override func viewDidLoad() {
         super.viewDidLoad()
+#if BackpackerHire
+        self.btn_AddAccomodation.isHidden = false
+        self.btn_AddAccomodation.isUserInteractionEnabled = true
+#else
+        self.btn_AddAccomodation.isHidden = true
+        self.btn_AddAccomodation.isUserInteractionEnabled = false
+#endif
+        self.btn_AddAccomodation.titleLabel?.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.searchBgVw.layer.borderColor = UIColor.black.cgColor
         self.searchBgVw.layer.borderWidth = 1.0
@@ -65,6 +74,14 @@ class EmployerAccomodationVC: UIViewController {
         coollVw.reloadData()
     }
 
+    @IBAction func action_AdddNewAccomodation(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+        if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewAccomodationVC") as? AddNewAccomodationVC {
+            self.navigationController?.pushViewController(accVC, animated: true)
+        } else {
+            print("❌ Could not instantiate AddNewAccomodationVC")
+        }
+    }
     @IBAction func action_Sort(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "FilterVC")
@@ -88,7 +105,12 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-       
+        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+        if let accVC = storyboard.instantiateViewController(withIdentifier: "AccomodationDetailVC") as? AccomodationDetailVC {
+            self.navigationController?.pushViewController(accVC, animated: true)
+        } else {
+            print("❌ Could not instantiate AddNewAccomodationVC")
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -127,6 +149,8 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
             print("❌ Could not instantiate SettingVC")
         }
     }
+    
+    
 }
 extension EmployerAccomodationVC : UITextFieldDelegate{
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

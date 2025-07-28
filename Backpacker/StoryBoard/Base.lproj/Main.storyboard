@@ -545,6 +545,141 @@ phone number </string>
             </objects>
             <point key="canvasLocation" x="2303.0534351145038" y="-26.056338028169016"/>
         </scene>
+        <!--Choose Role TypeVC-->
+        <scene sceneID="nMy-sr-bcK">
+            <objects>
+                <viewController storyboardIdentifier="ChooseRoleTypeVC" id="hBp-WU-sbg" customClass="ChooseRoleTypeVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="wu8-RS-iE2">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Role" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ngY-2K-ehd">
+                                <rect key="frame" x="153.66666666666666" y="69" width="85.666666666666657" height="20.333333333333329"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fLt-l1-Imj">
+                                <rect key="frame" x="12" y="59" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="Iau-i3-wgO"/>
+                                    <constraint firstAttribute="height" constant="40" id="uFA-Og-1TK"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="Back Arrow"/>
+                                <connections>
+                                    <action selector="action_Back:" destination="hBp-WU-sbg" eventType="touchUpInside" id="FCp-2w-G83"/>
+                                </connections>
+                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="SOX-79-ZME">
+                                <rect key="frame" x="20" y="343.66666666666669" width="353" height="190.00000000000006"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sgk-N6-VRh">
+                                        <rect key="frame" x="0.0" y="0.0" width="353" height="50"/>
+                                        <color key="backgroundColor" red="0.95686274509803915" green="0.95686274509803915" blue="0.95686274509803915" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="cFP-ti-C4W"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Employer">
+                                            <color key="titleColor" name="blackColor"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="action_Employer:" destination="hBp-WU-sbg" eventType="touchUpInside" id="zHV-0r-UbS"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uhW-Zf-4sw">
+                                        <rect key="frame" x="0.0" y="70" width="353" height="50"/>
+                                        <color key="backgroundColor" red="0.95686274510000002" green="0.95686274510000002" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="BiB-ks-cXi"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="HangOut">
+                                            <color key="titleColor" name="blackColor"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="action_Hangout:" destination="hBp-WU-sbg" eventType="touchUpInside" id="k1I-SJ-hxs"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fhe-AN-f1n">
+                                        <rect key="frame" x="0.0" y="140" width="353" height="50"/>
+                                        <color key="backgroundColor" red="0.95686274510000002" green="0.95686274510000002" blue="0.95686274510000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="Gyf-UZ-XpQ"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Accomodation">
+                                            <color key="titleColor" name="blackColor"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="action_Accomodation:" destination="hBp-WU-sbg" eventType="touchUpInside" id="ZcE-Fq-k4E"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bgs-Kc-1F8">
+                                <rect key="frame" x="20" y="748" width="353" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="U3e-9n-zcr"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Save">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="action_Save:" destination="hBp-WU-sbg" eventType="touchUpInside" id="Tix-ib-8CI"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="XUN-12-xRY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ngY-2K-ehd" firstAttribute="centerX" secondItem="XUN-12-xRY" secondAttribute="centerX" id="2It-w6-pW2"/>
+                            <constraint firstItem="XUN-12-xRY" firstAttribute="trailing" secondItem="bgs-Kc-1F8" secondAttribute="trailing" constant="20" id="2yG-dU-u4z"/>
+                            <constraint firstItem="XUN-12-xRY" firstAttribute="trailing" secondItem="SOX-79-ZME" secondAttribute="trailing" constant="20" id="BTX-TN-QbX"/>
+                            <constraint firstItem="SOX-79-ZME" firstAttribute="centerY" secondItem="XUN-12-xRY" secondAttribute="centerY" id="EDc-Ad-nfo"/>
+                            <constraint firstItem="ngY-2K-ehd" firstAttribute="centerY" secondItem="fLt-l1-Imj" secondAttribute="centerY" id="XRO-hy-EH7"/>
+                            <constraint firstItem="bgs-Kc-1F8" firstAttribute="leading" secondItem="XUN-12-xRY" secondAttribute="leading" constant="20" id="XT0-qy-tOJ"/>
+                            <constraint firstItem="SOX-79-ZME" firstAttribute="centerX" secondItem="XUN-12-xRY" secondAttribute="centerX" id="mtZ-81-tGU"/>
+                            <constraint firstItem="SOX-79-ZME" firstAttribute="leading" secondItem="XUN-12-xRY" secondAttribute="leading" constant="20" id="rIv-oC-59R"/>
+                            <constraint firstItem="fLt-l1-Imj" firstAttribute="leading" secondItem="XUN-12-xRY" secondAttribute="leading" constant="12" id="u4I-Zc-c4S"/>
+                            <constraint firstItem="XUN-12-xRY" firstAttribute="bottom" secondItem="bgs-Kc-1F8" secondAttribute="bottom" constant="20" id="uaW-IL-FWq"/>
+                            <constraint firstItem="fLt-l1-Imj" firstAttribute="top" secondItem="XUN-12-xRY" secondAttribute="top" id="w9V-tF-dQ6"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="Btn_Hangout" destination="uhW-Zf-4sw" id="XfF-wN-DG0"/>
+                        <outlet property="btn_Save" destination="bgs-Kc-1F8" id="Mfh-hZ-0KE"/>
+                        <outlet property="btn_accomodation" destination="fhe-AN-f1n" id="Mnp-uv-lKQ"/>
+                        <outlet property="btn_employer" destination="sgk-N6-VRh" id="QmF-KF-hTg"/>
+                        <outlet property="lbl_MainHeader" destination="ngY-2K-ehd" id="CHN-ci-OZG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TuT-uD-60g" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3156" y="-26"/>
+        </scene>
         <!--HistoryVC-->
         <scene sceneID="zog-gu-4VA">
             <objects>
@@ -611,6 +746,7 @@ phone number </string>
         </scene>
     </scenes>
     <resources>
+        <image name="Back Arrow" width="9" height="15"/>
         <image name="Resume" width="19.666666030883789" height="18"/>
         <image name="back_icon" width="39" height="39.333332061767578"/>
         <image name="launchIcon" width="167.33332824707031" height="142.66667175292969"/>

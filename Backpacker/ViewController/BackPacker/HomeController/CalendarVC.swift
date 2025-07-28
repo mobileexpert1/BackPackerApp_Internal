@@ -8,11 +8,16 @@
 import UIKit
 import FSCalendar
 
+import UIKit
+import EventKit
+import EventKitUI
 class CalendarVC: UIViewController {
     
+    @IBOutlet weak var VwSetAvailibilty2: UIView!
     @IBOutlet weak var monthCollectionVw: UICollectionView!
     @IBOutlet weak var calendarVw: FSCalendar!
     
+    @IBOutlet weak var lbl_Year: UILabel!
     @IBOutlet weak var bgVwAvailibility: UIView!
     @IBOutlet weak var bgVwMonth: UIView!
     @IBOutlet weak var lbl_Value_Time: UILabel!
@@ -23,7 +28,8 @@ class CalendarVC: UIViewController {
     @IBOutlet weak var lbl_headrDate: UILabel!
     
     
-   
+    @IBOutlet weak var lbl_availinity: UILabel!
+    
     @IBOutlet weak var lbl_Header_SelectDate: UILabel!
     @IBOutlet weak var lbl_SetAvailibily: UILabel!
     
@@ -33,7 +39,8 @@ class CalendarVC: UIViewController {
     var selectedMonthIndex = Calendar.current.component(.month, from: Date()) - 1
     
     var monthsArray: [Date] = []
-    
+    private var yearPicker: UIPickerView!
+        private var years: [Int] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         if selectedDate == nil {
@@ -42,11 +49,17 @@ class CalendarVC: UIViewController {
         }
         bgVwMonth.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
         bgVwAvailibility.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
+        VwSetAvailibilty2.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
         self.registerCell()
         self.setUpCalendar()
         self.setUpFonts()
+        let currentYear = Calendar.current.component(.year, from: Date())
+                years = Array(currentYear...2035)
         
     }
+    
+    
+    
     private func registerCell(){
         calendarVw.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
         let nib = UINib(nibName: "CalendarMonthCell", bundle: nil)
@@ -108,6 +121,8 @@ class CalendarVC: UIViewController {
     private func setUpFonts(){
 //        self.settingBgVw.addShadowAllSides(radius:2)
 //        self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)
+        self.lbl_Year.font = FontManager.inter(.medium, size: 14)
+        self.lbl_availinity.font = FontManager.inter(.medium, size: 14)
         self.lbl_SetAvailibily.font = FontManager.inter(.medium, size: 14.0)
         lbl_HeaderSelectMonth.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_Header_SelectDate.font = FontManager.inter(.medium, size: 14.0)
@@ -145,24 +160,6 @@ class CalendarVC: UIViewController {
     }
     @IBAction func action_Setting(_ sender: Any) {
     }
-//    func getAllMonths(for year: Int) -> [Date] {
-//        var months: [Date] = []
-//        let calendar = Calendar.current
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "MMMM"
-//
-//        for month in 1...12 {
-//            var components = DateComponents()
-//            components.year = year
-//            components.month = month
-//            components.day = 1
-//
-//            if let date = calendar.date(from: components) {
-//                months.append(date)
-//            }
-//        }
-//        return months
-//    }
 
     func getAllMonths(from startYear: Int, to endYear: Int) -> [Date] {
         var months: [Date] = []
@@ -184,6 +181,23 @@ class CalendarVC: UIViewController {
         return months
     }
 
+    @IBAction func action_SelectYear(_ sender: Any) {
+        
+        self.ShowYearPicker()
+    }
+    
+    func getYears(from startYear: Int, to endYear: Int) -> [Int] {
+        return Array(startYear...endYear)
+    }
+
+    @IBAction func action_SetAvailibilty(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Calendar", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetAvailibilityVC") as? SetAvailibilityVC {
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("❌ Could not instantiate SettingVC")
+        }
+    }
 }
 extension CalendarVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -254,25 +268,7 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
     }
    
     func calendar(_ calendar: FSCalendar, shouldSelect date: Date, at position: FSCalendarMonthPosition) -> Bool {
-        // Prevent user from selecting today
-//        if Calendar.current.isDateInToday(date) {
-//            return false
-//        }
-
-        // Only allow current month's dates
         return position == .current
-        
-        
-        /*
-         
-         
-         
-         
-         
-         
-         
-         
-         */
     }
 
 
@@ -360,250 +356,6 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
    
 }
 
-//extension CalendarVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        return monthsNames.count
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MonthsCollectionViewCell", for: indexPath) as! MonthsCollectionViewCell
-//        cell.monthLabel.setTitle(monthsNames[indexPath.item].capitalized, for: .normal)
-//
-//        print("selectedIndex========",selectedIndex)
-//
-//
-//        if indexPath.item == selectedIndex {
-//            if dateArray[indexPath.item].monthSlotFull == 1 {
-//                cell.monthLabel.setTitleColor(.white, for: .normal)
-//                cell.monthView.backgroundColor = .red
-//                fsCalenderDateSelect.isHidden = false
-//                addSubView(noSeatsPopupView)
-//                let isArabic = LocalStore.shared.languageType == 2
-//                let adjustedIndex = isArabic ? (dateArray.count - 1 - indexPath.item) : indexPath.item
-//
-//                let selectedMonth = dateArray[adjustedIndex] // Get the correct selected month data
-//                monthsArray.removeAll()
-//
-//                filteredEventDates.removeAll()
-//                filteredEventDatesmultiple.removeAll()
-//                for dateElement in selectedMonth.dates {
-//                    print(dateElement.slots.first?.slotFull)
-//                    monthsArray.append(dateElement.eventDate) // Append each eventDate to monthArray
-//                }
-//
-//                for i in 0...(selectedMonth.dates.first?.slots.count ?? 0) - 1 {
-//                    print(selectedMonth.dates.first?.slots[i].slotFull)
-//
-//                }
-//                for dateElement in selectedMonth.dates {
-//                    let allSlotsFull = dateElement.slots.allSatisfy { $0.slotFull == 1 }
-//                    if allSlotsFull {
-//                        filteredEventDates.append(dateElement.eventDate)
-//                    }
-//                }
-//
-//                print("filteredEventDatebothslotnotavable=====", filteredEventDates)
-//
-//                for dateElement in selectedMonth.dates {
-//                    // Check if there is at least one slot with slotFull == 1 and one with slotFull == 0
-//                    let hasSlotFullOne = dateElement.slots.contains { $0.slotFull == 1 }
-//                    let hasSlotFullZero = dateElement.slots.contains { $0.slotFull == 0 }
-//
-//                    // If both conditions are true, append the eventDate
-//                    if hasSlotFullOne && hasSlotFullZero {
-//                        filteredEventDatesmultiple.append(dateElement.eventDate)
-//                    }
-//                }
-//
-//                print("filteredEventDates with mixed slotFull==1 and slotFull==0=====", filteredEventDatesmultiple)
-//
-//                // Set the current page of the calendar
-//                let dateFormatter = DateFormatter()
-//                dateFormatter.dateFormat = "yyyy-MM-dd"
-//                if let date = dateFormatter.date(from: monthsArray[0]) {
-//                    fsCalenderDateSelect.setCurrentPage(date, animated: true)
-//                }
-//                self.fsCalenderDateSelect.reloadData()
-//
-//
-//
-//
-//
-//            } else {
-//                cell.monthLabel.setTitleColor(.black, for: .normal)
-//                cell.monthView.backgroundColor = UIColor(red: 250/255, green: 187/255, blue: 60/255, alpha: 1)
-//                selectDateLabel.isHidden = false
-//                fsCalenderDateSelect.isHidden = false
-//
-//                // Handle Arabic locale for the selected month
-//                let isArabic = LocalStore.shared.languageType == 2
-//                let adjustedIndex = isArabic ? (dateArray.count - 1 - indexPath.item) : indexPath.item
-//
-//                let selectedMonth = dateArray[adjustedIndex] // Get the correct selected month data
-//                monthsArray.removeAll()
-//
-//                filteredEventDates.removeAll()
-//                filteredEventDatesmultiple.removeAll()
-//                for dateElement in selectedMonth.dates {
-//                    print(dateElement.slots.first?.slotFull)
-//                    monthsArray.append(dateElement.eventDate) // Append each eventDate to monthArray
-//                }
-//
-//                for i in 0...(selectedMonth.dates.first?.slots.count ?? 0) - 1 {
-//                    print(selectedMonth.dates.first?.slots[i].slotFull)
-//
-//                }
-//                for dateElement in selectedMonth.dates {
-//                    let allSlotsFull = dateElement.slots.allSatisfy { $0.slotFull == 1 }
-//                    if allSlotsFull {
-//                        filteredEventDates.append(dateElement.eventDate)
-//                    }
-//                }
-//
-//                print("filteredEventDatebothslotnotavable=====", filteredEventDates)
-//
-//                for dateElement in selectedMonth.dates {
-//                    // Check if there is at least one slot with slotFull == 1 and one with slotFull == 0
-//                    let hasSlotFullOne = dateElement.slots.contains { $0.slotFull == 1 }
-//                    let hasSlotFullZero = dateElement.slots.contains { $0.slotFull == 0 }
-//
-//                    // If both conditions are true, append the eventDate
-//                    if hasSlotFullOne && hasSlotFullZero {
-//                        filteredEventDatesmultiple.append(dateElement.eventDate)
-//                    }
-//                }
-//
-//                print("filteredEventDates with mixed slotFull==1 and slotFull==0=====", filteredEventDatesmultiple)
-//
-//                // Set the current page of the calendar
-//                let dateFormatter = DateFormatter()
-//                dateFormatter.dateFormat = "yyyy-MM-dd"
-//                if let date = dateFormatter.date(from: monthsArray[0]) {
-//                    fsCalenderDateSelect.setCurrentPage(date, animated: true)
-//                }
-//                self.fsCalenderDateSelect.reloadData()
-//            }
-//        } else {
-//            cell.monthLabel.setTitleColor(.white, for: .normal)
-//            cell.monthView.backgroundColor = .black
-//        }
-//        if dateArray[indexPath.item].monthSlotFull == 1 {
-//            cell.monthLabel.setTitleColor(.white, for: .normal)
-//            cell.monthView.backgroundColor = .red
-//        }
-//
-//
-//        return cell
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//        return CGSize(width: collectionView.frame.size.width/2.5, height: collectionView.frame.size.height/1.5)
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MonthsCollectionViewCell", for: indexPath) as! MonthsCollectionViewCell
-//
-//
-//        cell.monthLabel.setTitleColor(.white, for: .normal)
-//        cell.monthView.backgroundColor = .black
-//        print("indexPath.item",indexPath.item)
-//
-//        selectedIndex = indexPath.item
-//        selectDateLabel.isHidden = false
-//        fsCalenderDateSelect.isHidden = false
-//        let selectedMonth = dateArray[indexPath.item] // Get the selected month data
-//        monthsArray.removeAll()
-//        filteredEventDates.removeAll()
-//        filteredEventDatesmultiple.removeAll()
-//        for dateElement in selectedMonth.dates {
-//            monthsArray.append(dateElement.eventDate) // Append each eventDate to monthArray
-//        }
-//        for dateElement in selectedMonth.dates {
-//            // Check if all slots have slotFull == 1
-//            let allSlotsFull = dateElement.slots.allSatisfy { $0.slotFull == 1 }
-//
-//            // If all slots have slotFull == 1, append the eventDate
-//            if allSlotsFull {
-//                filteredEventDates.append(dateElement.eventDate)
-//            }
-//        }
-//
-//        print("filteredEventDatebothslotnot avable=====", filteredEventDates)
-//
-//        for dateElement in selectedMonth.dates {
-//            // Check if there is at least one slot with slotFull == 1 and one with slotFull == 0
-//            let hasSlotFullOne = dateElement.slots.contains { $0.slotFull == 1 }
-//            let hasSlotFullZero = dateElement.slots.contains { $0.slotFull == 0 }
-//
-//            // If both conditions are true, append the eventDate
-//            if hasSlotFullOne && hasSlotFullZero {
-//                filteredEventDatesmultiple.append(dateElement.eventDate)
-//            }
-//        }
-//
-//        print("filteredEventDateswithmixedslotFull==1andslotFull==0=====", filteredEventDatesmultiple)
-//
-//        print("monthsArray---",monthsArray)
-//        if let dateToDeselect = stringToDate(didSelectDate) {
-//            print("dateToDeselect",dateToDeselect)
-//            fsCalenderDateSelect.deselect(dateToDeselect)
-//            selectTimeLabel.isHidden = true
-//            selectTimeStackView.isHidden = true
-//
-//        } else {
-//            print("Invalid date format or date conversion failed.")
-//        }
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "yyyy-MM-dd"
-//        if LocalStore.shared.languageType == 1{
-//            if let date = dateFormatter.date(from: monthsArray[0]) {
-//                fsCalenderDateSelect.setCurrentPage(date, animated: true)
-//            }
-//        }
-//        else{
-//            if let date = dateFormatter.date(from: monthsArray[1]) {
-//                fsCalenderDateSelect.setCurrentPage(date, animated: true)
-//            }
-//        }
-//
-//        self.fsCalenderDateSelect.reloadData()
-//        monthsCollectionView.reloadData()
-//
-//    }
-//    func getDateFromMonthName(monthName: String) -> Date? {
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "MMMM" // Format for full month name
-//        return dateFormatter.date(from: monthName) // Convert to Date
-//    }
-//
-//    func stringToDate(_ dateString: String) -> Date? {
-//        let dateFormatter = DateFormatter()
-//        dateFormatter.dateFormat = "yyyy-MM-dd" // Adjust format as needed
-//        dateFormatter.timeZone = TimeZone.current
-//        dateFormatter.locale = Locale.current
-//        return dateFormatter.date(from: dateString)
-//    }
-//
-//
-//
-//    func updateVisibleDates(for month: Date) {
-//        let calendar = Calendar.current
-//        let monthFormatter = DateFormatter()
-//        monthFormatter.dateFormat = "MMMM"
-//        let currentMonthName = monthFormatter.string(from: month)
-//
-//        // Filter dates based on the current month
-//        if let eventDays = dateArray.first(where: { $0.month == currentMonthName }) {
-//            filteredDates = eventDays.dates
-//        } else {
-//            filteredDates.removeAll() // No dates found for the month
-//        }
-//        self.fsCalenderDateSelect.reloadData()
-//        // Reload calendar to update displayed dates
-//    }
-//}
-//
-//
 
 import UIKit
 import EventKit
@@ -648,4 +400,86 @@ extension CalendarVC: EKEventEditViewDelegate {
             print("Event deleted")
         }
     }
+}
+
+
+extension CalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
+    // MARK: - PickerView Delegate & DataSource
+
+       func numberOfComponents(in pickerView: UIPickerView) -> Int {
+           return 1
+       }
+
+       func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+           return years.count
+       }
+
+       func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+           return "\(years[row])"
+       }
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 30 // each row 50 points tall
+    }
+
+    @objc func didSelectYear() {
+          let selectedRow = yearPicker.selectedRow(inComponent: 0)
+          let selectedYear = years[selectedRow]
+        self.lbl_Year.text = "\(selectedYear)"
+          dismiss(animated: true)
+      }
+    
+    func ShowYearPicker() {
+           // 1. Picker and Toolbar
+           yearPicker = UIPickerView()
+           yearPicker.delegate = self
+           yearPicker.dataSource = self
+           yearPicker.backgroundColor = .systemBackground
+           yearPicker.translatesAutoresizingMaskIntoConstraints = false
+
+           let toolbar = UIToolbar()
+           toolbar.translatesAutoresizingMaskIntoConstraints = false
+           toolbar.setItems([
+               UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+               UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(didSelectYear))
+           ], animated: false)
+           toolbar.backgroundColor = .systemBackground
+
+           // 2. Picker container view
+           let pickerContainer = UIView()
+           pickerContainer.backgroundColor = .systemBackground
+           pickerContainer.translatesAutoresizingMaskIntoConstraints = false
+
+           pickerContainer.addSubview(toolbar)
+           pickerContainer.addSubview(yearPicker)
+
+           NSLayoutConstraint.activate([
+               toolbar.topAnchor.constraint(equalTo: pickerContainer.topAnchor),
+               toolbar.leadingAnchor.constraint(equalTo: pickerContainer.leadingAnchor),
+               toolbar.trailingAnchor.constraint(equalTo: pickerContainer.trailingAnchor),
+               toolbar.heightAnchor.constraint(equalToConstant: 50),
+
+               yearPicker.topAnchor.constraint(equalTo: toolbar.bottomAnchor),
+               yearPicker.leadingAnchor.constraint(equalTo: pickerContainer.leadingAnchor),
+               yearPicker.trailingAnchor.constraint(equalTo: pickerContainer.trailingAnchor),
+               yearPicker.bottomAnchor.constraint(equalTo: pickerContainer.bottomAnchor),
+               yearPicker.heightAnchor.constraint(equalToConstant: 200)
+           ])
+
+           // 3. Dimmed background VC
+           let dimmedVC = UIViewController()
+           dimmedVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+           dimmedVC.modalPresentationStyle = .overFullScreen
+
+           // 4. Add picker container to dimmedVC
+           dimmedVC.view.addSubview(pickerContainer)
+           NSLayoutConstraint.activate([
+               pickerContainer.leadingAnchor.constraint(equalTo: dimmedVC.view.leadingAnchor),
+               pickerContainer.trailingAnchor.constraint(equalTo: dimmedVC.view.trailingAnchor),
+               pickerContainer.bottomAnchor.constraint(equalTo: dimmedVC.view.bottomAnchor)
+           ])
+
+           // 5. Present
+           self.present(dimmedVC, animated: true)
+       }
+
 }

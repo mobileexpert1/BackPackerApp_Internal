@@ -14,6 +14,7 @@ class AddNewAccomodationVC: UIViewController {
     @IBOutlet weak var scroolHeight: NSLayoutConstraint!
     @IBOutlet weak var lbl_MainHeader: UILabel!
     
+    @IBOutlet weak var btn_Remove: UIButton!
     @IBOutlet weak var tblVw: UITableView!
     
    // @IBOutlet weak var tblHeight: NSLayoutConstraint!
@@ -74,8 +75,17 @@ class AddNewAccomodationVC: UIViewController {
 
         self.setupui()
         self.setUpTxtFlds()
+        self.setUPLocationText()
     }
     
+    func setUPLocationText(){
+        self.valLocation.font = FontManager.inter(.regular, size: 14.0)
+        if valLocation.text == "Current Location"{
+            valLocation.textColor = UIColor(hex: "#9D9D9D")
+        }else{
+            valLocation.textColor = UIColor.black
+        }
+    }
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: false)
     }
@@ -88,7 +98,8 @@ class AddNewAccomodationVC: UIViewController {
         self.BgVwDescription.layer.cornerRadius = 10.0
         self.BgVwDescription.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
         self.BgVwDescription.layer.borderWidth = 1.0
-        self.addDottedBorder(to: self.mainBgVw, color: UIColor(hex: "#93A3C3"), cornerRadius: 10)
+        self.uploadedImage.image = UIImage(named: "BgUploadImage")
+        self.setUpImagePlacehoder()
         applyGradientButtonStyle(to: self.btn_Save)
         
         headerName.font = FontManager.inter(.medium, size: 14.0)
@@ -214,10 +225,34 @@ class AddNewAccomodationVC: UIViewController {
     mediaPicker?.showMediaOptions { image in
         // Do something with the image
         print("Selected image: \(image)")
+    
         self.uploadedImage.image = image
         self.placeholderImg.isHidden = true
         self.lbl_UploadImg.isHidden = true
+        self.setUpImagePlacehoder()
+       
     }
+        
+    }
+    func setUpImagePlacehoder(){
+        if self.uploadedImage.image == UIImage(named: "BgUploadImage"){
+            self.uploadedImage.layer.cornerRadius = 0.0
+            self.btn_Remove.isHidden = true
+            self.btn_Save.isUserInteractionEnabled = false
+            self.placeholderImg.isHidden = false
+            self.lbl_UploadImg.isHidden = false
+        }else{
+            self.uploadedImage.layer.cornerRadius = 10.0
+            self.btn_Remove.isHidden = false
+            self.btn_Save.isUserInteractionEnabled = true
+            self.placeholderImg.isHidden = true
+            self.lbl_UploadImg.isHidden = true
+        }
+    }
+    @IBAction func action_RemoveImage(_ sender: Any) {
+        self.uploadedImage.image = nil
+        self.uploadedImage.image = UIImage(named: "BgUploadImage")
+        self.setUpImagePlacehoder()
         
     }
 }

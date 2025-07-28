@@ -11,6 +11,7 @@ class MainJobController: UIViewController {
     
     @IBOutlet weak var title_Header: UILabel!
     
+    @IBOutlet weak var BtnAddJob: UIButton!
     @IBOutlet weak var containerVw: UIView!
     @IBOutlet weak var collVw: UICollectionView!
 #if BackpackerHire
@@ -36,6 +37,7 @@ class MainJobController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.BtnAddJob.titleLabel?.font = FontManager.inter(.medium, size: 12.0)
         collVw.register(UINib(nibName: "MainJobCVC", bundle: nil), forCellWithReuseIdentifier: "MainJobCVC")
         collVw.delegate = self
         collVw.dataSource = self
@@ -55,6 +57,17 @@ class MainJobController: UIViewController {
           }
     }
     
+    @IBAction func action_AddJob(_ sender: Any) {
+        
+        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+        if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewJobVC") as? AddNewJobVC {
+            self.navigationController?.pushViewController(accVC, animated: true)
+        } else {
+            print("❌ Could not instantiate AddNewAccomodationVC")
+        }
+        
+        
+    }
 }
 extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout
 {
