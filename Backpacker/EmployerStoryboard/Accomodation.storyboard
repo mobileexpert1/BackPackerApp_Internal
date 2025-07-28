@@ -1150,6 +1150,11 @@
                                 <state key="normal" title="Save">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                                 <connections>
                                     <action selector="action_Save:" destination="WDe-lx-M1Z" eventType="touchUpInside" id="7bs-bR-33m"/>
                                 </connections>
@@ -1179,6 +1184,7 @@
                     </view>
                     <connections>
                         <outlet property="btn_sabve" destination="bEK-Vg-Ywg" id="zza-sW-NXP"/>
+                        <outlet property="lbl_MainHeader" destination="j7K-dJ-3V4" id="Fgv-hh-6Gx"/>
                         <outlet property="mapView" destination="e6y-td-grZ" id="fMk-2L-BUi"/>
                     </connections>
                 </viewController>

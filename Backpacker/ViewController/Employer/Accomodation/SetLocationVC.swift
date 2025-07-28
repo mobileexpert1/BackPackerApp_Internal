@@ -16,6 +16,7 @@ protocol SetLocationDelegate: AnyObject {
 
 class SetLocationVC: UIViewController,MKMapViewDelegate {
 
+    @IBOutlet weak var lbl_MainHeader: UILabel!
     @IBOutlet weak var btn_sabve: UIButton!
     @IBOutlet weak var mapView: MKMapView!
     let geocoder = CLGeocoder()
@@ -28,8 +29,8 @@ class SetLocationVC: UIViewController,MKMapViewDelegate {
             super.viewDidLoad()
             applyGradientButtonStyle(to: self.btn_sabve)
             mapView.delegate = self
-
             setupCenterMarker()
+            self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
         }
 
         private func setupCenterMarker() {
