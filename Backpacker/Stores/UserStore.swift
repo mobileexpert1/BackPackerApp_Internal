@@ -74,7 +74,26 @@ class UserStore: ServiceManager , UserSearchable {
         }
     }
 
- 
+    // API for ChooseRole Type
+    func chooseRoleType<T: Codable>(
+        params: Parameters,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        guard let bearerToken = UserDefaultsManager.shared.bearerToken, !bearerToken.isEmpty else {
+               print("⚠️ No bearerToken found.")
+               completion(false, nil, nil)
+               return
+           }
+
+           let url = "http://192.168.11.4:3001/api/employer/roleSwitch"
+           let headers = getHeaders()
+
+
+           requestApi(url, method: .put, parameters: params, headers: headers) { (success, result, statusCode) in
+               completion(success, result, statusCode)
+           }
+    }
+    
 
 }
 

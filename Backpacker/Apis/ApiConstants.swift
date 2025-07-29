@@ -15,10 +15,10 @@ struct ApiConstants {
         static let DEBUG_MODE_ON = true
         private static let BASE_URL : String = {
             if DEBUG_MODE_ON {
-                return "http://192.168.11.4:3000/"
+                return "http://192.168.11.4:3001/"
             }
             else {
-                return "http://192.168.11.4:3000/"
+                return "http://192.168.11.4:3001/"
             }
         }()
         

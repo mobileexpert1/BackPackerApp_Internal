@@ -2157,7 +2157,7 @@
                                                         </connections>
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GIs-rt-NgA">
-                                                        <rect key="frame" x="323" y="8" width="20" height="20"/>
+                                                        <rect key="frame" x="325" y="8" width="20" height="20"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" constant="20" id="JXP-d0-Lw4"/>
                                                             <constraint firstAttribute="height" constant="20" id="oX6-Ig-Ypg"/>
@@ -2172,7 +2172,7 @@
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
                                                     <constraint firstItem="VLd-01-iJE" firstAttribute="centerY" secondItem="mR3-dO-9G3" secondAttribute="centerY" id="22r-AU-Wt2"/>
-                                                    <constraint firstAttribute="trailing" secondItem="GIs-rt-NgA" secondAttribute="trailing" constant="10" id="8TR-1G-ZNx"/>
+                                                    <constraint firstAttribute="trailing" secondItem="GIs-rt-NgA" secondAttribute="trailing" constant="8" id="8TR-1G-ZNx"/>
                                                     <constraint firstAttribute="bottom" secondItem="PqB-iS-ZeY" secondAttribute="bottom" constant="5" id="9q6-rW-m7q"/>
                                                     <constraint firstItem="GIs-rt-NgA" firstAttribute="top" secondItem="3Dh-Vn-hL4" secondAttribute="top" constant="8" id="EoL-BD-Rbz"/>
                                                     <constraint firstAttribute="trailing" secondItem="mR3-dO-9G3" secondAttribute="trailing" constant="2" id="FU2-0f-Jwy"/>

@@ -22,24 +22,26 @@ class HomeTVC: UITableViewCell {
         self.preservesSuperviewLayoutMargins = false
         self.separatorInset = .zero
         self.layoutMargins = .zero
-        
+        let nib = UINib(nibName: "HomeJobCVC", bundle: nil)
+        home_CollectionVw.register(nib, forCellWithReuseIdentifier: "HomeJobCVC")
+        let nib4 = UINib(nibName: "AccomodationCVC", bundle: nil)
+        home_CollectionVw.register(nib4, forCellWithReuseIdentifier: "AccomodationCVC")
 #if BackpackerHire
         let nib2 = UINib(nibName: "AddAccomodationCVC", bundle: nil)
         home_CollectionVw.register(nib2, forCellWithReuseIdentifier: "AddAccomodationCVC")
         let nib3 = UINib(nibName: "JobCountCVC", bundle: nil)
         home_CollectionVw.register(nib3, forCellWithReuseIdentifier: "JobCountCVC")
+        if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
+            layout.scrollDirection = .vertical
+        }
 #else
-      
-#endif
-        let nib = UINib(nibName: "HomeJobCVC", bundle: nil)
-        home_CollectionVw.register(nib, forCellWithReuseIdentifier: "HomeJobCVC")
-        let nib4 = UINib(nibName: "AccomodationCVC", bundle: nil)
-        home_CollectionVw.register(nib4, forCellWithReuseIdentifier: "AccomodationCVC")
-        home_CollectionVw.dataSource = self
-        home_CollectionVw.delegate = self
         if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.scrollDirection = .horizontal
         }
+#endif
+       
+        home_CollectionVw.dataSource = self
+        home_CollectionVw.delegate = self
             home_CollectionVw.showsHorizontalScrollIndicator = false
             home_CollectionVw.showsVerticalScrollIndicator = false
     }
@@ -60,7 +62,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 #if BackpackerHire
         if tableSection == 0 {
-            return 4
+            return 3
         }else if tableSection == 1 {
             return 4
         }else{
@@ -123,11 +125,18 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     return cell
                 }
             }else{
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
                     return UICollectionViewCell()
                 }
-              //  let item = items[indexPath.item]
+                cell.onTap = { [weak self]  index in
+                      guard let self = self else { return }
+                      print("Cell tapped at index: \(indexPath.item)")
+                      // Navigate or perform any action
+                    self.onTap?()
+                  }
+                // Assign item to your label/image inside the cell
                 // cell.titleLabel.text = item
+                cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: isComeForHireDetailPage)
                 return cell
             }
         }
@@ -190,7 +199,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             if isComeForHireDetailPage  == true{
                 return CGSize(width: (width / 2) - 5, height: 180)
             }else{
-                return CGSize(width: (width / 2) - 12, height: 250)
+                return CGSize(width: (width / 2) - 12, height: 180)
             }
            
         }else{

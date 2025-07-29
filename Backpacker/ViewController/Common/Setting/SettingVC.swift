@@ -134,6 +134,9 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                                                title: "Logout",
                                                message: "Are you sure you want to logout?",
                                                confirmAction: {
+                
+                UserDefaults.standard.removeObject(forKey: "UserRoleType")
+                UserDefaults.standard.synchronize()
                 let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
                 let nav = UINavigationController(rootViewController: loginVC)
                 nav.navigationBar.isHidden = true
@@ -162,7 +165,12 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
 //            }
             
         case 1:
-            AlertManager.showAlert(on: self, title: "", message: "In Progress")
+            let storyboard = UIStoryboard(name: "Calendar", bundle: nil)
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetAvailibilityVC") as? SetAvailibilityVC {
+                self.navigationController?.pushViewController(settingVC, animated: true)
+            } else {
+                print("❌ Could not instantiate SettingVC")
+            }
         case 2:
             if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
                 vc.isComeFromPrivacy = false

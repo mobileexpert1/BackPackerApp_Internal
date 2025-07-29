@@ -37,34 +37,6 @@
             </objects>
             <point key="canvasLocation" x="-5430" y="406"/>
         </scene>
-        <!--Home-->
-        <scene sceneID="w4q-Qf-UbN">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="mGc-wu-XKW" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Home" image="Home" id="k1R-WU-bzo"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="fnC-Kz-p8t">
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="njr-7R-pQI" kind="relationship" relationship="rootViewController" id="s42-DV-q5U"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="KCH-gD-Sbd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2121" y="1520"/>
-        </scene>
-        <!--HomeVC-->
-        <scene sceneID="Rdc-Ij-I44">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="HomeVC" storyboardName="Home" referencedIdentifier="HomeVC" id="njr-7R-pQI" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="Ln6-6G-9jf"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Nax-pO-vCZ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2838" y="1379"/>
-        </scene>
         <!--Job Post-->
         <scene sceneID="hOg-vy-9Id">
             <objects>
@@ -82,91 +54,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nqb-v4-109" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-2463" y="1379"/>
-        </scene>
-        <!--Calendar-->
-        <scene sceneID="EPw-DV-eJb">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="VPq-EB-nBd" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Calendar" image="Calendar" id="8sd-Wh-wIk"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="pfE-ux-5Q1">
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="UMu-Q3-Y2K" kind="relationship" relationship="rootViewController" id="WPO-hk-1jM"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="il2-hz-4ph" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2269" y="2513"/>
-        </scene>
-        <!--CalendarVC-->
-        <scene sceneID="cCV-QT-Ddn">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Calendar" referencedIdentifier="CalendarVC" id="UMu-Q3-Y2K" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="7we-Qi-cQ0"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gIU-Bk-WOl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3003" y="2598"/>
-        </scene>
-        <!--Map-->
-        <scene sceneID="vKh-kW-oZ8">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="luV-Lb-9UA" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Map" image="Address" id="ZTi-hc-x8a"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="uqq-dT-oVI">
-                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="ocu-Tc-Jrq" kind="relationship" relationship="rootViewController" id="7x7-Bc-fCm"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="yhl-Qw-FlT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2268" y="3492"/>
-        </scene>
-        <!--MapViewController-->
-        <scene sceneID="LG5-wV-AKH">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Map" referencedIdentifier="MapViewController" id="ocu-Tc-Jrq" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="TPR-HR-ZFj"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Cb4-6N-xcS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3563" y="3363"/>
-        </scene>
-        <!--History-->
-        <scene sceneID="lRb-5z-we1">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="MJp-y5-TNa" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="History" image="Resume" id="47f-f7-zue"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Izy-II-oqd">
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="2cs-QG-KeP" kind="relationship" relationship="rootViewController" id="Qel-Ig-RdL"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="gdB-1H-gS0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="2418" y="4499"/>
-        </scene>
-        <!--HistoryVC-->
-        <scene sceneID="VoM-dQ-NIY">
-            <objects>
-                <viewControllerPlaceholder storyboardName="History" referencedIdentifier="HistoryVC" id="2cs-QG-KeP" sceneMemberID="viewController">
-                    <navigationItem key="navigationItem" id="Jpu-Cq-5am"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="S6Y-ib-pJq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3748" y="4011"/>
         </scene>
         <!--Home-->
         <scene sceneID="Af4-el-22G">
@@ -281,11 +168,8 @@
     </scenes>
     <resources>
         <image name="Accommodation" width="20.666666030883789" height="20.666666030883789"/>
-        <image name="Address" width="24" height="24"/>
-        <image name="Calendar" width="24" height="24"/>
         <image name="Home" width="24" height="24"/>
         <image name="Job Seeker" width="22.666666030883789" height="17"/>
-        <image name="Resume" width="19.666666030883789" height="18"/>
         <image name="Setting" width="26" height="26"/>
         <image name="hangout" width="19.666666030883789" height="17.666666030883789"/>
     </resources>

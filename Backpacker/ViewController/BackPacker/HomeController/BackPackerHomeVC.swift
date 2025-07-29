@@ -100,7 +100,6 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                    cell.ads = [
                     Advertisement(name: "Flat 50%", address: "New York", image: UIImage(named: "advertiesment")!),
                     Advertisement(name: "Flat 70%", address: "Los Angeles", image: UIImage(named: "advertiesment")!),
-                       // Add more...
                    ]
 
                    return cell
@@ -153,7 +152,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
             if indexPath.section == 0 {
                 return 160
             }else if  indexPath.section == 1 || indexPath.section == 2 {
-                return 250
+                return 180
             }else{
                 return 150
             }

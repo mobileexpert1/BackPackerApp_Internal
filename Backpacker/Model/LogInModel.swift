@@ -28,12 +28,25 @@ struct OtpResponse: Codable {
     let data: OtpData?
     let errors: [FieldError]?
 }
+//MARK: '- ChooseRoleType
+struct RoleTypeResponse: Codable {
+    let success: BoolOrInt
+    let message: String
+    let data: RoleTypeData?
+    let errors: [FieldError]?
+}
 
+struct RoleTypeData : Codable{
+    let accessToken : String
+    let refreshToken : String
+    let subRoleType : String
+}
 
 struct OtpData : Codable {
     let userId : String?
     let accessToken :String?
     let refreshToken : String
+    let subRoleType : String
 }
 
 struct BoolOrInt: Codable {

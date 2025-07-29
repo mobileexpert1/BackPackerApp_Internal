@@ -16,9 +16,17 @@ class EmployerHomeVC: UIViewController {
     @IBOutlet weak var lbl_MainHeader: UILabel!
     
     @IBOutlet weak var tblVw: UITableView!
-    let sectionTitles = ["", "Accomodations", "Jobs"]
+    let roleType = UserDefaults.standard.integer(forKey: "UserRoleType")
+    var sectionTitles = ["", "Accomodations", "Jobs"]
     override func viewDidLoad() {
         super.viewDidLoad()
+        if roleType == 2 {
+            sectionTitles = ["", "Jobs"]
+        }else if roleType == 3 {
+            sectionTitles = ["", "Accomodations"]
+        }else{
+            sectionTitles = ["", "HangOuts"]
+        }
         let nib = UINib(nibName: "HomeTVC", bundle: nil)
         self.tblVw.register(nib, forCellReuseIdentifier: "HomeTVC")
 #if BackpackerHire
@@ -114,7 +122,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         if indexPath.section == 0  {
             return 360
         }else if   indexPath.section == 1  {
-            return 260
+            return 390
             
         }else{
             return 160

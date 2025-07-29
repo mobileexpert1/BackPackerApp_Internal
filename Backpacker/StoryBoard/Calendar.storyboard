@@ -499,14 +499,25 @@
                                         <color key="textColor" name="blackColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jfh-T2-3Lx">
+                                        <rect key="frame" x="2" y="2" width="370" height="46"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <connections>
+                                            <action selector="action_QuickSetUp:" destination="vbf-kQ-eSN" eventType="touchUpInside" id="xeX-hH-1cG"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
+                                    <constraint firstItem="jfh-T2-3Lx" firstAttribute="top" secondItem="hBP-af-8qz" secondAttribute="top" constant="2" id="0JS-z8-Hjs"/>
                                     <constraint firstItem="RjG-BL-HM4" firstAttribute="top" secondItem="hBP-af-8qz" secondAttribute="top" constant="5" id="2gg-mG-qZa"/>
+                                    <constraint firstAttribute="trailing" secondItem="jfh-T2-3Lx" secondAttribute="trailing" constant="2" id="78Y-bH-PUm"/>
                                     <constraint firstAttribute="trailing" secondItem="RjG-BL-HM4" secondAttribute="trailing" constant="5" id="BI0-DR-clH"/>
                                     <constraint firstAttribute="height" constant="50" id="FR0-Qu-J29"/>
+                                    <constraint firstAttribute="bottom" secondItem="jfh-T2-3Lx" secondAttribute="bottom" constant="2" id="H8G-PA-0b0"/>
                                     <constraint firstAttribute="bottom" secondItem="RjG-BL-HM4" secondAttribute="bottom" constant="5" id="Ial-Si-Lo4"/>
                                     <constraint firstItem="RjG-BL-HM4" firstAttribute="leading" secondItem="hBP-af-8qz" secondAttribute="leading" constant="5" id="WG2-k1-c8A"/>
+                                    <constraint firstItem="jfh-T2-3Lx" firstAttribute="leading" secondItem="hBP-af-8qz" secondAttribute="leading" constant="2" id="mFY-I2-7mb"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -527,6 +538,9 @@
                                 <state key="normal" title="Save Availability">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <connections>
+                                    <action selector="action_setAvailibility:" destination="vbf-kQ-eSN" eventType="touchUpInside" id="B2P-6i-K8G"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="bTT-pu-i5c"/>

@@ -37,6 +37,14 @@ class MainJobController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+#if Backapacker
+        self.BtnAddJob.isHidden = true
+        self.BtnAddJob.isUserInteractionEnabled = false
+#else
+        self.BtnAddJob.isHidden = false
+        self.BtnAddJob.isUserInteractionEnabled = true
+        
+#endif
         self.BtnAddJob.titleLabel?.font = FontManager.inter(.medium, size: 12.0)
         collVw.register(UINib(nibName: "MainJobCVC", bundle: nil), forCellWithReuseIdentifier: "MainJobCVC")
         collVw.delegate = self

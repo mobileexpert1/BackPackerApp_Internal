@@ -63,50 +63,63 @@ class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
     }
 
 
-       private func configureTabBarAppearance() {
-           let appearance = UITabBarAppearance()
-           appearance.configureWithOpaqueBackground()
-           appearance.backgroundColor = .white
+    private func configureTabBarAppearance() {
+        let tabBar = self.tabBar
 
-           // Custom pill selection indicator
-           let itemCount = CGFloat(viewControllers?.count ?? 1)
-           let widthPerItem = tabBar.bounds.width / itemCount
-           let height = tabBar.bounds.height
+        let tabBarWidth = tabBar.bounds.width
+        let tabBarHeight = tabBar.bounds.height
+        let itemCount = CGFloat(viewControllers?.count ?? 1)
 
-           UIGraphicsBeginImageContextWithOptions(CGSize(width: widthPerItem, height: height), false, 0)
-           let pillW: CGFloat = 40
-           let pillH: CGFloat = 40
-           let pillX = (widthPerItem - pillW) / 2
-           let pillY = (height - pillH) / 2
-           let pillRect = CGRect(x: pillX, y: pillY, width: pillW, height: pillH)
+        guard tabBarWidth > 0, tabBarHeight > 0,
+              tabBarWidth.isFinite, tabBarHeight.isFinite,
+              itemCount > 0 else {
+            print("❌ Invalid tabBar layout: width = \(tabBarWidth), height = \(tabBarHeight)")
+            return
+        }
 
-           let path = UIBezierPath(roundedRect: pillRect, cornerRadius: 10)
-           UIColor.systemPurple.withAlphaComponent(0.3).setFill()
-           path.fill()
-           let pillImage = UIGraphicsGetImageFromCurrentImageContext()?.resizableImage(withCapInsets: .zero)
-           UIGraphicsEndImageContext()
+        let widthPerItem = tabBarWidth / itemCount
+        let height = tabBarHeight
 
-           appearance.selectionIndicatorImage = pillImage
+        // Create selection indicator image using UIGraphicsImageRenderer
+        let size = CGSize(width: widthPerItem, height: height)
+        let renderer = UIGraphicsImageRenderer(size: size)
+        let pillImage = renderer.image { context in
+            let pillW: CGFloat = 40
+            let pillH: CGFloat = 40
+            let pillX = (widthPerItem - pillW) / 2
+            let pillY = (height - pillH) / 2
+            let pillRect = CGRect(x: pillX, y: pillY, width: pillW, height: pillH)
 
-           appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
-               .font: FontManager.inter(.regular, size: 10.0),
-               .foregroundColor: UIColor.black
-           ]
-           appearance.stackedLayoutAppearance.selected.titleTextAttributes = [
+            let path = UIBezierPath(roundedRect: pillRect, cornerRadius: 10)
+            UIColor.systemPurple.withAlphaComponent(0.3).setFill()
+            path.fill()
+        }.resizableImage(withCapInsets: .zero)
+
+        // Set up tab bar appearance
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
+        appearance.selectionIndicatorImage = pillImage
+
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
             .font: FontManager.inter(.regular, size: 10.0),
-               .foregroundColor: UIColor(red: 0, green: 0.71, blue: 0.83, alpha: 1)
-           ]
-           appearance.stackedLayoutAppearance.normal.iconColor = .black
-           appearance.stackedLayoutAppearance.selected.iconColor = UIColor(red: 0, green: 0.71, blue: 0.83, alpha: 1)
+            .foregroundColor: UIColor.black
+        ]
+        appearance.stackedLayoutAppearance.selected.titleTextAttributes = [
+            .font: FontManager.inter(.regular, size: 10.0),
+            .foregroundColor: UIColor(red: 0, green: 0.71, blue: 0.83, alpha: 1)
+        ]
+        appearance.stackedLayoutAppearance.normal.iconColor = .black
+        appearance.stackedLayoutAppearance.selected.iconColor = UIColor(red: 0, green: 0.71, blue: 0.83, alpha: 1)
 
-           tabBar.standardAppearance = appearance
-           if #available(iOS 15.0, *) {
-               tabBar.scrollEdgeAppearance = appearance
-           }
+        tabBar.standardAppearance = appearance
+        if #available(iOS 15.0, *) {
+            tabBar.scrollEdgeAppearance = appearance
+        }
 
-           tabBar.tintColor = UIColor(red: 0, green: 0.71, blue: 0.83, alpha: 1)
-           tabBar.unselectedItemTintColor = .black
-       }
+        tabBar.tintColor = UIColor(red: 0, green: 0.71, blue: 0.83, alpha: 1)
+        tabBar.unselectedItemTintColor = .black
+    }
 
        override func viewDidLayoutSubviews() {
            super.viewDidLayoutSubviews()

@@ -58,6 +58,10 @@ class LogInVM {
         UserStore.shared.refreshToken { (success, result: OtpResponse?, statusCode: Int?) in
             if success {
                 print("🔄 Refresh token success:", result as Any)
+                if let val = result {
+                    UserDefaultsManager.shared.bearerToken = val.data?.accessToken
+                    UserDefaultsManager.shared.refreshToken = val.data?.refreshToken
+                }
                 completion(true, result, statusCode)
             } else {
                 print("❌ Refresh token failed")
@@ -66,7 +70,30 @@ class LogInVM {
         }
     }
 
-
-  
+    func chooseRoleType(
+        otpRequest: ChooseRoleTypeRequest,
+        completion: @escaping (_ success: Bool, _ result: RoleTypeResponse?, _ statusCode: Int?) -> Void
+    ){
+        UserStore.shared.chooseRoleType(params: otpRequest.asDictionary) { (success, result: RoleTypeResponse?, statusCode: Int?) in
+            if success {
+                print("🔄 Role Type Api:", result as Any)
+                
+                if let val = result {
+                    UserDefaultsManager.shared.bearerToken = val.data?.accessToken
+                    UserDefaultsManager.shared.refreshToken = val.data?.refreshToken
+                    UserDefaults.standard.set(val.data?.subRoleType, forKey: "UserRoleType")
+                    UserDefaults.standard.synchronize() // optional
+                }
+                
+                
+                completion(true, result, statusCode)
+            } else {
+                print("❌ Refresh token failed")
+                completion(true, result, statusCode)
+            }
+        }
+        
+        
+    }
 
 }

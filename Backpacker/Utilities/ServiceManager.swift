@@ -296,8 +296,8 @@ class ServiceManager: NSObject {
     
     
     @objc func getHeaders()->[String:String]{
-       // guard let apiToken = LocalStore.shared.sessionToken else {return [:]}
-        let httpHeaders = ["Authorization":"Bearer \("dndndn")"]
+        guard let apiToken = UserDefaultsManager.shared.bearerToken else {return [:]}
+        let httpHeaders = ["Authorization":"Bearer \(apiToken)"]
         print("HEADERS: ",httpHeaders)
         return httpHeaders
     }

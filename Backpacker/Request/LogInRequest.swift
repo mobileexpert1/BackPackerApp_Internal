@@ -51,3 +51,7 @@ struct ResendOtpRequest : AppRequest {
     var userId : String
     
 }
+struct ChooseRoleTypeRequest : AppRequest {
+    var subRoleType : String
+    
+}

@@ -27,20 +27,23 @@ class SlotTVC: UITableViewCell {
           formatter.locale = Locale(identifier: "en_US")
           return formatter
       }()
-      
+    var onTimeChanged: ((_ startTime: String, _ endTime: String) -> Void)?
+
     override func awakeFromNib() {
            super.awakeFromNib()
            setUpUI()
            configureTimePickers()
        }
     
-       @objc private func startTimeChanged(_ sender: UIDatePicker) {
-           txtFld_StartTime.text = timeFormatter.string(from: sender.date)
-       }
+    @objc private func startTimeChanged(_ sender: UIDatePicker) {
+        txtFld_StartTime.text = timeFormatter.string(from: sender.date)
+        onTimeChanged?(txtFld_StartTime.text ?? "", txtFld_EndTime.text ?? "")
+    }
 
-       @objc private func endTimeChanged(_ sender: UIDatePicker) {
-           txtFld_EndTime.text = timeFormatter.string(from: sender.date)
-       }
+    @objc private func endTimeChanged(_ sender: UIDatePicker) {
+        txtFld_EndTime.text = timeFormatter.string(from: sender.date)
+        onTimeChanged?(txtFld_StartTime.text ?? "", txtFld_EndTime.text ?? "")
+    }
 
        @objc private func doneButtonTapped() {
            txtFld_StartTime.resignFirstResponder()

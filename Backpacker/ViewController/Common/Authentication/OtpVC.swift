@@ -228,19 +228,13 @@ extension OtpVC {
                     if result?.success == true {
                         AlertManager.showSingleButtonAlert(on: self, message: result?.message ?? "Success") {
                             
-                            
 #if BackpackerHire
-                            let storyboard = UIStoryboard(name: "MainTabBarEmpStoryboard", bundle: nil)
-                            let rootVC = storyboard.instantiateViewController(withIdentifier: "MainTabBarEmpController")
-                            UIApplication.setRootViewController(rootVC)
-#else
                             let storyboard = UIStoryboard(name: "Main", bundle: nil)
                             let rootVC = storyboard.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as! ChooseRoleTypeVC
                             self.navigationController?.pushViewController(rootVC, animated: true)
-                            
-                            
-//                            let tabBarVC = UIStoryboard(name: "TabBarController", bundle: nil).instantiateViewController(withIdentifier: "MainTabBarController")
-//                            UIApplication.setRootViewController(tabBarVC)
+#else
+                            let tabBarVC = UIStoryboard(name: "TabBarController", bundle: nil).instantiateViewController(withIdentifier: "MainTabBarController")
+                            UIApplication.setRootViewController(tabBarVC)
                             
 #endif
                             

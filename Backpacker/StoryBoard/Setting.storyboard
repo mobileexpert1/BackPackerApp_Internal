@@ -863,6 +863,9 @@ nec turpis facilisis hendrerit</string>
                             <constraint firstItem="VRY-lo-goF" firstAttribute="trailing" secondItem="HHr-2p-Ydg" secondAttribute="trailing" constant="30" id="vgU-rv-zEN"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="lbl_titlle" destination="oMb-6K-fzN" id="ad5-yY-j4L"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ziw-eU-tZN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1260,7 +1263,7 @@ nec turpis facilisis hendrerit</string>
     <resources>
         <image name="Back Arrow" width="9" height="15"/>
         <image name="Close" width="19" height="21"/>
-        <image name="Delete_icon" width="25" height="25"/>
+        <image name="Delete_icon" width="29.333333969116211" height="32.333332061767578"/>
         <image name="backward2" width="10.333333015441895" height="17.333333969116211"/>
         <image name="drpDown" width="29" height="20"/>
         <image name="on" width="16.333333969116211" height="16.333333969116211"/>
