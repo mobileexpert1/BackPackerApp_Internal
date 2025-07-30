@@ -13,6 +13,7 @@ class FavourateJobVC: UIViewController {
     @IBOutlet weak var lbl_MainHeader: UILabel!
     var selectedIndexHeader =  0
     var isComeFromAcceptDeclineJobs : Bool = false
+    let role = UserDefaults.standard.string(forKey: "UserRoleType")
 #if Backapacker
     var headerTirle = ["Accomodations","Hangout","Jobs"]
 #else
@@ -60,6 +61,7 @@ class FavourateJobVC: UIViewController {
     var filteredDesignations: [String] = []
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.lbl_MainHeader.text = "Favorite"
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
         let nib = UINib(nibName: "HomeJobCVC", bundle: nil)
         CoLLectIonVwMain.register(nib, forCellWithReuseIdentifier: "HomeJobCVC")
@@ -69,17 +71,29 @@ class FavourateJobVC: UIViewController {
         headerCollView.register(UINib(nibName: "MainJobCVC", bundle: nil), forCellWithReuseIdentifier: "MainJobCVC")
         
         
-        self.headerCollView.delegate = self
-        self.headerCollView.dataSource = self
-        headerCollView.scrollToItem(at: IndexPath(item: selectedIndexHeader, section: 0), at: .centeredHorizontally, animated: false)
+//        self.headerCollView.delegate = self
+//        self.headerCollView.dataSource = self
+//        headerCollView.scrollToItem(at: IndexPath(item: selectedIndexHeader, section: 0), at: .centeredHorizontally, animated: false)
         
         self.CoLLectIonVwMain.delegate = self
         self.CoLLectIonVwMain.dataSource = self
         if let layout = CoLLectIonVwMain.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.scrollDirection = .vertical
         }
+#if BackpackerHire
+        if role == "3"{
+            self.selectedIndexHeader = 0
+           
+        }else if role == "4"{
+            self.selectedIndexHeader = 0
+        }else{
+            self.selectedIndexHeader = 1
+        }
+       
+        #else
         
         
+#endif
         
     }
     
@@ -162,9 +176,28 @@ extension FavourateJobVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
                         return UICollectionViewCell()
                     }
-                    cell.lbl_Title.text = accommodations[indexPath.row]
-                    cell.imgVw.image = UIImage(named: "aCCOMODATION")
-                    cell.lblAmount.isHidden = false
+                    if role == "3"{
+                        cell.lbl_Title.text = accommodations[indexPath.row]
+                        cell.imgVw.image = UIImage(named: "aCCOMODATION")
+                        cell.lblAmount.isHidden = false
+                        cell.lblRating.isHidden = true
+                        cell.lbl_review.isHidden = true
+                        cell.cosmosVw.isHidden = true
+                    }else if role == "4"{
+                        cell.lbl_Title.text = accommodations[indexPath.row]
+                        cell.imgVw.image = UIImage(named: "restaurantImg")
+                        cell.lblRating.isHidden = true
+                        cell.lbl_review.isHidden = true
+                        cell.lblAmount.isHidden = true
+                        cell.cosmosVw.isHidden = true
+                    }else{
+                        cell.lbl_Title.text = accommodations[indexPath.row]
+                        cell.imgVw.image = UIImage(named: "aCCOMODATION")
+                        cell.lblRating.isHidden = true
+                        cell.lbl_review.isHidden = true
+                        cell.lblAmount.isHidden = true
+                    }
+                   
                     return cell
                 }
                 else{
@@ -252,7 +285,14 @@ extension FavourateJobVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                
             }else{
                 if selectedIndexHeader == 0{
-                    return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 240) // Adjust height based on content
+                    if role == "4"{
+                        return CGSize(width: (collectionView.bounds.width/2) - 3 , height: 205) // Adjust height based on content
+                    }else  if role == "3"{
+                        return CGSize(width: (collectionView.bounds.width/2) - 3 , height: 235) // Adjust height based on content
+                    }else{
+                        return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 240) // Adjust height based on content
+                    }
+                   
                 }
                 else{
                     return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 180) // Adjust height based on content
@@ -291,7 +331,14 @@ extension FavourateJobVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         if collectionView == CoLLectIonVwMain{
-            return 10
+            if role == "4"{
+                return 2
+            }else if role == "3"{
+                return 2
+            }else{
+                return 10
+            }
+            
         }else{
             return 0
         }

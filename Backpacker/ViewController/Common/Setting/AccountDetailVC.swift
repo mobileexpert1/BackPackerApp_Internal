@@ -10,6 +10,7 @@ import UIKit
 class AccountDetailVC: UIViewController {
     @IBOutlet weak var EmailVw: CommonTxtFldLblVw!
     
+    @IBOutlet weak var visaTypeHeight: NSLayoutConstraint!
     @IBOutlet weak var AreaVW: CommonTxtFldLblVw!
     @IBOutlet weak var CountryVw: CommonTxtFldLblVw!
     @IBOutlet weak var stateVw: CommonTxtFldLblVw!
@@ -44,6 +45,7 @@ class AccountDetailVC: UIViewController {
         "Investor Visa"
     ]
     @IBOutlet weak var lblzHeaderVisa: UILabel!
+    let role = UserDefaults.standard.string(forKey: "UserRoleType")
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpButtons()
@@ -55,6 +57,13 @@ class AccountDetailVC: UIViewController {
         self.tblVw_Visa.dataSource = self
         self.btn_Edit.tag = 0
         handleBottomBtn()
+        if role == "3" || role == "4"{
+            self.visaTypeHeight.constant = 0.0
+            self.visaVw.isHidden = true
+            self.btn_drpdwn.tag = 0
+            self.manageHeightOfTable()
+            self.btn_drpdwn.isHidden = true
+        }
     }
     private func setUPFLDS(){
        

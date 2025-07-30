@@ -24,6 +24,8 @@ class DescriptionController: UIViewController {
     
     //Value Outlets
  
+    @IBOutlet weak var val_Rate: UILabel!
+    @IBOutlet weak var header_raterPerhour: UILabel!
     @IBOutlet weak var lbl_Val_EndTime: UILabel!
     @IBOutlet weak var lbl_Val_StartTime: UILabel!
     @IBOutlet weak var lbl_Val_StartDate: UILabel!
@@ -48,12 +50,30 @@ class DescriptionController: UIViewController {
      }
 
      private func setupButtonBorders() {
+         self.header_raterPerhour.font = FontManager.inter(.semiBold, size: 14.0)
+         self.val_Rate.font = FontManager.inter(.medium, size: 14.0)
          btn_Accept.layer.cornerRadius = 10
          btn_Decline.layer.cornerRadius = 10
          applyGradientButtonStyle(to: btn_Accept)
          self.vwDate.addShadowAllSides(radius: 2)
          self.vwStartTime.addShadowAllSides(radius: 2)
          self.vwEndTime.addShadowAllSides(radius: 2)
+#if BackpackerHire
+         self.btn_Accept.isHidden = true
+         self.btn_Accept.isUserInteractionEnabled = false
+         
+         self.btn_Decline.isHidden = true
+         self.btn_Decline.isUserInteractionEnabled = false
+         
+         #else
+         self.btn_Accept.isHidden = false
+         self.btn_Accept.isUserInteractionEnabled = true
+         
+         self.btn_Decline.isHidden = false
+         self.btn_Decline.isUserInteractionEnabled = true
+         
+         
+#endif
      }
     
     

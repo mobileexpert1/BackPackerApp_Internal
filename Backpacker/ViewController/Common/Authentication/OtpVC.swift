@@ -218,9 +218,7 @@ extension OtpVC {
                 AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
                 return
             }
-            
             let httpStatus = HTTPStatusCode(rawValue: statusCode)
-            
             DispatchQueue.main.async {
                 LoaderManager.shared.hide()
                 switch httpStatus {
@@ -231,14 +229,12 @@ extension OtpVC {
 #if BackpackerHire
                             let storyboard = UIStoryboard(name: "Main", bundle: nil)
                             let rootVC = storyboard.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as! ChooseRoleTypeVC
+                            rootVC.isBackButtonHidden = false
                             self.navigationController?.pushViewController(rootVC, animated: true)
 #else
                             let tabBarVC = UIStoryboard(name: "TabBarController", bundle: nil).instantiateViewController(withIdentifier: "MainTabBarController")
                             UIApplication.setRootViewController(tabBarVC)
-                            
 #endif
-                            
-                            
                         }
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Invalid OTP")
@@ -249,19 +245,14 @@ extension OtpVC {
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
                             self.VerifyOtpApiCall() // Retry
                         } else {
-                            AlertManager.showSingleButtonAlert(on: self, message: refreshStatusCode?.description ?? "Internal Server Error" ){
-                                let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
-                                let nav = UINavigationController(rootViewController: loginVC)
-                                nav.navigationBar.isHidden = true
-                                UIApplication.setRootViewController(nav)
-                            }
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                         }
                     }
                     
                 case .unauthorized, .unauthorizedToken, .methodNotAllowed, .internalServerError:
-                    print("⚠️ \(httpStatus.description)")
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                 case .unknown:
-                    print("❓ Unknown error occurred.")
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
                 }
             }
         }
@@ -287,14 +278,9 @@ extension OtpVC {
                 case .badRequest:
                     AlertManager.showAlert(on: self, title: "Bad Request", message: "Please check your request parameters.")
                 case .unauthorized, .unauthorizedToken:
-                    AlertManager.showAlert(on: self, title: "Session Expired", message: "Please log in again.")
-                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
-                    let nav = UINavigationController(rootViewController: loginVC)
-                    nav.navigationBar.isHidden = true
-                    UIApplication.setRootViewController(nav)
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                 case .internalServerError:
-                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
-                    
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                 default:
                     AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
                 }

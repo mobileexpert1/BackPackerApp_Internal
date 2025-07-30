@@ -25,31 +25,36 @@ class MainTabBarEmpController: UITabBarController,UITabBarControllerDelegate {
     }
     
     private func setupTabsForUserRole() {
-        let role = UserDefaults.standard.integer(forKey: "UserRoleType")
+        let role = UserDefaults.standard.string(forKey: "UserRoleType")
         
         var viewControllers: [UIViewController] = []
         
         switch role {
-        case 2: // Employer
+        case "2": // Employer
             viewControllers = [
                 createTab(fromStoryboard: "EmployerHome", identifier: "EmployerHomeVC", title: "Home", image: "Home"),
                 createTab(fromStoryboard: "Job", identifier: "MainJobController", title: "Jobs", image: "Job Seeker"),
                 createTab(fromStoryboard: "Setting", identifier: "SettingVC", title: "Settings", image: "Setting")
             ]
-        case 3: // Accommodation
+        case "3": // Accommodation
             viewControllers = [
-                createTab(fromStoryboard: "EmployerHome", identifier: "EmployerHomeVC", title: "Home", image: "Home"),
+                createTab(fromStoryboard: "Home", identifier: "BackPackerHomeVC", title: "Home", image: "Home"),
                 createTab(fromStoryboard: "Accomodation", identifier: "EmployerAccomodationVC", title: "Accommodation", image: "Accommodation"),
                 createTab(fromStoryboard: "Setting", identifier: "SettingVC", title: "Settings", image: "Setting")
             ]
-        case 4: // Hangout
+        case "4": // Hangout
             viewControllers = [
-                createTab(fromStoryboard: "EmployerHome", identifier: "EmployerHomeVC", title: "Home", image: "Home"),
+                createTab(fromStoryboard: "Home", identifier: "BackPackerHomeVC", title: "Home", image: "Home"),
                 createTab(fromStoryboard: "HangOut", identifier: "HangOutVC", title: "HangOut", image: "hangout"),
                 createTab(fromStoryboard: "Setting", identifier: "SettingVC", title: "Settings", image: "Setting")
             ]
         default:
-            print("No valid role found.")
+            print("Role Type Is-----------------------------------------",role)
+            viewControllers = [
+                createTab(fromStoryboard: "EmployerHome", identifier: "EmployerHomeVC", title: "Home", image: "Home"),
+                createTab(fromStoryboard: "Job", identifier: "MainJobController", title: "Jobs", image: "Job Seeker"),
+                createTab(fromStoryboard: "Setting", identifier: "SettingVC", title: "Settings", image: "Setting")
+            ]
         }
         
         

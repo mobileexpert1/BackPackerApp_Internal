@@ -17,6 +17,7 @@ class HomeTVC: UITableViewCell {
     var onTap: (() -> Void)?
     var onTapAcceptJob: ((Int) -> Void)?
     var isComeForHireDetailPage : Bool = false
+    let role = UserDefaults.standard.string(forKey: "UserRoleType")
     override func awakeFromNib() {
         super.awakeFromNib()
         self.preservesSuperviewLayoutMargins = false
@@ -31,9 +32,16 @@ class HomeTVC: UITableViewCell {
         home_CollectionVw.register(nib2, forCellWithReuseIdentifier: "AddAccomodationCVC")
         let nib3 = UINib(nibName: "JobCountCVC", bundle: nil)
         home_CollectionVw.register(nib3, forCellWithReuseIdentifier: "JobCountCVC")
-        if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.scrollDirection = .vertical
+        if isComeForHireDetailPage == true{
+            if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
+                layout.scrollDirection = .vertical
+            }
+        }else{
+            if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
+                layout.scrollDirection = .horizontal
+            }
         }
+       
 #else
         if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.scrollDirection = .horizontal
@@ -77,7 +85,6 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 #if BackpackerHire
-        
         if isComeForHireDetailPage == true  {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
                 return UICollectionViewCell()
@@ -125,19 +132,54 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     return cell
                 }
             }else{
-                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
-                    return UICollectionViewCell()
+                
+                if role  == "4"{
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
+                        return UICollectionViewCell()
+                    }
+
+                    // Configure your cell
+                    // cell.titleLabel.text = dataArr[indexPath.item]
+                    cell.imgVw.image = UIImage(named: "restaurantImg")
+                    cell.lbl_Title.text = "Mendoza's Social Club"
+                    cell.lblAmount.isHidden = true
+                    cell.lblRating.isHidden = true
+                    cell.lbl_review.isHidden = true
+                    cell.cosmosVw.isHidden = true
+                    return cell
+                } else if role  == "3"{
+                    
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
+                        return UICollectionViewCell()
+                    }
+
+                    // Configure your cell
+                    // cell.titleLabel.text = dataArr[indexPath.item]
+                    cell.imgVw.image = UIImage(named: "aCCOMODATION")
+                    cell.lbl_Title.text = "Mendoza's Social Club"
+                    cell.lblAmount.isHidden = false
+                    cell.lblRating.isHidden = true
+                    cell.lbl_review.isHidden = true
+                    cell.cosmosVw.isHidden = true
+                    return cell
                 }
-                cell.onTap = { [weak self]  index in
-                      guard let self = self else { return }
-                      print("Cell tapped at index: \(indexPath.item)")
-                      // Navigate or perform any action
-                    self.onTap?()
-                  }
-                // Assign item to your label/image inside the cell
-                // cell.titleLabel.text = item
-                cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: isComeForHireDetailPage)
-                return cell
+                else{
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
+                        return UICollectionViewCell()
+                    }
+                    cell.onTap = { [weak self]  index in
+                          guard let self = self else { return }
+                          print("Cell tapped at index: \(indexPath.item)")
+                          // Navigate or perform any action
+                        
+                        self.onTap?()
+                      }
+                    // Assign item to your label/image inside the cell
+                    // cell.titleLabel.text = item
+                    cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: isComeForHireDetailPage)
+                    return cell
+                }
+            
             }
         }
       
@@ -147,8 +189,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
                 return UICollectionViewCell()
             }
-            // Assign item to your label/image inside the cell
-            // cell.titleLabel.text = item
+            cell.imgVw.image = UIImage(named: "aCCOMODATION")
+            cell.lbl_Title.text = "Mendoza's Social Club"
+            cell.lblAmount.isHidden = false
+            cell.lblRating.isHidden = true
+            cell.lbl_review.isHidden = true
+            cell.cosmosVw.isHidden = true
             return cell
         }else{
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
@@ -196,29 +242,34 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         if tableSection == 0 {
             return CGSize(width: (width / 2) - 5, height: 180)
         }else if tableSection == 1 {
-            if isComeForHireDetailPage  == true{
-                return CGSize(width: (width / 2) - 5, height: 180)
+            if role == "4"{
+                return CGSize(width: (width / 2) - 12, height: 205)
+            }else if role  == "3"{
+                return CGSize(width: (width / 2) - 12, height: 235)
             }else{
-                return CGSize(width: (width / 2) - 12, height: 180)
+                if isComeForHireDetailPage  == true{
+                    return CGSize(width: (width / 2) - 5, height: 180)
+                }else{
+                    return CGSize(width: (width / 2) - 12, height: 180)
+                }
             }
+          
            
         }else{
             return CGSize(width: (width / 2) - 12, height: 150)
         }
-        
-        
-       
+          
 #else
         if tableSection == 0 {
             if isComeFromJob == false{
-                return CGSize(width: (width / 2) - 12, height: 150)
+                return CGSize(width: (width / 2) - 12, height: 205)
             }else{
                 return CGSize(width: (width / 2) - 12, height: 180)
             }
             
         }else if tableSection == 1 || tableSection == 2 {
             if isComeFromJob == false{
-                return CGSize(width: (width / 2) - 12, height: 250)
+                return CGSize(width: (width / 2) - 12, height: 230)
             }else{
                 return CGSize(width: (width / 2) - 12, height: 180)
             }
@@ -258,11 +309,26 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 }else{
                     return 0
                 }
-               
+                
             }
             
         }else{
+#if BackpackerHire
+            if role == "4" {
+                return 0
+            }else if role == "3" {
+                return 0
+            }else{
+                return 10
+            }
+            
+            #else
+            
             return 10
+#endif
+            
+            
+            
         }
        
     }
@@ -275,6 +341,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             if isComeFromJob == true{
                 return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
             }else{
+                
                 if isComeForHireDetailPage == true{
                     return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
                 }else{
@@ -284,7 +351,20 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             }
            
         }else{
+            
+#if BackpackerHire
+            if role == "4" {
+                return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
+            }else{
+                return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
+            }
+            
+            #else
+            
             return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
+#endif
+        
+           
         }
       
     }

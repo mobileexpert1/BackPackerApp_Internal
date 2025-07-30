@@ -15,7 +15,7 @@ class MainJobController: UIViewController {
     @IBOutlet weak var containerVw: UIView!
     @IBOutlet weak var collVw: UICollectionView!
 #if BackpackerHire
-    let colArray = ["Job Post","Backpackers"]
+    let colArray = ["Job Post","Backpackers","Calendar"]
  
         let designationsJobs : [JobsDesignation] = [
             JobsDesignation(Name: "Software Engineer", star: "5 Star",distance: "10 Km"),
@@ -122,6 +122,9 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
         case 1:
             storyboardName = "Job"
             vcIdentifier = "EmployerBackPackerListVC"
+        case 2:
+            storyboardName = "Calendar"
+            vcIdentifier = "EmployerCalendarVC"
         default:
             return
         }

@@ -9,20 +9,23 @@ import UIKit
 
 class EmployerHomeVC: UIViewController {
 
+    @IBOutlet weak var header_Imahe: UIImageView!
+    @IBOutlet weak var mainHeaderVwHeight: NSLayoutConstraint!
     @IBOutlet weak var lbl_NotificationCount: UILabel!
     @IBOutlet weak var notificatiobBadgeVw: UIView!
     @IBOutlet weak var BgVwNotification: UIView!
     @IBOutlet weak var cahtBgVw: UIView!
     @IBOutlet weak var lbl_MainHeader: UILabel!
     
+    @IBOutlet weak var headerIMg_Width: NSLayoutConstraint!
     @IBOutlet weak var tblVw: UITableView!
-    let roleType = UserDefaults.standard.integer(forKey: "UserRoleType")
+    let roleType = UserDefaults.standard.string(forKey: "UserRoleType")
     var sectionTitles = ["", "Accomodations", "Jobs"]
     override func viewDidLoad() {
         super.viewDidLoad()
-        if roleType == 2 {
+        if roleType == "2" {
             sectionTitles = ["", "Jobs"]
-        }else if roleType == 3 {
+        }else if roleType == "3" {
             sectionTitles = ["", "Accomodations"]
         }else{
             sectionTitles = ["", "HangOuts"]
@@ -48,7 +51,19 @@ class EmployerHomeVC: UIViewController {
         self.lbl_NotificationCount.font = FontManager.inter(.medium, size: 8.0)
     }
     
-
+    func showTopView(isShow : Bool = false,title : String = "Employer"){
+        if isShow == true{
+            self.lbl_MainHeader.text = title
+            cahtBgVw.isHidden = true
+            BgVwNotification.isHidden = true
+            self.headerIMg_Width.constant = 0.0
+        }else{
+            self.lbl_MainHeader.text = "Employer"
+            cahtBgVw.isHidden = false
+            BgVwNotification.isHidden = false
+            self.headerIMg_Width.constant = 22.0
+        }
+    }
 
 }
 

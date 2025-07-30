@@ -22,7 +22,8 @@ class FilterVC: UIViewController {
     let header = ["Filter","Sort by"]
     let filterArrya = ["Free Wifi","Swimming Pool","Laundary","TV"]
     let SortrArrya = ["Price (lowest first)","Price (highest first)"]
-    var selectedFilterIndex: Int?
+    var selectedFilterIndexes: Set<Int> = []
+
     var selectedSortIndex: Int?
 
     override func viewDidLoad() {
@@ -117,15 +118,15 @@ extension FilterVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
         if indexPath.section == 0 {
-             let cell = tableView.dequeueReusableCell(withIdentifier: "FacilityTVC", for: indexPath) as! FacilityTVC
-             cell.lblTitle.text = filterArrya[indexPath.row]
-             
-             if selectedFilterIndex == indexPath.row {
-                 cell.imgCheckBox.image = UIImage(named: "Checkbox2")
-             } else {
-                 cell.imgCheckBox.image = UIImage(named: "Checkbox")
-             }
-             return cell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "FacilityTVC", for: indexPath) as! FacilityTVC
+            cell.lblTitle.text = filterArrya[indexPath.row]
+
+            if selectedFilterIndexes.contains(indexPath.row) {
+                cell.imgCheckBox.image = UIImage(named: "Checkbox2")
+            } else {
+                cell.imgCheckBox.image = UIImage(named: "Checkbox")
+            }
+            return cell
 
          } else {
              let cell = tableView.dequeueReusableCell(withIdentifier: "SortTByVC", for: indexPath) as! SortTByVC
@@ -142,11 +143,11 @@ extension FilterVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
                 // Toggle selection for filter section
-                if selectedFilterIndex == indexPath.row {
-                    selectedFilterIndex = nil // unselect
-                } else {
-                    selectedFilterIndex = indexPath.row // select new
-                }
+            if selectedFilterIndexes.contains(indexPath.row) {
+                   selectedFilterIndexes.remove(indexPath.row)
+               } else {
+                   selectedFilterIndexes.insert(indexPath.row)
+               }
             } else if indexPath.section == 1 {
                 // Toggle selection for sort section
                 if selectedSortIndex == indexPath.row {

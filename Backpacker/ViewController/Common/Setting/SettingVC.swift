@@ -11,8 +11,9 @@ class SettingVC: UIViewController {
 
     @IBOutlet weak var lbl_Title: UILabel!
     @IBOutlet weak var tblVw: UITableView!
+    let role = UserDefaults.standard.string(forKey: "UserRoleType")
 #if BackpackerHire
-    let menuItems: [MenuItem] = [
+    var menuItems: [MenuItem] = [
         MenuItem(iconName: "Profile1", title: "Profile"),
         MenuItem(iconName: "user-setting 1", title: "Subscription Plan"),
         MenuItem(iconName: "Terms and Conditions", title: "History"),
@@ -27,7 +28,7 @@ class SettingVC: UIViewController {
     
     #else
       
-    let menuItems: [MenuItem] = [
+    var menuItems: [MenuItem] = [
         MenuItem(iconName: "Profile1", title: "Profile"),
         MenuItem(iconName: "Calendar1", title: "Availability"),
         MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
@@ -44,6 +45,29 @@ class SettingVC: UIViewController {
         super.viewDidLoad()
         let nib = UINib(nibName: "SettingTVC", bundle: nil)
         self.tblVw.register(nib, forCellReuseIdentifier: "SettingTVC")
+        
+        if role == "4"{
+            menuItems = [
+                MenuItem(iconName: "Profile1", title: "Profile"),
+                MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
+                MenuItem(iconName: "Heart", title: "Favorite Hangout"),
+                MenuItem(iconName: "Error", title: "Report Issue"),
+                MenuItem(iconName: "User Shield", title: "Privacy Policy"),
+                MenuItem(iconName: "Delete", title: "Delete Account"),
+                MenuItem(iconName: "Logout", title: "Log Out")
+            ]
+        }else if role == "3"{
+            menuItems = [
+                MenuItem(iconName: "Profile1", title: "Profile"),
+                MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
+                MenuItem(iconName: "Heart", title: "Favorite Accomodations"),
+                MenuItem(iconName: "Error", title: "Report Issue"),
+                MenuItem(iconName: "User Shield", title: "Privacy Policy"),
+                MenuItem(iconName: "Delete", title: "Delete Account"),
+                MenuItem(iconName: "Logout", title: "Log Out")
+            ]
+        }
+        
         self.tblVw.delegate = self
         self.tblVw.dataSource = self
         // Do any additional setup after loading the view.
@@ -81,76 +105,206 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let storyboard = UIStoryboard(name: "Setting", bundle: nil)
 #if BackpackerHire
-        switch indexPath.row {
-        case 0:
-            if let vc = storyboard.instantiateViewController(withIdentifier: "AccountDetailVC") as? AccountDetailVC {
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-        case 1:
-            if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-        case 2:
-            if let vc = storyboard.instantiateViewController(withIdentifier: "CommonHistoryVC") as? CommonHistoryVC {
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-        case 3:
-            if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                vc.isComeFromPrivacy = false
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-        case 4:
-            if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
-                vc.isComeFromAcceptDeclineJobs = false
-                
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-        case 5:
-            if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-
-        case 6:
-            if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                vc.isComeFromPrivacy = true
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-
-        case 7:
-            AlertManager.showConfirmationAlert(on: self,
-                                               title: "Delete Account",
-                                               message: "Are you sure you want to delete the account?",
-                                               confirmAction: {
-                if let popupVC = storyboard.instantiateViewController(withIdentifier: "DeletePopUpVC") as? DeletePopUpVC {
-                    popupVC.modalPresentationStyle = .overCurrentContext
-                    popupVC.modalTransitionStyle = .crossDissolve
-                    self.present(popupVC, animated: true, completion: nil)
+        
+        if role == "4"{
+            switch indexPath.row {
+            case 0:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "AccountDetailVC") as? AccountDetailVC {
+                    self.navigationController?.pushViewController(vc, animated: true)
                 }
-                
-            })
-        case 8:
-             
-            AlertManager.showConfirmationAlert(on: self,
-                                               title: "Logout",
-                                               message: "Are you sure you want to logout?",
-                                               confirmAction: {
-                
-                UserDefaults.standard.removeObject(forKey: "UserRoleType")
-                UserDefaults.standard.synchronize()
-                let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
-                let nav = UINavigationController(rootViewController: loginVC)
-                nav.navigationBar.isHidden = true
+            case 1:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+                    vc.isComeFromPrivacy = false
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 2:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
+                    vc.isComeFromAcceptDeclineJobs = false
+                    
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 3:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
 
-                SceneDelegate.setRootViewController(nav)
-                
-                
-                
-            })
+            case 4:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+                    vc.isComeFromPrivacy = true
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
 
-            
-        default:
-            break
+            case 5:
+                AlertManager.showConfirmationAlert(on: self,
+                                                   title: "Delete Account",
+                                                   message: "Are you sure you want to delete the account?",
+                                                   confirmAction: {
+                    if let popupVC = storyboard.instantiateViewController(withIdentifier: "DeletePopUpVC") as? DeletePopUpVC {
+                        popupVC.modalPresentationStyle = .overCurrentContext
+                        popupVC.modalTransitionStyle = .crossDissolve
+                        self.present(popupVC, animated: true, completion: nil)
+                    }
+                    
+                })
+            case 6:
+                 
+                AlertManager.showConfirmationAlert(on: self,
+                                                   title: "Logout",
+                                                   message: "Are you sure you want to logout?",
+                                                   confirmAction: {
+                    
+                    UserDefaults.standard.removeObject(forKey: "UserRoleType")
+                    UserDefaults.standard.synchronize()
+                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
+                    let nav = UINavigationController(rootViewController: loginVC)
+                    nav.navigationBar.isHidden = true
+
+                    SceneDelegate.setRootViewController(nav)
+                    
+                    
+                    
+                })
+
+                
+            default:
+                break
+            }
+        }else if role == "3"{
+            switch indexPath.row {
+            case 0:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "AccountDetailVC") as? AccountDetailVC {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 1:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+                    vc.isComeFromPrivacy = false
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 2:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
+                    vc.isComeFromAcceptDeclineJobs = false
+                    
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 3:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+
+            case 4:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+                    vc.isComeFromPrivacy = true
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+
+            case 5:
+                AlertManager.showConfirmationAlert(on: self,
+                                                   title: "Delete Account",
+                                                   message: "Are you sure you want to delete the account?",
+                                                   confirmAction: {
+                    if let popupVC = storyboard.instantiateViewController(withIdentifier: "DeletePopUpVC") as? DeletePopUpVC {
+                        popupVC.modalPresentationStyle = .overCurrentContext
+                        popupVC.modalTransitionStyle = .crossDissolve
+                        self.present(popupVC, animated: true, completion: nil)
+                    }
+                    
+                })
+            case 6:
+                 
+                AlertManager.showConfirmationAlert(on: self,
+                                                   title: "Logout",
+                                                   message: "Are you sure you want to logout?",
+                                                   confirmAction: {
+                    
+                    UserDefaults.standard.removeObject(forKey: "UserRoleType")
+                    UserDefaults.standard.synchronize()
+                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
+                    let nav = UINavigationController(rootViewController: loginVC)
+                    nav.navigationBar.isHidden = true
+
+                    SceneDelegate.setRootViewController(nav)
+                    
+                    
+                    
+                })
+
+                
+            default:
+                break
+            }
+        }else{
+            switch indexPath.row {
+            case 0:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "AccountDetailVC") as? AccountDetailVC {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 1:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 2:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "CommonHistoryVC") as? CommonHistoryVC {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 3:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+                    vc.isComeFromPrivacy = false
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 4:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
+                    vc.isComeFromAcceptDeclineJobs = false
+                    
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 5:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+
+            case 6:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+                    vc.isComeFromPrivacy = true
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+
+            case 7:
+                AlertManager.showConfirmationAlert(on: self,
+                                                   title: "Delete Account",
+                                                   message: "Are you sure you want to delete the account?",
+                                                   confirmAction: {
+                    if let popupVC = storyboard.instantiateViewController(withIdentifier: "DeletePopUpVC") as? DeletePopUpVC {
+                        popupVC.modalPresentationStyle = .overCurrentContext
+                        popupVC.modalTransitionStyle = .crossDissolve
+                        self.present(popupVC, animated: true, completion: nil)
+                    }
+                    
+                })
+            case 8:
+                 
+                AlertManager.showConfirmationAlert(on: self,
+                                                   title: "Logout",
+                                                   message: "Are you sure you want to logout?",
+                                                   confirmAction: {
+                    
+                    UserDefaults.standard.removeObject(forKey: "UserRoleType")
+                    UserDefaults.standard.synchronize()
+                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
+                    let nav = UINavigationController(rootViewController: loginVC)
+                    nav.navigationBar.isHidden = true
+
+                    SceneDelegate.setRootViewController(nav)
+                    
+                    
+                    
+                })
+
+                
+            default:
+                break
+            }
         }
+       
         
         
         #else

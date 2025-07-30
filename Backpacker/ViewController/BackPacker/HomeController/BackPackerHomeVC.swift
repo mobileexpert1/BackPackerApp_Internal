@@ -18,10 +18,29 @@ class BackPackerHomeVC: UIViewController {
     @IBOutlet weak var Vw_Chat: UIView!
     @IBOutlet weak var lblMainHeader: UILabel!
     
-    let sectionTitles = ["","Accommodations","Backpackers Hangout","Jobs"]
-    
+    @IBOutlet weak var mainHeaderImgWidth: NSLayoutConstraint!
+    var sectionTitles = ["","Accommodations","Backpackers Hangout","Jobs"]
+    let role = UserDefaults.standard.string(forKey: "UserRoleType")
     override func viewDidLoad() {
         super.viewDidLoad()
+#if BackpackerHire
+        if role == "2" {
+            sectionTitles = ["","Jobs"]
+        }else if role == "3" {
+            sectionTitles = ["","Accommodations"]
+            self.showTopView(isShow: true,title: "Backpackers Accommodations")
+        }else if role == "4" {
+            sectionTitles = ["","Hangout"]
+            self.showTopView(isShow: true,title: "Backpackers Hangout")
+        }else{
+            sectionTitles = ["","Accommodations","Backpackers Hangout","Jobs"]
+            self.showTopView(isShow: false,title: "Backpackers Hangout")
+        }
+        #else
+        sectionTitles = ["","Accommodations","Backpackers Hangout","Jobs"]
+        #endif
+        
+       
         self.setUpUI()
         let nib = UINib(nibName: "HomeTVC", bundle: nil)
         self.homeTblVw.register(nib, forCellReuseIdentifier: "HomeTVC")
@@ -41,9 +60,25 @@ class BackPackerHomeVC: UIViewController {
         
         txtFldVw.delegate = self
     }
-    
+    func showTopView(isShow : Bool = false,title : String = "Employer"){
+        if isShow == true{
+            self.lblMainHeader.text = title
+          
+            Vw_Chat.isHidden = true
+            notifictionCountBgVw.isHidden = true
+            VW_Noitication.isHidden = true
+            self.mainHeaderImgWidth.constant = 22.0
+        }else{
+            self.lblMainHeader.text = "Employer"
+            Vw_Chat.isHidden = false
+            notifictionCountBgVw.isHidden = false
+            VW_Noitication.isHidden = false
+            self.mainHeaderImgWidth.constant = 22.0
+        }
+    }
+
     func setUpUI(){
-        self.lblMainHeader.font = FontManager.inter(.bold, size: 14.0)
+        self.lblMainHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.homeTblVw.delegate = self
         self.homeTblVw.dataSource = self
         self.searchVw.layer.cornerRadius = 22.5
@@ -105,22 +140,47 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                    return cell
             }
           else  if indexPath.section == 1 || indexPath.section == 2 {
+#if BackpackerHire
+              guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                  return UITableViewCell()
+              }
+              cell.configure(with: sectionTitles,section: indexPath.section)
+            cell.isComeFromJob = false
+            cell.isComeForHireDetailPage = false
+              // Handle final callback here
+                  cell.onAddAccommodation = { [weak self] in
+                  }
+              return cell
+              #else
+              
+              guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                  return UITableViewCell()
+              }
+              cell.configure(with: sectionTitles,section: indexPath.section)
+            cell.isComeFromJob = false
+            cell.isComeForHireDetailPage = false
+              // Handle final callback here
+                  cell.onAddAccommodation = { [weak self] in
+                  }
+              return cell
+#endif
+               
+            }else{
+                //guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmployerJobTVC", for: indexPath) as? EmployerJobTVC else {
+//                    return UITableViewCell()
+//                }
+//        //        let sectionItems = itemsPerSection[indexPath.section]
+//               // cell.configure(with: sectionTitles,section: indexPath.section)
+//                return cell
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
                     return UITableViewCell()
                 }
                 cell.configure(with: sectionTitles,section: indexPath.section)
-              cell.isComeFromJob = false
-              cell.isComeForHireDetailPage = false
+                cell.isComeFromJob = true
+               cell.isComeForHireDetailPage = false
                 // Handle final callback here
                     cell.onAddAccommodation = { [weak self] in
                     }
-                return cell
-            }else{
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmployerJobTVC", for: indexPath) as? EmployerJobTVC else {
-                    return UITableViewCell()
-                }
-        //        let sectionItems = itemsPerSection[indexPath.section]
-               // cell.configure(with: sectionTitles,section: indexPath.section)
                 return cell
             }
            
@@ -151,10 +211,24 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
             if indexPath.section == 0 {
                 return 160
-            }else if  indexPath.section == 1 || indexPath.section == 2 {
+            }else if  indexPath.section == 1  {
+#if BackpackerHire
+                if role == "4"   {
+                    return 420
+                }else if role == "3"{
+                    
+                    return 470
+                } else{
+                    return 380
+                }
+#else
+                return 230
+#endif
+            }else if indexPath.section == 2 {
+                return 230
+            }
+            else{
                 return 180
-            }else{
-                return 150
             }
           
         }

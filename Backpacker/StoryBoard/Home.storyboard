@@ -226,7 +226,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wnI-7f-W2z">
-                                <rect key="frame" x="15" y="129" width="363" height="45"/>
+                                <rect key="frame" x="15" y="124" width="363" height="45"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="search" translatesAutoresizingMaskIntoConstraints="NO" id="stk-aj-NBm">
                                         <rect key="frame" x="18" y="13.666666666666657" width="18" height="18"/>
@@ -262,7 +262,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" contentViewInsetsToSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wEE-t8-jSB">
-                                <rect key="frame" x="5" y="189" width="383" height="629"/>
+                                <rect key="frame" x="5" y="184" width="383" height="634"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                         </subviews>
@@ -278,7 +278,7 @@
                             <constraint firstItem="oIh-MW-ifi" firstAttribute="trailing" secondItem="1FX-Ay-hoV" secondAttribute="trailing" constant="5" id="ihG-Wa-Rb1"/>
                             <constraint firstItem="wnI-7f-W2z" firstAttribute="leading" secondItem="b37-dL-jdH" secondAttribute="leading" constant="15" id="lTZ-6t-mUL"/>
                             <constraint firstItem="1FX-Ay-hoV" firstAttribute="top" secondItem="oIh-MW-ifi" secondAttribute="top" id="tAq-pX-SUo"/>
-                            <constraint firstItem="wnI-7f-W2z" firstAttribute="top" secondItem="1FX-Ay-hoV" secondAttribute="bottom" constant="10" id="zN5-9s-uwE"/>
+                            <constraint firstItem="wnI-7f-W2z" firstAttribute="top" secondItem="1FX-Ay-hoV" secondAttribute="bottom" constant="5" id="zN5-9s-uwE"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="OKd-3v-bkI"/>
@@ -288,6 +288,7 @@
                         <outlet property="homeTblVw" destination="wEE-t8-jSB" id="cG1-aJ-Yme"/>
                         <outlet property="lblMainHeader" destination="iM9-7p-w3P" id="2f6-Vh-iwq"/>
                         <outlet property="lbl_NotificationCount" destination="QqA-mK-xvb" id="fuf-SL-s4C"/>
+                        <outlet property="mainHeaderImgWidth" destination="aG8-IZ-2An" id="AQl-MM-nv1"/>
                         <outlet property="notifictionCountBgVw" destination="Ijn-fr-2KY" id="jIg-mM-3W5"/>
                         <outlet property="searchVw" destination="wnI-7f-W2z" id="n2z-1y-1Jx"/>
                         <outlet property="txtFldVw" destination="bx9-c9-mqg" id="lJC-xk-ZhQ"/>

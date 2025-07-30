@@ -54,7 +54,7 @@
         <!--Common HistoryVC-->
         <scene sceneID="pFK-dv-eoj">
             <objects>
-                <viewController storyboardIdentifier="CommonHistoryVC" id="07T-OW-3zB" customClass="CommonHistoryVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CommonHistoryVC" hidesBottomBarWhenPushed="YES" id="07T-OW-3zB" customClass="CommonHistoryVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="HzH-Ih-Llu">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -107,7 +107,7 @@
         <!--SubscriptionVC-->
         <scene sceneID="LHb-J5-kHz">
             <objects>
-                <viewController storyboardIdentifier="SubscriptionVC" id="fbO-gB-yxb" customClass="SubscriptionVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SubscriptionVC" hidesBottomBarWhenPushed="YES" id="fbO-gB-yxb" customClass="SubscriptionVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="5q2-ll-XiL">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -444,7 +444,7 @@ the payment </string>
         <!--Terms ConditionVC-->
         <scene sceneID="6rb-DO-H27">
             <objects>
-                <viewController storyboardIdentifier="TermsConditionVC" id="A4b-wH-Two" customClass="TermsConditionVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TermsConditionVC" hidesBottomBarWhenPushed="YES" id="A4b-wH-Two" customClass="TermsConditionVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3kd-ff-RoS">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -513,7 +513,7 @@ nec turpis facilisis hendrerit</string>
         <!--View Controller-->
         <scene sceneID="AaG-78-HFH">
             <objects>
-                <viewController id="I2m-ca-yUp" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="I2m-ca-yUp" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="I07-Er-b15">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -528,7 +528,7 @@ nec turpis facilisis hendrerit</string>
         <!--Report IssueVC-->
         <scene sceneID="yCC-XY-JIS">
             <objects>
-                <viewController storyboardIdentifier="ReportIssueVC" id="ihm-qH-yLw" customClass="ReportIssueVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ReportIssueVC" hidesBottomBarWhenPushed="YES" id="ihm-qH-yLw" customClass="ReportIssueVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="arJ-Hm-lCK">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -649,7 +649,7 @@ nec turpis facilisis hendrerit</string>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w0Z-Uc-Ubc">
                                                         <rect key="frame" x="0.0" y="0.0" width="161.66666666666666" height="50"/>
-                                                        <color key="backgroundColor" name="blueColor"/>
+                                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="plain" title="Submit"/>
@@ -802,7 +802,7 @@ nec turpis facilisis hendrerit</string>
         <!--Delete Pop UpVC-->
         <scene sceneID="BNn-He-nvs">
             <objects>
-                <viewController storyboardIdentifier="DeletePopUpVC" id="H6e-qv-NJm" customClass="DeletePopUpVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="DeletePopUpVC" hidesBottomBarWhenPushed="YES" id="H6e-qv-NJm" customClass="DeletePopUpVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="IkK-pq-hb7">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -874,7 +874,7 @@ nec turpis facilisis hendrerit</string>
         <!--Account DetailVC-->
         <scene sceneID="Hup-Wx-PH1">
             <objects>
-                <viewController storyboardIdentifier="AccountDetailVC" id="2ai-vp-Ync" customClass="AccountDetailVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AccountDetailVC" hidesBottomBarWhenPushed="YES" id="2ai-vp-Ync" customClass="AccountDetailVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="blF-7M-4is">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1164,6 +1164,7 @@ nec turpis facilisis hendrerit</string>
                         <outlet property="tblVwHeight" destination="Dgn-hg-gTm" id="OtF-dD-GAb"/>
                         <outlet property="tblVw_Visa" destination="5nA-4U-Qme" id="9mk-mX-3uz"/>
                         <outlet property="vWHeightContraint" destination="Opr-eA-9Qu" id="sZ4-3E-HPL"/>
+                        <outlet property="visaTypeHeight" destination="sZz-nV-dpV" id="wKw-o5-Ibz"/>
                         <outlet property="visaVw" destination="FWM-9X-1mC" id="Ubk-EP-aC2"/>
                     </connections>
                 </viewController>
@@ -1174,7 +1175,7 @@ nec turpis facilisis hendrerit</string>
         <!--Favourate JobVC-->
         <scene sceneID="c5m-Ge-Dgb">
             <objects>
-                <viewController storyboardIdentifier="FavourateJobVC" id="mWx-S4-whW" customClass="FavourateJobVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="FavourateJobVC" hidesBottomBarWhenPushed="YES" id="mWx-S4-whW" customClass="FavourateJobVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="cBD-eS-jrU">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1198,7 +1199,7 @@ nec turpis facilisis hendrerit</string>
                                 <nil key="highlightedColor"/>
                             </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="KVG-P0-Y8C">
-                                <rect key="frame" x="20" y="164" width="353" height="634"/>
+                                <rect key="frame" x="10" y="114" width="373" height="684"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="fpF-Nr-aPs">
                                     <size key="itemSize" width="128" height="128"/>
@@ -1209,10 +1210,10 @@ nec turpis facilisis hendrerit</string>
                                 <cells/>
                             </collectionView>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="SOG-tB-FHq">
-                                <rect key="frame" x="20" y="99" width="353" height="60"/>
+                                <rect key="frame" x="20" y="99" width="353" height="10"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="60" id="h8i-Z2-baA"/>
+                                    <constraint firstAttribute="height" constant="10" id="h8i-Z2-baA"/>
                                 </constraints>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="pCY-Xz-Kes">
                                     <size key="itemSize" width="143" height="46"/>
@@ -1239,10 +1240,10 @@ nec turpis facilisis hendrerit</string>
                             <constraint firstAttribute="trailing" secondItem="thr-Bh-a46" secondAttribute="trailing" constant="20" id="34Z-MQ-4LH"/>
                             <constraint firstItem="SOG-tB-FHq" firstAttribute="top" secondItem="t0q-Kc-svr" secondAttribute="bottom" id="9Ae-mL-kl6"/>
                             <constraint firstItem="thr-Bh-a46" firstAttribute="leading" secondItem="OkS-dh-sdY" secondAttribute="leading" constant="15" id="Spq-h9-NPc"/>
-                            <constraint firstItem="OkS-dh-sdY" firstAttribute="trailing" secondItem="KVG-P0-Y8C" secondAttribute="trailing" constant="20" id="eSf-Og-jql"/>
+                            <constraint firstItem="OkS-dh-sdY" firstAttribute="trailing" secondItem="KVG-P0-Y8C" secondAttribute="trailing" constant="10" id="eSf-Og-jql"/>
                             <constraint firstItem="KVG-P0-Y8C" firstAttribute="top" secondItem="SOG-tB-FHq" secondAttribute="bottom" constant="5" id="ggS-BW-zNj"/>
                             <constraint firstItem="t0q-Kc-svr" firstAttribute="centerY" secondItem="thr-Bh-a46" secondAttribute="centerY" id="hLg-hK-vlz"/>
-                            <constraint firstItem="KVG-P0-Y8C" firstAttribute="leading" secondItem="OkS-dh-sdY" secondAttribute="leading" constant="20" id="joO-4J-2vV"/>
+                            <constraint firstItem="KVG-P0-Y8C" firstAttribute="leading" secondItem="OkS-dh-sdY" secondAttribute="leading" constant="10" id="joO-4J-2vV"/>
                             <constraint firstItem="t0q-Kc-svr" firstAttribute="top" secondItem="OkS-dh-sdY" secondAttribute="top" id="snJ-Sb-0gU"/>
                             <constraint firstItem="OkS-dh-sdY" firstAttribute="trailing" secondItem="SOG-tB-FHq" secondAttribute="trailing" constant="20" id="stH-oD-eY5"/>
                             <constraint firstItem="SOG-tB-FHq" firstAttribute="leading" secondItem="OkS-dh-sdY" secondAttribute="leading" constant="20" id="tML-MD-VFQ"/>
@@ -1269,9 +1270,6 @@ nec turpis facilisis hendrerit</string>
         <image name="on" width="16.333333969116211" height="16.333333969116211"/>
         <namedColor name="blackColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="blueColor">
-            <color red="0.24313725490196078" green="0.30980392156862746" blue="0.53333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="lightGray">
             <color red="0.96470588235294119" green="0.96470588235294119" blue="0.96470588235294119" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

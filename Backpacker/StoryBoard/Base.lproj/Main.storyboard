@@ -921,6 +921,7 @@ phone number </string>
                         <outlet property="BgVwHangout" destination="2vx-p4-xwG" id="6jn-eZ-waC"/>
                         <outlet property="Subtitle_Accomodation" destination="J1G-mr-guw" id="boq-UF-OQJ"/>
                         <outlet property="Tick_Img_Emp" destination="pHd-vK-14K" id="23k-vz-F16"/>
+                        <outlet property="back_Btn" destination="fLt-l1-Imj" id="VhT-vc-9QT"/>
                         <outlet property="btn_Save" destination="bgs-Kc-1F8" id="Mfh-hZ-0KE"/>
                         <outlet property="lbl_MainHeader" destination="ngY-2K-ehd" id="CHN-ci-OZG"/>
                         <outlet property="subTitle_Emp" destination="m8w-E4-q7T" id="1tB-tN-7cl"/>

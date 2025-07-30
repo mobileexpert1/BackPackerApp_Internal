@@ -26,9 +26,18 @@ class ChooseRoleTypeVC: UIViewController {
     @IBOutlet weak var BgVwHangout: UIView!
     @IBOutlet weak var btn_Save: UIButton!
     var viewModel = LogInVM()
+    @IBOutlet weak var back_Btn: UIButton!
+    var isBackButtonHidden : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUi()
+        if isBackButtonHidden == true{
+            back_Btn.isHidden = true
+            back_Btn.isUserInteractionEnabled = false
+        }else{
+            back_Btn.isHidden = false
+            back_Btn.isUserInteractionEnabled = true
+        }
         applyGradientButtonStyle(to: self.btn_Save)
         self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.btn_Save.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
@@ -161,26 +170,20 @@ class ChooseRoleTypeVC: UIViewController {
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Invalid OTP")
                     }
-                    
+
                 case .badRequest:
                     self.viewModel.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
                             self.ChooseRoleTypeApiCall() // Retry
                         } else {
-                            AlertManager.showSingleButtonAlert(on: self, message: refreshStatusCode?.description ?? "Internal Server Error" ){
-                                let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
-                                let nav = UINavigationController(rootViewController: loginVC)
-                                nav.navigationBar.isHidden = true
-                                UIApplication.setRootViewController(nav)
-                            }
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                         }
                     }
-                    
-                case .unauthorized, .unauthorizedToken, .methodNotAllowed, .internalServerError:
-                    print("⚠️ \(httpStatus.description)")
-                case .unknown:
-                    print("❓ Unknown error occurred.")
+
+                case .unauthorized, .unauthorizedToken, .methodNotAllowed, .internalServerError, .unknown:
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                 }
+
             }
         }
         

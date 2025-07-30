@@ -37,7 +37,7 @@ class BackPackerDetailVC: UIViewController {
     @IBOutlet weak var lbl_TotalJobs: UILabel!
     @IBOutlet weak var lbl_Address: UILabel!
     @IBOutlet weak var lbl_mainHeader: UILabel!
-    let Role =  UserDefaults.standard.integer(forKey: "UserRoleType")
+    let Role =  UserDefaults.standard.string(forKey: "UserRoleType")
     
     override func viewDidLoad() {
         super.viewDidLoad()

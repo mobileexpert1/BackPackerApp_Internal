@@ -101,8 +101,17 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
             return UICollectionViewCell()
         }
+
+        // Configure your cell
+        // cell.titleLabel.text = dataArr[indexPath.item]
+        cell.imgVw.image = UIImage(named: "aCCOMODATION")
         cell.lbl_Title.text = filteredDesignations[indexPath.row]
+        cell.lblAmount.isHidden = false
+        cell.lblRating.isHidden = true
+        cell.lbl_review.isHidden = true
+        cell.cosmosVw.isHidden = true
         return cell
+        
     }
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
@@ -116,7 +125,7 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 250) // Adjust height based on content
+        return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 225) // Adjust height based on content
     }
 
 

@@ -48,8 +48,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } else {
             // Logged in → Go to MainTabBarController
 #if BackpackerHire
-            let storyboard = UIStoryboard(name: "MainTabBarEmpStoryboard", bundle: nil)
-            rootVC = storyboard.instantiateViewController(withIdentifier: "MainTabBarEmpController")
+            let role =  UserDefaults.standard.string(forKey: "UserRoleType")
+             if role != "2" && role != "3" && role != "4"{
+                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                if let chooseRoleVC = storyboard.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
+                    chooseRoleVC.isBackButtonHidden = true
+                    rootVC = chooseRoleVC
+                } else {
+                    rootVC = UIViewController() // fallback if casting fails
+                }
+                
+            }else{
+                let storyboard = UIStoryboard(name: "MainTabBarEmpStoryboard", bundle: nil)
+                rootVC = storyboard.instantiateViewController(withIdentifier: "MainTabBarEmpController")
+            }
+            
             #else
             let storyboard = UIStoryboard(name: "TabBarController", bundle: nil)
             rootVC = storyboard.instantiateViewController(withIdentifier: "MainTabBarController")

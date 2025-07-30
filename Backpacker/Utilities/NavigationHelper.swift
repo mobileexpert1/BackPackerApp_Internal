@@ -2,12 +2,24 @@
 //  NavigationHelper.swift
 //  Backpacker
 //
-//  Created by Mobile on 03/07/25.
+//  Created by Mobile on 30/07/25.
 //
 
 import Foundation
 import UIKit
 
+class NavigationHelper {
+    
+    static func showLoginRedirectAlert(on viewController: UIViewController, message: String) {
+        AlertManager.showSingleButtonAlert(on: viewController, message: message) {
+            let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
+            let nav = UINavigationController(rootViewController: loginVC)
+            nav.navigationBar.isHidden = true
+            UIApplication.setRootViewController(nav)
+        }
+    }
+     
+}
 extension UIViewController {
     func push<T: UIViewController>(
         _ type: T.Type,

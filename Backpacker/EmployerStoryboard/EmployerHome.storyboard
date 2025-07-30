@@ -160,8 +160,11 @@
                     <connections>
                         <outlet property="BgVwNotification" destination="s6v-So-794" id="zPP-HZ-eec"/>
                         <outlet property="cahtBgVw" destination="BS7-Ba-0lO" id="etX-FS-r95"/>
+                        <outlet property="headerIMg_Width" destination="Jdk-ze-528" id="UN1-Tv-pDh"/>
+                        <outlet property="header_Imahe" destination="uMn-GE-4iz" id="CbB-wF-eEI"/>
                         <outlet property="lbl_MainHeader" destination="eFI-nu-zkc" id="7be-EG-zv4"/>
                         <outlet property="lbl_NotificationCount" destination="8W9-tj-64I" id="xdu-lQ-7AG"/>
+                        <outlet property="mainHeaderVwHeight" destination="gVw-Nq-IIO" id="BP3-vy-cRp"/>
                         <outlet property="notificatiobBadgeVw" destination="rrw-ab-dtc" id="pYV-f2-2XE"/>
                         <outlet property="tblVw" destination="H0W-tR-GLC" id="HBe-FD-cLV"/>
                     </connections>
