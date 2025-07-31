@@ -13,6 +13,7 @@ class FavourateJobVC: UIViewController {
     @IBOutlet weak var lbl_MainHeader: UILabel!
     var selectedIndexHeader =  0
     var isComeFromAcceptDeclineJobs : Bool = false
+    @IBOutlet weak var height_headerCollection: NSLayoutConstraint!
     let role = UserDefaults.standard.string(forKey: "UserRoleType")
 #if Backapacker
     var headerTirle = ["Accomodations","Hangout","Jobs"]
@@ -61,6 +62,7 @@ class FavourateJobVC: UIViewController {
     var filteredDesignations: [String] = []
     override func viewDidLoad() {
         super.viewDidLoad()
+      
         self.lbl_MainHeader.text = "Favorite"
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
         let nib = UINib(nibName: "HomeJobCVC", bundle: nil)
@@ -71,9 +73,9 @@ class FavourateJobVC: UIViewController {
         headerCollView.register(UINib(nibName: "MainJobCVC", bundle: nil), forCellWithReuseIdentifier: "MainJobCVC")
         
         
-//        self.headerCollView.delegate = self
-//        self.headerCollView.dataSource = self
-//        headerCollView.scrollToItem(at: IndexPath(item: selectedIndexHeader, section: 0), at: .centeredHorizontally, animated: false)
+        self.headerCollView.delegate = self
+        self.headerCollView.dataSource = self
+        headerCollView.scrollToItem(at: IndexPath(item: selectedIndexHeader, section: 0), at: .centeredHorizontally, animated: false)
         
         self.CoLLectIonVwMain.delegate = self
         self.CoLLectIonVwMain.dataSource = self
@@ -81,15 +83,33 @@ class FavourateJobVC: UIViewController {
             layout.scrollDirection = .vertical
         }
 #if BackpackerHire
-        if role == "3"{
-            self.selectedIndexHeader = 0
-           
-        }else if role == "4"{
-            self.selectedIndexHeader = 0
-        }else{
-            self.selectedIndexHeader = 1
+        if isComeFromAcceptDeclineJobs != true  {
+            if role == "3"{
+                self.selectedIndexHeader = 0
+              //  headerTirle = ["Accomodation"]
+            }else if role == "4"{
+                self.selectedIndexHeader = 0
+            }else{
+                self.selectedIndexHeader = 1
+              //  headerTirle = ["Jobs"]
+            }
         }
-       
+        if role == "3"{
+            selectedIndexHeader = 0
+            self.height_headerCollection.constant = 0
+            self.headerCollView.isHidden = true
+            self.lbl_MainHeader.text = "Favorite Accomodations"
+        } else if role == "4"{
+            selectedIndexHeader = 0
+            self.height_headerCollection.constant = 0
+            self.headerCollView.isHidden = true
+            self.lbl_MainHeader.text = "Favorite HangOut"
+        }else if role == "2"{
+            selectedIndexHeader = 1
+            self.height_headerCollection.constant = 0
+            self.headerCollView.isHidden = true
+            self.lbl_MainHeader.text = "Favorite Jobs"
+        }
         #else
         
         

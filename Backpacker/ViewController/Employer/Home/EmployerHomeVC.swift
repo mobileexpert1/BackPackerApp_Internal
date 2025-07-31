@@ -137,7 +137,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         if indexPath.section == 0  {
             return 360
         }else if   indexPath.section == 1  {
-            return 390
+            return 400
             
         }else{
             return 160

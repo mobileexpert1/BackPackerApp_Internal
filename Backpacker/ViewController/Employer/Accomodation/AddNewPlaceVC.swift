@@ -32,6 +32,11 @@ class AddNewPlaceVC: UIViewController {
     @IBOutlet weak var btncan: UIButton!
     @IBOutlet weak var txtFld_Address: UITextField!
     var mediaPicker: MediaPickerManager?
+    let viewModel = HangoutViewModel()
+    let viewModelAuth = LogInVM()
+    var latitude: Double?
+    var longitude: Double?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.SetUpUI()
@@ -145,7 +150,7 @@ class AddNewPlaceVC: UIViewController {
         if self.main_ImgVw.image == UIImage(named:"BgUploadImage"){
             self.main_ImgVw.layer.cornerRadius = 0.0
             self.Btn_Cross.isHidden = true
-            self.btn_Save.isUserInteractionEnabled = false
+            self.btn_Save.isUserInteractionEnabled = true
             self.imgPlacehoder.isHidden = false
             self.lbl_PlaceHodler.isHidden = false
         }else{
@@ -156,6 +161,29 @@ class AddNewPlaceVC: UIViewController {
             self.lbl_PlaceHodler.isHidden = true
         }
     }
+    
+    
+    
+    @IBAction func action_Save_Hangout(_ sender: Any) {
+        let name = txtFldName.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let address = txtFld_Address.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let location = lbl_Val_Location.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let desc = txtVw_Description.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+     
+          guard validateHangoutFields(
+              name: name,
+              address: address,
+              locationText: location,
+              description: desc,
+              image: main_ImgVw.image!.jpegData(compressionQuality: 0.8),
+              on: self
+          ) else {
+              return
+          }
+        self.submitHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: main_ImgVw.image!.jpegData(compressionQuality: 0.8))
+    }
+    
+    
 
 }
 extension AddNewPlaceVC: UITextFieldDelegate, UITextViewDelegate {
@@ -179,6 +207,110 @@ extension AddNewPlaceVC : SetLocationDelegate{
     func didSelectLocation(locationName: String, fullAddress: String, coordinate: CLLocationCoordinate2D) {
         lbl_Val_Location.text = locationName
         txtFld_Address.text = fullAddress
-           print("Lat: \(coordinate.latitude), Long: \(coordinate.longitude)")
-       }
+        print("Lat: \(coordinate.latitude), Long: \(coordinate.longitude)")
+
+        self.latitude = coordinate.latitude
+        self.longitude = coordinate.longitude
+    }
+
+}
+
+
+extension AddNewPlaceVC{
+    func submitHangout(name: String, address: String, lat: Double, long: Double, locationText: String, description: String, image: Data?) {
+        let image = self.main_ImgVw.image?.jpegData(compressionQuality: 0.8)
+
+            viewModel.uploadHangout(
+                name: name,
+                       address: address,
+                       lat: lat,
+                       long: long,
+                       locationText: locationText,
+                       description: description,
+                       image: image
+            ) { success, message ,statusCode in
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            AlertManager.showAlert(on: self, title: "Success", message: message ?? "Hangout uploaded.")
+                            self.navigationController?.popViewController(animated: true)
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                        }
+                    case .badRequest:
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.submitHangout(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, image: image) // Retry
+                            } else {
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                            }
+                        }
+                        
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.submitHangout(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, image: image) // Retry
+                            } else {
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                            }
+                        }
+                        
+                        
+                    case .unauthorizedToken, .methodNotAllowed, .internalServerError:
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                    case .unknown:
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                    }
+                }
+            }
+        }
+
+       
+    
+    func validateHangoutFields(
+        name: String,
+        address: String,
+        locationText: String,
+        description: String,
+        image: Data?,
+        on viewController: UIViewController
+    ) -> Bool {
+        if name.isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter name.")
+            return false
+        }
+        if address.isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter address.")
+            return false
+        }
+        if locationText.isEmpty  || locationText == "Current Location"{
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter location.")
+            return false
+        }
+        if description.isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter description.")
+            return false
+        }
+        
+        if self.main_ImgVw.image == UIImage(named:"BgUploadImage"){
+            AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select an image.")
+            return false
+            
+            if image == nil {
+                AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select an image.")
+                return false
+            }
+            return false
+        }
+        return true
+    }
+
 }

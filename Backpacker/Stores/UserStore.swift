@@ -85,7 +85,7 @@ class UserStore: ServiceManager , UserSearchable {
                return
            }
 
-           let url = "http://192.168.11.4:3001/api/employer/roleSwitch"
+           let url = "http://192.168.11.4:3000/api/employer/roleSwitch"
            let headers = getHeaders()
 
 

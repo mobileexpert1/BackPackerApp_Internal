@@ -54,13 +54,13 @@ class SetAvailibilityVC: UIViewController {
       
             UserDefaults.standard.set(true, forKey: "setupQuickAction")
             SlotsList.removeAll()
-            SlotsList.append(DaySlot(day: "Sunday", shortDay: "Sun", timeSlots: [TimesSlot(startTime: "9:00 AM", endTime: "5:00 PM")]))
+            SlotsList.append(DaySlot(day: "Sunday", shortDay: "Sun", timeSlots: []))
             SlotsList.append(DaySlot(day: "Monday", shortDay: "Mon", timeSlots: [TimesSlot(startTime: "9:00 AM", endTime: "5:00 PM")]))
             SlotsList.append(DaySlot(day: "Tuesday", shortDay: "Tue", timeSlots: [TimesSlot(startTime: "9:00 AM", endTime: "5:00 PM")]))
             SlotsList.append(DaySlot(day: "Wednesday", shortDay: "Wed", timeSlots: [TimesSlot(startTime: "9:00 AM", endTime: "5:00 PM")]))
             SlotsList.append(DaySlot(day: "Thursday", shortDay: "Thu", timeSlots: [TimesSlot(startTime: "9:00 AM", endTime: "5:00 PM")]))
             SlotsList.append(DaySlot(day: "Friday", shortDay: "Fri", timeSlots: [TimesSlot(startTime: "9:00 AM", endTime: "5:00 PM")]))
-            SlotsList.append(DaySlot(day: "Saturday", shortDay: "Sat", timeSlots: [TimesSlot(startTime: "9:00 AM", endTime: "5:00 PM")]))
+            SlotsList.append(DaySlot(day: "Saturday", shortDay: "Sat", timeSlots: []))
         
         self.tableView.reloadData()
         
@@ -105,8 +105,11 @@ extension SetAvailibilityVC: UITableViewDelegate, UITableViewDataSource {
         }//515024
         let isQuickActionSetup = UserDefaults.standard.bool(forKey: "setupQuickAction")
         if isQuickActionSetup == true{
-            cell.btn_Switch.isOn = true
-            cell.setSlotsOnlyNineToFive(isQuickSetUp: true)
+            if indexPath.row != 0 && indexPath.row != 6{
+                cell.btn_Switch.isOn = true
+                cell.setSlotsOnlyNineToFive(isQuickSetUp: true)
+            }
+           
         }else{
 //            cell.btn_Switch.isOn = false
 //            cell.setSlotsOnlyNineToFive(isQuickSetUp: false)

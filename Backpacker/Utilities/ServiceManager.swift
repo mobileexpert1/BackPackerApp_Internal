@@ -222,6 +222,11 @@ enum APIError: Error {
         }
     }
 }
+extension APIError: LocalizedError {
+    var errorDescription: String? {
+        return self.customDescription
+    }
+}
 
 enum HTTPStatusCode: Int {
     case ok = 200
@@ -333,25 +338,25 @@ extension ServiceManager {
     }
 
     
-    func requestMultipartApi<T: Codable>(
-        _ url: URLConvertible,
-        image: Data? = nil,
-        method: HTTPMethod,
-        parameters: Parameters? = nil,
-        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
-    ) {
-        requestMultipartAPI(url, image: image, method: method, parameters: parameters, httpBody: nil) { (result: ApiResult<T?, APIError>) in
-            switch result {
-            case .success(let result, let statusCode):
-                print("✅ Upload success. Status code: \(statusCode)")
-                completion(true, result ?? nil, statusCode) // ✅ unwrap T??
-
-            case .failure(let error, let statusCode):
-                print("❌ Upload failed. Error: \(error.customDescription), Status code: \(statusCode ?? -1)")
-                completion(false, nil, statusCode)
-            }
-        }
-    }
+//    func requestMultipartApi<T: Codable>(
+//        _ url: URLConvertible,
+//        image: Data? = nil,
+//        method: HTTPMethod,
+//        parameters: Parameters? = nil,
+//        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+//    ) {
+//        requestMultipartAPI(url, image: image, method: method, parameters: parameters, httpBody: nil) { (result: ApiResult<T?, APIError>) in
+//            switch result {
+//            case .success(let result, let statusCode):
+//                print("✅ Upload success. Status code: \(statusCode)")
+//                completion(true, result ?? nil, statusCode) // ✅ unwrap T??
+//
+//            case .failure(let error, let statusCode):
+//                print("❌ Upload failed. Error: \(error.customDescription), Status code: \(statusCode ?? -1)")
+//                completion(false, nil, statusCode)
+//            }
+//        }
+//    }
 
     
     
@@ -532,10 +537,8 @@ extension ServiceManager {
         
     }
     
-     func requestMultipartAPI<T:Codable>(_ url: URLConvertible,image:Data? = nil,method:HTTPMethod, parameters: Parameters? = nil,httpBody:String? = nil,headers:[String:String]? = nil, completion: @escaping (ApiResult<T,APIError>) -> Void) {
+     func requestMultipartAPI<T:Codable>(_ url: URLConvertible,image:Data? = nil,method:HTTPMethod, parameters: Parameters? = nil,httpBody:String? = nil,headers:[String:String]? = nil, completion: @escaping (ApiResult<ApiResponseModel<T>, APIError>) -> Void) {
         print("URL: ",url)
-       // //MBProgressHUD.showAdded(to: UIApplication.appWindow, animated: true)
-   //     self.showLoader()
         do {
             var request = try URLRequest(url: url.asURL())
             request.httpMethod = method.rawValue
@@ -561,45 +564,58 @@ extension ServiceManager {
                     multipartFormData.append(image!, withName: "image", fileName: "file.jpg", mimeType: "image/jpg")
                 }
             }, to: url, usingThreshold: UInt64.init(), method: .post, headers: request.headers ).responseJSON {[weak self] response1 in
-                //AF.request(request).responseJSON(completionHandler: { response1 in
-               // //MBProgressHUD.hide(for: UIApplication.appWindow, animated: true)
-                
-                self?.hideLoader()
                 let statusCode = response1.response?.statusCode
-                //self?.progressView = nil
+
                 if let error = response1.error {
-                    print("--------- Error -------",error.localizedDescription)
+                    print("--------- Error -------", error.localizedDescription)
+
                     if let responseData = response1.data {
                         let htmlString = String(data: responseData, encoding: .utf8)
-                        print("Result ",htmlString!)
+                        print("Result ", htmlString ?? "Unable to decode response")
+
                         switch URLError.Code(rawValue: error._code) {
                         case .notConnectedToInternet:
                             print("NotConnectedToInternet")
-                         //   AlertFactory.showErrorToast(title: error.localizedDescription)
+                            completion(.failure(.requestFailed(description: "No internet connection"), statusCode: statusCode))
                             return
                         default:
-                         //   AlertFactory.showErrorToast(title: "There was an error in the response. Please try again.")
                             break
                         }
-                        
-                        completion(.failure(.jsonDecodingFailure,statusCode: statusCode))
-                        return;
+
+                        completion(.failure(.jsonDecodingFailure, statusCode: statusCode))
+                        return
                     }
+                } else if let data = response1.data {
+                    let responseString = String(data: data, encoding: .utf8)
+                    print("Raw Response: ", responseString ?? "No response string")
                 }
-                else if let data = response1.data{
-                    let responseString = String(data: data, encoding: String.Encoding.utf8) as String?
-                    print("Response: ",responseString ?? "No response")
+
+                if let statusCode = statusCode {
+                    do {
+                        let decoded = try JSONDecoder().decode(ApiResponseModel<T>.self, from: response1.data!)
+                        print("Decoded Success – Status Code: \(statusCode)")
+
+                        if decoded.success == true {
+                            completion(.success(decoded, statusCode: statusCode))
+                        } else {
+                            let apiError: APIError = .responseUnsuccessful(description: decoded.message ?? "Unknown error")
+                            completion(.failure(apiError, statusCode: statusCode))
+                        }
+                    } catch {
+                        print("Decoding error: \(error.localizedDescription)")
+                        completion(.failure(.decodingTaskFailure(description: error.localizedDescription),statusCode: statusCode))
+                    }
+                } else {
+                    print("No status code found")
+                    completion(.failure(.responseUnsuccessful(description: "No status code"), statusCode: nil))
                 }
-                self?.validateDictionary(url, method: method,parameters: parameters, response1: response1, completion: completion)
+
             }.uploadProgress(queue: .main, closure: { progress in
-                //Current upload progress of file
-                // self?.progressView?.progress = Float(progress.fractionCompleted)
                 print("Upload Progress: \(progress.fractionCompleted)")
             })
             
         }
         catch{
-           // //MBProgressHUD.hide(for: UIApplication.appWindow, animated: true)
             self.hideLoader()
             completion(.failure(.requestFailed(description: "\(error.localizedDescription )"),statusCode: nil))
         }
@@ -779,71 +795,116 @@ extension ServiceManager {
      }
      */
  
-
-    // Validate the response from server and provide respective alerts and responses.
-    private func validateDictionary<T:Codable>(_ url: URLConvertible,method:HTTPMethod, parameters: Parameters? = nil,response1:AFDataResponse<Any>,completion: @escaping (ApiResult<T,APIError>) -> Void){
-        self.getValidDict(result: response1.result, completion: {(dict, error, retry) in
+    private func validateDictionary<T: Codable>(
+        _ url: URLConvertible,
+        method: HTTPMethod,
+        parameters: Parameters? = nil,
+        response1: AFDataResponse<Any>,
+        completion: @escaping (ApiResult<T, APIError>) -> Void
+    ) {
+        self.getValidDict(result: response1.result) { dict, error, retry in
             let statusCode = response1.response?.statusCode
-            if retry! {
-                //  self.requestAPI(url,method:method, parameters: parameters, completion: completion)
-                //return
+            print("URL:", url, "\nRESPONSE:", dict as Any)
+
+            guard let response = dict as? [String: Any] else {
+                let fallbackMessage = error?.localizedDescription ?? "Something went wrong"
+                completion(.failure(.requestFailed(description: fallbackMessage), statusCode: statusCode))
+                return
             }
-            
-            print("URL: ",url,  "RESPONSE: ",dict as Any)
-                    
-            var dict = dict
-            if dict == nil {
-                dict = NSDictionary.init(dictionary:
-                                            [kBaseMessageKey: error?.localizedDescription ?? "Some error has been occured",
-                                             kBaseStatusKey: false])
+
+            let isSuccess = response["success"] as? Bool ?? false
+
+            if !isSuccess {
+                // Handle error message from "message" or "errors"
+                let message = (response["message"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+                let errors = response["errors"] as? [String]
+                let firstError = errors?.first?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                let errorDescription = message?.isEmpty == false ? message! :
+                                       firstError?.isEmpty == false ? firstError! :
+                                       "Unknown error occurred"
+
+                completion(.failure(.requestFailed(description: errorDescription), statusCode: statusCode))
+                return
+            }
+
+            // ✅ On success
+            if let data = response1.data, response["data"] != nil {
+                self.parseResponseData(data: data, statusCode: statusCode,completion: completion)
+            } else {
+                completion(.success(nil, statusCode: statusCode ?? 200))
+            }
+        }
+    }
+/*
+ 
+ private func validateDictionary<T:Codable>(_ url: URLConvertible,method:HTTPMethod, parameters: Parameters? = nil,response1:AFDataResponse<Any>,completion: @escaping (ApiResult<T,APIError>) -> Void){
+     self.getValidDict(result: response1.result, completion: {(dict, error, retry) in
+         let statusCode = response1.response?.statusCode
+         if retry! {
+             //  self.requestAPI(url,method:method, parameters: parameters, completion: completion)
+             //return
+         }
+         
+         print("URL: ",url,  "RESPONSE: ",dict as Any)
+                 
+         var dict = dict
+         if dict == nil {
+             dict = NSDictionary.init(dictionary:
+                                         [kBaseMessageKey: error?.localizedDescription ?? "Some error has been occured",
+                                          kBaseStatusKey: false])
 //                if method == .get {
 //                    AlertFactory.showErrorToast(title: "Something Went Wrong")
 //                }
 //                else{
 //                    AlertFactory.showErrorToast(title: error?.localizedDescription ?? "Some error has been occured")
 //                }
-                completion(.failure(.jsonDecodingFailure,statusCode: statusCode))
-            }
-            let response = dict as? [String:Any]
-            if let type = response?["status"] as? Bool {
-                
-                if type == false{
-                    
-                    if let error = response?["error"] as? String{
-                        if (response1.request?.url?.absoluteString.contains("verify")) == true && error.contains("Auth failed"){
-                            completion(.failure(.requestFailed(description: "Please enter correct code"),statusCode: statusCode))
-                        }
-                        else{
-                            completion(.failure(.requestFailed(description: "\(error)"),statusCode: statusCode))
-                        }
-                    } else {
-                        let error = self.handleError(json: response1.value as AnyObject)
-                        completion(.failure(.requestFailed(description: "\(error.localizedDescription)"),statusCode: statusCode))
-                    }
-                    
-                }
-                else if type == true , let data = response1.data{
-                    if response?["data"] != nil  {
-                        self.parseResponseData(data: data, completion: completion)
-                        if let message = response?["message"] as? String{
-                            if (response1.request?.url!.absoluteString.contains("resendOtp"))!{
-                             //   AlertFactory.showSuccessToast(title: message)
-                            }
-                        }
-                    }
-                    else {
-                        completion(.success(nil, statusCode: statusCode!))
-                    }
-                }
-                
-            }
-            else{
-                completion(.failure(.jsonDecodingFailure,statusCode: statusCode))
-            }
-            
-        })
-    }
-    
+             completion(.failure(.jsonDecodingFailure,statusCode: statusCode))
+         }
+         let response = dict as? [String:Any]
+         if let type = response?["status"] as? Bool {
+             
+             if type == false{
+                 
+                 if let error = response?["error"] as? String{
+                     if (response1.request?.url?.absoluteString.contains("verify")) == true && error.contains("Auth failed"){
+                         completion(.failure(.requestFailed(description: "Please enter correct code"),statusCode: statusCode))
+                     }
+                     else{
+                         completion(.failure(.requestFailed(description: "\(error)"),statusCode: statusCode))
+                     }
+                 } else {
+                     let error = self.handleError(json: response1.value as AnyObject)
+                     completion(.failure(.requestFailed(description: "\(error.localizedDescription)"),statusCode: statusCode))
+                 }
+                 
+             }
+             else if type == true , let data = response1.data{
+                 if response?["data"] != nil  {
+                     self.parseResponseData(data: data, completion: completion)
+                     if let message = response?["message"] as? String{
+                         if (response1.request?.url!.absoluteString.contains("resendOtp"))!{
+                          //   AlertFactory.showSuccessToast(title: message)
+                         }
+                     }
+                 }
+                 else {
+                     completion(.success(nil, statusCode: statusCode!))
+                 }
+             }
+             
+         }
+         else{
+             completion(.failure(.jsonDecodingFailure,statusCode: statusCode))
+         }
+         
+     })
+ }
+ 
+ 
+ */
+    // Validate the response from server and provide respective alerts and responses.
+
     // Create reesult dictionary dictionary from api response
     private func getValidDict(result: AFResult<Any>, completion: @escaping (_ : NSDictionary?, _ : NSError?, _ : Bool?) -> Void) {
         var dict: NSDictionary!
@@ -871,42 +932,52 @@ extension ServiceManager {
         completion: @escaping (ApiResult<T, APIError>) -> Void
     ) {
         do {
-            let responseObject = try JSONDecoder().decode(ApiResponse<T>.self, from: data)
+            let decoder = JSONDecoder()
 
-            if responseObject.status == false {
+            // Try decoding the response using flexible model
+            let responseObject = try decoder.decode(ApiResponse<T>.self, from: data)
+
+            // Check success status
+            if responseObject.success == false {
                 let message = responseObject.message ?? "Something went wrong"
                 completion(.failure(.requestFailed(description: message), statusCode: statusCode))
                 return
             }
 
-            guard let data = responseObject.data else {
+            // If data is required, ensure it's non-nil
+            guard let unwrappedData = responseObject.data else {
                 completion(.failure(.jsonDecodingFailure, statusCode: statusCode))
                 return
             }
 
-            completion(.success(data, statusCode: statusCode ?? 200))
+            completion(.success(unwrappedData, statusCode: statusCode ?? 200))
 
-        } catch let DecodingError.dataCorrupted(context) {
-            print("🧨 Data corrupted:", context)
-            completion(.failure(.responseUnsuccessful(description: parseError(context: context)), statusCode: statusCode))
-            
-        } catch let DecodingError.keyNotFound(key, context) {
-            print("🧨 Key '\(key)' not found:", context.debugDescription)
-            completion(.failure(.responseUnsuccessful(description: parseError(context: context)), statusCode: statusCode))
-            
-        } catch let DecodingError.valueNotFound(value, context) {
-            print("🧨 Value '\(value)' not found:", context.debugDescription)
-            completion(.failure(.responseUnsuccessful(description: parseError(context: context)), statusCode: statusCode))
-            
-        } catch let DecodingError.typeMismatch(type, context) {
-            print("🧨 Type mismatch '\(type)':", context.debugDescription)
-            completion(.failure(.responseUnsuccessful(description: parseError(context: context)), statusCode: statusCode))
-            
         } catch {
-            print("🧨 General Error:", error)
-            completion(.failure(.responseUnsuccessful(description: error.localizedDescription), statusCode: statusCode))
+            // Print raw JSON if decoding fails
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("🧨 Raw Response:\n\(jsonString)")
+            }
+
+            switch error {
+            case let DecodingError.dataCorrupted(context):
+                print("🧨 Data corrupted:", context)
+                completion(.failure(.responseUnsuccessful(description: parseError(context: context)), statusCode: statusCode))
+            case let DecodingError.keyNotFound(key, context):
+                print("🧨 Key '\(key)' not found:", context.debugDescription)
+                completion(.failure(.responseUnsuccessful(description: parseError(context: context)), statusCode: statusCode))
+            case let DecodingError.valueNotFound(value, context):
+                print("🧨 Value '\(value)' not found:", context.debugDescription)
+                completion(.failure(.responseUnsuccessful(description: parseError(context: context)), statusCode: statusCode))
+            case let DecodingError.typeMismatch(type, context):
+                print("🧨 Type mismatch '\(type)' –", context.debugDescription)
+                completion(.failure(.responseUnsuccessful(description: parseError(context: context)), statusCode: statusCode))
+            default:
+                print("🧨 General Decoding Error:", error)
+                completion(.failure(.responseUnsuccessful(description: error.localizedDescription), statusCode: statusCode))
+            }
         }
     }
+
 
     
     func parseError(context:DecodingError.Context) -> String {
@@ -1044,15 +1115,14 @@ class APIManager {
 
 
 struct ApiResponse<T: Codable>: Codable {
-    var status: Bool
+    var success: Bool
     var data: T?
     var message: String?
-    var error: ErrorModel?
-    
-    enum CodingKeys: String, CodingKey {
-        case status, data, message, error
-    }
+    var errors: ErrorModel?
+
+  
 }
+
 
 struct ErrorModel: Codable {
     

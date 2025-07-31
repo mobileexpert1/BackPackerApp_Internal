@@ -9,9 +9,13 @@ import UIKit
 
 class SettingVC: UIViewController {
 
+    @IBOutlet weak var Btn_DrpDown: UIButton!
     @IBOutlet weak var lbl_Title: UILabel!
     @IBOutlet weak var tblVw: UITableView!
     let role = UserDefaults.standard.string(forKey: "UserRoleType")
+    let dataSource = ["Employer", "Accommodation", "Hangout"]
+    private var dropdownHelper: DropdownHelper?
+    @IBOutlet weak var lbl_selectedRole: UILabel!
 #if BackpackerHire
     var menuItems: [MenuItem] = [
         MenuItem(iconName: "Profile1", title: "Profile"),
@@ -24,8 +28,6 @@ class SettingVC: UIViewController {
         MenuItem(iconName: "Delete", title: "Delete Account"),
         MenuItem(iconName: "Logout", title: "Log Out")
     ]
-    
-    
     #else
       
     var menuItems: [MenuItem] = [
@@ -43,6 +45,20 @@ class SettingVC: UIViewController {
  
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.lbl_selectedRole.font = FontManager.inter(.medium, size: 16.0)
+        self.setRole()
+        dropdownHelper = DropdownHelper(
+                   parentView: self.view,
+                   anchorButton: Btn_DrpDown,
+                   options: ["Employer", "Accommodation", "Hangout"],
+                   optionImages: ["role_EmpTick", "roleAccTick", "role_HangoutTick"]
+               )
+               dropdownHelper?.onOptionSelected = { [weak self] selected in
+                   self?.setRole()
+                   print("✅ Selected item:", selected)
+                   self?.UpdaqteNavigation()
+
+               }
         let nib = UINib(nibName: "SettingTVC", bundle: nil)
         self.tblVw.register(nib, forCellReuseIdentifier: "SettingTVC")
         
@@ -80,7 +96,45 @@ class SettingVC: UIViewController {
     }
     
     
+    @IBAction func action_ChangeRole(_ sender: Any) {
+        dropdownHelper?.toggleDropdown()
+        
+    }
     
+    func setRole(){
+        let role =  UserDefaults.standard.string(forKey: "UserRoleType")
+        
+        if role == "2"{
+            self.lbl_selectedRole.text = "Employer"
+        }else if role == "3"{
+            self.lbl_selectedRole.text = "Accomodation"
+        }else{
+            self.lbl_selectedRole.text = "Hangout"
+        }
+    }
+    func UpdaqteNavigation() {
+#if BackpackerHire
+        
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first else {
+            return
+        }
+
+        // Example: Navigate to MainTabBarController
+        let storyboard = UIStoryboard(name: "MainTabBarEmpStoryboard", bundle: nil)
+        let tabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBarEmpController")
+        window.rootViewController = tabBarController
+        window.makeKeyAndVisible()
+
+        // Optional: Add transition animation
+        let transition = CATransition()
+        transition.type = .fade
+        transition.duration = 0.3
+        window.layer.add(transition, forKey: kCATransition)
+#endif
+       
+    }
+
 }
 
 
@@ -243,7 +297,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
             case 2:
-                if let vc = storyboard.instantiateViewController(withIdentifier: "CommonHistoryVC") as? CommonHistoryVC {
+                if let vc = storyboard.instantiateViewController(withIdentifier: "HistoryContainerVC") as? HistoryContainerVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
             case 3:

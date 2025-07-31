@@ -37,9 +37,16 @@ class HomeTVC: UITableViewCell {
                 layout.scrollDirection = .vertical
             }
         }else{
-            if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
-                layout.scrollDirection = .horizontal
+            if role == "3" || role == "4" ||  role == "2" {
+                if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
+                    layout.scrollDirection = .vertical
+                }
+            }else{
+                if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
+                    layout.scrollDirection = .horizontal
+                }
             }
+           
         }
        
 #else
@@ -246,6 +253,8 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 return CGSize(width: (width / 2) - 12, height: 205)
             }else if role  == "3"{
                 return CGSize(width: (width / 2) - 12, height: 235)
+            }else if role  == "2"{
+                return CGSize(width: (width / 2) - 12, height: 190)
             }else{
                 if isComeForHireDetailPage  == true{
                     return CGSize(width: (width / 2) - 5, height: 180)

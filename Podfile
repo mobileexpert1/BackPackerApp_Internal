@@ -6,11 +6,11 @@
 abstract_target 'BackpackerPods' do
   use_frameworks!
 
-  pod 'CountryPickerView'
-  pod 'PhoneNumberKit', '~> 4.0'
-  pod 'Alamofire'
-  pod 'Cosmos', '~> 23.0'
-  pod 'FSCalendar'
+  pod 'CountryPickerView', :modular_headers => true
+  pod 'PhoneNumberKit', '~> 4.0',  :modular_headers => true
+  pod 'Alamofire', :modular_headers => true
+  pod 'Cosmos', '~> 23.0', :modular_headers => true
+  pod 'FSCalendar', :modular_headers => true
 
   target 'Backpacker'
   target 'BackpackerHire'

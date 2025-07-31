@@ -216,8 +216,10 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 if role == "4"   {
                     return 420
                 }else if role == "3"{
-                    
                     return 470
+                }else if role == "2"{
+                    return 470
+                    
                 } else{
                     return 380
                 }

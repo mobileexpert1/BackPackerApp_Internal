@@ -51,8 +51,12 @@ class AddNewAccomodationVC: UIViewController {
     
     @IBOutlet weak var BgVwPrice: UIView!
     @IBOutlet weak var BgVwAddress: UIView!
-    var selectedFilterIndex: Int?
+    var selectedFilterIndexes: Set<Int> = []
     let filterArrya = ["Free Wifi","Swimming Pool","Parking"]
+    let viewModel = AccommodationViewModel()
+    let viewModelAuth = LogInVM()
+    var latitude: Double?
+    var longitude: Double?
     override func viewDidLoad() {
         super.viewDidLoad()
         let nib = UINib(nibName: "FacilityTVC", bundle: nil)
@@ -213,6 +217,34 @@ class AddNewAccomodationVC: UIViewController {
     
     
     @IBAction func action_Save(_ sender: Any) {
+        let trimmedName = txtFldName.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let trimmedAddress = txtFldAddress.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let trimmedLocationText = valLocation.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let trimmedDescription = txtVwDescription.text?.trimmingCharacters(in: .whitespacesAndNewlines)  ?? ""
+        let trimmedPrice = txtFldPrice.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let imageData = self.uploadedImage.image?.jpegData(compressionQuality: 0.8)
+        
+        let selectedFacilities = selectedFilterIndexes.compactMap { index in
+            return filterArrya.indices.contains(index) ? filterArrya[index] : nil
+        }
+
+        let isValid = validateAccommodationFields(
+            name: trimmedName,
+            address: trimmedAddress,
+            locationText: trimmedLocationText,
+            description: trimmedDescription,
+            price: trimmedPrice,
+            facilities: selectedFacilities,
+            image: imageData,
+            mainImageView: self.uploadedImage,
+            on: self
+        )
+
+        if isValid {
+            self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: trimmedPrice, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, mainImageView: self.uploadedImage, on: self)
+        }
+       
+
     }
     
     
@@ -238,7 +270,7 @@ class AddNewAccomodationVC: UIViewController {
         if self.uploadedImage.image == UIImage(named: "BgUploadImage"){
             self.uploadedImage.layer.cornerRadius = 0.0
             self.btn_Remove.isHidden = true
-            self.btn_Save.isUserInteractionEnabled = false
+            self.btn_Save.isUserInteractionEnabled = true
             self.placeholderImg.isHidden = false
             self.lbl_UploadImg.isHidden = false
         }else{
@@ -269,22 +301,22 @@ extension AddNewAccomodationVC : UITableViewDelegate,UITableViewDataSource{
              let cell = tableView.dequeueReusableCell(withIdentifier: "FacilityTVC", for: indexPath) as! FacilityTVC
              cell.lblTitle.text = filterArrya[indexPath.row]
              
-             if selectedFilterIndex == indexPath.row {
-                 cell.imgCheckBox.image = UIImage(named: "Checkbox2")
-             } else {
-                 cell.imgCheckBox.image = UIImage(named: "Checkbox")
-             }
+        if selectedFilterIndexes.contains(indexPath.row) {
+            cell.imgCheckBox.image = UIImage(named: "Checkbox2")
+        } else {
+            cell.imgCheckBox.image = UIImage(named: "Checkbox")
+        }
              return cell
 
      
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
                 // Toggle selection for filter section
-                if selectedFilterIndex == indexPath.row {
-                    selectedFilterIndex = nil // unselect
-                } else {
-                    selectedFilterIndex = indexPath.row // select new
-                }
+        if selectedFilterIndexes.contains(indexPath.row) {
+               selectedFilterIndexes.remove(indexPath.row)
+           } else {
+               selectedFilterIndexes.insert(indexPath.row)
+           }
           
             
         tblVw.reloadSections(IndexSet(integer: indexPath.section), with: .none)
@@ -317,6 +349,138 @@ extension AddNewAccomodationVC : SetLocationDelegate{
     func didSelectLocation(locationName: String, fullAddress: String, coordinate: CLLocationCoordinate2D) {
         valLocation.text = locationName
         txtFldAddress.text = fullAddress
-           print("Lat: \(coordinate.latitude), Long: \(coordinate.longitude)")
+        print("Lat: \(coordinate.latitude), Long: \(coordinate.longitude)")
+
+        self.latitude = coordinate.latitude
+        self.longitude = coordinate.longitude
        }
+}
+extension AddNewAccomodationVC {
+    func validateAccommodationFields(
+        name: String,
+        address: String,
+        locationText: String,
+        description: String,
+        price: String,
+        facilities: [String],
+        image: Data?,
+        mainImageView: UIImageView,
+        on viewController: UIViewController
+    ) -> Bool {
+        
+        if name.isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter name.")
+            return false
+        }
+        
+        if address.isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter address.")
+            return false
+        }
+
+        if locationText.isEmpty || locationText == "Current Location" {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter location.")
+            return false
+        }
+
+        if description.isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter description.")
+            return false
+        }
+
+        if price.isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter price.")
+            return false
+        }
+
+        if facilities.isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please select at least one facility.")
+            return false
+        }
+
+        if mainImageView.image == UIImage(named: "BgUploadImage") {
+            AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select an image.")
+            return false
+        }
+
+        if image == nil {
+            AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select an image.")
+            return false
+        }
+
+        return true
+    }
+
+    func submitAccommodation(
+        name: String,
+        address: String,
+        lat: Double,
+        long: Double,
+        locationText: String,
+        description: String,
+        price: String,
+        facilitiesIndexes: Set<Int>,
+        filterArray: [String],
+        image: Data?,
+        mainImageView: UIImageView,
+        on viewController: UIViewController
+    ) {
+
+        // Call API
+        viewModel.uploadAccommodation(
+            name: name,
+            address: address,
+            lat: lat,
+            long: long,
+            locationText: locationText,
+            description: description,
+            price: price,
+            facilities: filterArray,
+            image: image
+        ) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Accomodation uploaded.")
+                        self.navigationController?.popViewController(animated: true)
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.submitAccommodation(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, price: price, facilitiesIndexes: facilitiesIndexes, filterArray: filterArray, image: image, mainImageView: mainImageView, on: self)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                    
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.submitAccommodation(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, price: price, facilitiesIndexes: facilitiesIndexes, filterArray: filterArray, image: image, mainImageView: mainImageView, on: self)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                    
+                    
+                case .unauthorizedToken, .methodNotAllowed, .internalServerError:
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                }
+            }
+        }
+    }
+
+    
 }

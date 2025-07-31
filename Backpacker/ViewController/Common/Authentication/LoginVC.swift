@@ -162,8 +162,14 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
 extension LoginVC {
     private func loginApiCall(){
         LoaderManager.shared.show()
+        var role = String()
+#if BackpackerHire
+        role = "2"
+#else
+        role = "1"
+#endif
         let loginRequest = LoginRequest(
-            roleType: "1",
+            roleType: role,
             mobileNumber: self.txtFld_PhoneNumber.text!,
             countryCode: picker_Vw.selectedCountry.phoneCode,
             countryName: picker_Vw.selectedCountry.name,

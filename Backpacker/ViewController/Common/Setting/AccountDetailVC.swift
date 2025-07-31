@@ -57,7 +57,7 @@ class AccountDetailVC: UIViewController {
         self.tblVw_Visa.dataSource = self
         self.btn_Edit.tag = 0
         handleBottomBtn()
-        if role == "3" || role == "4"{
+        if role == "3" || role == "4" ||  role == "2"{
             self.visaTypeHeight.constant = 0.0
             self.visaVw.isHidden = true
             self.btn_drpdwn.tag = 0

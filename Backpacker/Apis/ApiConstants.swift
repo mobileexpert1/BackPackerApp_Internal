@@ -28,6 +28,9 @@ struct ApiConstants {
         static let OTP_SEND = BASE_URL + "api/auth/verifyOtp"
         static let OTP_RESEND = BASE_URL + "api/auth/resendOtp"
         static let REFRESH_TOKEN = BASE_URL + "api/auth/refreshToken"
+        static let ADD_HANGOUT = BASE_URL + "api/employer/hangout"
+        static let ADD_ACCOMMODATION = BASE_URL + "api/employer/accommodation"
+        
     }
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"
