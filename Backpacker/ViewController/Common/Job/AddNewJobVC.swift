@@ -170,11 +170,6 @@ class AddNewJobVC: UIViewController {
         let endDate = self.endDate.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let startTime = self.txtFld_StartTime.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let endTime = self.txtFd_EndTine.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-//        let selectedFacilities = selectedFilterIndexes.compactMap { index in
-//            return filterArrya.indices.contains(index) ? filterArrya[index] : nil
-//        }
-        
-        
         
         let isValid = validateHangoutFields(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDAte, endDate: endDate, startTime: startTime, endTime: endTime, request: ["iOs","iOS2"], image: imageData, latitude: self.latitude, longitude: self.longitude, on: self)
         
@@ -274,8 +269,15 @@ extension AddNewJobVC {
         timePicker = UIDatePicker()
         timePicker.datePickerMode = .time
         timePicker.preferredDatePickerStyle = .wheels
-        timePicker.locale = Locale(identifier: "en_GB") // Ensures 24-hour format
+
+        // Force 24-hour format using a locale that defaults to 24-hour
+        timePicker.locale = Locale(identifier: "en_GB")  // UK uses 24-hour format
         timePicker.calendar = Calendar(identifier: .gregorian)
+
+        // Optional: This ensures the picker updates immediately to 24-hour style
+        if #available(iOS 14.0, *) {
+            timePicker.preferredDatePickerStyle = .wheels
+        }
 
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
@@ -289,6 +291,7 @@ extension AddNewJobVC {
         txtFld_StartTime.inputAccessoryView = toolbar
         txtFd_EndTine.inputAccessoryView = toolbar
     }
+
     @objc func doneTapped() {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
