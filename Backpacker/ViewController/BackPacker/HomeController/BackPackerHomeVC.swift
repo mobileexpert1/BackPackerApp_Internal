@@ -166,12 +166,6 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
 #endif
                
             }else{
-                //guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmployerJobTVC", for: indexPath) as? EmployerJobTVC else {
-//                    return UITableViewCell()
-//                }
-//        //        let sectionItems = itemsPerSection[indexPath.section]
-//               // cell.configure(with: sectionTitles,section: indexPath.section)
-//                return cell
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
                     return UITableViewCell()
                 }

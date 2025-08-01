@@ -30,7 +30,12 @@ struct ApiConstants {
         static let REFRESH_TOKEN = BASE_URL + "api/auth/refreshToken"
         static let ADD_HANGOUT = BASE_URL + "api/employer/hangout"
         static let ADD_ACCOMMODATION = BASE_URL + "api/employer/accommodation"
-        
+        static func getBackpackersProfileURL(page: Int, perPage: Int) -> String {
+            return "\(BASE_URL)api/employer/backpackersProfile?page=\(page)&perPage=\(perPage)"
+        }
+        static let ADD_NEWJOB = BASE_URL + "api/employer/job"
+        static let SWITCH_ROLE = BASE_URL + "api/employer/roleSwitch"
+       
     }
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"

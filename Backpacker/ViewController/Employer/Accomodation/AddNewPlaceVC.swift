@@ -241,7 +241,9 @@ extension AddNewPlaceVC{
                     case .ok, .created:
                         if success == true {
                             AlertManager.showAlert(on: self, title: "Success", message: message ?? "Hangout uploaded.")
-                            self.navigationController?.popViewController(animated: true)
+                            {
+                                self.navigationController?.popViewController(animated: true)
+                            }
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                         }
@@ -267,7 +269,9 @@ extension AddNewPlaceVC{
                     case .unauthorizedToken, .methodNotAllowed, .internalServerError:
                         NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                     case .unknown:
-                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")  {
+                            self.navigationController?.popViewController(animated: true)
+                        }
                     }
                 }
             }

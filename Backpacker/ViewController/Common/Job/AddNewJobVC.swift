@@ -40,7 +40,7 @@ class AddNewJobVC: UIViewController {
     @IBOutlet weak var BgVwStatrTime: UIView!
     @IBOutlet weak var headerStartTime: UILabel!
     @IBOutlet weak var txtFdDate: UITextField!
-  
+    
     @IBOutlet weak var BtnAssignBackPacker: UIButton!
     @IBOutlet weak var Btn_Cancle: UIButton!
     @IBOutlet weak var btn_Save: UIButton!
@@ -73,19 +73,26 @@ class AddNewJobVC: UIViewController {
         "Joe",
         "Raymon","Scott"
     ]
+
     var mediaPicker: MediaPickerManager?
     private var timePicker: UIDatePicker!
     private var activeTextField: UITextField?
     private var oldDate: Date = Date() // Replace with your existing date
+    var startDate = String()
+    var endDate = String()
+    var latitude = Double()
+    var longitude = Double()
+    let viewModelAuth = LogInVM()
+    let viewModel = JobVM()
+    var  selectedBackpackerData : [Backpacker] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
         setupTimePicker()
-        self.setupDatePicker()
         self.UpdateLocationTxtColor()
         // Do any additional setup after loading the view.
     }
- 
+    
     @IBAction func action_SetLoctaion(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
@@ -97,7 +104,7 @@ class AddNewJobVC: UIViewController {
         
         
     }
-   
+    
     
     @IBAction func action_Remove(_ sender: Any) {
         self.main_ImgVw.image = nil
@@ -105,32 +112,80 @@ class AddNewJobVC: UIViewController {
         self.setUpImagePlacehoder()
     }
     @IBAction func action_AssignBackpacker(_ sender: Any) {
-        
-        if self.BtnAssignBackPacker.tag == 0{
-            self.BtnAssignBackPacker.tag = 1
-        }else{
-            self.BtnAssignBackPacker.tag = 0
+        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+        if let sarchVC = storyboard.instantiateViewController(withIdentifier: "CommonSearchVC") as? CommonSearchVC {
+            sarchVC.selectedData = self.selectedBackpackerData
+            sarchVC.delegate = self
+            self.navigationController?.pushViewController(sarchVC, animated: true)
+        } else {
+            print("❌ Could not instantiate SettingVC")
         }
-     
-        self.ManageTableHeight()
     }
     
     @IBAction func action_Dismiss(_ sender: Any) {
         self.navigationController?.popViewController(animated: false)
     }
-
+    
     @IBAction func action_UploadImage(_ sender: Any) {
         mediaPicker = MediaPickerManager(presentingVC: self)
-    mediaPicker?.showMediaOptions { image in
-        // Do something with the image
-        print("Selected image: \(image)")
-        self.main_ImgVw.image = image
-        self.placeHolderImg.isHidden = true
-        self.lbl_UploadImage.isHidden = true
-        self.setUpImagePlacehoder()
+        mediaPicker?.showMediaOptions { image in
+            // Do something with the image
+            print("Selected image: \(image)")
+            self.main_ImgVw.image = image
+            self.placeHolderImg.isHidden = true
+            self.lbl_UploadImage.isHidden = true
+            self.setUpImagePlacehoder()
+        }
+        
     }
-       
+    @IBAction func action_ShowCalendarPopUp(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+        if let calendarVC = storyboard.instantiateViewController(withIdentifier: "CommonCalendarPopUpVC") as? CommonCalendarPopUpVC {
+            let selectedDateVal = convertStringToDate(txtFdDate.text ?? "")
+            calendarVC.selectedDate = selectedDateVal
+            calendarVC.delegate = self
+            calendarVC.modalPresentationStyle = .overCurrentContext
+            calendarVC.modalTransitionStyle = .crossDissolve
+            self.present(calendarVC, animated: true, completion: nil)
+        }
+        
     }
+    func convertStringToDate(_ dateString: String, format: String = "dd/MM/yyyy") -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter.date(from: dateString)
+    }
+
+    @IBAction func Btn_SaveData(_ sender: Any) {
+        
+        let trimmedName = txtFldName.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let trimmedAddress = txtFldAddress.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let trimmedLocationText = lbl_Location.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let trimmedDescription = txtVw_Description.text?.trimmingCharacters(in: .whitespacesAndNewlines)  ?? ""
+        let trimmedPrice = txtFld_Rate.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let imageData = self.main_ImgVw.image?.jpegData(compressionQuality: 0.8)
+        let requiremt = self.txtFld_Requirment.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let startDAte = self.startDate.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let endDate = self.endDate.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let startTime = self.txtFld_StartTime.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let endTime = self.txtFd_EndTine.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+//        let selectedFacilities = selectedFilterIndexes.compactMap { index in
+//            return filterArrya.indices.contains(index) ? filterArrya[index] : nil
+//        }
+        
+        
+        
+        let isValid = validateHangoutFields(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDAte, endDate: endDate, startTime: startTime, endTime: endTime, request: ["iOs","iOS2"], image: imageData, latitude: self.latitude, longitude: self.longitude, on: self)
+        
+        if isValid {
+            self.AddNewJob(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDAte, endDate: endDate, startTime: startTime, endTime: endTime, request: [], image: imageData, latitude:  self.latitude, longitude: self.longitude)
+        }else{
+            AlertManager.showAlert(on: self, title: "Missing Field", message: "Please check all fields")
+        }
+    }
+    
+    
 }
 
 
@@ -143,22 +198,22 @@ extension AddNewJobVC : UITableViewDelegate,UITableViewDataSource{
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ReportIssueTVC", for: indexPath) as? ReportIssueTVC else {
             return UITableViewCell()
         }
-
+        
         let item = BackPackerList[indexPath.row]
         
         // Assuming you have a UILabel called lbl_title in ReportIssueTVC
         cell.lbl_Issue.text = item
-
+        
         return cell
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedIssue = BackPackerList[indexPath.row]
-            print("Selected issue: \(selectedIssue)")
+        print("Selected issue: \(selectedIssue)")
         self.txtFld_Backpacker.text = selectedIssue
         self.BtnAssignBackPacker.tag = 0
         self.ManageTableHeight()
-
+        
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50.0
@@ -168,95 +223,123 @@ extension AddNewJobVC : UITableViewDelegate,UITableViewDataSource{
 
 extension AddNewJobVC : UITextFieldDelegate,UITextViewDelegate{
     func textFieldDidBeginEditing(_ textField: UITextField) {
-          activeTextField = textField
-      }
+        activeTextField = textField
+    }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-          textField.resignFirstResponder() // hide keyboard
-          return true
-      }
+        textField.resignFirstResponder() // hide keyboard
+        return true
+    }
+    
+    func textView(_ textView: UITextView,
+                  shouldChangeTextIn range: NSRange,
+                  replacementText text: String) -> Bool {
+        if text == "\n" { // Detect "return" key
+            textView.resignFirstResponder() // hide keyboard
+            return false
+        }
+        return true
+    }
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        // Store active text field
+        activeTextField = textField
 
-      func textView(_ textView: UITextView,
-                    shouldChangeTextIn range: NSRange,
-                    replacementText text: String) -> Bool {
-          if text == "\n" { // Detect "return" key
-              textView.resignFirstResponder() // hide keyboard
-              return false
-          }
-          return true
-      }
+        // Only validate if the tapped field is either start time or end time
+        if textField == txtFld_StartTime || textField == txtFd_EndTine {
+            if txtFdDate.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true {
+                AlertManager.showAlert(on: self, title: "Missing Field", message: "Please select a date first.")
+                return false
+            }
+        }
+
+        return true // allow editing
+    }
+
 }
 extension AddNewJobVC : SetLocationDelegate{
     func didSelectLocation(locationName: String, fullAddress: String, coordinate: CLLocationCoordinate2D) {
         let Address = "\(locationName), \(fullAddress)"
+        self.txtFldAddress.text = locationName
         self.lbl_Location.text = Address
         self.UpdateLocationTxtColor()
-           print("Lat: \(coordinate.latitude), Long: \(coordinate.longitude)")
-       }
+        print("Lat: \(coordinate.latitude), Long: \(coordinate.longitude)")
+        self.latitude = coordinate.latitude
+        self.longitude = coordinate.longitude
+    }
 }
 
 
 extension AddNewJobVC {
-    func setupDatePicker() {
-           // 1. Initialize date picker
-           datePicker = UIDatePicker()
-           datePicker.datePickerMode = .date
-           datePicker.preferredDatePickerStyle = .inline // shows calendar-style
-           datePicker.date = oldDate // <-- set your old date here
-
-           // 2. Toolbar with Done button
-           let toolbar = UIToolbar()
-           toolbar.sizeToFit()
-           let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneDatePicker))
-           let flex = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-           toolbar.setItems([flex, done], animated: false)
-
-           // 3. Assign to inputView & inputAccessoryView
-        txtFdDate.inputView = datePicker
-        txtFdDate.inputAccessoryView = toolbar
-
-           // 4. (Optional) Show formatted default in the text field
-           let formatter = DateFormatter()
-           formatter.dateStyle = .medium
-        txtFdDate.text = formatter.string(from: oldDate)
-       }
-
-       @objc func doneDatePicker() {
-           let formatter = DateFormatter()
-           formatter.dateFormat = "dd-MM-yyyy" // <-- your desired format
-           txtFdDate.text = formatter.string(from: datePicker.date)
-           txtFdDate.resignFirstResponder()
-       }
+    
     func setupTimePicker() {
-            // 1. Create and configure UIDatePicker
-            timePicker = UIDatePicker()
-            timePicker.datePickerMode = .time
-            timePicker.preferredDatePickerStyle = .wheels // Shows from bottom
-            timePicker.locale = Locale(identifier: "en_US") // 24-hour or "en_US" for AM/PM
-            let toolbar = UIToolbar()
-            toolbar.sizeToFit()
-            
-            let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneTapped))
-            let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-            toolbar.setItems([flexSpace, doneButton], animated: false)
-        // Assign picker and toolbar to both text fields
+        timePicker = UIDatePicker()
+        timePicker.datePickerMode = .time
+        timePicker.preferredDatePickerStyle = .wheels
+        timePicker.locale = Locale(identifier: "en_GB") // Ensures 24-hour format
+        timePicker.calendar = Calendar(identifier: .gregorian)
+
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneTapped))
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        toolbar.setItems([flexSpace, doneButton], animated: false)
+
         txtFld_StartTime.inputView = timePicker
         txtFd_EndTine.inputView = timePicker
-
         txtFld_StartTime.inputAccessoryView = toolbar
         txtFd_EndTine.inputAccessoryView = toolbar
+    }
+    @objc func doneTapped() {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        formatter.locale = Locale(identifier: "en_GB")
+
+        guard let dateText = txtFdDate.text, !dateText.isEmpty else {
+            AlertManager.showAlert(on: self, title: "Alert", message: "Please select a date first.")
+            return
         }
 
-  
+        guard let field = activeTextField else { return }
+        let selectedTime = formatter.string(from: timePicker.date)
 
-      @objc func doneTapped() {
-          let formatter = DateFormatter()
-          formatter.timeStyle = .short
-          
-          if let field = activeTextField {
-              field.text = formatter.string(from: timePicker.date)
-              field.resignFirstResponder()
-          }
-      }
+        // Get Date objects for time comparison
+        let selectedDate = timePicker.date
+
+        if field == txtFld_StartTime {
+            if let endText = txtFd_EndTine.text, !endText.isEmpty,
+               let endDate = formatter.date(from: endText) {
+
+                if Calendar.current.isDate(selectedDate, equalTo: endDate, toGranularity: .minute) {
+                    AlertManager.showAlert(on: self, title: "Alert", message: "Start time and end time cannot be the same.")
+                    return
+                }
+
+                if selectedDate > endDate {
+                    AlertManager.showAlert(on: self, title: "Alert", message: "Start time cannot be after end time.")
+                    return
+                }
+            }
+        } else if field == txtFd_EndTine {
+            if let startText = txtFld_StartTime.text, !startText.isEmpty,
+               let startDate = formatter.date(from: startText) {
+
+                if Calendar.current.isDate(selectedDate, equalTo: startDate, toGranularity: .minute) {
+                    AlertManager.showAlert(on: self, title: "Alert", message: "End time and start time cannot be the same.")
+                    return
+                }
+
+                if selectedDate < startDate {
+                    AlertManager.showAlert(on: self, title: "Alert", message: "End time cannot be before start time.")
+                    return
+                }
+            }
+        }
+
+        field.text = selectedTime
+        field.resignFirstResponder()
+    }
+
+    
     private func setUpUI(){
         self.main_ImgVw.image = UIImage(named: "BgUploadImage")
         self.setUpImagePlacehoder()
@@ -327,82 +410,82 @@ extension AddNewJobVC {
     private func setUpTxtFlds(){
         self.txtFld_Backpacker.isUserInteractionEnabled = false
         txtFldName.attributedPlaceholder = NSAttributedString(
-                   string: "Name",
-                   attributes: [
-                    .foregroundColor: UIColor(hex: "#9D9D9D"),
-                       .font: FontManager.inter(.regular, size: 14.0)
-                   ])
+            string: "Name",
+            attributes: [
+                .foregroundColor: UIColor(hex: "#9D9D9D"),
+                .font: FontManager.inter(.regular, size: 14.0)
+            ])
         
         
         txtFldName.delegate = self
         txtFldAddress.attributedPlaceholder = NSAttributedString(
-                   string: "Address",
-                   attributes: [
-                    .foregroundColor: UIColor(hex: "#9D9D9D"),
-                       .font: FontManager.inter(.regular, size: 14.0)
-                   ])
+            string: "Address",
+            attributes: [
+                .foregroundColor: UIColor(hex: "#9D9D9D"),
+                .font: FontManager.inter(.regular, size: 14.0)
+            ])
         
         
         txtFldAddress.delegate = self
         
         txtFld_Requirment.attributedPlaceholder = NSAttributedString(
-                   string: "Requirment",
-                   attributes: [
-                    .foregroundColor: UIColor(hex: "#9D9D9D"),
-                       .font: FontManager.inter(.regular, size: 14.0)
-                   ])
+            string: "Requirment",
+            attributes: [
+                .foregroundColor: UIColor(hex: "#9D9D9D"),
+                .font: FontManager.inter(.regular, size: 14.0)
+            ])
         
         
         txtFld_Requirment.delegate = self
         txtFld_Rate.attributedPlaceholder = NSAttributedString(
-                   string: "Rate per hour",
-                   attributes: [
-                    .foregroundColor: UIColor(hex: "#9D9D9D"),
-                       .font: FontManager.inter(.regular, size: 14.0)
-                   ])
+            string: "Rate per hour",
+            attributes: [
+                .foregroundColor: UIColor(hex: "#9D9D9D"),
+                .font: FontManager.inter(.regular, size: 14.0)
+            ])
         
         
         txtFld_Rate.delegate = self
         
         txtFdDate.attributedPlaceholder = NSAttributedString(
-                   string: "Date",
-                   attributes: [
-                    .foregroundColor: UIColor(hex: "#9D9D9D"),
-                       .font: FontManager.inter(.regular, size: 14.0)
-                   ])
+            string: "Date",
+            attributes: [
+                .foregroundColor: UIColor(hex: "#9D9D9D"),
+                .font: FontManager.inter(.regular, size: 14.0)
+            ])
         
         
         txtFdDate.delegate = self
         txtFld_StartTime.attributedPlaceholder = NSAttributedString(
-                   string: "Start Time",
-                   attributes: [
-                    .foregroundColor: UIColor(hex: "#9D9D9D"),
-                       .font: FontManager.inter(.regular, size: 14.0)
-                   ])
+            string: "Start Time",
+            attributes: [
+                .foregroundColor: UIColor(hex: "#9D9D9D"),
+                .font: FontManager.inter(.regular, size: 14.0)
+            ])
         
         
         txtFld_StartTime.delegate = self
         txtFd_EndTine.attributedPlaceholder = NSAttributedString(
-                   string: "End Time",
-                   attributes: [
-                    .foregroundColor: UIColor(hex: "#9D9D9D"),
-                       .font: FontManager.inter(.regular, size: 14.0)
-                   ])
+            string: "End Time",
+            attributes: [
+                .foregroundColor: UIColor(hex: "#9D9D9D"),
+                .font: FontManager.inter(.regular, size: 14.0)
+            ])
         
         
         txtFd_EndTine.delegate = self
         txtFld_Backpacker.attributedPlaceholder = NSAttributedString(
-                   string: "Select Backpacker",
-                   attributes: [
-                    .foregroundColor: UIColor(hex: "#9D9D9D"),
-                       .font: FontManager.inter(.regular, size: 14.0)
-                   ])
+            string: "Select Backpacker",
+            attributes: [
+                .foregroundColor: UIColor(hex: "#9D9D9D"),
+                .font: FontManager.inter(.regular, size: 14.0)
+            ])
         
         txtFld_Backpacker.isUserInteractionEnabled = false
         txtFld_Backpacker.delegate = self
         txtVw_Description.delegate = self
-            self.UpdateLocationTxtColor()
-       
+        self.UpdateLocationTxtColor()
+        
     }
     func setUpImagePlacehoder(){
         if self.main_ImgVw.image == UIImage(named: "BgUploadImage"){
@@ -453,7 +536,203 @@ extension AddNewJobVC {
         
         // Remove previous if exists
         view.layer.sublayers?.removeAll(where: { $0 is CAShapeLayer })
-
+        
         view.layer.addSublayer(shapeLayer)
     }
+}
+extension AddNewJobVC: CommonSearchDelegate {
+    
+    func didSelectBackpacker(_ backpacker: [Backpacker]) {
+        print("Received Backpacker: \(backpacker)")
+        self.selectedBackpackerData = backpacker
+        self.txtFld_Backpacker.text = "John Doe" //backpacker.name
+    }
+    
+    
+}
+extension AddNewJobVC: CommonCalendarPopUpVCDelegate {
+    func calendarDidSelectSingleDate(_ date: Date) {
+        print("📌 Received single date:", date)
+        let dateselected = "\(dateToString(date))"
+        self.startDate = dateToStringhyphen(date)
+        self.endDate = dateToStringhyphen(date)
+        self.txtFdDate.text = dateselected
+        // Handle single date
+    }
+    
+    func calendarDidSelectRange(startDate: Date, endDate: Date) {
+        print("📌 Received range:", startDate, "→", endDate)
+        // Handle range
+        let combineDate = "\(dateToString(startDate)) - \(dateToString(endDate))"
+        self.startDate = dateToStringhyphen(startDate)
+            self.endDate = dateToStringhyphen(endDate)
+        self.txtFdDate.text = combineDate
+    }
+    func dateToString(_ date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat =  "dd/MM/yyyy"
+        return dateFormatter.string(from: date)
+    }
+    func dateToStringhyphen(_ date: Date) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat =   "yyyy-MM-dd"
+        return dateFormatter.string(from: date)
+    }
+}
+
+extension AddNewJobVC {
+    
+    func validateHangoutFields(
+        name: String,
+        address: String,
+        locationText: String,
+        description: String,
+        requirment: String,
+        price: String,
+        strtDate: String,
+        endDate: String,
+        startTime: String,
+        endTime: String,
+        request: [String],
+        image: Data?,
+        latitude: Double,
+        longitude: Double,
+        on viewController: UIViewController
+    ) -> Bool {
+        
+        if name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter name.")
+            return false
+        }
+        
+        if address.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter address.")
+            return false
+        }
+        
+        if locationText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || locationText == "Current Location" {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter location.")
+            return false
+        }
+        
+        if description.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter description.")
+            return false
+        }
+        
+        if requirment.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter requirement.")
+            return false
+        }
+        
+        if price.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter price.")
+            return false
+        }
+        
+        if strtDate.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+           endDate.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please select at least one date (start or end).")
+            return false
+        }
+        
+        if startTime.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter start time.")
+            return false
+        }
+        
+        if endTime.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter end time.")
+            return false
+        }
+        
+        if request.isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please select at least one request.")
+            return false
+        }
+        
+        if self.main_ImgVw.image == UIImage(named: "BgUploadImage") || image == nil {
+            AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please upload a valid image.")
+            return false
+        }
+        
+        if latitude == 0.0 || longitude == 0.0 {
+            AlertManager.showAlert(on: viewController, title: "Invalid Location", message: "Please select a valid location on map.")
+            return false
+        }
+        
+        return true
+    }
+    
+    func AddNewJob(
+        name: String,
+        address: String,
+        locationText: String,
+        description: String,
+        requirment: String,
+        price: String,
+        strtDate: String,
+        endDate: String,
+        startTime: String,
+        endTime: String,
+        request: [String],
+        image: Data?,
+        latitude: Double,
+        longitude: Double
+    ) {
+        let image = self.main_ImgVw.image?.jpegData(compressionQuality: 0.8)
+        LoaderManager.shared.show()
+        viewModel.uploadNewJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: price, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, request: request, image: image) { success, message ,statusCode in
+            
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Job Added."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.AddNewJob(name: name, address: address, locationText: locationText, description: description, requirment: requirment, price: price, strtDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, request: request, image: image, latitude: latitude, longitude: longitude)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                    
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.AddNewJob(name: name, address: address, locationText: locationText, description: description, requirment: requirment, price: price, strtDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, request: request, image: image, latitude: latitude, longitude: longitude) // Retry
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                    
+                    
+                case .unauthorizedToken, .methodNotAllowed, .internalServerError:
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                }
+            }
+            
+        }
+        
+    }
+    
 }

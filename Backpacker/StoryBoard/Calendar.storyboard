@@ -645,16 +645,16 @@
                                                                 <rect key="frame" x="241" y="-2.5" width="133" height="50"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2025" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TgZ-9f-NR3">
-                                                                        <rect key="frame" x="10" y="15" width="85" height="20.5"/>
+                                                                        <rect key="frame" x="10" y="15" width="103" height="20.5"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
-                                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="drpDown" translatesAutoresizingMaskIntoConstraints="NO" id="1cw-RN-e3d">
-                                                                        <rect key="frame" x="105" y="16" width="18" height="18"/>
+                                                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1cw-RN-e3d">
+                                                                        <rect key="frame" x="123" y="25" width="0.0" height="0.0"/>
                                                                         <constraints>
-                                                                            <constraint firstAttribute="height" constant="18" id="4Wa-Pb-w7B"/>
-                                                                            <constraint firstAttribute="width" constant="18" id="HLH-vT-uyx"/>
+                                                                            <constraint firstAttribute="height" id="4Wa-Pb-w7B"/>
+                                                                            <constraint firstAttribute="width" id="HLH-vT-uyx"/>
                                                                         </constraints>
                                                                     </imageView>
                                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="j0C-O8-i9P">

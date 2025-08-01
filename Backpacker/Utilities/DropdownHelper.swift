@@ -150,7 +150,7 @@ class DropdownHelper: NSObject, UITableViewDelegate, UITableViewDataSource {
         cell.imageView?.image = nil // remove any image if reused
 
         cell.backgroundColor = (selectedIndex == indexPath) ?
-            UIColor.systemGreen.withAlphaComponent(0.2) :
+        UIColor.systemBlue.withAlphaComponent(0.2) :
             UIColor.white
 
         return cell
@@ -162,14 +162,6 @@ class DropdownHelper: NSObject, UITableViewDelegate, UITableViewDataSource {
          selectedIndex = indexPath
 
          let selectedOption = options[indexPath.row]
-         tableView.reloadData()   //"UserRoleType"
-         if selectedOption == "Employer"{
-             UserDefaults.standard.set("2", forKey: "UserRoleType")
-         }else if selectedOption == "Accommodation"{
-             UserDefaults.standard.set("3", forKey: "UserRoleType")
-         }else{
-             UserDefaults.standard.set("4", forKey: "UserRoleType")
-         }
          onOptionSelected?(selectedOption)
          toggleDropdown()
 

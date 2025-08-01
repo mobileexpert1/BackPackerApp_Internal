@@ -9,13 +9,10 @@ import UIKit
 
 class SettingVC: UIViewController {
 
-    @IBOutlet weak var Btn_DrpDown: UIButton!
     @IBOutlet weak var lbl_Title: UILabel!
     @IBOutlet weak var tblVw: UITableView!
     let role = UserDefaults.standard.string(forKey: "UserRoleType")
     let dataSource = ["Employer", "Accommodation", "Hangout"]
-    private var dropdownHelper: DropdownHelper?
-    @IBOutlet weak var lbl_selectedRole: UILabel!
 #if BackpackerHire
     var menuItems: [MenuItem] = [
         MenuItem(iconName: "Profile1", title: "Profile"),
@@ -45,28 +42,15 @@ class SettingVC: UIViewController {
  
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.lbl_selectedRole.font = FontManager.inter(.medium, size: 16.0)
-        self.setRole()
-        dropdownHelper = DropdownHelper(
-                   parentView: self.view,
-                   anchorButton: Btn_DrpDown,
-                   options: ["Employer", "Accommodation", "Hangout"],
-                   optionImages: ["role_EmpTick", "roleAccTick", "role_HangoutTick"]
-               )
-               dropdownHelper?.onOptionSelected = { [weak self] selected in
-                   self?.setRole()
-                   print("✅ Selected item:", selected)
-                   self?.UpdaqteNavigation()
-
-               }
         let nib = UINib(nibName: "SettingTVC", bundle: nil)
         self.tblVw.register(nib, forCellReuseIdentifier: "SettingTVC")
         
         if role == "4"{
             menuItems = [
                 MenuItem(iconName: "Profile1", title: "Profile"),
-                MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
                 MenuItem(iconName: "Heart", title: "Favorite Hangout"),
+                MenuItem(iconName: "Heart", title: "Switch Account"),
+                MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
                 MenuItem(iconName: "Error", title: "Report Issue"),
                 MenuItem(iconName: "User Shield", title: "Privacy Policy"),
                 MenuItem(iconName: "Delete", title: "Delete Account"),
@@ -75,8 +59,22 @@ class SettingVC: UIViewController {
         }else if role == "3"{
             menuItems = [
                 MenuItem(iconName: "Profile1", title: "Profile"),
-                MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
                 MenuItem(iconName: "Heart", title: "Favorite Accomodations"),
+                MenuItem(iconName: "Heart", title: "Switch Account"),
+                MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
+                MenuItem(iconName: "Error", title: "Report Issue"),
+                MenuItem(iconName: "User Shield", title: "Privacy Policy"),
+                MenuItem(iconName: "Delete", title: "Delete Account"),
+                MenuItem(iconName: "Logout", title: "Log Out")
+            ]
+        }else if role == "2"{
+            menuItems = [
+                MenuItem(iconName: "Profile1", title: "Profile"),
+                MenuItem(iconName: "user-setting 1", title: "Subscription Plan"),
+                MenuItem(iconName: "Terms and Conditions", title: "History"),
+                MenuItem(iconName: "Heart", title: "Favorite Jobs"),
+                MenuItem(iconName: "Heart", title: "Switch Account"),
+                MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
                 MenuItem(iconName: "Error", title: "Report Issue"),
                 MenuItem(iconName: "User Shield", title: "Privacy Policy"),
                 MenuItem(iconName: "Delete", title: "Delete Account"),
@@ -90,28 +88,12 @@ class SettingVC: UIViewController {
         self.lbl_Title.font = FontManager.inter(.semiBold, size: 16.0)
     }
   
-    
+
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
     
     
-    @IBAction func action_ChangeRole(_ sender: Any) {
-        dropdownHelper?.toggleDropdown()
-        
-    }
-    
-    func setRole(){
-        let role =  UserDefaults.standard.string(forKey: "UserRoleType")
-        
-        if role == "2"{
-            self.lbl_selectedRole.text = "Employer"
-        }else if role == "3"{
-            self.lbl_selectedRole.text = "Accomodation"
-        }else{
-            self.lbl_selectedRole.text = "Hangout"
-        }
-    }
     func UpdaqteNavigation() {
 #if BackpackerHire
         
@@ -159,7 +141,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let storyboard = UIStoryboard(name: "Setting", bundle: nil)
 #if BackpackerHire
-        
+     
         if role == "4"{
             switch indexPath.row {
             case 0:
@@ -167,28 +149,36 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
             case 1:
-                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                    vc.isComeFromPrivacy = false
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-            case 2:
+                
                 if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
                     vc.isComeFromAcceptDeclineJobs = false
                     
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
+            case 2:
+                let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
+                if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
+                    vc.isBackButtonHidden = false
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+                
             case 3:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+                    vc.isComeFromPrivacy = false
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 4:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 4:
+            case 5:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
                     vc.isComeFromPrivacy = true
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 5:
+            case 6:
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Delete Account",
                                                    message: "Are you sure you want to delete the account?",
@@ -200,7 +190,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                     }
                     
                 })
-            case 6:
+            case 7:
                  
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Logout",
@@ -214,44 +204,49 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                     nav.navigationBar.isHidden = true
 
                     SceneDelegate.setRootViewController(nav)
-                    
-                    
-                    
                 })
-
                 
             default:
                 break
             }
         }else if role == "3"{
+            
             switch indexPath.row {
             case 0:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "AccountDetailVC") as? AccountDetailVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
             case 1:
-                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                    vc.isComeFromPrivacy = false
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-            case 2:
+                
                 if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
                     vc.isComeFromAcceptDeclineJobs = false
                     
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
+            case 2 :
+                let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
+                if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
+                    vc.isBackButtonHidden = false
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+                
             case 3:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+                    vc.isComeFromPrivacy = false
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 4:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 4:
+            case 5:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
                     vc.isComeFromPrivacy = true
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 5:
+            case 6:
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Delete Account",
                                                    message: "Are you sure you want to delete the account?",
@@ -263,7 +258,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                     }
                     
                 })
-            case 6:
+            case 7:
                  
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Logout",
@@ -288,6 +283,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
             }
         }else{
             switch indexPath.row {
+                
             case 0:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "AccountDetailVC") as? AccountDetailVC {
                     self.navigationController?.pushViewController(vc, animated: true)
@@ -301,28 +297,35 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
             case 3:
-                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                    vc.isComeFromPrivacy = false
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-            case 4:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
                     vc.isComeFromAcceptDeclineJobs = false
                     
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
+            case 4 :
+                let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
+                if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
+                    vc.isBackButtonHidden = false
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+                
             case 5:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+                    vc.isComeFromPrivacy = false
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 6:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 6:
+            case 7:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
                     vc.isComeFromPrivacy = true
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 7:
+            case 8:
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Delete Account",
                                                    message: "Are you sure you want to delete the account?",
@@ -334,7 +337,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                     }
                     
                 })
-            case 8:
+            case 9:
                  
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Logout",

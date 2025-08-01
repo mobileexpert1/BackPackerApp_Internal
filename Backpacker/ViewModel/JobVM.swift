@@ -1,0 +1,92 @@
+//
+//  JobVM.swift
+//  Backpacker
+//
+//  Created by Mobile on 01/08/25.
+//
+
+import Foundation
+import Alamofire
+
+class JobVM {
+    
+    func getBackpackersList<T: Codable>(
+        page: Int,
+        perPage: Int,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getBackpackersProfileURL(page: page, perPage: perPage)
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
+    
+    func uploadNewJob(
+        name: String,
+        address: String,
+        lat: Double,
+        long: Double,
+        locationText: String,
+        description: String,
+        requirement: String,
+        price: String,
+        startDate: String,
+        endDate: String,
+        startTime: String,
+        endTime: String,
+        request: [String],
+        image: Data?,
+        completion: @escaping (Bool, String?, Int?) -> Void
+    ) {
+        guard let token = UserDefaultsManager.shared.bearerToken, !token.isEmpty else {
+            completion(false, "Authorization token is missing.", nil)
+            return
+        }
+
+        let url = ApiConstants.API.ADD_NEWJOB
+
+        let params: Parameters = [
+            "name": name,
+            "address": address,
+            "lat": lat,
+            "long": long,
+            "locationText": locationText,
+            "description": description,
+            "requirements": requirement,
+            "price": price,
+            "startDate": startDate,
+            "endDate": endDate,
+            "startTime": startTime,
+            "endTime": endTime,
+            "requests": request
+        ]
+
+        let headers = ServiceManager.sharedInstance.getHeaders()
+
+        ServiceManager.sharedInstance.requestMultipartAPI(
+            url,
+            image: image,
+            method: .post,
+            parameters: params,
+            headers: headers
+        ) { (result: ApiResult<ApiResponseModel<HangoutResponseData>, APIError>) in
+            switch result {
+            case .success(let data, let statusCode):
+                print("Upload success")
+                completion(true, data?.message ?? "Job added successfully", statusCode)
+
+            case .failure(let error, let statusCode):
+                print("Upload failed:", error.localizedDescription)
+                completion(false, error.localizedDescription, statusCode)
+            }
+        }
+    }
+
+}
+

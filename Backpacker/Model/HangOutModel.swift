@@ -17,3 +17,14 @@ struct HangoutRequest {
     var image: UIImage
 }
 
+struct HangoutResponseData: Codable {
+    let _id: String
+}
+struct ApiResponseModel<T: Codable>: Codable {
+    let success: Bool
+    let message: String
+    let data: T?
+    let errors: [String]?
+}
+
+struct EmptyData: Codable {}

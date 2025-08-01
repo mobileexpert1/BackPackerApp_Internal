@@ -51,11 +51,12 @@ class EmployerCalendarVC: UIViewController {
 
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
-            self.tbl_Heught.constant = self.tblVw.contentSize.height + 300
+            self.tbl_Heught.constant = 1 * 92 //10 is number of item of backpacker list and 92 is row height
             self.scroll_Height.constant = (self.scroll_Height.constant ) + self.tbl_Heught.constant
             self.view.layoutIfNeeded()
         }
-        
+        self.lbl_SelectedYear.isHidden = true
+      
     }
     
     private func setUpFonts(){
@@ -153,7 +154,7 @@ class EmployerCalendarVC: UIViewController {
     }
     @IBAction func action_SelectYear(_ sender: Any) {
         
-        self.ShowYearPicker()
+      //  self.ShowYearPicker()
     }
 }
 
@@ -466,7 +467,7 @@ extension EmployerCalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
 
 extension EmployerCalendarVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10 // or your dataArray.count
+        return 1 // or your dataArray.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -481,5 +482,7 @@ extension EmployerCalendarVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
        
     }
-    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 92
+    }
 }

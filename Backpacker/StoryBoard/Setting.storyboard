@@ -28,65 +28,22 @@
                                 <rect key="frame" x="20" y="110" width="353" height="688"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ckz-sL-XpH">
-                                <rect key="frame" x="178" y="44.666666666666657" width="200" height="50"/>
-                                <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="drpDown" translatesAutoresizingMaskIntoConstraints="NO" id="bWg-0m-OCQ">
-                                        <rect key="frame" x="173" y="14" width="22" height="22"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="22" id="lKi-Mo-1r7"/>
-                                            <constraint firstAttribute="height" constant="22" id="zYP-FB-JyO"/>
-                                        </constraints>
-                                    </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D3i-I3-Okc">
-                                        <rect key="frame" x="5" y="14.333333333333336" width="158" height="21"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Oo0-Dv-Phb">
-                                        <rect key="frame" x="2" y="2" width="196" height="46"/>
-                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <connections>
-                                            <action selector="action_ChangeRole:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="yBO-gN-2bP"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="Oo0-Dv-Phb" secondAttribute="trailing" constant="2" id="3F9-ht-WQ6"/>
-                                    <constraint firstItem="bWg-0m-OCQ" firstAttribute="leading" secondItem="D3i-I3-Okc" secondAttribute="trailing" constant="10" id="SvP-zI-1rs"/>
-                                    <constraint firstAttribute="height" constant="50" id="Yrc-Be-1Dr"/>
-                                    <constraint firstItem="D3i-I3-Okc" firstAttribute="centerY" secondItem="bWg-0m-OCQ" secondAttribute="centerY" id="cTA-64-Ysz"/>
-                                    <constraint firstItem="Oo0-Dv-Phb" firstAttribute="top" secondItem="ckz-sL-XpH" secondAttribute="top" constant="2" id="fdv-al-2n4"/>
-                                    <constraint firstItem="D3i-I3-Okc" firstAttribute="leading" secondItem="ckz-sL-XpH" secondAttribute="leading" constant="5" id="hUU-Rs-mkJ"/>
-                                    <constraint firstAttribute="width" constant="200" id="i8s-6L-Eli"/>
-                                    <constraint firstAttribute="bottom" secondItem="Oo0-Dv-Phb" secondAttribute="bottom" constant="2" id="m31-iw-0J9"/>
-                                    <constraint firstItem="Oo0-Dv-Phb" firstAttribute="leading" secondItem="ckz-sL-XpH" secondAttribute="leading" constant="2" id="rkX-iC-QJ9"/>
-                                    <constraint firstItem="bWg-0m-OCQ" firstAttribute="centerY" secondItem="ckz-sL-XpH" secondAttribute="centerY" id="wnv-Wx-p8O"/>
-                                    <constraint firstAttribute="trailing" secondItem="bWg-0m-OCQ" secondAttribute="trailing" constant="5" id="xJy-lK-PGl"/>
-                                </constraints>
-                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Hzu-Ox-EdI" secondAttribute="trailing" id="6lo-wm-s70"/>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="ckz-sL-XpH" secondAttribute="trailing" constant="15" id="GeT-7x-GDk"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="O9E-OS-wI2" secondAttribute="bottom" constant="20" id="HJU-iC-Qqg"/>
                             <constraint firstItem="O9E-OS-wI2" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="KWt-sl-tkI"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="O9E-OS-wI2" secondAttribute="trailing" constant="20" id="KlU-Sd-D6r"/>
                             <constraint firstItem="Hzu-Ox-EdI" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="Tm1-Yd-fi4"/>
                             <constraint firstItem="Hzu-Ox-EdI" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="bDL-FM-l1x"/>
                             <constraint firstItem="O9E-OS-wI2" firstAttribute="top" secondItem="Hzu-Ox-EdI" secondAttribute="bottom" constant="30" id="j6C-YE-rJF"/>
-                            <constraint firstItem="ckz-sL-XpH" firstAttribute="centerY" secondItem="Hzu-Ox-EdI" secondAttribute="centerY" id="sNI-Wu-0uR"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="6pS-96-4z5"/>
                     <connections>
-                        <outlet property="Btn_DrpDown" destination="Oo0-Dv-Phb" id="Doq-qW-aFd"/>
                         <outlet property="lbl_Title" destination="Hzu-Ox-EdI" id="fri-Ad-M7q"/>
-                        <outlet property="lbl_selectedRole" destination="D3i-I3-Okc" id="yIa-GY-iRJ"/>
                         <outlet property="tblVw" destination="O9E-OS-wI2" id="RW1-TJ-wUs"/>
                     </connections>
                 </viewController>

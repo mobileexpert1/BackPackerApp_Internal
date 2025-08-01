@@ -34,7 +34,7 @@
                                         </connections>
                                     </button>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="0Ii-Zc-4xp">
-                                        <rect key="frame" x="0.0" y="55" width="393" height="578"/>
+                                        <rect key="frame" x="0.0" y="55" width="393" height="618"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="10" minimumInteritemSpacing="10" id="psn-1K-Spd">
                                             <size key="itemSize" width="376" height="552"/>
@@ -44,7 +44,7 @@
                                         </collectionViewFlowLayout>
                                         <cells>
                                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="WalkThoroughCVC" id="vfO-qH-XmI" customClass="WalkThoroughCVC" customModule="Backpacker" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="13" width="376" height="552"/>
+                                                <rect key="frame" x="0.0" y="33" width="376" height="552"/>
                                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="jmg-rD-kop">
                                                     <rect key="frame" x="0.0" y="0.0" width="376" height="552"/>
@@ -54,13 +54,13 @@
                                                             <rect key="frame" x="10" y="0.0" width="356" height="552"/>
                                                             <subviews>
                                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hOA-PG-AXa">
-                                                                    <rect key="frame" x="0.0" y="20" width="356" height="443"/>
-                                                                    <constraints>
-                                                                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="443" id="IMk-XT-clI"/>
-                                                                    </constraints>
+                                                                    <rect key="frame" x="0.0" y="10" width="356" height="372"/>
                                                                 </imageView>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W7k-Vt-Q48">
-                                                                    <rect key="frame" x="30" y="483" width="311" height="36"/>
+                                                                    <rect key="frame" x="30" y="402" width="311" height="80"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="80" id="qia-zQ-dSd"/>
+                                                                    </constraints>
                                                                     <attributedString key="attributedText">
                                                                         <fragment content="dfghdfhdfmgd">
                                                                             <attributes>
@@ -72,8 +72,11 @@
                                                                     </attributedString>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
-                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1pj-T1-WK8">
-                                                                    <rect key="frame" x="31" y="524" width="310" height="18"/>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1pj-T1-WK8">
+                                                                    <rect key="frame" x="31" y="482" width="310" height="60"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="60" id="5tf-gj-A2o"/>
+                                                                    </constraints>
                                                                     <attributedString key="attributedText">
                                                                         <fragment content="Label">
                                                                             <attributes>
@@ -90,9 +93,9 @@
                                                                 <constraint firstItem="hOA-PG-AXa" firstAttribute="leading" secondItem="9YU-1h-2mz" secondAttribute="leading" id="25T-dI-BGs"/>
                                                                 <constraint firstAttribute="trailing" secondItem="hOA-PG-AXa" secondAttribute="trailing" id="3gz-Us-XR5"/>
                                                                 <constraint firstItem="1pj-T1-WK8" firstAttribute="trailing" secondItem="W7k-Vt-Q48" secondAttribute="trailing" id="6Jh-9h-lBQ"/>
-                                                                <constraint firstItem="1pj-T1-WK8" firstAttribute="top" secondItem="W7k-Vt-Q48" secondAttribute="bottom" constant="5" id="7OT-0M-c4N"/>
+                                                                <constraint firstItem="1pj-T1-WK8" firstAttribute="top" secondItem="W7k-Vt-Q48" secondAttribute="bottom" id="7OT-0M-c4N"/>
                                                                 <constraint firstItem="W7k-Vt-Q48" firstAttribute="top" secondItem="hOA-PG-AXa" secondAttribute="bottom" constant="20" id="FAr-Kj-m0l"/>
-                                                                <constraint firstItem="hOA-PG-AXa" firstAttribute="top" secondItem="9YU-1h-2mz" secondAttribute="top" constant="20" id="Kjq-5e-Hao"/>
+                                                                <constraint firstItem="hOA-PG-AXa" firstAttribute="top" secondItem="9YU-1h-2mz" secondAttribute="top" constant="10" id="Kjq-5e-Hao"/>
                                                                 <constraint firstAttribute="trailing" secondItem="W7k-Vt-Q48" secondAttribute="trailing" constant="15" id="RaW-Dd-PHL"/>
                                                                 <constraint firstAttribute="bottom" secondItem="1pj-T1-WK8" secondAttribute="bottom" constant="10" id="hRI-Wi-UQB"/>
                                                                 <constraint firstItem="W7k-Vt-Q48" firstAttribute="leading" secondItem="9YU-1h-2mz" secondAttribute="leading" constant="30" id="iIJ-UG-wZx"/>
@@ -177,7 +180,7 @@
                                     <constraint firstAttribute="trailing" secondItem="0Ii-Zc-4xp" secondAttribute="trailing" id="faW-2U-cbN"/>
                                     <constraint firstItem="r1f-Yj-Dp9" firstAttribute="leading" secondItem="gCO-31-tZ5" secondAttribute="leading" constant="10" id="jp8-4s-uVS"/>
                                     <constraint firstItem="0Ii-Zc-4xp" firstAttribute="leading" secondItem="gCO-31-tZ5" secondAttribute="leading" id="ksz-YL-I4T"/>
-                                    <constraint firstItem="r1f-Yj-Dp9" firstAttribute="top" secondItem="0Ii-Zc-4xp" secondAttribute="bottom" constant="80" id="zpR-mn-anl"/>
+                                    <constraint firstItem="r1f-Yj-Dp9" firstAttribute="top" secondItem="0Ii-Zc-4xp" secondAttribute="bottom" constant="40" id="zpR-mn-anl"/>
                                 </constraints>
                             </view>
                         </subviews>

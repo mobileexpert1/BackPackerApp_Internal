@@ -67,8 +67,7 @@ class UserStore: ServiceManager , UserSearchable {
         }
 
         let params: [String: Any] = ["refreshToken": refreshToken]
-        let url = "http://192.168.11.4:3000/api/auth/refreshToken"
-        
+        let url = ApiConstants.API.REFRESH_TOKEN
         requestApi(url, method: .post, parameters: params) { (success, result, statusCode) in
             completion(success, result, statusCode)
         }
@@ -85,10 +84,8 @@ class UserStore: ServiceManager , UserSearchable {
                return
            }
 
-           let url = "http://192.168.11.4:3000/api/employer/roleSwitch"
+        let url = ApiConstants.API.SWITCH_ROLE
            let headers = getHeaders()
-
-
            requestApi(url, method: .put, parameters: params, headers: headers) { (success, result, statusCode) in
                completion(success, result, statusCode)
            }

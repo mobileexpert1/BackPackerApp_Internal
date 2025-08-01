@@ -32,9 +32,11 @@ class ChooseRoleTypeVC: UIViewController {
         super.viewDidLoad()
         self.setUpUi()
         if isBackButtonHidden == true{
+            back_Btn.setImage(UIImage(named:""), for: .normal)
             back_Btn.isHidden = true
             back_Btn.isUserInteractionEnabled = false
         }else{
+            back_Btn.setImage(UIImage(named:"back_icon"), for: .normal)
             back_Btn.isHidden = false
             back_Btn.isUserInteractionEnabled = true
         }
