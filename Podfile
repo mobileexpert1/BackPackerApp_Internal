@@ -11,6 +11,8 @@ abstract_target 'BackpackerPods' do
   pod 'Alamofire', :modular_headers => true
   pod 'Cosmos', '~> 23.0', :modular_headers => true
   pod 'FSCalendar', :modular_headers => true
+  pod 'SDWebImage', :modular_headers => true
+  pod 'SkeletonView', :modular_headers => true
 
   target 'Backpacker'
   target 'BackpackerHire'
