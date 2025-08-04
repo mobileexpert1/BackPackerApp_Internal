@@ -424,7 +424,39 @@ extension ServiceManager {
         }
     }
 
-    
+    func requestValidatedApi<T: Codable>(
+        _ url: URLConvertible,
+        method: HTTPMethod = .post,
+        parameters: Parameters? = nil,
+        httpBody: String? = nil,
+        headers: [String: String]? = nil,
+        showLoader: Bool = true,
+        contentType: ContentType = .json,
+        completion: @escaping (ApiResult<ApiResponseModel<T>, APIError>) -> Void
+    ) {
+        requestAPI(
+            url,
+            method: method,
+            parameters: parameters,
+            httpBody: nil,
+            headers: headers,
+            showLoader: showLoader,
+            contentType: contentType
+        ) { (result: ApiResult<ApiResponseModel<T>?, APIError>) in
+            switch result {
+            case .success(let responseModel, let statusCode):
+                if let model = responseModel {
+                    completion(.success(model, statusCode: statusCode))
+                }else{
+                    
+                }
+
+            case .failure(let error, let statusCode):
+                completion(.failure(error, statusCode: statusCode))
+            }
+        }
+    }
+
     private func requestUploadAPI<T:Codable>(_ url: URLConvertible,videoData:Data? = nil,method:HTTPMethod, parameters: Parameters? = nil,httpBody:String? = nil,headers:[String:String]? = nil, completion: @escaping (ApiResult<T,APIError>) -> Void) {
         print("URL: ",url)
        // //MBProgressHUD.showAdded(to: UIA     pplication.appWindow, animated: true)
@@ -643,11 +675,6 @@ extension ServiceManager {
             completion(.failure(.requestFailed(description: "The internet connection appears to be offline."),statusCode: nil))
             return
         }
-
-        if showLoader {
-            // MBProgressHUD.showAdded(to: UIApplication.appWindow, animated: true)
-        }
-
         do {
             var request = try URLRequest(url: url.asURL())
             request.httpMethod = method.rawValue
@@ -659,15 +686,21 @@ extension ServiceManager {
                 request.setValue(value, forHTTPHeaderField: key)
             }
 
+      
+            if let parameters = parameters {
+                  if method == .get {
+                      let encodedRequest = try URLEncoding.queryString.encode(request, with: parameters)
+                      request = encodedRequest
+                  } else {
+                      request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
+                  }
+              } else {
+                  request.httpBody = httpBody?.data(using: .utf8)
+              }
             print("📨 Headers:", request.allHTTPHeaderFields ?? [:])
             print("📦 Params:", parameters ?? [:])
             print("📬 Method:", method.rawValue)
-
             APIManager.Manager.request(request).responseData { response in
-                if showLoader {
-                    // MBProgressHUD.hide(for: UIApplication.appWindow, animated: true)
-                }
-
                 guard let statusCode = response.response?.statusCode else {
                                 completion(.failure(.responseUnsuccessful(description: "No status code received from server"), statusCode: nil))
                                 return

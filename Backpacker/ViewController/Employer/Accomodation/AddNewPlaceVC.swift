@@ -20,8 +20,9 @@ class AddNewPlaceVC: UIViewController {
     @IBOutlet weak var Vw_Address: UIView!
     @IBOutlet weak var header_Name: UILabel!
     
-    @IBOutlet weak var main_ImgVw: UIImageView!
-    @IBOutlet weak var Btn_Cross: UIButton!
+    @IBOutlet weak var imageCollectionView: UICollectionView!
+   // @IBOutlet weak var main_ImgVw: UIImageView!
+  //  @IBOutlet weak var Btn_Cross: UIButton!
     @IBOutlet weak var lbl_Val_Location: UILabel!
     @IBOutlet weak var vw_Location: UIView!
     @IBOutlet weak var header_Location: UILabel!
@@ -36,7 +37,7 @@ class AddNewPlaceVC: UIViewController {
     let viewModelAuth = LogInVM()
     var latitude: Double?
     var longitude: Double?
-
+    var selectedImages: [UIImage] = []
     override func viewDidLoad() {
         super.viewDidLoad()
         self.SetUpUI()
@@ -45,7 +46,7 @@ class AddNewPlaceVC: UIViewController {
     }
     
     func SetUpUI(){
-        self.main_ImgVw.image = UIImage(named:"BgUploadImage")
+       
         Vw_Name.layer.cornerRadius = 10.0
         Vw_Name.layer.borderWidth = 1.0
         Vw_Name.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
@@ -72,13 +73,15 @@ class AddNewPlaceVC: UIViewController {
         self.header_description.font = FontManager.inter(.medium, size: 14)
         self.header_Location.font = FontManager.inter(.medium, size: 14)
         
-        self.lbl_PlaceHodler.font = FontManager.inter(.medium, size: 13)
+        self.lbl_PlaceHodler.font = FontManager.inter(.medium, size: 10)
         self.lbl_Val_Location.font = FontManager.inter(.regular, size: 14.0)
         applyGradientButtonStyle(to: self.btn_Save)
         self.btncan.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
         self.btn_Save.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
         self.setUpLocationHeader()
-        self.setUpImagePlacehoder()
+        self.Vw_Placehoder.layer.cornerRadius = 10.0
+        self.Vw_Placehoder.layer.borderWidth = 1.0
+        self.Vw_Placehoder.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
         txtFldName.attributedPlaceholder = NSAttributedString(
                    string: "Name",
                    attributes: [
@@ -101,6 +104,9 @@ class AddNewPlaceVC: UIViewController {
         txtFld_Address.delegate = self
         
         txtVw_Description.delegate = self
+        self.imageCollectionView.register(UINib(nibName: "CommonImagCVC", bundle: nil), forCellWithReuseIdentifier: "CommonImagCVC")
+        self.imageCollectionView.delegate = self
+        self.imageCollectionView.dataSource = self
     }
     
     
@@ -127,65 +133,75 @@ class AddNewPlaceVC: UIViewController {
     
     @IBAction func actinon_UploadIMage(_ sender: Any) {
         mediaPicker = MediaPickerManager(presentingVC: self)
-    mediaPicker?.showMediaOptions { image in
-        // Do something with the image
-        print("Selected image: \(image)")
-    
-        self.main_ImgVw.image = image
-        self.lbl_PlaceHodler.isHidden = true
-        self.imgPlacehoder.isHidden = true
-        self.setUpImagePlacehoder()
-       
-    }
+        mediaPicker?.showMediaOptions(
+            isFromNewAccommodation: true,
+            singleImageHandler: { image in
+                self.selectedImages.append(image)
+                self.imageCollectionView.reloadData()
+            },
+            multipleImagesHandler: { images in
+                print("Selected image: \(images)")
+                for img in images{
+                    self.selectedImages.append(img)
+                }
+                self.imageCollectionView.reloadData()
+            }
+        )
      
     }
-    @IBAction func action_DeletImage(_ sender: Any) {
-        self.main_ImgVw.image = nil
-        self.main_ImgVw.image = UIImage(named: "BgUploadImage")
-        self.setUpImagePlacehoder()
-        
-        
-    }
-    func setUpImagePlacehoder(){
-        if self.main_ImgVw.image == UIImage(named:"BgUploadImage"){
-            self.main_ImgVw.layer.cornerRadius = 0.0
-            self.Btn_Cross.isHidden = true
-            self.btn_Save.isUserInteractionEnabled = true
-            self.imgPlacehoder.isHidden = false
-            self.lbl_PlaceHodler.isHidden = false
-        }else{
-            self.main_ImgVw.layer.cornerRadius = 10.0
-            self.Btn_Cross.isHidden = false
-            self.btn_Save.isUserInteractionEnabled = true
-            self.imgPlacehoder.isHidden = true
-            self.lbl_PlaceHodler.isHidden = true
-        }
-    }
-    
-    
+
     
     @IBAction func action_Save_Hangout(_ sender: Any) {
         let name = txtFldName.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let address = txtFld_Address.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let location = lbl_Val_Location.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let desc = txtVw_Description.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-     
+        let firstImage = self.selectedImages.first
+       let imageData = firstImage?.jpegData(compressionQuality: 0.8)
           guard validateHangoutFields(
               name: name,
               address: address,
               locationText: location,
               description: desc,
-              image: main_ImgVw.image!.jpegData(compressionQuality: 0.8),
+              image: imageData,
               on: self
           ) else {
               return
           }
-        self.submitHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: main_ImgVw.image!.jpegData(compressionQuality: 0.8))
+        self.submitHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData)
     }
     
-    
-
 }
+
+extension AddNewPlaceVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return selectedImages.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CommonImagCVC", for: indexPath) as? CommonImagCVC else {
+            return UICollectionViewCell()
+        }
+        cell.img_Vw.image = selectedImages[indexPath.item]
+            cell.delegate = self
+            cell.indexPath = indexPath
+        return cell
+    }
+
+    // Optional: Cell size
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+
+        return CGSize(width: 110, height: 100)
+    }
+}
+extension AddNewPlaceVC: CommonImagCVCDelegate {
+    func didTapRemove(at indexPath: IndexPath) {
+        selectedImages.remove(at: indexPath.item)
+        imageCollectionView.reloadData()
+    }
+}
+
 extension AddNewPlaceVC: UITextFieldDelegate, UITextViewDelegate {
 
     // Dismiss keyboard when Return is pressed in UITextField
@@ -218,7 +234,6 @@ extension AddNewPlaceVC : SetLocationDelegate{
 
 extension AddNewPlaceVC{
     func submitHangout(name: String, address: String, lat: Double, long: Double, locationText: String, description: String, image: Data?) {
-        let image = self.main_ImgVw.image?.jpegData(compressionQuality: 0.8)
 
             viewModel.uploadHangout(
                 name: name,
@@ -287,6 +302,7 @@ extension AddNewPlaceVC{
         image: Data?,
         on viewController: UIViewController
     ) -> Bool {
+        
         if name.isEmpty {
             AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter name.")
             return false
@@ -303,15 +319,8 @@ extension AddNewPlaceVC{
             AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter description.")
             return false
         }
-        
-        if self.main_ImgVw.image == UIImage(named:"BgUploadImage"){
-            AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select an image.")
-            return false
-            
-            if image == nil {
-                AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select an image.")
-                return false
-            }
+        if selectedImages.count == 0  {
+            AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select at least one image.")
             return false
         }
         return true

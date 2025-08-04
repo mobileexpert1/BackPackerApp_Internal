@@ -285,18 +285,36 @@
                     <connections>
                         <outlet property="VW_Noitication" destination="ETF-Uh-son" id="rf9-YJ-VFN"/>
                         <outlet property="Vw_Chat" destination="Cr8-ce-vog" id="y1e-hW-3WM"/>
+                        <outlet property="Vw_SearchHeight" destination="cdC-Cf-VbB" id="aM0-9m-jcD"/>
                         <outlet property="homeTblVw" destination="wEE-t8-jSB" id="cG1-aJ-Yme"/>
+                        <outlet property="img_placeholde_Search" destination="stk-aj-NBm" id="qk6-VB-hkR"/>
                         <outlet property="lblMainHeader" destination="iM9-7p-w3P" id="2f6-Vh-iwq"/>
                         <outlet property="lbl_NotificationCount" destination="QqA-mK-xvb" id="fuf-SL-s4C"/>
                         <outlet property="mainHeaderImgWidth" destination="aG8-IZ-2An" id="AQl-MM-nv1"/>
                         <outlet property="notifictionCountBgVw" destination="Ijn-fr-2KY" id="jIg-mM-3W5"/>
                         <outlet property="searchVw" destination="wnI-7f-W2z" id="n2z-1y-1Jx"/>
                         <outlet property="txtFldVw" destination="bx9-c9-mqg" id="lJC-xk-ZhQ"/>
+                        <outlet property="vw_searchBtm" destination="id3-kh-eoq" id="WJf-ea-zHq"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6as-m0-sXY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="596" y="1212"/>
+            <point key="canvasLocation" x="594.6564885496183" y="1211.9718309859156"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="xV8-2p-GOV">
+            <objects>
+                <viewController id="wxi-3A-23d" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="l1F-JM-kE3">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="vfk-ce-ctQ"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PbN-7I-KUq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="619" y="2059"/>
         </scene>
     </scenes>
     <resources>

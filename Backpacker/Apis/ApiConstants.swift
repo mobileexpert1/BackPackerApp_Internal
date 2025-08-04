@@ -35,7 +35,7 @@ struct ApiConstants {
         }
         static let ADD_NEWJOB = BASE_URL + "api/employer/job"
         static let SWITCH_ROLE = BASE_URL + "api/employer/roleSwitch"
-       
+        static let BACKPACKER_HOME = BASE_URL + "api/backpackers/home"
     }
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"

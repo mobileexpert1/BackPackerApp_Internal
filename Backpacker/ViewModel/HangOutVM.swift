@@ -8,8 +8,6 @@
 import Foundation
 import UIKit
 import Alamofire
-import UIKit
-import Alamofire
 
 class HangoutViewModel {
     

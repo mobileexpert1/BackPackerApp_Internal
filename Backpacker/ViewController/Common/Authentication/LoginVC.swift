@@ -198,6 +198,7 @@ extension LoginVC {
                     }
                 case .badRequest:
                     print("⚠️ Bad request:", httpStatus.description)
+                    AlertManager.showAlert(on: self, title: "Alert", message:response?.message ?? "Something went wrong")
                 case .unauthorized:
                     print("🔒 Unauthorized:", httpStatus.description)
                     self.viewModel.refreshToken { (success, result, statusCode) in

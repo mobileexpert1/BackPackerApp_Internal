@@ -285,7 +285,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
             switch indexPath.row {
                 
             case 0:
-                if let vc = storyboard.instantiateViewController(withIdentifier: "AccountDetailVC") as? AccountDetailVC {
+                if let vc = storyboard.instantiateViewController(withIdentifier: "CommonDetailVC") as? CommonDetailVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
             case 1:

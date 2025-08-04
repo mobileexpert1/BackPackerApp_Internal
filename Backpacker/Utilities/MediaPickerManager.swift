@@ -9,18 +9,22 @@ import Foundation
 import UIKit
 import AVFoundation
 import Photos
-
+import PhotosUI
 class MediaPickerManager: NSObject {
     
     private weak var presentingVC: UIViewController?
     private var imagePickedHandler: ((UIImage) -> Void)?
-    
+    private var isComeFromNewAccommodation: Bool = false
+    private var multipleImagesPickedHandler: (([UIImage]) -> Void)?
+
     init(presentingVC: UIViewController) {
         self.presentingVC = presentingVC
     }
     
-    func showMediaOptions(completion: @escaping (UIImage) -> Void) {
-        self.imagePickedHandler = completion
+    func showMediaOptions(isFromNewAccommodation: Bool, singleImageHandler: @escaping (UIImage) -> Void, multipleImagesHandler: (([UIImage]) -> Void)? = nil) {
+        self.isComeFromNewAccommodation = isFromNewAccommodation
+        self.imagePickedHandler = singleImageHandler
+        self.multipleImagesPickedHandler = multipleImagesHandler
         
         let alert = UIAlertController(title: "Select Media", message: nil, preferredStyle: .actionSheet)
         
@@ -29,13 +33,18 @@ class MediaPickerManager: NSObject {
         }))
         
         alert.addAction(UIAlertAction(title: "Gallery", style: .default, handler: { _ in
-            self.openGallery()
+            if isFromNewAccommodation {
+                self.openMultipleGalleryPicker()
+            } else {
+                self.openGallery()
+            }
         }))
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         
-        presentingVC?.present(alert, animated: true, completion: nil)
+        presentingVC?.present(alert, animated: true)
     }
+
     
     private func openCamera() {
         guard UIImagePickerController.isSourceTypeAvailable(.camera) else {
@@ -73,7 +82,17 @@ class MediaPickerManager: NSObject {
             showSettingsAlert("Photo library access is denied. Please enable it from settings.")
         }
     }
-    
+
+    private func openMultipleGalleryPicker() {
+        var config = PHPickerConfiguration()
+        config.selectionLimit = 0 // 0 = unlimited selection
+        config.filter = .images
+        
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = self
+        presentingVC?.present(picker, animated: true)
+    }
+
     private func presentPicker(sourceType: UIImagePickerController.SourceType) {
         let picker = UIImagePickerController()
         picker.delegate = self
@@ -113,5 +132,29 @@ extension MediaPickerManager: UIImagePickerControllerDelegate, UINavigationContr
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
+    }
+}
+extension MediaPickerManager: PHPickerViewControllerDelegate {
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true)
+        
+        var selectedImages: [UIImage] = []
+        let group = DispatchGroup()
+        
+        for result in results {
+            if result.itemProvider.canLoadObject(ofClass: UIImage.self) {
+                group.enter()
+                result.itemProvider.loadObject(ofClass: UIImage.self) { object, error in
+                    if let image = object as? UIImage {
+                        selectedImages.append(image)
+                    }
+                    group.leave()
+                }
+            }
+        }
+        
+        group.notify(queue: .main) {
+            self.multipleImagesPickedHandler?(selectedImages)
+        }
     }
 }

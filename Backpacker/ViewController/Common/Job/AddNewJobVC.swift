@@ -128,7 +128,7 @@ class AddNewJobVC: UIViewController {
     
     @IBAction func action_UploadImage(_ sender: Any) {
         mediaPicker = MediaPickerManager(presentingVC: self)
-        mediaPicker?.showMediaOptions { image in
+        mediaPicker?.showMediaOptions(isFromNewAccommodation: false) { image in
             // Do something with the image
             print("Selected image: \(image)")
             self.main_ImgVw.image = image

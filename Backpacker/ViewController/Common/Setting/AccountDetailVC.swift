@@ -46,11 +46,14 @@ class AccountDetailVC: UIViewController {
     ]
     @IBOutlet weak var lblzHeaderVisa: UILabel!
     let role = UserDefaults.standard.string(forKey: "UserRoleType")
+    @IBOutlet weak var btn_back: UIButton!
+    @IBOutlet weak var btn_editHeight: NSLayoutConstraint!
+    @IBOutlet weak var btn_backHeight: NSLayoutConstraint!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpButtons()
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
-        self.setUPFLDS()
+        self.setUpFonts()
         let nib = UINib(nibName: "ReportIssueTVC", bundle: nil)
         self.tblVw_Visa.register(nib, forCellReuseIdentifier: "ReportIssueTVC")
         self.tblVw_Visa.delegate = self
@@ -63,9 +66,19 @@ class AccountDetailVC: UIViewController {
             self.btn_drpdwn.tag = 0
             self.manageHeightOfTable()
             self.btn_drpdwn.isHidden = true
+            if role == "2" {
+                self.lbl_MainHeader.isHidden = true
+                self.btn_Edit.isHidden = true
+                self.btn_back.isHidden = true
+                self.btn_back.setImage(UIImage(named: ""), for: .normal)
+                self.btn_backHeight.constant = 0.0
+                self.btn_editHeight.constant  = 0.0
+                self.btn_Edit.tag = 1
+                self.handleBottomBtn()
+            }
         }
     }
-    private func setUPFLDS(){
+    private func setUpFonts(){
        
         self.lblzHeaderVisa.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_VisaTitle.font = FontManager.inter(.regular, size: 12.0)

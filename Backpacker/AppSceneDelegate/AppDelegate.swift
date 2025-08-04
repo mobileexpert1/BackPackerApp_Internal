@@ -21,7 +21,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         CalendarEventManager.shared.requestAccess { granted in
             print(granted ? "✅ Calendar access granted" : "❌ Calendar access denied")
         }
-        
+           LocationManager.shared.requestLocationPermission()
+           LocationManager.shared.startUpdatingLocation()
         application.registerForRemoteNotifications()
         return true
     }

@@ -7,6 +7,7 @@
 
 import UIKit
 import Cosmos
+import SDWebImage
 class AccomodationCVC: UICollectionViewCell {
     
     @IBOutlet weak var btn_Heart: UIButton!

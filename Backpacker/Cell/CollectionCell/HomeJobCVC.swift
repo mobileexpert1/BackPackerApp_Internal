@@ -56,10 +56,15 @@ class HomeJobCVC: UICollectionViewCell {
         }
     
         #else
-        self.lbl_AmountHeight.constant = 0.0
-        self.lbl_jobStatus.isHidden = true
-        self.statusVw.isHidden = true
-        
+        if isComeForHiredetailpagee == true{
+            self.lbl_AmountHeight.constant = 20.0
+            self.lbl_jobStatus.isHidden = true
+            self.statusVw.isHidden = true
+        }else{
+            self.lbl_AmountHeight.constant = 0.0
+            self.lbl_jobStatus.isHidden = true
+            self.statusVw.isHidden = true
+        }
 #endif
     }
        private func setupUI() {

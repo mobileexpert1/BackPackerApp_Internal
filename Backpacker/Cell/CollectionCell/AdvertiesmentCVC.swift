@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import SkeletonView
 class AdvertiesmentCVC: UICollectionViewCell {
 
     @IBOutlet weak var lbl_Address: UILabel!
@@ -19,6 +19,9 @@ class AdvertiesmentCVC: UICollectionViewCell {
     }
     private func setUpUI(){
         self.lbl_Name.font = FontManager.inter(.semiBold, size: 24.0)
+        self.isSkeletonable = true
+        lbl_Name.isSkeletonable = true
+       imageVw.isSkeletonable = true
     }
 }
 struct Advertisement {

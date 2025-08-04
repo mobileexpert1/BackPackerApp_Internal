@@ -85,9 +85,9 @@ extension BackPackerDetailVC: UITableViewDelegate, UITableViewDataSource {
             return UITableViewCell()
         }
         let sectionItems = itemsPerSection[indexPath.section]
-        cell.configure(with: sectionItems,section: indexPath.section)
-        cell.isComeFromJob = false
         cell.isComeForHireDetailPage  = true
+        //cell.isComeFromJob = false
+        cell.configure(with: sectionItems,section: indexPath.section)
         cell.onTap = { [weak self] in
             guard let self = self else { return }
             print("Cell tapped at index: \(indexPath.item)")
@@ -118,7 +118,7 @@ extension BackPackerDetailVC: UITableViewDelegate, UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        return 180
+        return 200
     }
     
   

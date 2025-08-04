@@ -27,10 +27,15 @@ class HangOutVC: UIViewController {
         #if BackpackerHire
         self.maVw_Height.constant = 0
         self.lbl_nearBackpacker_Height.constant = 0
+        self.btnAdd.isHidden = false
+        self.btnAdd.isUserInteractionEnabled = true
         #else
         self.maVw_Height.constant = 170
         self.lbl_nearBackpacker_Height.constant = 20
+        self.btnAdd.isHidden = true
+        self.btnAdd.isUserInteractionEnabled = false
         #endif
+        
         self.collectIOnVw.delegate = self
         self.collectIOnVw.dataSource = self
         self.btnAdd.titleLabel?.font = FontManager.inter(.medium, size: 12.0)

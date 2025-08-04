@@ -14,7 +14,7 @@ class AddNewAccomodationVC: UIViewController {
     @IBOutlet weak var scroolHeight: NSLayoutConstraint!
     @IBOutlet weak var lbl_MainHeader: UILabel!
     
-    @IBOutlet weak var btn_Remove: UIButton!
+    //@IBOutlet weak var btn_Remove: UIButton!
     @IBOutlet weak var tblVw: UITableView!
     
    // @IBOutlet weak var tblHeight: NSLayoutConstraint!
@@ -24,9 +24,10 @@ class AddNewAccomodationVC: UIViewController {
     @IBOutlet weak var txtVwDescription: UITextView!
     @IBOutlet weak var lbl_description: UILabel!
     
+    @IBOutlet weak var imageCollectionView: UICollectionView!
     
     //UploadImage outlets
-    @IBOutlet weak var uploadedImage: UIImageView!
+    var selectedImages: [UIImage] = []
     @IBOutlet weak var mainBgVw: UIView!
     @IBOutlet weak var lbl_UploadImg: UILabel!
     @IBOutlet weak var placeholderImg: UIImageView!
@@ -80,6 +81,9 @@ class AddNewAccomodationVC: UIViewController {
         self.setupui()
         self.setUpTxtFlds()
         self.setUPLocationText()
+        self.imageCollectionView.register(UINib(nibName: "CommonImagCVC", bundle: nil), forCellWithReuseIdentifier: "CommonImagCVC")
+        self.imageCollectionView.delegate = self
+        self.imageCollectionView.dataSource = self
     }
     
     func setUPLocationText(){
@@ -95,15 +99,16 @@ class AddNewAccomodationVC: UIViewController {
     }
     
     private func setupui(){
+        self.uploadImgVw.layer.cornerRadius = 10.0
+        self.uploadImgVw.layer.borderWidth = 1.0
+        self.uploadImgVw.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
         self.txtVwDescription.delegate = self
         self.lbl_description.font = FontManager.inter(.medium, size: 14.0)
-        self.lbl_UploadImg.font = FontManager.inter(.medium, size: 13.0)
+        self.lbl_UploadImg.font = FontManager.inter(.medium, size: 10.0)
         self.BgVwDescription.layer.cornerRadius = 10.0
         self.BgVwDescription.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
         self.BgVwDescription.layer.borderWidth = 1.0
-        self.uploadedImage.image = UIImage(named: "BgUploadImage")
-        self.setUpImagePlacehoder()
         applyGradientButtonStyle(to: self.btn_Save)
         
         headerName.font = FontManager.inter(.medium, size: 14.0)
@@ -222,8 +227,8 @@ class AddNewAccomodationVC: UIViewController {
         let trimmedLocationText = valLocation.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let trimmedDescription = txtVwDescription.text?.trimmingCharacters(in: .whitespacesAndNewlines)  ?? ""
         let trimmedPrice = txtFldPrice.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let imageData = self.uploadedImage.image?.jpegData(compressionQuality: 0.8)
-        
+         let firstImage = self.selectedImages.first
+        let imageData = firstImage?.jpegData(compressionQuality: 0.8)
         let selectedFacilities = selectedFilterIndexes.compactMap { index in
             return filterArrya.indices.contains(index) ? filterArrya[index] : nil
         }
@@ -236,12 +241,12 @@ class AddNewAccomodationVC: UIViewController {
             price: trimmedPrice,
             facilities: selectedFacilities,
             image: imageData,
-            mainImageView: self.uploadedImage,
+            mainImageView: self.placeholderImg,
             on: self
         )
 
         if isValid {
-            self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: trimmedPrice, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, mainImageView: self.uploadedImage, on: self)
+            self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: trimmedPrice, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, mainImageView: self.placeholderImg, on: self)
         }
        
 
@@ -254,38 +259,54 @@ class AddNewAccomodationVC: UIViewController {
     
     @IBAction func action_UploadImage(_ sender: Any) {
         mediaPicker = MediaPickerManager(presentingVC: self)
-    mediaPicker?.showMediaOptions { image in
-        // Do something with the image
-        print("Selected image: \(image)")
+        mediaPicker?.showMediaOptions(
+            isFromNewAccommodation: true,
+            singleImageHandler: { image in
+                self.selectedImages.append(image)
+                self.imageCollectionView.reloadData()
+            },
+            multipleImagesHandler: { images in
+                print("Selected image: \(images)")
+                for img in images{
+                    self.selectedImages.append(img)
+                }
+                self.imageCollectionView.reloadData()
+            }
+        )
+
+        
+        
+    }
+ 
+  
+}
+
+extension AddNewAccomodationVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
-        self.uploadedImage.image = image
-        self.placeholderImg.isHidden = true
-        self.lbl_UploadImg.isHidden = true
-        self.setUpImagePlacehoder()
-       
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return selectedImages.count
     }
-        
-    }
-    func setUpImagePlacehoder(){
-        if self.uploadedImage.image == UIImage(named: "BgUploadImage"){
-            self.uploadedImage.layer.cornerRadius = 0.0
-            self.btn_Remove.isHidden = true
-            self.btn_Save.isUserInteractionEnabled = true
-            self.placeholderImg.isHidden = false
-            self.lbl_UploadImg.isHidden = false
-        }else{
-            self.uploadedImage.layer.cornerRadius = 10.0
-            self.btn_Remove.isHidden = false
-            self.btn_Save.isUserInteractionEnabled = true
-            self.placeholderImg.isHidden = true
-            self.lbl_UploadImg.isHidden = true
+
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CommonImagCVC", for: indexPath) as? CommonImagCVC else {
+            return UICollectionViewCell()
         }
+        cell.img_Vw.image = selectedImages[indexPath.item]
+            cell.delegate = self
+            cell.indexPath = indexPath
+        return cell
     }
-    @IBAction func action_RemoveImage(_ sender: Any) {
-        self.uploadedImage.image = nil
-        self.uploadedImage.image = UIImage(named: "BgUploadImage")
-        self.setUpImagePlacehoder()
-        
+
+    // Optional: Cell size
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+
+        return CGSize(width: 110, height: 100)
+    }
+}
+extension AddNewAccomodationVC: CommonImagCVCDelegate {
+    func didTapRemove(at indexPath: IndexPath) {
+        selectedImages.remove(at: indexPath.item)
+        imageCollectionView.reloadData()
     }
 }
 
@@ -367,7 +388,7 @@ extension AddNewAccomodationVC {
         mainImageView: UIImageView,
         on viewController: UIViewController
     ) -> Bool {
-        
+      
         if name.isEmpty {
             AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter name.")
             return false
@@ -382,31 +403,24 @@ extension AddNewAccomodationVC {
             AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter location.")
             return false
         }
-
-        if description.isEmpty {
-            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter description.")
-            return false
-        }
-
-        if price.isEmpty {
-            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter price.")
-            return false
-        }
-
         if facilities.isEmpty {
             AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please select at least one facility.")
             return false
         }
-
-        if mainImageView.image == UIImage(named: "BgUploadImage") {
-            AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select an image.")
+        
+        if price.isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter price.")
             return false
         }
-
-        if image == nil {
-            AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select an image.")
+        if description.isEmpty {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter description.")
             return false
         }
+        if selectedImages.count == 0  {
+            AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select at least one image.")
+            return false
+        }
+      
 
         return true
     }
@@ -489,3 +503,4 @@ extension AddNewAccomodationVC {
 
     
 }
+

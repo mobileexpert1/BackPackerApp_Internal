@@ -16,8 +16,22 @@ class HomeTVC: UITableViewCell {
     var isComeFromJob : Bool = false
     var onTap: (() -> Void)?
     var onTapAcceptJob: ((Int) -> Void)?
-    var isComeForHireDetailPage : Bool = false
+   // var isComeForHireDetailPage : Bool = false
     let role = UserDefaults.standard.string(forKey: "UserRoleType")
+    var isComeForHireDetailPage: Bool = false {
+        didSet {
+            print("isComeForHireDetailPage set to: \(isComeForHireDetailPage)")
+            if isComeForHireDetailPage == true{
+                if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
+                    layout.scrollDirection = .horizontal
+                }
+            }
+        }
+    }
+    var activeSections: [SectionType]?
+    var jobList : [JobItem]?
+    var accomodationList : [AccommodationItem]?
+    var hangoutList : [HangoutItem]?
     override func awakeFromNib() {
         super.awakeFromNib()
         self.preservesSuperviewLayoutMargins = false
@@ -28,26 +42,7 @@ class HomeTVC: UITableViewCell {
         let nib4 = UINib(nibName: "AccomodationCVC", bundle: nil)
         home_CollectionVw.register(nib4, forCellWithReuseIdentifier: "AccomodationCVC")
 #if BackpackerHire
-        let nib2 = UINib(nibName: "AddAccomodationCVC", bundle: nil)
-        home_CollectionVw.register(nib2, forCellWithReuseIdentifier: "AddAccomodationCVC")
-        let nib3 = UINib(nibName: "JobCountCVC", bundle: nil)
-        home_CollectionVw.register(nib3, forCellWithReuseIdentifier: "JobCountCVC")
-        if isComeForHireDetailPage == true{
-            if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
-                layout.scrollDirection = .vertical
-            }
-        }else{
-            if role == "3" || role == "4" ||  role == "2" {
-                if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
-                    layout.scrollDirection = .vertical
-                }
-            }else{
-                if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
-                    layout.scrollDirection = .horizontal
-                }
-            }
-           
-        }
+        self.setupCollection()
        
 #else
         if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
@@ -71,6 +66,31 @@ class HomeTVC: UITableViewCell {
         self.tableSection = section
         home_CollectionVw.reloadData()
     }
+    func setupCollection(){
+        let nib2 = UINib(nibName: "AddAccomodationCVC", bundle: nil)
+        home_CollectionVw.register(nib2, forCellWithReuseIdentifier: "AddAccomodationCVC")
+        let nib3 = UINib(nibName: "JobCountCVC", bundle: nil)
+        home_CollectionVw.register(nib3, forCellWithReuseIdentifier: "JobCountCVC")
+        if isComeForHireDetailPage == true{
+            if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
+                layout.scrollDirection = .horizontal
+            }
+        }else{
+            if role == "3" || role == "4" ||  role == "2" {
+                if isComeForHireDetailPage == false{
+                    if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
+                        layout.scrollDirection = .vertical
+                    }
+                }
+               
+            }else{
+                if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
+                    layout.scrollDirection = .horizontal
+                }
+            }
+           
+        }
+    }
 }
 extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
@@ -84,8 +104,21 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             return 10
         }
 #else
-        return items.count
-        
+            let sectionType = activeSections?[tableSection]
+                 switch sectionType {
+                 case .banner:
+                     // Assuming one banner cell that shows all banners
+                     return 1
+                 case .accommodations:
+                     return accomodationList?.count ?? 0
+                 case .hangouts:
+                     return hangoutList?.count ?? 0
+                 case .jobs:
+                     return jobList?.count ?? 0
+                 case .none:
+                     return items.count
+                 }
+      
 #endif
        
     }
@@ -196,12 +229,43 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
                 return UICollectionViewCell()
             }
-            cell.imgVw.image = UIImage(named: "aCCOMODATION")
-            cell.lbl_Title.text = "Mendoza's Social Club"
-            cell.lblAmount.isHidden = false
-            cell.lblRating.isHidden = true
-            cell.lbl_review.isHidden = true
-            cell.cosmosVw.isHidden = true
+
+            guard let sectionType = activeSections?[tableSection] else {
+                return cell
+            }
+
+            switch sectionType {
+            case .banner:
+                // Banner cell logic elsewhere
+                break
+
+            case .accommodations:
+                if let accommodation = accomodationList?[indexPath.item] {
+                    cell.lbl_Title.text = accommodation.name
+                    cell.lblAmount.text = "$\(accommodation.price)"
+                    cell.lblAmount.isHidden = false
+                    cell.lblRating.isHidden = true
+                    cell.lbl_review.isHidden = true
+                    cell.cosmosVw.isHidden = true
+                    cell.imgVw.image = UIImage(named: "aCCOMODATION") // or use image loading logic here
+                }
+
+            case .hangouts:
+                if let hangout = hangoutList?[indexPath.item] {
+                    cell.lbl_Title.text = hangout.name
+                    cell.lblAmount.isHidden = true
+                    cell.lblRating.isHidden = true
+                    cell.lbl_review.isHidden = true
+                    cell.cosmosVw.isHidden = true
+                    cell.imgVw.image = UIImage(named: "restaurantImg") // or use image loading logic
+                }
+
+            default:
+                break
+            }
+
+            return cell
+          
             return cell
         }else{
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
@@ -215,7 +279,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
               }
             // Assign item to your label/image inside the cell
             // cell.titleLabel.text = item
-            cell.setUpUI(iscomeFromAccept: false)
+            cell.lbl_Title.text = jobList?[indexPath.item].name ?? "No Data"
+            if let amnt = jobList?[indexPath.item].price {
+                cell.lblAmount.text = "$\(amnt)"
+            }
+            cell.lbl_SubTitle.text = jobList?[indexPath.item].description ?? "No Data"
+            cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
             return cell
         }
       
@@ -254,7 +323,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             }else if role  == "3"{
                 return CGSize(width: (width / 2) - 12, height: 235)
             }else if role  == "2"{
-                return CGSize(width: (width / 2) - 12, height: 190)
+                
+                if isComeForHireDetailPage  == true{
+                    return CGSize(width: (width / 2) - 5, height: 200)
+                }else{
+                    return CGSize(width: (width / 2) - 12, height: 190)
+                }
             }else{
                 if isComeForHireDetailPage  == true{
                     return CGSize(width: (width / 2) - 5, height: 180)
@@ -269,30 +343,59 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         }
           
 #else
-        if tableSection == 0 {
+        
+        
+        let sectionType = activeSections?[tableSection]
+        switch sectionType {
+        case .banner:
             if isComeFromJob == false{
                 return CGSize(width: (width / 2) - 12, height: 205)
             }else{
                 return CGSize(width: (width / 2) - 12, height: 180)
             }
-            
-        }else if tableSection == 1 || tableSection == 2 {
+        case .accommodations:
             if isComeFromJob == false{
                 return CGSize(width: (width / 2) - 12, height: 230)
             }else{
                 return CGSize(width: (width / 2) - 12, height: 180)
             }
-           
-        }else{
+        case  .hangouts:
+                return CGSize(width: (width / 2) - 12, height: 205)
+        case .jobs :
             if isComeFromJob == false{
                 return CGSize(width: (width / 2) - 12, height: 150)
             }else{
                 return CGSize(width: (width / 2) - 12, height: 180)
             }
-            
+        case .none:
+            return CGSize(width: (width / 2) - 12, height: 200)
         }
-      
         
+      /*
+       if tableSection == 0 {
+           if isComeFromJob == false{
+               return CGSize(width: (width / 2) - 12, height: 205)
+           }else{
+               return CGSize(width: (width / 2) - 12, height: 180)
+           }
+           
+       }else if tableSection == 1 || tableSection == 2 {
+           if isComeFromJob == false{
+               return CGSize(width: (width / 2) - 12, height: 230)
+           }else{
+               return CGSize(width: (width / 2) - 12, height: 180)
+           }
+          
+       }else{
+           if isComeFromJob == false{
+               return CGSize(width: (width / 2) - 12, height: 150)
+           }else{
+               return CGSize(width: (width / 2) - 12, height: 180)
+           }
+           
+       }
+       */
+  
 #endif
         
         
