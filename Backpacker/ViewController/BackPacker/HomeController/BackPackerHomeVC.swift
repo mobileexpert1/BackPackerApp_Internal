@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreLocation
+import SkeletonView
 class BackPackerHomeVC: UIViewController {
     
     @IBOutlet weak var homeTblVw: UITableView!
@@ -28,6 +29,8 @@ class BackPackerHomeVC: UIViewController {
     private let viewModel = BackPackerHomeVM()
     private let viewModelAuth = LogInVM()
     private var homeData: BackpackerHomeResponseModel?
+    var isLoading: Bool = true // true while loading, false once data is ready
+
     var activeSections: [SectionType] {
         var sections: [SectionType] = []
         if let banners = homeData?.banners, !banners.isEmpty {
@@ -50,9 +53,6 @@ class BackPackerHomeVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupPullToRefresh()
-//        LocationManager.shared.delegate = self
-//        LocationManager.shared.requestLocationPermission()
-//        LocationManager.shared.startUpdatingLocation()
 #if BackpackerHire
         if role == "2" {
             sectionTitles = ["","Jobs"]
@@ -74,6 +74,11 @@ class BackPackerHomeVC: UIViewController {
         self.vw_searchBtm.constant = 5.0
 #endif
         
+        let nib4 = UINib(nibName: "SkeltonTVC", bundle: nil)
+        self.homeTblVw.register(nib4, forCellReuseIdentifier: "SkeltonTVC")
+        
+        let nib5 = UINib(nibName: "SkeltonCollectionTVC", bundle: nil)
+        self.homeTblVw.register(nib5, forCellReuseIdentifier: "SkeltonCollectionTVC")
         
         self.setUpUI()
         let nib = UINib(nibName: "HomeTVC", bundle: nil)
@@ -93,13 +98,17 @@ class BackPackerHomeVC: UIViewController {
         
         
         txtFldVw.delegate = self
+#if Backapacker
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
+        {
+            LoaderManager.shared.show()
+            self.HomeApiCall()
+        }
+#endif
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-#if Backapacker
-        
-        self.HomeApiCall()
-#endif
+
     }
     func showTopView(isShow : Bool = false,title : String = "Employer"){
         if isShow == true{
@@ -157,6 +166,10 @@ class BackPackerHomeVC: UIViewController {
 extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
     
     func numberOfSections(in tableView: UITableView) -> Int {
+        
+           if isLoading {
+            return 4 // Show 5 skeleton cells (or however many you want)
+        } else {
 #if Backapacker
         let count = activeSections.count
         if count == 0{
@@ -170,6 +183,8 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         
 #endif
         
+        }
+
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -178,103 +193,135 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if isLoading {
+            if indexPath.section == 0{
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonTVC", for: indexPath) as? SkeltonTVC else {
+                    return UITableViewCell()
+                }
+                return cell
+            }else{
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonCollectionTVC", for: indexPath) as? SkeltonCollectionTVC else {
+                    return UITableViewCell()
+                }
+                return cell
+                
+            }
         
-        
-#if BackpackerHire
-        if indexPath.section == 0 {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "AdvertiesmentTVC", for: indexPath) as? AdvertiesmentTVC else {
-                return UITableViewCell()
-            }
-            let adsData = homeData?.banners
-            if let adsData  = adsData {
-                cell.ads = adsData
-            }
-            return cell
-        }
-        else  if indexPath.section == 1 || indexPath.section == 2 {
-            
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                return UITableViewCell()
-            }
-            cell.configure(with: sectionTitles,section: indexPath.section)
-            cell.isComeFromJob = false
-            cell.isComeForHireDetailPage = false
-            // Handle final callback here
-            cell.onAddAccommodation = { [weak self] in
-            }
-            return cell
+
         }else{
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                return UITableViewCell()
+            
+    #if BackpackerHire
+            if indexPath.section == 0 {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "AdvertiesmentTVC", for: indexPath) as? AdvertiesmentTVC else {
+                    return UITableViewCell()
+                }
+    #if BackpackerHire
+                
+                cell.adsHire = [
+                 Advertisement(name: "Flat 50%", address: "New York", image: UIImage(named: "advertiesment")!),
+                 Advertisement(name: "Flat 70%", address: "Los Angeles", image: UIImage(named: "advertiesment")!),
+                ]
+
+    #else
+                let adsData = homeData?.banners
+                if let adsData  = adsData {
+                    cell.ads = adsData
+                }
+                
+    #endif
+               
+                return cell
             }
-            cell.configure(with: sectionTitles,section: indexPath.section)
-            cell.isComeFromJob = true
-            cell.isComeForHireDetailPage = false
-            // Handle final callback here
-            cell.onAddAccommodation = { [weak self] in
+            else  if indexPath.section == 1 || indexPath.section == 2 {
+                
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                    return UITableViewCell()
+                }
+                cell.configure(with: sectionTitles,section: indexPath.section)
+                cell.isComeFromJob = false
+                cell.isComeForHireDetailPage = false
+                // Handle final callback here
+                cell.onAddAccommodation = { [weak self] in
+                }
+                return cell
+            }else{
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                    return UITableViewCell()
+                }
+                cell.configure(with: sectionTitles,section: indexPath.section)
+                cell.isComeFromJob = true
+                cell.isComeForHireDetailPage = false
+                // Handle final callback here
+                cell.onAddAccommodation = { [weak self] in
+                }
+                return cell
             }
-            return cell
+    #else
+            let sectionType = activeSections[indexPath.section]
+            
+            switch sectionType {
+            case .banner:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "AdvertiesmentTVC", for: indexPath) as? AdvertiesmentTVC else {
+                    return UITableViewCell()
+                }
+                let adsData = homeData?.banners
+                if let adsData  = adsData {
+                    cell.ads = adsData
+                }
+                return cell
+                
+            case .jobs:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                    return UITableViewCell()
+                }
+                cell.configure(with: sectionTitles,section: indexPath.section)
+                cell.isComeFromJob = true
+                cell.isComeForHireDetailPage = false
+                // Handle final callback here
+                cell.onAddAccommodation = { [weak self] in
+                    
+                  
+                }
+                cell.jobList = homeData?.jobslist  ?? []
+                cell.activeSections = activeSections
+                return cell
+                
+            case .hangouts:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                    return UITableViewCell()
+                }
+                cell.configure(with: sectionTitles,section: indexPath.section)
+                cell.isComeFromJob = false
+                cell.isComeForHireDetailPage = false
+                // Handle final callback here
+                cell.onAddAccommodation = { [weak self] in
+                }
+                cell.hangoutList = homeData?.hangoutList  ?? []
+                cell.activeSections = activeSections
+                return cell
+                
+            case .accommodations:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                    return UITableViewCell()
+                }
+                cell.configure(with: sectionTitles,section: indexPath.section)
+                cell.isComeFromJob = false
+                cell.isComeForHireDetailPage = false
+                // Handle final callback here
+                cell.onAddAccommodation = { [weak self] in
+                  
+                }
+                cell.accomodationList = homeData?.accommodationList  ?? []
+                cell.activeSections = activeSections
+                return cell
+            }
+    #endif
         }
-#else
-        let sectionType = activeSections[indexPath.section]
-        
-        switch sectionType {
-        case .banner:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "AdvertiesmentTVC", for: indexPath) as? AdvertiesmentTVC else {
-                return UITableViewCell()
-            }
-            let adsData = homeData?.banners
-            if let adsData  = adsData {
-                cell.ads = adsData
-            }
-            return cell
-            
-        case .jobs:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                return UITableViewCell()
-            }
-            cell.configure(with: sectionTitles,section: indexPath.section)
-            cell.isComeFromJob = true
-            cell.isComeForHireDetailPage = false
-            // Handle final callback here
-            cell.onAddAccommodation = { [weak self] in
-            }
-            cell.jobList = homeData?.jobslist  ?? []
-            cell.activeSections = activeSections
-            return cell
-            
-        case .hangouts:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                return UITableViewCell()
-            }
-            cell.configure(with: sectionTitles,section: indexPath.section)
-            cell.isComeFromJob = false
-            cell.isComeForHireDetailPage = false
-            // Handle final callback here
-            cell.onAddAccommodation = { [weak self] in
-            }
-            cell.hangoutList = homeData?.hangoutList  ?? []
-            cell.activeSections = activeSections
-            return cell
-            
-        case .accommodations:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                return UITableViewCell()
-            }
-            cell.configure(with: sectionTitles,section: indexPath.section)
-            cell.isComeFromJob = false
-            cell.isComeForHireDetailPage = false
-            // Handle final callback here
-            cell.onAddAccommodation = { [weak self] in
-            }
-            cell.accomodationList = homeData?.accommodationList  ?? []
-            cell.activeSections = activeSections
-            return cell
-        }
-#endif
+
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
 #if Backapacker
         let sectionType = activeSections[section]
         switch sectionType {
@@ -308,7 +355,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
 #endif
         
         header.onButtonTap = { [weak self] tappedSection in
-            self?.handleHeaderButtonTap(in: tappedSection)
+            self?.handleHeaderButtonTap(in: tappedSection,title: header.titleLaBLE.text ?? "")
         }
         
         return header
@@ -316,6 +363,9 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
     
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if isLoading {
+            return 0.0
+        }else{
 #if Backapacker
         let sectionType = activeSections[section]
         switch sectionType {
@@ -330,55 +380,68 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         }
         return 40
 #endif
+        }
+
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 {
-            return 160
-        }else if  indexPath.section == 1  {
-#if BackpackerHire
-            if role == "4"   {
-                return 420
-            }else if role == "3"{
-                return 470
-            }else if role == "2"{
-                return 470
-                
-            } else{
-                return 380
-            }
-#else
-            let sectionType = activeSections[indexPath.section]
-            switch sectionType {
-            case .banner:
+        if isLoading == true  {
+            if indexPath.section == 0 {
                 return 160
-            case .accommodations:
-                return 230
-            case  .hangouts:
-                return 190
-            case .jobs :
-                return 180
+            }else{
+                return 200
             }
            
-#endif
-        }else if indexPath.section == 2 {
-            let sectionType = activeSections[indexPath.section]
-            switch sectionType {
-            case .banner:
+            
+        }else{
+            if indexPath.section == 0 {
                 return 160
-            case .accommodations:
-                return 230
-            case  .hangouts:
-                return 205
-            case .jobs :
+            }else if  indexPath.section == 1  {
+    #if BackpackerHire
+                if role == "4"   {
+                    return 420
+                }else if role == "3"{
+                    return 470
+                }else if role == "2"{
+                    return 470
+                    
+                } else{
+                    return 380
+                }
+    #else
+                let sectionType = activeSections[indexPath.section]
+                switch sectionType {
+                case .banner:
+                    return 160
+                case .accommodations:
+                    return 230
+                case  .hangouts:
+                    return 190
+                case .jobs :
+                    return 180
+                }
+               
+    #endif
+            }else if indexPath.section == 2 {
+                let sectionType = activeSections[indexPath.section]
+                switch sectionType {
+                case .banner:
+                    return 160
+                case .accommodations:
+                    return 230
+                case  .hangouts:
+                    return 205
+                case .jobs :
+                    return 180
+                }
+               
+            }
+            else{
                 return 180
             }
-           
+            
         }
-        else{
-            return 180
-        }
-        
+
     }
     private func moveToAddAccomodationVC() {
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
@@ -400,18 +463,32 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
     @objc private func refreshTableData() {
         // Call your API
 #if Backapacker
-        
-        self.HomeApiCall()
+        self.isLoading = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
+        {
+            self.HomeApiCall()
+        }
+        #else
+        self.refreshControl?.endRefreshing()
 #endif
       
     }
 
-    private func handleHeaderButtonTap(in section: Int) {
-        print("Button tapped in section \(section)")
+    private func handleHeaderButtonTap(in section: Int,title:String) {
+        let storyboard = UIStoryboard(name: "Home", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonGridVC") as? CommonGridVC {
+            if title == "Accommodations" {
+                settingVC.isComeFromHomeAccomodation = true
+            }else if title == "Backpacker Hangout"{
+                settingVC.isComeFromHomeHangout = true
+            }else if title == "Jobs"{
+                settingVC.isComeFromHomeJob = true
+            }
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("❌ Could not instantiate SettingVC")
+        }
     }
-    
-    
-    
     
 }
 
@@ -472,10 +549,11 @@ extension BackPackerHomeVC {
                         if success == true {
                             self.homeData = data
                             DispatchQueue.main.async {
-                                self.homeTblVw.reloadData()
+                                self.isLoading = false
                                 LoaderManager.shared.hide()
                                 self.refreshControl?.endRefreshing()
                                 self.homeTblVw.setContentOffset(.zero, animated: true)
+                                self.homeTblVw.reloadData()
                             }
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
@@ -529,3 +607,23 @@ extension BackPackerHomeVC {
     
 #endif
 }
+
+
+extension  BackPackerHomeVC: SkeletonTableViewDataSource {
+    func numSections(in collectionSkeletonView: UITableView) -> Int {
+           return 2 // Or your actual section count
+       }
+
+       func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
+           return 5
+       }
+
+       func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
+           if indexPath.section == 2 {
+               return "SkeltonCollectionTVC"
+           } else {
+               return "SkeltonTVC"
+           }
+       }
+}
+

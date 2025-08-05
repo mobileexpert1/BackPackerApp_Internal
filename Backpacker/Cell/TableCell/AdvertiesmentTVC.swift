@@ -12,6 +12,7 @@ class AdvertiesmentTVC: UITableViewCell {
 
     @IBOutlet weak var pageController: UIPageControl!
     @IBOutlet weak var collectionViw: UICollectionView!
+#if Backapacker
     var ads: [BannerItem] = [] {
           didSet {
               if ads.isEmpty {
@@ -23,7 +24,13 @@ class AdvertiesmentTVC: UITableViewCell {
               }
           }
       }
-
+    
+#else
+    var adsHire : [Advertisement]?
+    
+#endif
+   
+    
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -40,7 +47,11 @@ class AdvertiesmentTVC: UITableViewCell {
                 pageController.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
                 
                 // Start shimmer until data arrives
-                collectionViw.showAnimatedGradientSkeleton()
+#if Backapacker
+        
+        collectionViw.showAnimatedGradientSkeleton()
+#endif
+        
     }
 
 
@@ -59,14 +70,26 @@ extension AdvertiesmentTVC: SkeletonCollectionViewDataSource {
 extension AdvertiesmentTVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+#if BackpackerHire
+        
+        return adsHire?.count ?? 0
+        #else
         return ads.isEmpty ? 5 : ads.count
+#endif
+       
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AdvertiesmentCVC", for: indexPath) as? AdvertiesmentCVC else {
             return UICollectionViewCell()
         }
-
+#if BackpackerHire
+        let ad = adsHire?[indexPath.item]
+        cell.lbl_Name.text = ad?.name
+        cell.imageVw.image = UIImage(named: "advertiesment")
+        
+        #else
+        
         if ads.isEmpty {
             cell.lbl_Name.text = " "
             cell.imageVw.image = nil
@@ -77,6 +100,9 @@ extension AdvertiesmentTVC: UICollectionViewDelegate, UICollectionViewDataSource
             cell.imageVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "placeholder"))
         }
 
+        
+#endif
+     
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
