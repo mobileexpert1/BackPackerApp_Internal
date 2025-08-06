@@ -338,7 +338,8 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         
         header.section = section
         header.contentView.backgroundColor = .white
-        
+        header.headerButton.isUserInteractionEnabled = false
+        header.headerButton.isHidden = true
 #if Backapacker
         switch sectionType {
         case .accommodations:
@@ -476,17 +477,22 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
 
     private func handleHeaderButtonTap(in section: Int,title:String) {
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
-        if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonGridVC") as? CommonGridVC {
-            if title == "Accommodations" {
+        if title == "Accommodations" {
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonGridVC") as? CommonGridVC {
                 settingVC.isComeFromHomeAccomodation = true
-            }else if title == "Backpacker Hangout"{
-                settingVC.isComeFromHomeHangout = true
-            }else if title == "Jobs"{
-                settingVC.isComeFromHomeJob = true
+                self.navigationController?.pushViewController(settingVC, animated: true)
             }
-            self.navigationController?.pushViewController(settingVC, animated: true)
-        } else {
-            print("❌ Could not instantiate SettingVC")
+            
+        }else if title == "Backpacker Hangout"{
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonGridVC") as? CommonGridVC {
+                settingVC.isComeFromHomeHangout = true
+                self.navigationController?.pushViewController(settingVC, animated: true)
+            }
+            
+        }else if title == "Jobs"{
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "JobAllListVC") as? JobAllListVC {
+                self.navigationController?.pushViewController(settingVC, animated: true)
+            }
         }
     }
     

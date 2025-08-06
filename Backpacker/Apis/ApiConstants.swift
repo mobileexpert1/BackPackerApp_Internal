@@ -36,6 +36,20 @@ struct ApiConstants {
         static let ADD_NEWJOB = BASE_URL + "api/employer/job"
         static let SWITCH_ROLE = BASE_URL + "api/employer/roleSwitch"
         static let BACKPACKER_HOME = BASE_URL + "api/backpackers/home"
+        static let BACKPACKER_Profile = BASE_URL + "api/backpackers/profile"
+        static let BACKPACKER_JOBSSEEALL = BASE_URL + "api/backpackers/jobs"
+        
+        static func getBACKPACKER_JOBSSEEALLURL(page: Int, perPage: Int, search: String? = nil) -> String {
+            var url = "\(BASE_URL)api/backpackers/jobs?page=\(page)&perPage=\(perPage)"
+            
+            if let searchText = search?.trimmingCharacters(in: .whitespacesAndNewlines), !searchText.isEmpty {
+                let encodedSearch = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&search=\(encodedSearch)"
+            }
+            
+            return url
+        }
+
     }
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"

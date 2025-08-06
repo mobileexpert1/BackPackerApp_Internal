@@ -38,10 +38,24 @@ class AddNewPlaceVC: UIViewController {
     var latitude: Double?
     var longitude: Double?
     var selectedImages: [UIImage] = []
+    
+    //Mic btn OutLet
+    
+    @IBOutlet weak var btn_Name_mic: UIButton!
+    
+    
+    @IBOutlet weak var btn_description_mic: UIButton!
+    @IBOutlet weak var btn_Address_mic: UIButton!
+    
+    //Speech to text
+    let speechManager = SpeechToTextManager()
+    var currentActiveTextField: UITextField?
+    var currentActiveTextVw: UITextView?
+    var currentlyRecordingButton: UIButton?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.SetUpUI()
-        
+        self.setupSpeechCallbacks()
         
     }
     
@@ -109,7 +123,24 @@ class AddNewPlaceVC: UIViewController {
         self.imageCollectionView.dataSource = self
     }
     
+  
+    @IBAction func action_Name_Mic(_ sender: UIButton) {
+        handleMicTap(for: sender, textField: txtFldName, textView: nil)
+    }
     
+    
+    
+    @IBAction func action_address_mic(_ sender: UIButton) {
+        handleMicTap(for: sender, textField: txtFld_Address, textView: nil)
+    }
+    
+    
+    
+    @IBAction func action_descritpion_mic(_ sender: UIButton) {
+        handleMicTap(for: sender, textField: nil, textView: txtVw_Description)
+        
+    }
+   
     @IBAction func setLocation(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
@@ -128,6 +159,10 @@ class AddNewPlaceVC: UIViewController {
         }
     }
     @IBAction func actionCross(_ sender: Any) {
+        currentlyRecordingButton = nil
+        currentActiveTextField = nil
+        currentActiveTextVw = nil
+        speechManager.stopRecording()
         self.navigationController?.popViewController(animated: false)
     }
     
@@ -152,6 +187,10 @@ class AddNewPlaceVC: UIViewController {
 
     
     @IBAction func action_Save_Hangout(_ sender: Any) {
+        currentlyRecordingButton = nil
+        currentActiveTextField = nil
+        currentActiveTextVw = nil
+        speechManager.stopRecording()
         let name = txtFldName.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let address = txtFld_Address.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let location = lbl_Val_Location.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -222,7 +261,7 @@ extension AddNewPlaceVC: UITextFieldDelegate, UITextViewDelegate {
 extension AddNewPlaceVC : SetLocationDelegate{
     func didSelectLocation(locationName: String, fullAddress: String, coordinate: CLLocationCoordinate2D) {
         lbl_Val_Location.text = locationName
-        txtFld_Address.text = fullAddress
+       // txtFld_Address.text = fullAddress
         print("Lat: \(coordinate.latitude), Long: \(coordinate.longitude)")
 
         self.latitude = coordinate.latitude
@@ -325,5 +364,79 @@ extension AddNewPlaceVC{
         }
         return true
     }
+
+}
+extension AddNewPlaceVC {
+    private func setupSpeechCallbacks() {
+        speechManager.onResult = { [weak self] text in
+                DispatchQueue.main.async {
+                    if self?.btn_Name_mic.tag == 1 {
+                            self?.txtFldName.text = text
+                      
+                    }
+                    
+                    if self?.btn_Address_mic.tag == 1 {
+                            self?.txtFld_Address.text = text
+                       
+                        
+                    }
+                    
+                    if self?.btn_description_mic.tag == 1 {
+                            self?.txtVw_Description.text = text
+                    }
+                }
+            }
+
+            speechManager.onError = { error in
+                print("Speech error:", error.localizedDescription)
+            }
+
+       
+     }
+    func setUpTag(){
+        self.btn_Name_mic.tag = 0
+        self.btn_Address_mic.tag = 0
+        self.btn_description_mic.tag = 0
+    }
+    func handleMicTap(for button: UIButton, textField: UITextField?, textView: UITextView?) {
+        // Stop if same button tapped again
+        if button == currentlyRecordingButton && button.tag == 1 {
+            button.tag = 0
+            currentlyRecordingButton = nil
+            currentActiveTextField = nil
+            currentActiveTextVw = nil
+            speechManager.stopRecording()
+            button.tintColor = .black
+            return
+        }
+
+        // If a different mic is already recording
+        if let previousButton = currentlyRecordingButton, previousButton != button {
+            previousButton.tag = 0
+            previousButton.tintColor = .black
+            speechManager.stopRecording()
+
+            // Add delay before starting new mic
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.setUpTag()
+                self.startRecording(for: button, textField: textField, textView: textView)
+            }
+        } else {
+            // Start new mic directly
+            setUpTag()
+            startRecording(for: button, textField: textField, textView: textView)
+        }
+    }
+
+    private func startRecording(for button: UIButton, textField: UITextField?, textView: UITextView?) {
+        button.tag = 1
+        currentlyRecordingButton = button
+        button.imageView?.image?.withTintColor(.blue)
+        currentActiveTextField = textField
+        currentActiveTextVw = textView
+
+        speechManager.startRecording()
+    }
+
 
 }

@@ -40,7 +40,7 @@ class JobVM {
         endDate: String,
         startTime: String,
         endTime: String,
-        request: [String],
+        selectedBackpackerJSONString: String,
         image: Data?,
         completion: @escaping (Bool, String?, Int?) -> Void
     ) {
@@ -64,7 +64,7 @@ class JobVM {
             "endDate": endDate,
             "startTime": startTime,
             "endTime": endTime,
-            "requests": request
+            "requests": selectedBackpackerJSONString
         ]
 
         let headers = ServiceManager.sharedInstance.getHeaders()
@@ -87,6 +87,22 @@ class JobVM {
             }
         }
     }
+    func getJobListSeeAll<T: Codable>(
+        page: Int,
+        perPage: Int,
+        search:String,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getBACKPACKER_JOBSSEEALLURL(page: page, perPage: perPage, search: search)
 
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 

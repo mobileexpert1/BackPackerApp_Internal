@@ -85,9 +85,23 @@ class AddNewJobVC: UIViewController {
     let viewModelAuth = LogInVM()
     let viewModel = JobVM()
     var  selectedBackpackerData : [Backpacker] = []
+    //Mic Outlets
+    let speechManager = SpeechToTextManager()
+    var currentActiveTextField: UITextField?
+    var currentActiveTextVw: UITextView?
+    var currentlyRecordingButton: UIButton?
+    @IBOutlet weak var btn_name_Mic: UIButton!
+    
+    @IBOutlet weak var btn_requirmentMic: UIButton!
+    @IBOutlet weak var btn_descritpion_mic: UIButton!
+    @IBOutlet weak var btn_adress_mic: UIButton!
+    var selectedBackPackerList: [BackpackerIdWrapper] = []
+    var selectedBackPackerJSONString: String?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
+        self.setupSpeechCallbacks()
         setupTimePicker()
         self.UpdateLocationTxtColor()
         // Do any additional setup after loading the view.
@@ -123,6 +137,10 @@ class AddNewJobVC: UIViewController {
     }
     
     @IBAction func action_Dismiss(_ sender: Any) {
+        currentlyRecordingButton = nil
+        currentActiveTextField = nil
+        currentActiveTextVw = nil
+        speechManager.stopRecording()
         self.navigationController?.popViewController(animated: false)
     }
     
@@ -158,7 +176,10 @@ class AddNewJobVC: UIViewController {
     }
 
     @IBAction func Btn_SaveData(_ sender: Any) {
-        
+        currentlyRecordingButton = nil
+        currentActiveTextField = nil
+        currentActiveTextVw = nil
+        speechManager.stopRecording()
         let trimmedName = txtFldName.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let trimmedAddress = txtFldAddress.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let trimmedLocationText = lbl_Location.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
@@ -171,6 +192,9 @@ class AddNewJobVC: UIViewController {
         let startTime = self.txtFld_StartTime.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let endTime = self.txtFd_EndTine.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         
+        self.latitude = 30.63580679180547
+        self.longitude = 76.72132560810132
+        
         let isValid = validateHangoutFields(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDAte, endDate: endDate, startTime: startTime, endTime: endTime, request: ["iOs","iOS2"], image: imageData, latitude: self.latitude, longitude: self.longitude, on: self)
         
         if isValid {
@@ -180,7 +204,25 @@ class AddNewJobVC: UIViewController {
         }
     }
     
+ 
     
+    @IBAction func action_name_mic(_ sender: UIButton) {
+        handleMicTap(for: sender, textField: txtFldName, textView: nil)
+    }
+    
+    
+    
+    @IBAction func action_address_mic(_ sender: UIButton) {
+        handleMicTap(for: sender, textField: txtFldAddress, textView: nil)
+    }
+    
+    @IBAction func action_description_mic(_ sender: UIButton) {
+        handleMicTap(for: sender, textField: nil, textView: txtVw_Description)
+    }
+    
+    @IBAction func action_requirment_mic(_ sender: UIButton) {
+        handleMicTap(for: sender, textField: txtFld_Requirment, textView: nil)
+    }
 }
 
 
@@ -547,10 +589,30 @@ extension AddNewJobVC: CommonSearchDelegate {
     
     func didSelectBackpacker(_ backpacker: [Backpacker]) {
         print("Received Backpacker: \(backpacker)")
+      
+        // Create the array: [{"backpackerId":"..."}]
         self.selectedBackpackerData = backpacker
+        let wrappers = backpacker.map { BackpackerIdWrapper(backpackerId: $0.id) }
+
+            // Encode to JSON string
+            let encoder = JSONEncoder()
+            if let jsonData = try? encoder.encode(wrappers),
+               let jsonString = String(data: jsonData, encoding: .utf8) {
+                self.selectedBackPackerJSONString = jsonString
+            }
         self.txtFld_Backpacker.text = "John Doe" //backpacker.name
     }
-    
+    func getSelectedBackpackersJSONString() -> String? {
+        do {
+            let jsonData = try JSONEncoder().encode(selectedBackPackerList)
+            let jsonString = String(data: jsonData, encoding: .utf8)
+            return jsonString
+        } catch {
+            print("❌ Failed to encode backpacker list:", error)
+            return nil
+        }
+    }
+
     
 }
 extension AddNewJobVC: CommonCalendarPopUpVCDelegate {
@@ -686,7 +748,7 @@ extension AddNewJobVC {
     ) {
         let image = self.main_ImgVw.image?.jpegData(compressionQuality: 0.8)
         LoaderManager.shared.show()
-        viewModel.uploadNewJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: price, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, request: request, image: image) { success, message ,statusCode in
+        viewModel.uploadNewJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: price, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, selectedBackpackerJSONString: selectedBackPackerJSONString ?? "", image: image) { success, message ,statusCode in
             
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()
@@ -738,4 +800,85 @@ extension AddNewJobVC {
         
     }
     
+}
+extension AddNewJobVC {
+    private func setupSpeechCallbacks() {
+        speechManager.onResult = { [weak self] text in
+                DispatchQueue.main.async {
+                    if self?.btn_name_Mic.tag == 1 {
+                        self?.txtFldName.text = text
+                      
+                    }
+                    
+                    if self?.btn_adress_mic.tag == 1 {
+                        self?.txtFldAddress.text = text
+                       
+                        
+                    }
+                    
+                    if self?.btn_requirmentMic.tag == 1 {
+                        self?.txtFld_Requirment.text = text
+                    }
+                    if self?.btn_descritpion_mic.tag == 1 {
+                        self?.txtVw_Description.text = text
+                    }
+                }
+            }
+
+            speechManager.onError = { error in
+                print("Speech error:", error.localizedDescription)
+            }
+
+       
+     }
+    func setUpTag(){
+        self.btn_name_Mic.tag = 0
+        self.btn_adress_mic.tag = 0
+        self.btn_requirmentMic.tag = 0
+        self.btn_descritpion_mic.tag = 0
+    }
+    func handleMicTap(for button: UIButton, textField: UITextField?, textView: UITextView?) {
+        // Stop if same button tapped again
+        if button == currentlyRecordingButton && button.tag == 1 {
+            button.tag = 0
+            currentlyRecordingButton = nil
+            currentActiveTextField = nil
+            currentActiveTextVw = nil
+            speechManager.stopRecording()
+            button.tintColor = .black
+            return
+        }
+
+        // If a different mic is already recording
+        if let previousButton = currentlyRecordingButton, previousButton != button {
+            previousButton.tag = 0
+            previousButton.tintColor = .black
+            speechManager.stopRecording()
+
+            // Add delay before starting new mic
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                self.setUpTag()
+                self.startRecording(for: button, textField: textField, textView: textView)
+            }
+        } else {
+            // Start new mic directly
+            setUpTag()
+            startRecording(for: button, textField: textField, textView: textView)
+        }
+    }
+
+    private func startRecording(for button: UIButton, textField: UITextField?, textView: UITextView?) {
+        button.tag = 1
+        currentlyRecordingButton = button
+        button.imageView?.image?.withTintColor(.blue)
+        currentActiveTextField = textField
+        currentActiveTextVw = textView
+
+        speechManager.startRecording()
+    }
+
+
+}
+struct BackpackerIdWrapper: Codable {
+    let backpackerId: String
 }

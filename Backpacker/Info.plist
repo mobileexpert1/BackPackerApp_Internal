@@ -18,6 +18,10 @@
 
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>We need your location to show relevant results nearby.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>We need access to speech recognition for voice input.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need access to the microphone for speech input.</string>
 
     <key>UIApplicationSceneManifest</key>
     <dict>

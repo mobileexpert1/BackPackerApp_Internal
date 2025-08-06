@@ -13,7 +13,6 @@ struct BackpackerHomeResponseModel: Codable {
     let accommodationList: [AccommodationItem]
     let banners: [BannerItem]
 }
-
 struct JobItem: Codable {
     let id: String
     let name: String

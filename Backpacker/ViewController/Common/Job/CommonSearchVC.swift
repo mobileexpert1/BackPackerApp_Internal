@@ -105,9 +105,11 @@ extension CommonSearchVC: UITableViewDelegate, UITableViewDataSource {
         }
 
         let data = searchData[indexPath.row]
-           cell.lblTitle.text = data.mobileNumber
+        
+        cell.lblTitle.text = data.name.isEmpty ? data.mobileNumber : data.name
         cell.lblTitle.textColor = .black
            // ✅ Check if the item is selected
+        
            let isSelected = selectedData.contains { $0.mobileNumber == data.mobileNumber }
            cell.imgCheckBox.image = isSelected ? UIImage(named: "Checkbox2") : UIImage(named: "Checkbox")
 

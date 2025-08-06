@@ -31,7 +31,8 @@ class AccountDetailVC: UIViewController {
     
     @IBOutlet weak var stckBotmHeight: NSLayoutConstraint!
     //heightConstraint
-    
+    let profileVm = ProfileVM()
+    let viewModelAuth = LogInVM()
     let visaTypes = [
         "Tourist Visa",
         "Business Visa",
@@ -49,6 +50,7 @@ class AccountDetailVC: UIViewController {
     @IBOutlet weak var btn_back: UIButton!
     @IBOutlet weak var btn_editHeight: NSLayoutConstraint!
     @IBOutlet weak var btn_backHeight: NSLayoutConstraint!
+    var isComeFromUpdate : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpButtons()
@@ -77,7 +79,12 @@ class AccountDetailVC: UIViewController {
                 self.handleBottomBtn()
             }
         }
+#if Backapacker
+        self.getProfileInfo()
+        
+#endif
     }
+    
     private func setUpFonts(){
        
         self.lblzHeaderVisa.font = FontManager.inter(.medium, size: 14.0)
@@ -152,8 +159,10 @@ class AccountDetailVC: UIViewController {
     @IBAction func actionEdit(_ sender: Any) {
         if self.btn_Edit.tag == 0{
             self.btn_Edit.tag = 1
+            self.isComeFromUpdate = true
         }else{
             self.btn_Edit.tag = 0
+            self.isComeFromUpdate = false
         }
         self.handleBottomBtn()
     }
@@ -174,10 +183,16 @@ class AccountDetailVC: UIViewController {
         let isAreaValid = AreaVW.validateNotEmpty(errorMessage: "Please enter your area")
 
         if isNameValid && isEmailValid && isPhoneValid && isCountryValid && isStateValid && isAreaValid {
-            // ✅ All fields are valid
-            // Proceed to next screen or save data
+            if isComeFromUpdate == true{
+                let name = NameVw.txtFld.text!
+                let email = EmailVw.txtFld.text!
+                let state = stateVw.txtFld.text!
+                let area = AreaVW.txtFld.text!
+                let visaType = self.lbl_VisaTitle.text!
+                self.updateProfileInfo(name: name, email: email, state: state, area: area, visaType: visaType)
+            }
         } else {
-            // ❌ One or more fields are invalid, errors already shown in each view
+           
         }
 
     }
@@ -213,4 +228,123 @@ extension AccountDetailVC : UITableViewDelegate,UITableViewDataSource{
         return 50.0
     }
     
+}
+extension AccountDetailVC {
+    func getProfileInfo(isComeFromUpdate:Bool = false) {
+            LoaderManager.shared.show()
+            
+            profileVm.getBackPackerProfile(isComeFromUpdate: isComeFromUpdate) { [weak self] (success: Bool, result: UserProfileResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success, let profileData = result?.data {
+                            print("User Profile data fetched result:", profileData)
+                            self.setProfileData(profileData)
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        }
+
+                    case .badRequest, .unauthorized:
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getProfileInfo() // Retry on token refresh success
+                            } else {
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
+                            }
+                        }
+
+                    case .unauthorizedToken, .methodNotAllowed, .internalServerError:
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+
+                    case .unknown:
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.") {
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    }
+                }
+            }
+        }
+    
+    func setProfileData(_ data: UserProfileData){
+        NameVw.txtFld.text = data.name.isEmpty ? nil : data.name
+        EmailVw.txtFld.text = data.email.isEmpty ? nil : data.email
+        CountryVw.txtFld.text = data.countryName.isEmpty ? nil : data.countryName
+
+        // Phone Number with optional country code
+        if data.mobileNumber.isEmpty {
+            phoneNumberVw.txtFld.text = nil
+        } else {
+            if data.countryCode.isEmpty {
+                phoneNumberVw.txtFld.text = data.mobileNumber
+            } else {
+                phoneNumberVw.txtFld.text = "\(data.countryCode) \(data.mobileNumber)"
+            }
+        }
+
+        stateVw.txtFld.text = data.state.isEmpty ? nil : data.state
+        AreaVW.txtFld.text = data.area.isEmpty ? nil : data.area
+
+        lbl_VisaTitle.text = data.visaType.isEmpty ? "Select Visa Type" : data.visaType
+
+    }
+    
+    func updateProfileInfo(name: String, email: String, state: String, area: String, visaType: String) {
+        
+        profileVm.updateBackPackerProfile(email: email, name: name, state: state, area: area, visaType: visaType, notificationStatus: false) { [weak self] (success: Bool, result: UpdateProfileResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success, let profileData = result?.data {
+                        print("User Profile data fetched result:", profileData)
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Profile updated successfully"){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    }
+
+                case .badRequest, .unauthorized:
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.updateProfileInfo(name: name, email: email, state: state, area: area, visaType: visaType)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
+                        }
+                    }
+
+                case .unauthorizedToken, .methodNotAllowed, .internalServerError:
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+
+                case .unknown:
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.") {
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                }
+            }
+        }
+    }
 }

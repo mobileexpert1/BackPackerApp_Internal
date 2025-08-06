@@ -171,6 +171,7 @@
             <connections>
                 <outlet property="btn_fav" destination="DK7-qF-Vao" id="NPS-Ih-K8y"/>
                 <outlet property="duration_Vw" destination="BXQ-TX-KRE" id="2FP-T2-CYz"/>
+                <outlet property="imgVw" destination="Zr8-BQ-8XX" id="Tte-OF-tOJ"/>
                 <outlet property="lblAmount" destination="wm1-v4-ehL" id="Py2-d2-ngl"/>
                 <outlet property="lbl_Address" destination="bTD-uT-6Dc" id="7GN-fp-pI6"/>
                 <outlet property="lbl_AmountHeight" destination="hAx-yA-lyQ" id="s8Z-qn-zoF"/>

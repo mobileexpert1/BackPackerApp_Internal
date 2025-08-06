@@ -9,6 +9,7 @@ import UIKit
 
 class HomeJobCVC: UICollectionViewCell {
 
+    @IBOutlet weak var imgVw: UIImageView!
     @IBOutlet weak var lbl_duration: UILabel!
     @IBOutlet weak var duration_Vw: UIView!
     @IBOutlet weak var btn_fav: UIButton!

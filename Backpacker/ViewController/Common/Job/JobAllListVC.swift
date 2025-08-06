@@ -1,14 +1,18 @@
 //
-//  HomeVC.swift
+//  JobAllListVC.swift
 //  Backpacker
 //
-//  Created by Mobile on 03/07/25.
+//  Created by Mobile on 06/08/25.
 //
 
 import UIKit
 
-class HomeVC: UIViewController {
-    
+class JobAllListVC: UIViewController {
+
+    @IBOutlet weak var txtFldSearch: UITextField!
+    @IBOutlet weak var seacrhVw: UIView!
+    @IBOutlet weak var tblVw: UITableView!
+    @IBOutlet weak var mainHeader: UILabel!
     let sectionTitles = ["Current Jobs", "New Jobs", "Declined Jobs"]
     let itemsPerSection = [
         ["Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa"],
@@ -29,11 +33,6 @@ class HomeVC: UIViewController {
         ["Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai"] // 👈 Add a third section here
     ]
     let refreshControl = UIRefreshControl()
-    @IBOutlet weak var home_TblVw: UITableView!
-    
-    //HeaderOutLets
-    @IBOutlet weak var Vw_Chat: UIView!
-    
     let viewModel = JobVM()
     let viewModelAuth = LogInVM()
     var isLoading: Bool = true // true while loading, false once data is ready
@@ -52,66 +51,27 @@ class HomeVC: UIViewController {
         }
         return sections
     }
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-       // self.setUpUI()
-        //  LoaderManager.shared.show()
+
+        self.setUpUI()
         self.setupPullToRefresh()
-        LocationManager.shared.requestLocationPermission()
-        let nib = UINib(nibName: "HomeTVC", bundle: nil)
-        self.home_TblVw.register(nib, forCellReuseIdentifier: "HomeTVC")
-        home_TblVw.register(UINib(nibName: "HomeHeaderView", bundle: nil),
-                            forHeaderFooterViewReuseIdentifier: "HomeHeaderView")
-        self.home_TblVw.delegate = self
-        self.home_TblVw.dataSource = self
-        home_TblVw.showsVerticalScrollIndicator = false
-        home_TblVw.showsHorizontalScrollIndicator = false
-        home_TblVw.contentInset = .zero
-        home_TblVw.sectionHeaderTopPadding = 0 // for iOS 15+
-        Vw_Chat.addShadowAllSides()
-#if BackpackerHire
-        print("BackpackerHire logic")
-#else
-        print("Backpacker  logic")
-#endif
-   
-}
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         self.getListOfAll()
     }
-
-@IBAction func actionNotification(_ sender: Any) {
-    let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-    if let settingVC = storyboard.instantiateViewController(withIdentifier: "NotificationVC") as? NotificationVC {
-        self.navigationController?.pushViewController(settingVC, animated: true)
-    } else {
-        print("❌ Could not instantiate SettingVC")
+  
+    @IBAction func action_Back(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
     }
 }
-@IBAction func action_Settings(_ sender: Any) {
-    let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-    if let settingVC = storyboard.instantiateViewController(withIdentifier: "SettingVC") as? SettingVC {
-        self.navigationController?.pushViewController(settingVC, animated: true)
-    } else {
-        print("❌ Could not instantiate SettingVC")
-    }
-}
-
-@IBAction func action_Chat(_ sender: Any) {
-    let storyboard = UIStoryboard(name: "Chat", bundle: nil)
-    if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
-        self.navigationController?.pushViewController(settingVC, animated: true)
-    } else {
-        print("❌ Could not instantiate SettingVC")
-    }
-    
-}
-}
-
-extension HomeVC: UITableViewDelegate, UITableViewDataSource {
+extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         
@@ -149,7 +109,6 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
             cell.configure(with: sectionItems,section: indexPath.section)
             cell.isComeFromJob = true
             cell.isComeForHireDetailPage = false
-            cell.isComeFromJobListSeeAll = true
             cell.onTap = { [weak self] in
                     guard let self = self else { return }
                     print("Cell tapped at index: \(indexPath.item)")
@@ -187,7 +146,6 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
             cell.configure(with: sectionItems,section: indexPath.section)
             cell.isComeFromJob = true
             cell.isComeForHireDetailPage = false
-            cell.isComeFromJobListSeeAll = true
             cell.onTap = { [weak self] in
                     guard let self = self else { return }
                     print("Cell tapped at index: \(indexPath.item)")
@@ -242,40 +200,63 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
         refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
         refreshControl.addTarget(self, action: #selector(refreshTableData), for: .valueChanged)
-        self.home_TblVw.refreshControl = refreshControl
+        self.tblVw.refreshControl = refreshControl
     }
     
     @objc private func refreshTableData() {
         // Show the default spinner, reload after delay
-        self.refreshControl.beginRefreshing()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
-            self.getListOfAll()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.tblVw.reloadData()
+            self.refreshControl.endRefreshing() // Hide the spinner
+            self.tblVw.setContentOffset(.zero, animated: true)
         }
     }
 
     func setUpUI(){
+        self.mainHeader.text = "Jobs"
+        self.mainHeader.font = FontManager.inter(.semiBold, size: 16.0)
+        self.seacrhVw.layer.cornerRadius = 25.0
+        self.seacrhVw.layer.borderWidth = 0.8
+        self.seacrhVw.layer.borderColor = UIColor(hex: "#000000").cgColor
+        txtFldSearch.delegate = self
+        txtFldSearch.attributedPlaceholder = NSAttributedString(
+            string: "Search Jobs",
+            attributes: [
+                .foregroundColor: UIColor.black,
+                .font: FontManager.inter(.regular, size: 14.0)
+            ])
         let nib = UINib(nibName: "HomeTVC", bundle: nil)
-        self.home_TblVw.register(nib, forCellReuseIdentifier: "HomeTVC")
-        home_TblVw.register(UINib(nibName: "HomeHeaderView", bundle: nil),
+        self.tblVw.register(nib, forCellReuseIdentifier: "HomeTVC")
+        tblVw.register(UINib(nibName: "HomeHeaderView", bundle: nil),
                             forHeaderFooterViewReuseIdentifier: "HomeHeaderView")
-        self.home_TblVw.delegate = self
-        self.home_TblVw.dataSource = self
-        home_TblVw.showsVerticalScrollIndicator = false
-        home_TblVw.showsHorizontalScrollIndicator = false
-        home_TblVw.contentInset = .zero
-        home_TblVw.sectionHeaderTopPadding = 0 // for iOS 15+
+        self.tblVw.delegate = self
+        self.tblVw.dataSource = self
+        tblVw.showsVerticalScrollIndicator = false
+        tblVw.showsHorizontalScrollIndicator = false
+        tblVw.contentInset = .zero
+        tblVw.sectionHeaderTopPadding = 0 // for iOS 15+
     }
 
 }
-extension HomeVC {
+
+
+
+extension JobAllListVC : UITextFieldDelegate{
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        txtFldSearch.resignFirstResponder()
+        return true
+    }
+}
+
+
+extension JobAllListVC {
     
     
     
     func getListOfAll(){
-        let trimmedSearch = ""
-        
+        let trimmedSearch = txtFldSearch.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         LoaderManager.shared.show()
-        viewModel.getJobListSeeAll(page: 1, perPage: 10, search: trimmedSearch)  { [weak self] (success: Bool, result: JobListResponse?, statusCode: Int?) in
+        viewModel.getJobListSeeAll(page: 1, perPage: 10, search: trimmedSearch ?? "")  { [weak self] (success: Bool, result: JobListResponse?, statusCode: Int?) in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 LoaderManager.shared.hide()
@@ -292,12 +273,11 @@ extension HomeVC {
                     case .ok, .created:
                         if success == true {
                             self.JobData = result
-                            self.home_TblVw.reloadData()
-                            self.refreshControl.endRefreshing()
+                            self.tblVw.reloadData()
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                             self.refreshControl.endRefreshing()
-                            self.home_TblVw.setContentOffset(.zero, animated: true)
+                            self.tblVw.setContentOffset(.zero, animated: true)
                             LoaderManager.shared.hide()
                         }
                     case .badRequest:
@@ -307,7 +287,7 @@ extension HomeVC {
                             } else {
                                 LoaderManager.shared.hide()
                                 self.refreshControl.endRefreshing()
-                                self.home_TblVw.setContentOffset(.zero, animated: true)
+                                self.tblVw.setContentOffset(.zero, animated: true)
                                 NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
                                 
                             }
@@ -320,7 +300,7 @@ extension HomeVC {
                             } else {
                                 LoaderManager.shared.hide()
                                 self.refreshControl.endRefreshing()
-                                self.home_TblVw.setContentOffset(.zero, animated: true)
+                                self.tblVw.setContentOffset(.zero, animated: true)
                                 NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                             }
                         }
@@ -329,12 +309,12 @@ extension HomeVC {
                     case .unauthorizedToken, .methodNotAllowed, .internalServerError:
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
-                        self.home_TblVw.setContentOffset(.zero, animated: true)
+                        self.tblVw.setContentOffset(.zero, animated: true)
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
-                        self.home_TblVw.setContentOffset(.zero, animated: true)
+                        self.tblVw.setContentOffset(.zero, animated: true)
                         AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
                             self.navigationController?.popViewController(animated: true)
                         }
@@ -343,10 +323,4 @@ extension HomeVC {
             }
             }
     }
-}
-
-enum SectionTypeList {
-    case currentJob
-    case upcomingJob
-    case declinedJobs
 }

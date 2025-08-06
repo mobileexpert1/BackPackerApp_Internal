@@ -232,10 +232,10 @@ enum HTTPStatusCode: Int {
     case ok = 200
     case created = 201
     case badRequest = 400
-    case unauthorized = 401
-    case unauthorizedToken = 403
-    case methodNotAllowed = 405
-    case internalServerError = 500
+    case unauthorized = 401 // refresh
+    case unauthorizedToken = 403 // logout
+    case methodNotAllowed = 405  // logout
+    case internalServerError = 500 // logout
     case unknown
 
     init(rawValue: Int) {

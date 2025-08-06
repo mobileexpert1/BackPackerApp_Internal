@@ -57,7 +57,7 @@ class CommonGridVC: UIViewController {
             self.isComeFromHomeJob = false
             self.isComeFromHomeHangout = false
             print("IsComefrom Accomodation")
-            self.main_Header.text = "Accpmmodations"
+            self.main_Header.text = "Accommodations"
             
         }
         self.setTitleForSearch()
@@ -83,7 +83,7 @@ class CommonGridVC: UIViewController {
             
         }else  if isComeFromHomeAccomodation == true{
             txtFldSearch.attributedPlaceholder = NSAttributedString(
-                string: "Search Accpmmodations",
+                string: "Search Accommodations",
                 attributes: [
                     .foregroundColor: UIColor.black,
                     .font: FontManager.inter(.regular, size: 14.0)

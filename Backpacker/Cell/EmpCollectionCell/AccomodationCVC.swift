@@ -37,6 +37,7 @@ class AccomodationCVC: UICollectionViewCell {
         lblRating.font =  FontManager.inter(.regular, size: 10.0)
         lbl_review.font =  FontManager.inter(.regular, size: 10.0)
         lblAmount.font =  FontManager.inter(.medium, size: 10.0)
+        self.imgNgVw.addShadowAllSides(radius: 0.5)
     }
     /// Configure cell with values
     func configureCell(title: String, rating: Double, reviewCount: Int,amount: Int) {

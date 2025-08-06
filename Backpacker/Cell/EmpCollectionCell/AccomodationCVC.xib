@@ -22,10 +22,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="285" height="367"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ocE-du-ygS">
-                                <rect key="frame" x="4" y="2" width="277" height="179"/>
+                                <rect key="frame" x="4" y="2" width="277" height="175"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="aCCOMODATION" translatesAutoresizingMaskIntoConstraints="NO" id="xSd-dj-o5T">
-                                        <rect key="frame" x="0.0" y="0.0" width="277" height="179"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="277" height="175"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                                 <integer key="value" value="10"/>
@@ -76,6 +76,7 @@
                                     <constraint firstAttribute="bottom" secondItem="xSd-dj-o5T" secondAttribute="bottom" id="LHS-MT-Lpg"/>
                                     <constraint firstItem="xSd-dj-o5T" firstAttribute="top" secondItem="ocE-du-ygS" secondAttribute="top" id="Yhw-pG-ZLL"/>
                                     <constraint firstAttribute="trailing" secondItem="AWf-EH-8NT" secondAttribute="trailing" constant="10" id="gIz-9w-hgJ"/>
+                                    <constraint firstAttribute="height" constant="175" id="qRv-Cq-Ea4"/>
                                     <constraint firstItem="AWf-EH-8NT" firstAttribute="top" secondItem="ocE-du-ygS" secondAttribute="top" constant="10" id="xc9-vD-RPA"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
@@ -85,13 +86,13 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Little National Hotel Sydney" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xDq-kt-vY1">
-                                <rect key="frame" x="4" y="186" width="257" height="20.333333333333343"/>
+                                <rect key="frame" x="4" y="182" width="257" height="20.333333333333343"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4.6" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f0p-TB-xGn">
-                                <rect key="frame" x="3.9999999999999982" y="211.33333333333334" width="24.333333333333329" height="0.0"/>
+                                <rect key="frame" x="3.9999999999999982" y="207.33333333333334" width="24.333333333333329" height="0.0"/>
                                 <constraints>
                                     <constraint firstAttribute="height" id="3v7-dz-Z6o"/>
                                 </constraints>
@@ -100,7 +101,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eJt-O0-gve" customClass="CosmosView" customModule="Cosmos">
-                                <rect key="frame" x="33.333333333333329" y="214.33333333333334" width="135.66666666666669" height="0.0"/>
+                                <rect key="frame" x="33.333333333333329" y="210.33333333333334" width="135.66666666666669" height="0.0"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" id="m01-vh-HDZ"/>
@@ -131,13 +132,13 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="From $,1500 per adult" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="liG-R0-8HC">
-                                <rect key="frame" x="4" y="211.33333333333334" width="257" height="21"/>
+                                <rect key="frame" x="4" y="207.33333333333334" width="257" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.57647058823529407" green="0.57647058823529407" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(202 review)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e7U-Dk-jXD">
-                                <rect key="frame" x="179" y="211.33333333333334" width="96" height="0.0"/>
+                                <rect key="frame" x="179" y="207.33333333333334" width="96" height="0.0"/>
                                 <constraints>
                                     <constraint firstAttribute="height" id="6YG-e4-S5n"/>
                                 </constraints>
