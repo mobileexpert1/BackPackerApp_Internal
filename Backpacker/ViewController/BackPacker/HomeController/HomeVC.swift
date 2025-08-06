@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import SkeletonView
 class HomeVC: UIViewController {
     
     let sectionTitles = ["Current Jobs", "New Jobs", "Declined Jobs"]
@@ -69,6 +69,8 @@ class HomeVC: UIViewController {
         home_TblVw.contentInset = .zero
         home_TblVw.sectionHeaderTopPadding = 0 // for iOS 15+
         Vw_Chat.addShadowAllSides()
+        let nib5 = UINib(nibName: "SkeltonCollectionTVC", bundle: nil)
+        self.home_TblVw.register(nib5, forCellReuseIdentifier: "SkeltonCollectionTVC")
 #if BackpackerHire
         print("BackpackerHire logic")
 #else
@@ -114,7 +116,9 @@ class HomeVC: UIViewController {
 extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        
+        if isLoading {
+         return 4 // Show 5 skeleton cells (or however many you want)
+        }else{
 #if Backapacker
      let count = activeSections.count
      if count == 0{
@@ -127,6 +131,8 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         return sectionTitles.count
         
 #endif
+        }
+
         
         
        
@@ -138,67 +144,78 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let sectionType = activeSections[indexPath.section]
-        
-        switch sectionType {
-        case .currentJob:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                return UITableViewCell()
-            }
-            let sectionItems = itemsPerSection[indexPath.section]
-            cell.configure(with: sectionItems,section: indexPath.section)
-            cell.isComeFromJob = true
-            cell.isComeForHireDetailPage = false
-            cell.isComeFromJobListSeeAll = true
-            cell.onTap = { [weak self] in
-                    guard let self = self else { return }
-                    print("Cell tapped at index: \(indexPath.item)")
-                    // Navigate or perform any action
-                self.navigateToDescriptionVC()
+        if isLoading {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonCollectionTVC", for: indexPath) as? SkeltonCollectionTVC else {
+                    return UITableViewCell()
                 }
-            cell.currentJobslist = JobData?.data.currentJobslist
-            cell.activeSectionsList = self.activeSections
-            return cell
+                return cell
+             
+
+        }else{
             
-        case .upcomingJob:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                return UITableViewCell()
-            }
-            let sectionItems = itemsPerSection[indexPath.section]
-            cell.configure(with: sectionItems,section: indexPath.section)
-            cell.isComeFromJob = true
-            cell.isComeFromJobListSeeAll = true
-            cell.isComeForHireDetailPage = false
-            cell.onTap = { [weak self] in
-                    guard let self = self else { return }
-                    print("Cell tapped at index: \(indexPath.item)")
-                    // Navigate or perform any action
-                self.navigateToDescriptionVC()
+            let sectionType = activeSections[indexPath.section]
+            
+            switch sectionType {
+            case .currentJob:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                    return UITableViewCell()
                 }
-            cell.newjobList = JobData?.data.newJobslist
-            cell.activeSectionsList = self.activeSections
-            return cell
-            
-        case .declinedJobs:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                return UITableViewCell()
-            }
-            let sectionItems = itemsPerSection[indexPath.section]
-            cell.configure(with: sectionItems,section: indexPath.section)
-            cell.isComeFromJob = true
-            cell.isComeForHireDetailPage = false
-            cell.isComeFromJobListSeeAll = true
-            cell.onTap = { [weak self] in
-                    guard let self = self else { return }
-                    print("Cell tapped at index: \(indexPath.item)")
-                    // Navigate or perform any action
-                self.navigateToDescriptionVC()
+                let sectionItems = itemsPerSection[indexPath.section]
+                cell.configure(with: sectionItems,section: indexPath.section)
+                cell.isComeFromJob = true
+                cell.isComeForHireDetailPage = false
+                cell.isComeFromJobListSeeAll = true
+                cell.onTap = { [weak self] in
+                        guard let self = self else { return }
+                        print("Cell tapped at index: \(indexPath.item)")
+                        // Navigate or perform any action
+                    self.navigateToDescriptionVC()
+                    }
+                cell.currentJobslist = JobData?.data.currentJobslist
+                cell.activeSectionsList = self.activeSections
+                return cell
+                
+            case .upcomingJob:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                    return UITableViewCell()
                 }
-            cell.declinedjobList = JobData?.data.declinedJobslist
-            cell.activeSectionsList = self.activeSections
-            return cell
-            
+                let sectionItems = itemsPerSection[indexPath.section]
+                cell.configure(with: sectionItems,section: indexPath.section)
+                cell.isComeFromJob = true
+                cell.isComeFromJobListSeeAll = true
+                cell.isComeForHireDetailPage = false
+                cell.onTap = { [weak self] in
+                        guard let self = self else { return }
+                        print("Cell tapped at index: \(indexPath.item)")
+                        // Navigate or perform any action
+                    self.navigateToDescriptionVC()
+                    }
+                cell.newjobList = JobData?.data.newJobslist
+                cell.activeSectionsList = self.activeSections
+                return cell
+                
+            case .declinedJobs:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                    return UITableViewCell()
+                }
+                let sectionItems = itemsPerSection[indexPath.section]
+                cell.configure(with: sectionItems,section: indexPath.section)
+                cell.isComeFromJob = true
+                cell.isComeForHireDetailPage = false
+                cell.isComeFromJobListSeeAll = true
+                cell.onTap = { [weak self] in
+                        guard let self = self else { return }
+                        print("Cell tapped at index: \(indexPath.item)")
+                        // Navigate or perform any action
+                    self.navigateToDescriptionVC()
+                    }
+                cell.declinedjobList = JobData?.data.declinedJobslist
+                cell.activeSectionsList = self.activeSections
+                return cell
+                
+            }
         }
+     
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -217,11 +234,16 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 40
+        if isLoading {
+            return 0.0
+        }else{
+            return 40
+        }
+      
         
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
+      
         return 200
     }
     
@@ -247,10 +269,13 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     
     @objc private func refreshTableData() {
         // Show the default spinner, reload after delay
+        self.isLoading = true
         self.refreshControl.beginRefreshing()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
             self.getListOfAll()
         }
+        
+       
     }
 
     func setUpUI(){
@@ -292,6 +317,7 @@ extension HomeVC {
                     case .ok, .created:
                         if success == true {
                             self.JobData = result
+                            self.isLoading = false
                             self.home_TblVw.reloadData()
                             self.refreshControl.endRefreshing()
                         } else {
@@ -307,6 +333,7 @@ extension HomeVC {
                             } else {
                                 LoaderManager.shared.hide()
                                 self.refreshControl.endRefreshing()
+                                self.isLoading = false
                                 self.home_TblVw.setContentOffset(.zero, animated: true)
                                 NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
                                 
@@ -320,6 +347,7 @@ extension HomeVC {
                             } else {
                                 LoaderManager.shared.hide()
                                 self.refreshControl.endRefreshing()
+                                self.isLoading = false
                                 self.home_TblVw.setContentOffset(.zero, animated: true)
                                 NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                             }
@@ -329,11 +357,13 @@ extension HomeVC {
                     case .unauthorizedToken, .methodNotAllowed, .internalServerError:
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
+                        self.isLoading = false
                         self.home_TblVw.setContentOffset(.zero, animated: true)
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
+                        self.isLoading = false
                         self.home_TblVw.setContentOffset(.zero, animated: true)
                         AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
                             self.navigationController?.popViewController(animated: true)
@@ -343,6 +373,20 @@ extension HomeVC {
             }
             }
     }
+}
+extension  HomeVC: SkeletonTableViewDataSource {
+    func numSections(in collectionSkeletonView: UITableView) -> Int {
+           return 2 // Or your actual section count
+       }
+
+       func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
+           return 5
+       }
+
+       func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
+               return "SkeltonCollectionTVC"
+          
+       }
 }
 
 enum SectionTypeList {
