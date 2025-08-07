@@ -54,6 +54,7 @@ class BackPackerHomeVC: UIViewController {
         super.viewDidLoad()
         self.setupPullToRefresh()
 #if BackpackerHire
+        self.isLoading = false
         if role == "2" {
             sectionTitles = ["","Jobs"]
         }else if role == "3" {
@@ -568,18 +569,7 @@ extension BackPackerHomeVC {
                             LoaderManager.shared.hide()
                         }
                     case .badRequest:
-                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                self.HomeApiCall()
-                            } else {
-                                LoaderManager.shared.hide()
-                                self.refreshControl?.endRefreshing()
-                                self.homeTblVw.setContentOffset(.zero, animated: true)
-                                NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
-                                
-                            }
-                        }
-                        
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -591,9 +581,7 @@ extension BackPackerHomeVC {
                                 NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                             }
                         }
-                        
-                        
-                    case .unauthorizedToken, .methodNotAllowed, .internalServerError:
+                    case .unauthorizedToken:
                         LoaderManager.shared.hide()
                         self.refreshControl?.endRefreshing()
                         self.homeTblVw.setContentOffset(.zero, animated: true)
@@ -602,9 +590,11 @@ extension BackPackerHomeVC {
                         LoaderManager.shared.hide()
                         self.refreshControl?.endRefreshing()
                         self.homeTblVw.setContentOffset(.zero, animated: true)
-                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
-                            self.navigationController?.popViewController(animated: true)
-                        }
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     }
                 }
             }

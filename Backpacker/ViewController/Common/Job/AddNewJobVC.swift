@@ -769,6 +769,8 @@ extension AddNewJobVC {
                         AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     }
                 case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
                     self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
                             self.AddNewJob(name: name, address: address, locationText: locationText, description: description, requirment: requirment, price: price, strtDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, request: request, image: image, latitude: latitude, longitude: longitude)
@@ -776,23 +778,16 @@ extension AddNewJobVC {
                             NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                         }
                     }
-                    
-                case .unauthorized :
-                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                            self.AddNewJob(name: name, address: address, locationText: locationText, description: description, requirment: requirment, price: price, strtDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, request: request, image: image, latitude: latitude, longitude: longitude) // Retry
-                        } else {
-                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
-                        }
-                    }
-                    
-                    
-                case .unauthorizedToken, .methodNotAllowed, .internalServerError:
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
                     NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                 case .unknown:
-                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
-                        self.navigationController?.popViewController(animated: true)
-                    }
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 }
             }
             
@@ -845,24 +840,26 @@ extension AddNewJobVC {
             currentActiveTextField = nil
             currentActiveTextVw = nil
             speechManager.stopRecording()
-            button.tintColor = .black
+            button.setImage(UIImage(named: "mic"), for: .normal)
             return
         }
 
         // If a different mic is already recording
         if let previousButton = currentlyRecordingButton, previousButton != button {
             previousButton.tag = 0
-            previousButton.tintColor = .black
+            previousButton.setImage(UIImage(named: "mic"), for: .normal)
             speechManager.stopRecording()
 
             // Add delay before starting new mic
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.setUpTag()
+                button.setImage(UIImage(named: "mic_selected"), for: .normal)
                 self.startRecording(for: button, textField: textField, textView: textView)
             }
         } else {
             // Start new mic directly
             setUpTag()
+            button.setImage(UIImage(named: "mic_selected"), for: .normal)
             startRecording(for: button, textField: textField, textView: textView)
         }
     }

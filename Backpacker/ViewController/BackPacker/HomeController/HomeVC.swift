@@ -9,7 +9,7 @@ import UIKit
 import SkeletonView
 class HomeVC: UIViewController {
     
-    let sectionTitles = ["Current Jobs", "New Jobs", "Declined Jobs"]
+   let sectionTitles = ["Current Jobs","New Jobs","Declined Jobs"]
     let itemsPerSection = [
         ["Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa"],
         ["Leh",
@@ -217,20 +217,56 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         }
      
     }
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HomeHeaderView") as? HomeHeaderView else {
             return nil
         }
         
-        header.titleLaBLE.text = sectionTitles[section]
         header.section = section
-        header.contentView.backgroundColor = .white // prevent background flicker
-        header.onButtonTap = { [weak self] tappedSection in
-            
-            self?.handleHeaderButtonTap(in: tappedSection)
+        header.contentView.backgroundColor = .white
+        let sectionType = activeSections[section]
+        switch sectionType {
+        case .currentJob:
+            header.titleLaBLE.text = "Current Jobs"
+        case .upcomingJob:
+            header.titleLaBLE.text = "New Jobs"
+        case .declinedJobs:
+            header.titleLaBLE.text = "Declined Jobs"
+        default:
+            break
         }
+        header.onButtonTap = { [weak self] tappedSection in
+            self?.handleHeaderButtonTap(in: tappedSection,title: header.titleLaBLE.text ?? "")
+        }
+        
         return header
+    }
+    
+    private func handleHeaderButtonTap(in section: Int,title:String) {
+        let storyboard = UIStoryboard(name: "Home", bundle: nil)
+        if title == "Current Jobs" {
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonGridVC") as? CommonGridVC {
+                settingVC.isComeFromJobSections = true
+                settingVC.isComeFromHomeAccomodation = true
+                self.navigationController?.pushViewController(settingVC, animated: true)
+            }
+            
+        }else if title == "New Jobs"{
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonGridVC") as? CommonGridVC {
+                settingVC.isComeFromHomeHangout = true
+                settingVC.isComeFromJobSections = true
+                self.navigationController?.pushViewController(settingVC, animated: true)
+            }
+            
+        }else if title == "Declined Jobs"{
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonGridVC") as? CommonGridVC {
+                settingVC.isComeFromJobSections = true
+                settingVC.isComeFromHomeJob = true
+                self.navigationController?.pushViewController(settingVC, animated: true)
+            }
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -244,7 +280,7 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
       
-        return 200
+        return 190
     }
     
     private func handleHeaderButtonTap(in section: Int) {
@@ -327,6 +363,8 @@ extension HomeVC {
                             LoaderManager.shared.hide()
                         }
                     case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
                                 self.getListOfAll()
@@ -339,35 +377,20 @@ extension HomeVC {
                                 
                             }
                         }
-                        
-                    case .unauthorized :
-                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                self.getListOfAll()
-                            } else {
-                                LoaderManager.shared.hide()
-                                self.refreshControl.endRefreshing()
-                                self.isLoading = false
-                                self.home_TblVw.setContentOffset(.zero, animated: true)
-                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-                            }
-                        }
-                        
-                        
-                    case .unauthorizedToken, .methodNotAllowed, .internalServerError:
+                    case .unauthorizedToken:
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
-                        self.isLoading = false
                         self.home_TblVw.setContentOffset(.zero, animated: true)
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
-                        self.isLoading = false
                         self.home_TblVw.setContentOffset(.zero, animated: true)
-                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
-                            self.navigationController?.popViewController(animated: true)
-                        }
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     }
                 }
             }
@@ -394,3 +417,4 @@ enum SectionTypeList {
     case upcomingJob
     case declinedJobs
 }
+

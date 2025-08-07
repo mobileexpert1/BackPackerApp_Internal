@@ -31,6 +31,8 @@ class AccountDetailVC: UIViewController {
     
     @IBOutlet weak var stckBotmHeight: NSLayoutConstraint!
     //heightConstraint
+    @IBOutlet weak var lbl_error_VisaHeight: NSLayoutConstraint!
+    @IBOutlet weak var lbl_error_SelectVisaType: UILabel!
     let profileVm = ProfileVM()
     let viewModelAuth = LogInVM()
     let visaTypes = [
@@ -86,7 +88,10 @@ class AccountDetailVC: UIViewController {
     }
     
     private func setUpFonts(){
-       
+        self.lbl_error_VisaHeight.constant = 0.0
+        self.lbl_error_SelectVisaType.isHidden = true
+        lbl_error_SelectVisaType.font = FontManager.inter(.regular, size: 8.0)
+        lbl_error_SelectVisaType.textColor = .red
         self.lblzHeaderVisa.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_VisaTitle.font = FontManager.inter(.regular, size: 12.0)
         self.visaVw.addShadowAllSides(radius:2)
@@ -97,7 +102,7 @@ class AccountDetailVC: UIViewController {
         self.phoneNumberVw.setPlaceholder("Phone Number")
         self.phoneNumberVw.setTitleLabel("Phone Number")
         self.phoneNumberVw.lblErrorVisibility(val: true)
-        
+        self.phoneNumberVw.txtFld.isUserInteractionEnabled = false
         self.EmailVw.setPlaceholder("Email")
         self.EmailVw.setTitleLabel("Email")
         self.EmailVw.lblErrorVisibility(val: true)
@@ -109,7 +114,7 @@ class AccountDetailVC: UIViewController {
         self.CountryVw.setPlaceholder("Country")
         self.CountryVw.setTitleLabel("Country")
         self.CountryVw.lblErrorVisibility(val: true)
-        
+        self.CountryVw.txtFld.isUserInteractionEnabled = false
         self.AreaVW.setPlaceholder("Area")
         self.AreaVW.setTitleLabel("Area")
         self.AreaVW.lblErrorVisibility(val: true)
@@ -181,8 +186,18 @@ class AccountDetailVC: UIViewController {
         let isCountryValid = CountryVw.validateNotEmpty(errorMessage: "Please enter your country")
         let isStateValid = stateVw.validateNotEmpty(errorMessage: "Please enter your state")
         let isAreaValid = AreaVW.validateNotEmpty(errorMessage: "Please enter your area")
-
-        if isNameValid && isEmailValid && isPhoneValid && isCountryValid && isStateValid && isAreaValid {
+        // Visa type validation
+        let isVisaTypeValid: Bool
+        if self.lbl_VisaTitle.text == "Select Visa Type" {
+            self.lbl_error_SelectVisaType.isHidden = false
+            self.lbl_error_VisaHeight.constant = 20.0
+            isVisaTypeValid = false
+        } else {
+            self.lbl_error_SelectVisaType.isHidden = true
+            self.lbl_error_VisaHeight.constant = 0.0
+            isVisaTypeValid = true
+        }
+        if isNameValid && isEmailValid && isPhoneValid && isCountryValid && isStateValid && isAreaValid && isVisaTypeValid{
             if isComeFromUpdate == true{
                 let name = NameVw.txtFld.text!
                 let email = EmailVw.txtFld.text!
@@ -222,6 +237,13 @@ extension AccountDetailVC : UITableViewDelegate,UITableViewDataSource{
         self.lbl_VisaTitle.text = selectedIssue
         self.btn_drpdwn.tag = 0
         self.manageHeightOfTable()
+        if self.lbl_VisaTitle.text == "Select Visa Type" {
+            self.lbl_error_SelectVisaType.isHidden = false
+            self.lbl_error_VisaHeight.constant = 20.0
+        } else {
+            self.lbl_error_SelectVisaType.isHidden = true
+            self.lbl_error_VisaHeight.constant = 0.0
+        }
 
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -255,8 +277,9 @@ extension AccountDetailVC {
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         }
-
-                    case .badRequest, .unauthorized:
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
                                 self.getProfileInfo() // Retry on token refresh success
@@ -264,14 +287,16 @@ extension AccountDetailVC {
                                 NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
                             }
                         }
-
-                    case .unauthorizedToken, .methodNotAllowed, .internalServerError:
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-
                     case .unknown:
-                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.") {
-                            self.navigationController?.popViewController(animated: true)
-                        }
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     }
                 }
             }
@@ -319,15 +344,16 @@ extension AccountDetailVC {
                 case .ok, .created:
                     if success, let profileData = result?.data {
                         print("User Profile data fetched result:", profileData)
-                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Profile updated successfully"){
+                        AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Profile updated successfully"){
                             self.navigationController?.popViewController(animated: true)
                         }
                         
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     }
-
-                case .badRequest, .unauthorized:
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                case .unauthorized :
                     self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
                             self.updateProfileInfo(name: name, email: email, state: state, area: area, visaType: visaType)
@@ -335,14 +361,16 @@ extension AccountDetailVC {
                             NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
                         }
                     }
-
-                case .unauthorizedToken, .methodNotAllowed, .internalServerError:
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
                     NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-
                 case .unknown:
-                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.") {
-                        self.navigationController?.popViewController(animated: true)
-                    }
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                 }
             }
         }

@@ -239,8 +239,9 @@ extension OtpVC {
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Invalid OTP")
                     }
-                    
                 case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                case .unauthorized :
                     self.viewModel.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
                             self.VerifyOtpApiCall() // Retry
@@ -248,11 +249,17 @@ extension OtpVC {
                             NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                         }
                     }
-                    
-                case .unauthorized, .unauthorizedToken, .methodNotAllowed, .internalServerError:
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
                     NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                 case .unknown:
+                    LoaderManager.shared.hide()
                     AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    
                 }
             }
         }
@@ -277,12 +284,24 @@ extension OtpVC {
                     }
                 case .badRequest:
                     AlertManager.showAlert(on: self, title: "Bad Request", message: "Please check your request parameters.")
-                case .unauthorized, .unauthorizedToken:
+                case .unauthorized :
+                    self.viewModel.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.ResendOtpApiCall() // Retry
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
                     NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-                case .internalServerError:
-                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-                default:
+                case .unknown:
+                    LoaderManager.shared.hide()
                     AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                 }
             }
         }

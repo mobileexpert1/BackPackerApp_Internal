@@ -9,6 +9,7 @@ import Foundation
 import Alamofire
 class AccommodationViewModel {
     
+//MARK: Add New Accommodation
     func uploadAccommodation(
         name: String,
         address: String,
@@ -63,6 +64,43 @@ class AccommodationViewModel {
             }
         }
     }
+    
+    
+    // MARK: - BackPacker: List of All Accommodation
+    func getAccommodationList<T: Codable>(
+        page: Int,
+        perPage: Int,
+        lat: Double,
+        long: Double,
+        radius: Int? = nil,
+        sortByPrice: String? = nil,
+        facilities: String? = nil,
+        search: String? = nil,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getBACKPACKER_ACCOMMODATION_URL(
+            page: page,
+            perPage: perPage,
+            lat: lat,
+            long: long,
+            radius: radius,
+            sortByPrice: sortByPrice,
+            facilities: facilities,
+            search: search
+        )
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
+
+    
+    
 }
 struct AccommodationResponseData: Codable {
     let _id: String

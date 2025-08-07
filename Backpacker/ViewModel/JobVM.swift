@@ -104,5 +104,24 @@ class JobVM {
             completion(success, result, statusCode)
         }
     }
+    
+    func getJobListSeeAllWithType<T: Codable>(
+        page: Int,
+        perPage: Int,
+        search:String,
+        type:Int,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getBACKPACKER_JOBSSEEALLURLWITHTYPE(page: page, perPage: perPage,search: search, type: type)
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 

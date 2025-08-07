@@ -174,6 +174,9 @@ class ChooseRoleTypeVC: UIViewController {
                     }
 
                 case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+
+                case .unauthorized :
                     self.viewModel.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
                             self.ChooseRoleTypeApiCall() // Retry
@@ -181,9 +184,16 @@ class ChooseRoleTypeVC: UIViewController {
                             NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                         }
                     }
-
-                case .unauthorized, .unauthorizedToken, .methodNotAllowed, .internalServerError, .unknown:
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
                     NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                 }
 
             }

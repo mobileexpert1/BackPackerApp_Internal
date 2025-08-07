@@ -12,6 +12,7 @@ class FilterVC: UIViewController {
     @IBOutlet weak var mainView: UIView!
     @IBOutlet weak var ViewHeight: NSLayoutConstraint!
     
+    @IBOutlet weak var btn_ClearAll: UIButton!
     @IBOutlet weak var lbl_ValDistance: UILabel!
     @IBOutlet weak var lbl_Distance: UILabel!
     @IBOutlet weak var lbl_MainHeader: UILabel!
@@ -25,9 +26,53 @@ class FilterVC: UIViewController {
     var selectedFilterIndexes: Set<Int> = []
 
     var selectedSortIndex: Int?
+    var sortByPrice : String?
+    var radius : String?
+    var facilities : String?
+    var onApplyFilters: ((_ facilities: String?, _ sortBy: String?, _ radius: String?) -> Void)?
+
+    
+    var initialFacilities: String?
+    var initialSortBy: String?
+    var initialRadius: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+      
+        self.setUpUI()
+        self.applyInitialSelections()
+    }
+    func applyInitialSelections() {
+        // Facilities
+        if let facilitiesStr = initialFacilities {
+            let selected = facilitiesStr.components(separatedBy: ", ").map { $0.trimmingCharacters(in: .whitespaces) }
+            for (index, facility) in filterArrya.enumerated() {
+                if selected.contains(facility) {
+                    selectedFilterIndexes.insert(index)
+                }
+            }
+        }
+
+        // Sort by
+        if let sort = initialSortBy {
+            if sort.lowercased() == "asc" {
+                selectedSortIndex = SortrArrya.firstIndex(where: { $0.contains("lowest") })
+            } else if sort.lowercased() == "desc" {
+                selectedSortIndex = SortrArrya.firstIndex(where: { $0.contains("highest") })
+            }
+        }
+
+        // Radius
+        if let radiusStr = initialRadius, let radiusFloat = Float(radiusStr) {
+            slider.value = radiusFloat
+            let distance = "\(Int(radiusFloat))"
+            let maxDistance = "\(Int(slider.maximumValue))"
+            lbl_ValDistance.text = "\(distance) to \(maxDistance) km"
+        }
+        self.TblVw.reloadData()
+    }
+
+    func setUpUI(){
         self.lbl_Distance.font = FontManager.inter(.medium, size: 14)
         self.lbl_ValDistance.font = FontManager.inter(.medium, size: 14)
         self.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
@@ -61,14 +106,65 @@ class FilterVC: UIViewController {
             slider.minimumTrackTintColor = UIColor(hex: "#299EF5") // Start color"#299EF5"
             slider.maximumTrackTintColor = UIColor(hex: "#E8EDF0") // End color
         self.btn_Submit.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
+        slider.minimumValue = 100
+        slider.maximumValue = 500
+        slider.value = 100
+        slider.addTarget(self, action: #selector(sliderValueChanged(_:)), for: .valueChanged)
+        let maxDistance = "\(Int(slider.maximumValue))"
+        let minDistance = "\(Int(slider.minimumValue))"
+        self.lbl_ValDistance.text = "\(minDistance) to \(maxDistance) km"
+        self.btn_ClearAll.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
     }
-    
+    @objc func sliderValueChanged(_ sender: UISlider) {
+        let step: Float = 10
+        let roundedValue = round(sender.value / step) * step
+        sender.value = roundedValue
+
+        let distance = "\(Int(roundedValue))"
+        let maxDistance = "\(Int(sender.maximumValue))"
+
+        lbl_ValDistance.text = "\(distance) to \(maxDistance) km"
+    }
+
+
     @IBAction func acion_Cross(_ sender: Any) {
         self.dismiss(animated: true)
     }
     
  
+    @IBAction func action_ClearAllFilter(_ sender: Any) {
+        onApplyFilters?("", "", "100")
 
+        // Dismiss the filter screen
+        self.dismiss(animated: true)
+    }
+    @IBAction func action_submit(_ sender: Any) {
+        var facilitiesString = ""
+           if !selectedFilterIndexes.isEmpty {
+               let selectedFacilities = selectedFilterIndexes.map { filterArrya[$0] }
+               facilitiesString = selectedFacilities.joined(separator: ", ")
+           }
+
+           // Prepare sort value
+           var sortValue = ""
+           if let index = selectedSortIndex {
+               let selectedSort = SortrArrya[index]
+               sortValue = selectedSort.contains("lowest") ? "asc" : "desc"
+           }
+
+           // Prepare radius
+           var radiusString = ""
+           if slider.value > slider.minimumValue {
+               radiusString = String(format: "%.0f", slider.value)
+           }
+
+           // Call the callback
+           onApplyFilters?(facilitiesString, sortValue, radiusString)
+
+           // Dismiss the filter screen
+           self.dismiss(animated: true)
+    }
+    
 }
 
 
@@ -156,7 +252,9 @@ extension FilterVC: UITableViewDelegate, UITableViewDataSource {
                     selectedSortIndex = indexPath.row
                 }
             }
-            
+        facilities = selectedFilterIndexes.map { filterArrya[$0] }.joined(separator: ", ")
+        sortByPrice = selectedSortIndex != nil ? SortrArrya[selectedSortIndex!] : nil
+
         TblVw.reloadSections(IndexSet(integer: indexPath.section), with: .none)
     }
 }

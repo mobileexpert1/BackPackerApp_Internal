@@ -16,16 +16,56 @@ class CommonGridVC: UIViewController {
     var hasMorePages = true
     var isLoadingMore = false
     
+    @IBOutlet weak var btn_searchCross: UIButton!
+    @IBOutlet weak var lbl_nodata_Found: UILabel!
     @IBOutlet weak var txtFldSearch: UITextField!
     @IBOutlet weak var seacrh_Vw: UIView!
+    var isComeFromJobSections : Bool = false
     var isComeFromHomeJob : Bool = false
     var isComeFromHomeAccomodation : Bool = false
     var isComeFromHomeHangout : Bool = false
+    
+    let viewModel = JobVM()
+    let viewModelAuth = LogInVM()
+    var type : Int?
+    var jobslist =  [Job]()
+    var isLoading : Bool = true
+    let refreshControl = UIRefreshControl()
+    var accommodationList = [Accommodation]()
+    
+    var page = 1
+    let perPage = 6
+    var totalJobs = Int()
+    var isLoadingMoreData = false
+    var isAllDataLoaded = false
+    var isComeFromPullTorefresh : Bool = false
+    var searchDebounceTimer: Timer?
+    var lastSearchedText: String = ""
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Register the collection view cell
+        self.setupPullToRefresh()
+        self.setUpUI()
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.getListOfAll()
+    }
+    func setUpUI(){
+        btn_searchCross.isHidden = true
+        self.lbl_nodata_Found.isHidden = true
+        self.lbl_nodata_Found.text = "No Jobs Found"
+        let nib2 = UINib(nibName: "SkeltonCVC", bundle: nil)
+               self.collVw.register(nib2, forCellWithReuseIdentifier: "SkeltonCVC")
+        collVw.isSkeletonable = true
         collVw.register(UINib(nibName: "AccomodationCVC", bundle: nil), forCellWithReuseIdentifier: "AccomodationCVC")
         collVw.register(UINib(nibName: "HomeJobCVC", bundle: nil), forCellWithReuseIdentifier: "HomeJobCVC")
+        collVw.register(UINib(nibName: "LoaderFooterViewCVC", bundle: nil),
+                        forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+                        withReuseIdentifier: "LoaderFooterViewCVC")
         collVw.delegate = self
         collVw.dataSource = self
         
@@ -40,55 +80,117 @@ class CommonGridVC: UIViewController {
         self.seacrh_Vw.layer.borderColor = UIColor(hex: "#000000").cgColor
         txtFldSearch.delegate = self
     }
-    func setUpStatus(){
-        if isComeFromHomeJob == true{
-            self.isComeFromHomeHangout = false
-            self.isComeFromHomeAccomodation = false
-            print("IsComefrom JOb")
-            self.main_Header.text = "Jobs"
-            
-        }else  if isComeFromHomeHangout == true{
-            self.isComeFromHomeJob = false
-            self.isComeFromHomeAccomodation = false
-            print("IsComefrom Hangout")
-            self.main_Header.text = "Backpacker Hangout"
-            
-        }else  if isComeFromHomeAccomodation == true{
-            self.isComeFromHomeJob = false
-            self.isComeFromHomeHangout = false
-            print("IsComefrom Accomodation")
-            self.main_Header.text = "Accommodations"
-            
+    private func setupPullToRefresh() {
+        refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
+        refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
+        refreshControl.addTarget(self, action: #selector(refreshTableData), for: .valueChanged)
+        self.collVw.refreshControl = refreshControl
+    }
+    
+    @objc private func refreshTableData() {
+        // Show the default spinner, reload after delay
+        self.page = 1
+        self.isAllDataLoaded = false
+        self.isLoadingMoreData = false
+        self.isLoading = true
+
+        // Start refreshing UI
+        self.refreshControl.beginRefreshing()
+        isComeFromPullTorefresh = true
+        // Fetch data
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
+            self.getListOfAll()
         }
+       
+    }
+    @IBAction func action_ClearSearch(_ sender: Any) {
+        txtFldSearch.text = ""
+            lastSearchedText = ""
+            page = 1
+        txtFldSearch.resignFirstResponder()
+
+            getListOfAll()
+    }
+    
+    func setUpStatus(){
+        if isComeFromJobSections == false{
+            if isComeFromHomeJob == true{
+                self.isComeFromHomeHangout = false
+                self.isComeFromHomeAccomodation = false
+                print("IsComefrom JOb")
+                self.main_Header.text = "Jobs"
+                
+            }else  if isComeFromHomeHangout == true{
+                self.isComeFromHomeJob = false
+                self.isComeFromHomeAccomodation = false
+                print("IsComefrom Hangout")
+                self.main_Header.text = "Backpacker Hangout"
+                
+            }else  if isComeFromHomeAccomodation == true{
+                self.isComeFromHomeJob = false
+                self.isComeFromHomeHangout = false
+                print("IsComefrom Accomodation")
+                self.main_Header.text = "Accommodations"
+                
+            }
+        }else{
+            if isComeFromHomeJob == true{
+                self.isComeFromHomeHangout = false
+                self.isComeFromHomeAccomodation = false
+                print("IsComefrom JOb")
+                self.main_Header.text = "Declined Jobs"
+                self.type = 2
+                
+            }else  if isComeFromHomeHangout == true{
+                self.isComeFromHomeJob = false
+                self.isComeFromHomeAccomodation = false
+                print("IsComefrom Hangout")
+                self.main_Header.text = "New Jobs"
+                self.type = 3
+                
+            }else  if isComeFromHomeAccomodation == true{
+                self.isComeFromHomeJob = false
+                self.isComeFromHomeHangout = false
+                print("IsComefrom Accomodation")
+                self.main_Header.text = "Current Jobs"
+                self.type = 1
+                
+            }
+        }
+       
         self.setTitleForSearch()
     }
     func setTitleForSearch(){
-        
-        if isComeFromHomeJob == true{
-            txtFldSearch.attributedPlaceholder = NSAttributedString(
-                string: "Search Jobs",
-                attributes: [
-                    .foregroundColor: UIColor.black,
-                    .font: FontManager.inter(.regular, size: 14.0)
-                ])
-           
+        if isComeFromJobSections == false {
+            if isComeFromHomeJob == true{
+                txtFldSearch.attributedPlaceholder = NSAttributedString(
+                    string: "Declined Jobs",
+                    attributes: [
+                        .foregroundColor: UIColor.black,
+                        .font: FontManager.inter(.regular, size: 14.0)
+                    ])
+               
+                
+            }else  if isComeFromHomeHangout == true{
+                txtFldSearch.attributedPlaceholder = NSAttributedString(
+                    string: "New Jobs",
+                    attributes: [
+                        .foregroundColor: UIColor.black,
+                        .font: FontManager.inter(.regular, size: 14.0)
+                    ])
+                
+            }else  if isComeFromHomeAccomodation == true{
+                txtFldSearch.attributedPlaceholder = NSAttributedString(
+                    string: "Current Jobs",
+                    attributes: [
+                        .foregroundColor: UIColor.black,
+                        .font: FontManager.inter(.regular, size: 14.0)
+                    ])
+            }
+        }else{
             
-        }else  if isComeFromHomeHangout == true{
-            txtFldSearch.attributedPlaceholder = NSAttributedString(
-                string: "Search Hangouts",
-                attributes: [
-                    .foregroundColor: UIColor.black,
-                    .font: FontManager.inter(.regular, size: 14.0)
-                ])
-            
-        }else  if isComeFromHomeAccomodation == true{
-            txtFldSearch.attributedPlaceholder = NSAttributedString(
-                string: "Search Accommodations",
-                attributes: [
-                    .foregroundColor: UIColor.black,
-                    .font: FontManager.inter(.regular, size: 14.0)
-                ])
         }
+       
     }
     @IBAction func action_back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
@@ -99,38 +201,135 @@ class CommonGridVC: UIViewController {
 extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+#if BackpackerHire
+            return 20
+      
+        #else
+        if isLoading ==  true{
+            return 8
+        }else{
+            return jobslist.count
+        }
+        
+#endif
+      
+       
+      
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         
-        if isComeFromHomeHangout == true || isComeFromHomeAccomodation == true{
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
+#if Backapacker
+        if isLoading == true  {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SkeltonCVC", for: indexPath) as? SkeltonCVC else {
                 return UICollectionViewCell()
             }
-            // Optionally configure cell
             return cell
         }else{
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
-                return UICollectionViewCell()
+            if isComeFromJobSections == false {
+                if isComeFromHomeHangout == true || isComeFromHomeAccomodation == true{
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
+                        return UICollectionViewCell()
+                    }
+                    // Optionally configure cell
+                    return cell
+                }else{
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
+                        return UICollectionViewCell()
+                    }
+                    // Optionally configure cell
+                    return cell
+                }
+                
+            }else{
+                guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
+                    return UICollectionViewCell()
+                }
+                let item = jobslist[indexPath.item]
+                cell.lbl_Title.text = item.name
+                cell.lblAmount.text = "$\(item.price)"
+                cell.lbl_SubTitle.text = item.description
+                
+                let imageURLString = item.image.hasPrefix("http") ? item.image : "http://192.168.11.4:3001/assets/\(item.image)"
+                cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "profile"))
+                if isComeFromHomeHangout == true { // New Job
+                    cell.isComeForHiredetailpage = true
+                    cell.lbl_jobStatus.text = ""
+                    cell.statusVw.isHidden = true
+                } else if isComeFromHomeJob == true{
+                    cell.isComeForHiredetailpage = true
+                    cell.lbl_jobStatus.text = "Declined"
+                    cell.statusVw.isHidden = false
+                    cell.statusVw.backgroundColor = UIColor.red
+                }else{//Current job
+                    cell.lbl_jobStatus.text = "Accepted"
+                    cell.statusVw.isHidden = false
+                    cell.statusVw.backgroundColor = UIColor(hex: "#00A925")
+                }
+                 
+                
+                // Optionally configure cell
+                return cell
             }
-            // Optionally configure cell
-            return cell
         }
+        
+        #else
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
+            return UICollectionViewCell()
+        }
+        // Optionally configure cell
+        return cell
+        
+        
+#endif
+           
      
     }
     
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+
+        guard kind == UICollectionView.elementKindSectionFooter else {
+            return UICollectionReusableView()
+        }
+
+        let footer = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: "LoaderFooterViewCVC",
+            for: indexPath
+        ) as! LoaderFooterViewCVC
+
+        footer.lbl_fetching.isHidden = false
+        footer.activityIndicator.isHidden = false
+
+        if isAllDataLoaded {
+            footer.lbl_fetching.text = "All data fetched"
+            footer.activityIndicator.stopAnimating()
+            footer.activityIndicator.isHidden = true
+        } else if isLoadingMoreData {
+            footer.lbl_fetching.text = "Loading more..."
+            footer.activityIndicator.startAnimating()
+        } else {
+            footer.lbl_fetching.text = ""
+            footer.activityIndicator.stopAnimating()
+            footer.activityIndicator.isHidden = true
+        }
+
+        return footer
+    }
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if isComeFromHomeJob == true{
-            let width = collectionView.bounds.width
-            return CGSize(width: (width / 2) - 4, height: 178)
+        let width = collectionView.bounds.width
+        if isComeFromJobSections == false{
+            if isComeFromHomeJob == true{
+                return CGSize(width: (width / 2) - 4, height: 178)
+            }else{
+                return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 225) // Adjust height based on content
+            }
         }else{
-            return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 225) // Adjust height based on content
+            return CGSize(width: (width / 2) - 4, height: 190)
         }
-       
     }
 
 
@@ -153,6 +352,7 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
+     
         if isComeFromHomeJob == true {
             return UIEdgeInsets(top: 5, left: 0, bottom: 4, right: 0)
         }else{
@@ -161,25 +361,166 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
        
     }
    
-    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        referenceSizeForFooterInSection section: Int) -> CGSize {
+        return isLoadingMoreData ? CGSize(width: collectionView.frame.width, height: 100) : .zero
+    }
+   
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
         let frameHeight = scrollView.frame.size.height
-        
-        if offsetY > contentHeight - frameHeight - 100 {
-            if !isFetchingData && hasMorePages {
-                currentPage += 1
-                print("Curretn Page",currentPage)
+
+        if offsetY > contentHeight - frameHeight - 300 {
+            if isComeFromPullTorefresh == false{
+                if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
+                    isLoadingMoreData = true
+                    page += 1
+                    getListOfAll()
+                }
             }
+          
         }
     }
-    
 }
 
-extension CommonGridVC : UITextFieldDelegate{
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        txtFldSearch.resignFirstResponder()
-        return true
+    extension CommonGridVC: UITextFieldDelegate {
+        func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+            let currentText = textField.text ?? ""
+              
+              // Prevent leading space
+              if currentText.isEmpty && string == " " {
+                  return false
+              }
+              
+              guard let stringRange = Range(range, in: currentText) else { return true }
+              let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+              
+              let hasText = !updatedText.trimmingCharacters(in: .whitespaces).isEmpty
+              btn_searchCross.isHidden = !hasText
+
+              // Cancel existing timer
+              searchDebounceTimer?.invalidate()
+
+              // Start a new timer (debounce delay)
+              searchDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+                  guard let self = self else { return }
+                  let trimmedSearch = updatedText.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                  if self.lastSearchedText != trimmedSearch {
+                      self.lastSearchedText = trimmedSearch
+                      self.page = 1
+                      self.getListOfAll()
+                  }
+              }
+
+              return true
+        }
+
+        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            self.btn_searchCross.isHidden = true
+            textField.resignFirstResponder()
+            return true
+        }
+    }
+
+
+
+extension CommonGridVC {
+    func getListOfAll(){
+        if page == 1 {
+               self.isLoading = true
+               LoaderManager.shared.show()
+           } else {
+               isLoadingMoreData = true
+               collVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
+           }
+        viewModel.getJobListSeeAllWithType(page: page, perPage: perPage, search: self.lastSearchedText, type: self.type ?? 1) { [weak self] (success: Bool, result: JobsResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                                let newJobs = result?.data.jobslist ?? []
+                            
+                            if self.page == 1 {
+                                if newJobs.isEmpty {
+                                self.lbl_nodata_Found.isHidden = false
+                                    self.jobslist.removeAll()
+                                    self.jobslist = newJobs
+                                    self.collVw.isHidden = true
+                                } else {
+                                    self.collVw.isHidden = false
+                                   self.lbl_nodata_Found.isHidden = true
+                                    self.jobslist = newJobs
+                                }
+                            } else {
+                                self.jobslist.append(contentsOf: newJobs)
+                            }
+                          self.totalJobs = result?.data.total ?? 0
+                            // Pagination end check
+                            self.isAllDataLoaded = newJobs.count < self.perPage
+
+                            self.isLoading = false
+                            self.isComeFromPullTorefresh = false
+                            self.isLoadingMoreData = false
+                            self.collVw.reloadData()
+                            self.refreshControl.endRefreshing()
+                            
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            self.refreshControl.endRefreshing()
+                            self.collVw.setContentOffset(.zero, animated: true)
+                            LoaderManager.shared.hide()
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getListOfAll()
+                            } else {
+                                LoaderManager.shared.hide()
+                                self.refreshControl.endRefreshing()
+                                self.isLoading = false
+                                self.collVw.setContentOffset(.zero, animated: true)
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                            }
+                        }
+                        
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.isLoading = false
+                        self.collVw.setContentOffset(.zero, animated: true)
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.isLoading = false
+                        self.collVw.setContentOffset(.zero, animated: true)
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        
+                    }
+                }
+            }
+            }
     }
 }

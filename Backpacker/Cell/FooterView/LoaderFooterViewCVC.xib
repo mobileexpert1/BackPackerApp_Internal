@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="U6b-Vx-4bR" customClass="LoaderFooterViewCVC" customModule="Backpacker" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="410" height="105"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="qN3-ao-4yG">
+                    <rect key="frame" x="185" y="15" width="40" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="40" id="Zv6-O7-XWi"/>
+                        <constraint firstAttribute="height" constant="40" id="fKu-SX-NgX"/>
+                    </constraints>
+                </activityIndicatorView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="fetching..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wLc-DD-OU9">
+                    <rect key="frame" x="10" y="69" width="390" height="26"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" name="subTitleColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="VXr-Tz-HHm"/>
+            <constraints>
+                <constraint firstItem="wLc-DD-OU9" firstAttribute="centerX" secondItem="qN3-ao-4yG" secondAttribute="centerX" id="Awa-p1-RmF"/>
+                <constraint firstAttribute="bottom" secondItem="wLc-DD-OU9" secondAttribute="bottom" constant="10" id="G04-pO-L9O"/>
+                <constraint firstItem="wLc-DD-OU9" firstAttribute="leading" secondItem="U6b-Vx-4bR" secondAttribute="leading" constant="10" id="Tp0-Fh-O2v"/>
+                <constraint firstAttribute="trailing" secondItem="wLc-DD-OU9" secondAttribute="trailing" constant="10" id="VWa-tD-P0y"/>
+                <constraint firstItem="wLc-DD-OU9" firstAttribute="top" secondItem="VXr-Tz-HHm" secondAttribute="top" constant="10" id="rwg-fm-tIF"/>
+                <constraint firstItem="qN3-ao-4yG" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" constant="15" id="xaH-AA-lMp"/>
+            </constraints>
+            <connections>
+                <outlet property="activityIndicator" destination="qN3-ao-4yG" id="7Fu-dO-8iM"/>
+                <outlet property="lbl_fetching" destination="wLc-DD-OU9" id="6cH-aI-zVC"/>
+            </connections>
+            <point key="canvasLocation" x="198.47328244274809" y="8.0985915492957758"/>
+        </collectionReusableView>
+    </objects>
+    <resources>
+        <namedColor name="subTitleColor">
+            <color red="0.47450980392156861" green="0.47450980392156861" blue="0.47450980392156861" alpha="0.69999998807907104" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

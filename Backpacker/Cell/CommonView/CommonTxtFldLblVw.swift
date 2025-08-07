@@ -57,7 +57,12 @@ class CommonTxtFldLblVw: UIView , UITextFieldDelegate{
             txtFld.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged) // 🔍 Live change detection
     }
     @objc private func textFieldDidChange(_ textField: UITextField) {
-        _ = validateNotEmpty() // 🟢 Re-validate on each text change
+       
+        if lbl_Title.text == "Email"{
+            _ = validateEmail() // 🟢 Re-validate on each text change
+        }else{
+            _ = validateNotEmpty() // 🟢 Re-validate on each text change
+        }
     }
 
     
@@ -112,6 +117,29 @@ class CommonTxtFldLblVw: UIView , UITextFieldDelegate{
         
         lblErrorVisibility(val: true) // hide error if valid
         return true
+    }
+    func validateEmail(errorMessage: String = "Enter a valid email") -> Bool {
+        let text = getTextFieldValue().trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if text.isEmpty {
+            setError("Email is required")
+            lblErrorVisibility(val: false)
+            return false
+        }
+
+        if !isValidEmail(text) {
+            setError(errorMessage)
+            lblErrorVisibility(val: false)
+            return false
+        }
+
+        lblErrorVisibility(val: true)
+        return true
+    }
+    func isValidEmail(_ email: String) -> Bool {
+        let emailRegEx = "(?:[a-zA-Z0-9!#$%\\&'*+/=?^_`{|}~-]+(?:\\.[a-zA-Z0-9!#$%\\&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}"
+        let predicate = NSPredicate(format: "SELF MATCHES %@", emailRegEx)
+        return predicate.evaluate(with: email)
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

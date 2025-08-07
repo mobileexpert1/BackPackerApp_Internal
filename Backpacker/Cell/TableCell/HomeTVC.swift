@@ -477,33 +477,8 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 return CGSize(width: (width / 2) - 12, height: 180)
             }
         case .none:
-            return CGSize(width: (width / 2) - 12, height: 200)
+            return CGSize(width: (width / 2) - 12, height: 190)
         }
-        
-      /*
-       if tableSection == 0 {
-           if isComeFromJob == false{
-               return CGSize(width: (width / 2) - 12, height: 205)
-           }else{
-               return CGSize(width: (width / 2) - 12, height: 180)
-           }
-           
-       }else if tableSection == 1 || tableSection == 2 {
-           if isComeFromJob == false{
-               return CGSize(width: (width / 2) - 12, height: 230)
-           }else{
-               return CGSize(width: (width / 2) - 12, height: 180)
-           }
-          
-       }else{
-           if isComeFromJob == false{
-               return CGSize(width: (width / 2) - 12, height: 150)
-           }else{
-               return CGSize(width: (width / 2) - 12, height: 180)
-           }
-           
-       }
-       */
   
 #endif
         

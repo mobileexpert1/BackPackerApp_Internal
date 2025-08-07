@@ -1603,6 +1603,7 @@
                                                                     <constraint firstAttribute="width" constant="35" id="Fmu-yW-PKR"/>
                                                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="35" id="Ote-WO-4LS"/>
                                                                 </constraints>
+                                                                <color key="tintColor" name="subTitleColor"/>
                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                 <state key="normal" image="mic"/>
                                                                 <connections>
@@ -1662,6 +1663,7 @@
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="35" id="fQb-wI-N93"/>
                                                                 </constraints>
+                                                                <color key="tintColor" name="subTitleColor"/>
                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                 <state key="normal" image="mic"/>
                                                                 <connections>
@@ -1724,6 +1726,7 @@
                                                                     <constraint firstAttribute="height" constant="40" id="ECa-D1-B0L"/>
                                                                     <constraint firstAttribute="width" constant="40" id="eZ8-CD-sO6"/>
                                                                 </constraints>
+                                                                <color key="tintColor" name="subTitleColor"/>
                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                 <state key="normal" image="mic"/>
                                                                 <connections>
@@ -1776,6 +1779,7 @@
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" constant="35" id="7f9-Gp-8Ss"/>
                                                                 </constraints>
+                                                                <color key="tintColor" name="tabbarbgColor"/>
                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                 <state key="normal" image="mic"/>
                                                                 <connections>
@@ -2693,10 +2697,10 @@
         <image name="currentLoc" width="20" height="20"/>
         <image name="filter" width="28" height="28"/>
         <image name="location" width="8" height="11.666666984558105"/>
-        <image name="mic" width="20" height="20"/>
+        <image name="mic" width="24" height="24"/>
         <image name="remove" width="6.6666665077209473" height="6.6666665077209473"/>
         <image name="search" width="14" height="14"/>
-        <image name="time" width="12.666666984558105" height="12.666666984558105"/>
+        <image name="time" width="21.666666030883789" height="21.333333969116211"/>
         <image name="uploadImga" width="18.666666030883789" height="18.666666030883789"/>
         <image name="user-setting 1" width="25" height="25"/>
         <namedColor name="Red">
@@ -2707,6 +2711,12 @@
         </namedColor>
         <namedColor name="lightGray">
             <color red="0.96470588235294119" green="0.96470588235294119" blue="0.96470588235294119" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="subTitleColor">
+            <color red="0.47450980392156861" green="0.47450980392156861" blue="0.47450980392156861" alpha="0.69999998807907104" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="tabbarbgColor">
+            <color red="0.78823529411764703" green="0.70196078431372544" blue="0.92941176470588238" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

@@ -20,64 +20,91 @@ class SetLocationVC: UIViewController,MKMapViewDelegate {
     @IBOutlet weak var btn_sabve: UIButton!
     @IBOutlet weak var mapView: MKMapView!
     let geocoder = CLGeocoder()
-    var centerPin: UIImageView!
-    weak var delegate: SetLocationDelegate?
-    var selectedLocationName: String?
-    var selectedCoordinate: CLLocationCoordinate2D?
-        var selectedFullAddress: String?
+      let locationManager = CLLocationManager()
+
+      weak var delegate: SetLocationDelegate?
+
+      var selectedLocationName: String?
+      var selectedCoordinate: CLLocationCoordinate2D?
+      var selectedFullAddress: String?
         override func viewDidLoad() {
             super.viewDidLoad()
             applyGradientButtonStyle(to: self.btn_sabve)
-            mapView.delegate = self
-            setupCenterMarker()
-            self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
-        }
+                    lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
 
-        private func setupCenterMarker() {
-            // Add a static pin image to the center of the mapView
-            centerPin = UIImageView(image: UIImage(named: "placeholder")) // Replace with your pin image name
-            centerPin.translatesAutoresizingMaskIntoConstraints = false
-            mapView.addSubview(centerPin)
-
-            NSLayoutConstraint.activate([
-                centerPin.centerXAnchor.constraint(equalTo: mapView.centerXAnchor),
-                centerPin.centerYAnchor.constraint(equalTo: mapView.centerYAnchor, constant: -centerPin.frame.height / 2)
-            ])
+                    mapView.delegate = self
+                    locationManager.delegate = self
+                    locationManager.desiredAccuracy = kCLLocationAccuracyBest
+                    locationManager.requestWhenInUseAuthorization()
+                    locationManager.startUpdatingLocation()
         }
-    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-            let centerCoordinate = mapView.centerCoordinate
-            selectedCoordinate = centerCoordinate
-            fetchLocationDetails(for: centerCoordinate)
-        }
-
 
     func fetchLocationDetails(for coordinate: CLLocationCoordinate2D) {
-         let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
-         geocoder.cancelGeocode()
+           let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+           geocoder.cancelGeocode()
 
-         geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
-             guard let self = self else { return }
+           geocoder.reverseGeocodeLocation(location) { [weak self] placemarks, error in
+               guard let self = self else { return }
 
-             if let placemark = placemarks?.first {
-                 let locationName = placemark.subLocality ?? placemark.locality ?? "Unnamed Location"
+               if let placemark = placemarks?.first {
+                   let locationName = placemark.subLocality ?? placemark.locality ?? "Unnamed Location"
 
-                 let fullAddress = [
-                     placemark.name,
-                     placemark.subLocality,
-                     placemark.locality,
-                     placemark.administrativeArea,
-                     placemark.postalCode,
-                     placemark.country
-                 ].compactMap { $0 }.joined(separator: ", ")
+                   let fullAddress = [
+                       placemark.name,
+                       placemark.subLocality,
+                       placemark.locality,
+                       placemark.administrativeArea,
+                       placemark.postalCode,
+                       placemark.country
+                   ].compactMap { $0 }.joined(separator: ", ")
 
-                 self.selectedLocationName = locationName
-                 self.selectedFullAddress = fullAddress
+                   self.selectedLocationName = locationName
+                   self.selectedFullAddress = fullAddress
 
-                 print("📍 Location: \(locationName)")
-                 print("🏠 Address: \(fullAddress)")
-             }
-         }
-     }
+                   print("📍 Location: \(locationName)")
+                   print("🏠 Address: \(fullAddress)")
+               }
+           }
+       }
+
+       func addCustomPin(at coordinate: CLLocationCoordinate2D) {
+           let annotation = MKPointAnnotation()
+           annotation.coordinate = coordinate
+           annotation.title = "Selected Location"
+
+           mapView.removeAnnotations(mapView.annotations)
+           mapView.addAnnotation(annotation)
+       }
+
+       // MARK: - MKMapViewDelegate
+
+       func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+           let centerCoordinate = mapView.centerCoordinate
+           selectedCoordinate = centerCoordinate
+           fetchLocationDetails(for: centerCoordinate)
+
+           addCustomPin(at: centerCoordinate)
+       }
+
+       func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+           if annotation is MKUserLocation {
+               return nil
+           }
+
+           let identifier = "CustomPin"
+           var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+
+           if annotationView == nil {
+               annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+               annotationView?.image = UIImage(named: "placeholder") // Your pin image
+               annotationView?.canShowCallout = true
+           } else {
+               annotationView?.annotation = annotation
+           }
+
+           return annotationView
+       }
+
 
     @IBAction func action_Save(_ sender: Any) {
         guard let name = selectedLocationName,
@@ -105,4 +132,24 @@ class SetLocationVC: UIViewController,MKMapViewDelegate {
     }
     */
 
+}
+extension SetLocationVC: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.first else { return }
+
+        locationManager.stopUpdatingLocation()
+
+        let coordinate = location.coordinate
+        selectedCoordinate = coordinate
+        fetchLocationDetails(for: coordinate)
+
+        let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 1000, longitudinalMeters: 1000)
+        mapView.setRegion(region, animated: true)
+
+        addCustomPin(at: coordinate)
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("❌ Failed to get location: \(error.localizedDescription)")
+    }
 }

@@ -327,6 +327,12 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Data Found" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I1t-B6-1JW">
+                                <rect key="frame" x="139.66666666666666" y="428" width="114" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="iTe-OZ-Hax">
                                 <rect key="frame" x="15" y="164" width="363" height="654"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -353,6 +359,18 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="52w-j6-DVq">
+                                        <rect key="frame" x="321" y="11.666666666666671" width="22" height="22"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="22" id="T8N-k0-cI5"/>
+                                            <constraint firstAttribute="width" constant="22" id="rWq-7n-6kg"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" image="Close"/>
+                                        <connections>
+                                            <action selector="action_ClearSearch:" destination="wxi-3A-23d" eventType="touchUpInside" id="0gc-a9-H5i"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -365,7 +383,9 @@
                                     <constraint firstAttribute="height" constant="45" id="Tej-IC-txW"/>
                                     <constraint firstAttribute="bottom" secondItem="3Co-uw-DYw" secondAttribute="bottom" constant="2" id="gcC-8H-w6i"/>
                                     <constraint firstItem="Spf-g6-m1T" firstAttribute="leading" secondItem="oeI-LI-a9l" secondAttribute="leading" constant="18" id="ll6-21-kTl"/>
+                                    <constraint firstItem="52w-j6-DVq" firstAttribute="centerY" secondItem="Spf-g6-m1T" secondAttribute="centerY" id="md2-au-pzE"/>
                                     <constraint firstItem="Spf-g6-m1T" firstAttribute="centerY" secondItem="oeI-LI-a9l" secondAttribute="centerY" id="obh-wk-oQE"/>
+                                    <constraint firstAttribute="trailing" secondItem="52w-j6-DVq" secondAttribute="trailing" constant="10" id="pUy-td-xZ8"/>
                                     <constraint firstAttribute="trailing" secondItem="3Co-uw-DYw" secondAttribute="trailing" constant="2" id="vP7-2O-Bf4"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
@@ -381,8 +401,10 @@
                             <constraint firstItem="eDL-pC-hp4" firstAttribute="centerX" secondItem="vfk-ce-ctQ" secondAttribute="centerX" id="3jK-6D-o2i"/>
                             <constraint firstItem="8Ox-Z2-iMF" firstAttribute="top" secondItem="vfk-ce-ctQ" secondAttribute="top" id="7dG-Hq-SuA"/>
                             <constraint firstItem="iTe-OZ-Hax" firstAttribute="leading" secondItem="vfk-ce-ctQ" secondAttribute="leading" constant="15" id="A6U-Ws-dVg"/>
+                            <constraint firstItem="I1t-B6-1JW" firstAttribute="centerX" secondItem="vfk-ce-ctQ" secondAttribute="centerX" id="Jhl-i7-qaO"/>
                             <constraint firstItem="vfk-ce-ctQ" firstAttribute="trailing" secondItem="oeI-LI-a9l" secondAttribute="trailing" constant="20" id="PCJ-wb-gfg"/>
                             <constraint firstItem="oeI-LI-a9l" firstAttribute="top" secondItem="8Ox-Z2-iMF" secondAttribute="bottom" constant="10" id="SS9-L5-qtP"/>
+                            <constraint firstItem="I1t-B6-1JW" firstAttribute="centerY" secondItem="vfk-ce-ctQ" secondAttribute="centerY" id="VrK-Hs-avt"/>
                             <constraint firstItem="iTe-OZ-Hax" firstAttribute="top" secondItem="oeI-LI-a9l" secondAttribute="bottom" constant="10" id="YPT-v8-5tH"/>
                             <constraint firstItem="oeI-LI-a9l" firstAttribute="leading" secondItem="l1F-JM-kE3" secondAttribute="leading" constant="20" id="Z02-hj-cMc"/>
                             <constraint firstItem="vfk-ce-ctQ" firstAttribute="trailing" secondItem="iTe-OZ-Hax" secondAttribute="trailing" constant="15" id="bwm-Rr-rP9"/>
@@ -392,7 +414,9 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="btn_searchCross" destination="52w-j6-DVq" id="fx2-yl-4ub"/>
                         <outlet property="collVw" destination="iTe-OZ-Hax" id="hCe-qA-3Xg"/>
+                        <outlet property="lbl_nodata_Found" destination="I1t-B6-1JW" id="5zu-wh-btQ"/>
                         <outlet property="main_Header" destination="eDL-pC-hp4" id="3Zg-0S-rcV"/>
                         <outlet property="seacrh_Vw" destination="oeI-LI-a9l" id="Oww-Vj-lM2"/>
                         <outlet property="txtFldSearch" destination="3Co-uw-DYw" id="feo-Q6-tn3"/>
@@ -500,6 +524,7 @@
     </scenes>
     <resources>
         <image name="Back Arrow" width="9" height="15"/>
+        <image name="Close" width="19" height="21"/>
         <image name="Home_BackPacker" width="22" height="24.333333969116211"/>
         <image name="chat_Icon" width="20" height="20"/>
         <image name="notification" width="74" height="74"/>

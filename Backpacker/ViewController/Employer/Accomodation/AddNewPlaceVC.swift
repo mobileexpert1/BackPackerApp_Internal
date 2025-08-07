@@ -302,14 +302,7 @@ extension AddNewPlaceVC{
                             AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                         }
                     case .badRequest:
-                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                self.submitHangout(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, image: image) // Retry
-                            } else {
-                                NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
-                            }
-                        }
-                        
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -318,14 +311,16 @@ extension AddNewPlaceVC{
                                 NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                             }
                         }
-                        
-                        
-                    case .unauthorizedToken, .methodNotAllowed, .internalServerError:
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
                         NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                     case .unknown:
-                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")  {
-                            self.navigationController?.popViewController(animated: true)
-                        }
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     }
                 }
             }
@@ -406,7 +401,7 @@ extension AddNewPlaceVC {
             currentActiveTextField = nil
             currentActiveTextVw = nil
             speechManager.stopRecording()
-            button.tintColor = .black
+            button.setImage(UIImage(named: "mic"), for: .normal)
             return
         }
 
@@ -414,16 +409,20 @@ extension AddNewPlaceVC {
         if let previousButton = currentlyRecordingButton, previousButton != button {
             previousButton.tag = 0
             previousButton.tintColor = .black
+            previousButton.setImage(UIImage(named: "mic"), for: .normal)
             speechManager.stopRecording()
 
             // Add delay before starting new mic
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.setUpTag()
+                
+                button.setImage(UIImage(named: "mic_selected"), for: .normal)
                 self.startRecording(for: button, textField: textField, textView: textView)
             }
         } else {
             // Start new mic directly
             setUpTag()
+            button.setImage(UIImage(named: "mic_selected"), for: .normal)
             startRecording(for: button, textField: textField, textView: textView)
         }
     }
