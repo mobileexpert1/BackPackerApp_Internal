@@ -125,7 +125,9 @@ class EmployerAccomodationVC: UIViewController {
         // Reset pagination and loading flags
 #if BackpackerHire
         
-        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.refreshControl.endRefreshing()
+        }
 #else
         
         self.page = 1
@@ -134,7 +136,7 @@ class EmployerAccomodationVC: UIViewController {
         self.isLoading = true
         
         // Start refreshing UI
-        self.refreshControl.beginRefreshing()
+       
         isComeFromPullTorefresh = true
         // Fetch data
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -169,6 +171,8 @@ class EmployerAccomodationVC: UIViewController {
         vc.initialSortBy = self.sortByPrice     // e.g. "asc" or "desc"
         vc.initialRadius = self.radius != nil ? String(self.radius!) : nil
         vc.onApplyFilters = { [weak self] facilities, sortBy, radius in
+#if Backpacker
+            
             print("Facilities: \(facilities ?? "-")")
             print("Sort by: \(sortBy ?? "-")")
             print("Radius: \(radius ?? "-")")
@@ -178,12 +182,17 @@ class EmployerAccomodationVC: UIViewController {
             // You can now use the data to filter your content
             self?.page = 1
             self?.listOfAllAccommodation()
+            
+#endif
+            
         }
         vc.modalPresentationStyle = .overFullScreen
         self.present(vc, animated: true)
         
     }
     @IBAction func action_ClearTxtFld(_ sender: Any) {
+#if Backpacker
+            
         self.isComFromSearch = false
         txtFld_Search.text = ""
         lastSearchedText = ""
@@ -191,6 +200,9 @@ class EmployerAccomodationVC: UIViewController {
         txtFld_Search.resignFirstResponder()
         self.btn_cleartxtFld.isHidden = true
         listOfAllAccommodation()
+            
+#endif
+     
     }
 }
 extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -361,6 +373,8 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
         let frameHeight = scrollView.frame.size.height
         
         if offsetY > contentHeight - frameHeight - 300 {
+#if Backpacker
+            
             if isComeFromPullTorefresh == false{
                 if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
                     isLoadingMoreData = true
@@ -372,6 +386,9 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
                 }
             }
             
+            #endif
+           
+            
         }
     }
     
@@ -380,6 +397,7 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
 extension EmployerAccomodationVC : UITextFieldDelegate{
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Get the new text after the change
+        
         let currentText = textField.text ?? ""
         
         // Prevent leading space
@@ -400,6 +418,7 @@ extension EmployerAccomodationVC : UITextFieldDelegate{
         searchDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
             guard let self = self else { return }
             let trimmedSearch = updatedText.trimmingCharacters(in: .whitespacesAndNewlines)
+#if BackpackerHire
             
             if self.lastSearchedText != trimmedSearch {
                 self.lastSearchedText = trimmedSearch
@@ -407,6 +426,10 @@ extension EmployerAccomodationVC : UITextFieldDelegate{
                 self.isComFromSearch = true
                 self.listOfAllAccommodation()
             }
+            
+            #endif
+            
+         
         }
         return true
     }

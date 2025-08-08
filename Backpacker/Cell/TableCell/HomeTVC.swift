@@ -287,8 +287,13 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     cell.lblRating.isHidden = true
                     cell.lbl_review.isHidden = true
                     cell.cosmosVw.isHidden = true
-                    let imageURLString = hangout.image.hasPrefix("http") ? hangout.image : "http://192.168.11.4:3000/assets/\(hangout.image)"
-                    cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "restaurantImg"))
+                    
+                    if let firstIMage = hangout.image.first{
+                        let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
+                        cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "aCCOMODATION"))
+                    }else{
+                        cell.imgVw.image = UIImage(named: "restaurantImg")
+                    }
                 }
 
             default:

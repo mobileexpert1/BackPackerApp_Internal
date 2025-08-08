@@ -33,10 +33,26 @@ class SpeechToTextVC: UIViewController {
         self.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         self.imagVw.layer.cornerRadius = 10.0
         self.main_Vw.addShadowAllSides(radius: 2.0)
+        self.imagVw.image = loadGIF(named: "microPhone",placeholder: UIImage(named: "voice"))
         self.bt_Save.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
         applyGradientButtonStyle(to: self.bt_Save)
     }
-    
+    func loadGIF(named name: String, placeholder: UIImage? = nil) -> UIImage? {
+        // 1. Locate GIF in bundle
+        guard let bundleURL = Bundle.main.url(forResource: name, withExtension: "gif") else {
+            print("GIF not found — showing placeholder")
+            return UIImage(named: "")
+        }
+        
+        // 2. Load GIF data
+        guard let imageData = try? Data(contentsOf: bundleURL),
+              let gifImage = UIImage.gif(data: imageData) else {
+            print("Failed to load GIF data — showing placeholder")
+            return placeholder
+        }
+        
+        return gifImage
+    }
     @IBAction func ActionSave(_ sender: Any) {
         
         speechManager.stopRecording()

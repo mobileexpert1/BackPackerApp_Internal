@@ -344,7 +344,7 @@ extension AddNewPlaceVC : SetLocationDelegate{
 
 extension AddNewPlaceVC{
     func submitHangout(name: String, address: String, lat: Double, long: Double, locationText: String, description: String, image: Data?) {
-
+        LoaderManager.shared.show()
             viewModel.uploadHangout(
                 name: name,
                        address: address,

@@ -111,4 +111,27 @@ extension ForceUpdateVC {
             }
         }
     }
+
+}
+import UIKit
+import ImageIO
+
+
+
+extension UIImage {
+    static func gif(data: Data) -> UIImage? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+        
+        var images: [UIImage] = []
+        let count = CGImageSourceGetCount(source)
+        
+        for i in 0..<count {
+            if let cgImage = CGImageSourceCreateImageAtIndex(source, i, nil) {
+                images.append(UIImage(cgImage: cgImage))
+            }
+        }
+        
+        let duration = Double(count) / 24.0 // Adjust FPS if needed
+        return UIImage.animatedImage(with: images, duration: duration)
+    }
 }

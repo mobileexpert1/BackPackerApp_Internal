@@ -39,7 +39,7 @@ struct HangoutItem: Codable {
     let lat: Double
     let long: Double
     let description: String
-    let image: String
+    let image: [String]
     let favoriteStatus: Int
 
     enum CodingKeys: String, CodingKey {

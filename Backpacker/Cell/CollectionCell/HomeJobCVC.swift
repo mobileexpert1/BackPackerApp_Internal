@@ -17,6 +17,7 @@ class HomeJobCVC: UICollectionViewCell {
     @IBOutlet weak var lbl_Title: UILabel!
     @IBOutlet weak var mainView: UIView!
    
+    @IBOutlet weak var vw_Status_Height: NSLayoutConstraint!
     @IBOutlet weak var lblAmount: UILabel!
     @IBOutlet weak var tap_Button: UIButton!
     @IBOutlet weak var lbl_SubTitle: UILabel!
