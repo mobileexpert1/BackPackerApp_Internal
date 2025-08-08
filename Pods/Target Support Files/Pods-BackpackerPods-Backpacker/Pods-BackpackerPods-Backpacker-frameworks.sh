@@ -181,6 +181,8 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/CountryPickerView-iOS15.0/CountryPickerView.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/FSCalendar-iOS15.0/FSCalendar.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PhoneNumberKit-iOS15.0/PhoneNumberKit.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SDWebImage-iOS15.0/SDWebImage.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SkeletonView-iOS15.0/SkeletonView.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/Alamofire-iOS15.0/Alamofire.framework"
@@ -188,6 +190,8 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/CountryPickerView-iOS15.0/CountryPickerView.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/FSCalendar-iOS15.0/FSCalendar.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PhoneNumberKit-iOS15.0/PhoneNumberKit.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SDWebImage-iOS15.0/SDWebImage.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/SkeletonView-iOS15.0/SkeletonView.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

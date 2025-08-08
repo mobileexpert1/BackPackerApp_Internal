@@ -9,6 +9,10 @@ PODS:
   - PhoneNumberKit/PhoneNumberKitCore (4.1.2)
   - PhoneNumberKit/UIKit (4.1.2):
     - PhoneNumberKit/PhoneNumberKitCore
+  - SDWebImage (5.21.1):
+    - SDWebImage/Core (= 5.21.1)
+  - SDWebImage/Core (5.21.1)
+  - SkeletonView (1.30.4)
 
 DEPENDENCIES:
   - Alamofire
@@ -16,6 +20,8 @@ DEPENDENCIES:
   - CountryPickerView
   - FSCalendar
   - PhoneNumberKit (~> 4.0)
+  - SDWebImage
+  - SkeletonView
 
 SPEC REPOS:
   trunk:
@@ -24,6 +30,8 @@ SPEC REPOS:
     - CountryPickerView
     - FSCalendar
     - PhoneNumberKit
+    - SDWebImage
+    - SkeletonView
 
 SPEC CHECKSUMS:
   Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
@@ -31,7 +39,9 @@ SPEC CHECKSUMS:
   CountryPickerView: 6322ada32a80b0cd721b0267282a5c24f406f263
   FSCalendar: 2d1d0d9398f12d439f55c1fe0f01525b151b8260
   PhoneNumberKit: 8e3ee3f82a5494284070a386ed321e0f281738cf
+  SDWebImage: f29024626962457f3470184232766516dee8dfea
+  SkeletonView: 5a050f6411e697abd4cda0a8d767013399dccd69
 
-PODFILE CHECKSUM: 45cc3c9685c9e9516a28413c7e2dea6db11628f1
+PODFILE CHECKSUM: ac607e4c959f50d3d8ecc63862a1a4835b54517e
 
 COCOAPODS: 1.16.2

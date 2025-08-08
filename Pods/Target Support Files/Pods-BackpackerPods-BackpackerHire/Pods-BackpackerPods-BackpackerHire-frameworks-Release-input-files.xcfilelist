@@ -4,3 +4,5 @@ ${BUILT_PRODUCTS_DIR}/Cosmos-iOS15.6/Cosmos.framework
 ${BUILT_PRODUCTS_DIR}/CountryPickerView-iOS15.6/CountryPickerView.framework
 ${BUILT_PRODUCTS_DIR}/FSCalendar-iOS15.6/FSCalendar.framework
 ${BUILT_PRODUCTS_DIR}/PhoneNumberKit-iOS15.6/PhoneNumberKit.framework
+${BUILT_PRODUCTS_DIR}/SDWebImage-iOS15.6/SDWebImage.framework
+${BUILT_PRODUCTS_DIR}/SkeletonView-iOS15.6/SkeletonView.framework
