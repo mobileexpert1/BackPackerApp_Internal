@@ -418,7 +418,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 case .accommodations:
                     return 230
                 case  .hangouts:
-                    return 190
+                    return 205
                 case .jobs :
                     return 180
                 }
@@ -555,6 +555,9 @@ extension BackPackerHomeVC {
                     case .ok, .created:
                         if success == true {
                             self.homeData = data
+                            if self.homeData?.name.isEmpty == true && self.homeData?.email.isEmpty == true{
+                                self.showForceUpdatePopUp()
+                            }
                             DispatchQueue.main.async {
                                 self.isLoading = false
                                 LoaderManager.shared.hide()
@@ -621,5 +624,13 @@ extension  BackPackerHomeVC: SkeletonTableViewDataSource {
                return "SkeltonTVC"
            }
        }
+    
+    
+    func showForceUpdatePopUp(){
+        let storyboard = UIStoryboard(name: "Home", bundle: nil)
+        let vc = storyboard.instantiateViewController(withIdentifier: "ForceUpdateVC") as! ForceUpdateVC
+        vc.modalPresentationStyle = .overFullScreen
+        self.present(vc, animated: true)
+    }
 }
 

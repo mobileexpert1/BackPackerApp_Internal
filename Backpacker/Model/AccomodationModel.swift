@@ -32,7 +32,7 @@ struct Accommodation: Codable {
     let lat: Double
     let long: Double
     let description: String
-    let image: String
+    let image: [String]
     let price: Int
     let facilities: [String]
     let favoriteStatus: Int

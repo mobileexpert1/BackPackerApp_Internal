@@ -20,6 +20,7 @@ class AccommodationViewModel {
         price: String,
         facilities: [String],
         image: Data?,
+        imagesArrayData : [Data],
         completion: @escaping (Bool, String?, Int?) -> Void
     ) {
         guard let token = UserDefaultsManager.shared.bearerToken, !token.isEmpty else {
@@ -45,10 +46,9 @@ class AccommodationViewModel {
         }
 
         let headers = ServiceManager.sharedInstance.getHeaders()
-
-        ServiceManager.sharedInstance.requestMultipartAPI(
+        ServiceManager.sharedInstance.requestMultipartMultiAPI(
             url,
-            image: image,
+            images: imagesArrayData,
             method: .post,
             parameters: params,
             headers: headers
@@ -63,6 +63,8 @@ class AccommodationViewModel {
                 completion(false, error.localizedDescription, statusCode)
             }
         }
+        
+        
     }
     
     

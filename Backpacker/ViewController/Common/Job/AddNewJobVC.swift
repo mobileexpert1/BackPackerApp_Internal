@@ -207,21 +207,111 @@ class AddNewJobVC: UIViewController {
  
     
     @IBAction func action_name_mic(_ sender: UIButton) {
-        handleMicTap(for: sender, textField: txtFldName, textView: nil)
+       // handleMicTap(for: sender, textField: txtFldName, textView: nil)
+   //
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "SpeechToTextVC") as? SpeechToTextVC {
+            vc.currentActiveTextVw = nil
+            vc.currentActiveTextField = txtFldName
+            vc.onSaveText = { [weak self] text in
+                let incomingText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if let existingText = self?.txtFldName.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                   !existingText.isEmpty {
+                    self?.txtFldName.text = existingText + " " + incomingText
+                } else {
+                    self?.txtFldName.text = incomingText
+                }
+                DispatchQueue.main.async {
+                    self?.txtFldAddress.resignFirstResponder()
+                    self?.txtVw_Description.resignFirstResponder()
+                    self?.txtFldName.resignFirstResponder()
+                    self?.txtFld_Requirment.resignFirstResponder()
+                }
+            }
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true, completion: nil)
+        }
     }
     
     
     
     @IBAction func action_address_mic(_ sender: UIButton) {
-        handleMicTap(for: sender, textField: txtFldAddress, textView: nil)
+     //   handleMicTap(for: sender, textField: txtFldAddress, textView: nil)
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "SpeechToTextVC") as? SpeechToTextVC {
+            vc.currentActiveTextVw = nil
+            vc.currentActiveTextField = txtFldAddress
+            vc.onSaveText = { [weak self] text in
+                let incomingText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if let existingText = self?.txtFldAddress.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                   !existingText.isEmpty {
+                    self?.txtFldAddress.text = existingText + " " + incomingText
+                } else {
+                    self?.txtFldAddress.text = incomingText
+                }
+                DispatchQueue.main.async {
+                    self?.txtFldAddress.resignFirstResponder()
+                    self?.txtVw_Description.resignFirstResponder()
+                    self?.txtFldName.resignFirstResponder()
+                    self?.txtFld_Requirment.resignFirstResponder()
+                }
+            }
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true, completion: nil)
+        }
     }
     
     @IBAction func action_description_mic(_ sender: UIButton) {
-        handleMicTap(for: sender, textField: nil, textView: txtVw_Description)
+        //handleMicTap(for: sender, textField: nil, textView: txtVw_Description)
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "SpeechToTextVC") as? SpeechToTextVC {
+            vc.currentActiveTextVw = txtVw_Description
+            vc.currentActiveTextField = nil
+            vc.onSaveText = { [weak self] text in
+                let incomingText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if let existingText = self?.txtVw_Description.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                   !existingText.isEmpty {
+                    self?.txtVw_Description.text = existingText + " " + incomingText
+                } else {
+                    self?.txtVw_Description.text = incomingText
+                }
+                DispatchQueue.main.async {
+                    self?.txtFldAddress.resignFirstResponder()
+                    self?.txtVw_Description.resignFirstResponder()
+                    self?.txtFldName.resignFirstResponder()
+                    self?.txtFld_Requirment.resignFirstResponder()
+                }
+            }
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true, completion: nil)
+        }
     }
     
     @IBAction func action_requirment_mic(_ sender: UIButton) {
-        handleMicTap(for: sender, textField: txtFld_Requirment, textView: nil)
+      //  handleMicTap(for: sender, textField: txtFld_Requirment, textView: nil)
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "SpeechToTextVC") as? SpeechToTextVC {
+            vc.currentActiveTextVw = nil
+            vc.currentActiveTextField = txtFld_Requirment
+            vc.onSaveText = { [weak self] text in
+                let incomingText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if let existingText = self?.txtFld_Requirment.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                   !existingText.isEmpty {
+                    self?.txtFld_Requirment.text = existingText + " " + incomingText
+                } else {
+                    self?.txtFld_Requirment.text = incomingText
+                }
+                DispatchQueue.main.async {
+                    self?.txtFld_Requirment.resignFirstResponder()
+                }
+            }
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true, completion: nil)
+        }
     }
 }
 

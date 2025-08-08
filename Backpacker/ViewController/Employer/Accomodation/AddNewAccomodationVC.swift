@@ -28,6 +28,7 @@ class AddNewAccomodationVC: UIViewController {
     
     //UploadImage outlets
     var selectedImages: [UIImage] = []
+    var selectedImagesData: [Data] = []
     @IBOutlet weak var mainBgVw: UIView!
     @IBOutlet weak var lbl_UploadImg: UILabel!
     @IBOutlet weak var placeholderImg: UIImageView!
@@ -242,6 +243,14 @@ class AddNewAccomodationVC: UIViewController {
         let trimmedPrice = txtFldPrice.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
          let firstImage = self.selectedImages.first
         let imageData = firstImage?.jpegData(compressionQuality: 0.8)
+        
+        for image in selectedImages {
+            guard let data = image.jpegData(compressionQuality: 0.8) else {
+                // Skip this image if conversion fails
+                continue
+            }
+            self.selectedImagesData.append(data)
+        }
         let selectedFacilities = selectedFilterIndexes.compactMap { index in
             return filterArrya.indices.contains(index) ? filterArrya[index] : nil
         }
@@ -259,7 +268,7 @@ class AddNewAccomodationVC: UIViewController {
         )
 
         if isValid {
-            self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: trimmedPrice, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, mainImageView: self.placeholderImg, on: self)
+            self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: trimmedPrice, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, on: self)
         }
        
 
@@ -294,14 +303,80 @@ class AddNewAccomodationVC: UIViewController {
     }
  
     @IBAction func action_Btnname_Mic(_ sender: UIButton) {
-        handleMicTap(for: sender, textField: txtFldName, textView: nil)
+  //      handleMicTap(for: sender, textField: txtFldName, textView: nil)
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "SpeechToTextVC") as? SpeechToTextVC {
+            vc.currentActiveTextVw = nil
+            vc.currentActiveTextField = txtFldName
+            vc.onSaveText = { [weak self] text in
+                let incomingText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if let existingText = self?.txtFldName.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                   !existingText.isEmpty {
+                    self?.txtFldName.text = existingText + " " + incomingText
+                } else {
+                    self?.txtFldName.text = incomingText
+                }
+                DispatchQueue.main.async {
+                    self?.txtVwDescription.resignFirstResponder()
+                    self?.txtFldName.resignFirstResponder()
+                    self?.txtFldAddress.resignFirstResponder()
+                }
+            }
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true, completion: nil)
+        }
     }
     
     @IBAction func action_description_mic(_ sender: UIButton) {
-        handleMicTap(for: sender, textField: txtFldAddress, textView: nil)
+       // handleMicTap(for: sender, textField: txtFldAddress, textView: nil)
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "SpeechToTextVC") as? SpeechToTextVC {
+            vc.currentActiveTextVw = txtVwDescription
+            vc.currentActiveTextField = nil
+            vc.onSaveText = { [weak self] text in
+                let incomingText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if let existingText = self?.txtVwDescription.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                   !existingText.isEmpty {
+                    self?.txtVwDescription.text = existingText + " " + incomingText
+                } else {
+                    self?.txtVwDescription.text = incomingText
+                }
+                DispatchQueue.main.async {
+                    self?.txtVwDescription.resignFirstResponder()
+                    self?.txtFldName.resignFirstResponder()
+                    self?.txtFldAddress.resignFirstResponder()
+                }
+            }
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true, completion: nil)
+        }
     }
     @IBAction func action_adrress_mic(_ sender: UIButton) {
-        handleMicTap(for: sender, textField: nil, textView: txtVwDescription)
+        //handleMicTap(for: sender, textField: nil, textView: txtVwDescription)
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "SpeechToTextVC") as? SpeechToTextVC {
+            vc.currentActiveTextVw = nil
+            vc.currentActiveTextField = txtFldAddress
+            vc.onSaveText = { [weak self] text in
+                let incomingText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if let existingText = self?.txtFldAddress.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                   !existingText.isEmpty {
+                    self?.txtFldAddress.text = existingText + " " + incomingText
+                } else {
+                    self?.txtFldAddress.text = incomingText
+                }
+                DispatchQueue.main.async {
+                    self?.txtVwDescription.resignFirstResponder()
+                    self?.txtFldName.resignFirstResponder()
+                    self?.txtFldAddress.resignFirstResponder()
+                }
+            }
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true, completion: nil)
+        }
     }
     
 }
@@ -461,11 +536,13 @@ extension AddNewAccomodationVC {
         facilitiesIndexes: Set<Int>,
         filterArray: [String],
         image: Data?,
+        ImagesData : [Data],
         mainImageView: UIImageView,
         on viewController: UIViewController
     ) {
 
         // Call API
+        LoaderManager.shared.show()
         viewModel.uploadAccommodation(
             name: name,
             address: address,
@@ -475,7 +552,7 @@ extension AddNewAccomodationVC {
             description: description,
             price: price,
             facilities: filterArray,
-            image: image
+            image: image, imagesArrayData: ImagesData
         ) { success, message ,statusCode in
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()
@@ -500,7 +577,7 @@ extension AddNewAccomodationVC {
                 case .unauthorized :
                     self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                            self.submitAccommodation(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, price: price, facilitiesIndexes: facilitiesIndexes, filterArray: filterArray, image: image, mainImageView: mainImageView, on: self)
+                            self.submitAccommodation(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, price: price, facilitiesIndexes: facilitiesIndexes, filterArray: filterArray, image: image, ImagesData: ImagesData, mainImageView: mainImageView, on: self)
                         } else {
                             NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                         }

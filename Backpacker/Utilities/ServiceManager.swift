@@ -196,7 +196,7 @@ enum APIError: Error {
     case unauthorized                  // 401
     case forbidden                     // 403
     case serverError(code: Int)        // Other status codes
-    
+    case customError(message: String)
     var customDescription: String {
         switch self {
         case .requestFailed(let description):
@@ -219,6 +219,8 @@ enum APIError: Error {
             return "Forbidden (403): Refresh token expired"
         case .serverError(let code):
             return "Server error with status code: \(code)"
+        case .customError(let message):
+                    return message
         }
     }
 }
@@ -568,7 +570,116 @@ extension ServiceManager {
         }
         
     }
-    
+    func requestMultipartMultiAPI<T: Codable>(
+        _ url: URLConvertible,
+        images: [Data] = [], // Now supports multiple images
+        method: HTTPMethod,
+        parameters: Parameters? = nil,
+        httpBody: String? = nil,
+        headers: [String: String]? = nil,
+        completion: @escaping (ApiResult<ApiResponseModel<T>, APIError>) -> Void
+    ) {
+        print("URL: ", url)
+        do {
+            var request = try URLRequest(url: url.asURL())
+            request.httpMethod = method.rawValue
+            for (key, value) in getHeaders() {
+                request.addValue(value, forHTTPHeaderField: key)
+            }
+            
+            let configuration = URLSessionConfiguration.default
+            configuration.timeoutIntervalForRequest = 3600
+            configuration.timeoutIntervalForResource = 3600
+            manager = Alamofire.Session(configuration: configuration)
+            
+            manager.upload(
+                multipartFormData: { multipartFormData in
+                    
+                    // Append parameters
+                    if let params = parameters {
+                        for (key, value) in params {
+                            if let dataValue = value as? Data {
+                                multipartFormData.append(dataValue, withName: key)
+                            } else {
+                                if let stringValue = "\(value)".data(using: .utf8) {
+                                    multipartFormData.append(stringValue, withName: key)
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Append multiple images
+                    for (index, imageData) in images.enumerated() {
+                        multipartFormData.append(
+                            imageData,
+                            withName: "images[]", // backend field name (adjust if needed)
+                            fileName: "image\(index + 1).jpg",
+                            mimeType: "image/jpeg"
+                        )
+                    }
+                    
+                },
+                to: url,
+                usingThreshold: UInt64.init(),
+                method: .post,
+                headers: request.headers
+            )
+            .responseJSON { [weak self] response1 in
+                let statusCode = response1.response?.statusCode
+                
+                if let error = response1.error {
+                    print("--------- Error -------", error.localizedDescription)
+                    
+                    if let responseData = response1.data {
+                        let htmlString = String(data: responseData, encoding: .utf8)
+                        print("Result ", htmlString ?? "Unable to decode response")
+                        
+                        switch URLError.Code(rawValue: error._code) {
+                        case .notConnectedToInternet:
+                            completion(.failure(.requestFailed(description: "No internet connection"), statusCode: statusCode))
+                            return
+                        default:
+                            break
+                        }
+                        
+                        completion(.failure(.jsonDecodingFailure, statusCode: statusCode))
+                        return
+                    }
+                } else if let data = response1.data {
+                    let responseString = String(data: data, encoding: .utf8)
+                    print("Raw Response: ", responseString ?? "No response string")
+                }
+                
+                if let statusCode = statusCode {
+                    do {
+                        let decoded = try JSONDecoder().decode(ApiResponseModel<T>.self, from: response1.data!)
+                        print("Decoded Success – Status Code: \(statusCode)")
+                        
+                        if decoded.success == true {
+                            completion(.success(decoded, statusCode: statusCode))
+                        } else {
+                            let apiError: APIError = .responseUnsuccessful(description: decoded.message ?? "Unknown error")
+                            completion(.failure(apiError, statusCode: statusCode))
+                        }
+                    } catch {
+                        print("Decoding error: \(error.localizedDescription)")
+                        completion(.failure(.decodingTaskFailure(description: error.localizedDescription), statusCode: statusCode))
+                    }
+                } else {
+                    print("No status code found")
+                    completion(.failure(.responseUnsuccessful(description: "No status code"), statusCode: nil))
+                }
+            }
+            .uploadProgress(queue: .main) { progress in
+                print("Upload Progress: \(progress.fractionCompleted)")
+            }
+            
+        } catch {
+            self.hideLoader()
+            completion(.failure(.requestFailed(description: "\(error.localizedDescription)"), statusCode: nil))
+        }
+    }
+
      func requestMultipartAPI<T:Codable>(_ url: URLConvertible,image:Data? = nil,method:HTTPMethod, parameters: Parameters? = nil,httpBody:String? = nil,headers:[String:String]? = nil, completion: @escaping (ApiResult<ApiResponseModel<T>, APIError>) -> Void) {
         print("URL: ",url)
         do {
@@ -742,7 +853,19 @@ extension ServiceManager {
 
                     default:
                         // Other status codes
-                        completion(.failure(.serverError(code: statusCode), statusCode: statusCode))
+                        if let jsonString = String(data: data, encoding: .utf8) {
+                          
+                            if let messageData = jsonString.data(using: .utf8),
+                               let messageObj = try? JSONDecoder().decode(MessageResponse.self, from: messageData) {
+                                print("API Message:", messageObj.message)
+                                completion(.failure(.customError(message: messageObj.message), statusCode: statusCode))
+                            } else {
+                                completion(.failure(.serverError(code: statusCode), statusCode: statusCode))
+                            }
+                        } else {
+                            completion(.failure(.serverError(code: statusCode), statusCode: statusCode))
+                        }
+
                     }
 
                 case .failure(let error):
@@ -1166,3 +1289,6 @@ struct NullResponse: Codable {
     
 }
 
+struct MessageResponse: Codable {
+    let message: String
+}

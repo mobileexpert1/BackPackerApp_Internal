@@ -453,7 +453,7 @@
                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                 <state key="normal" image="mic"/>
                                                                 <connections>
-                                                                    <action selector="action_adrress_mic:" destination="3dR-Xq-eBO" eventType="touchUpInside" id="AWq-4g-c4d"/>
+                                                                    <action selector="action_description_mic:" destination="3dR-Xq-eBO" eventType="touchUpInside" id="sSH-59-bQL"/>
                                                                 </connections>
                                                             </button>
                                                         </subviews>
@@ -678,7 +678,7 @@
                                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                                 <state key="normal" image="mic"/>
                                                                 <connections>
-                                                                    <action selector="action_adrress_mic:" destination="3dR-Xq-eBO" eventType="touchUpInside" id="h2v-xY-Nnk"/>
+                                                                    <action selector="action_adrress_mic:" destination="3dR-Xq-eBO" eventType="touchUpInside" id="1D3-LU-98S"/>
                                                                 </connections>
                                                             </button>
                                                         </subviews>

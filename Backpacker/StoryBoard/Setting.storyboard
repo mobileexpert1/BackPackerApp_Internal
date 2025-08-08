@@ -1195,6 +1195,91 @@ nec turpis facilisis hendrerit</string>
             </objects>
             <point key="canvasLocation" x="5777.8625954198469" y="693.66197183098598"/>
         </scene>
+        <!--Speech To TextVC-->
+        <scene sceneID="WEl-5K-UNa">
+            <objects>
+                <viewController storyboardIdentifier="SpeechToTextVC" id="eVZ-0H-UkW" customClass="SpeechToTextVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Yma-OG-tCa">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xFR-Po-YB9">
+                                <rect key="frame" x="46.666666666666657" y="288.66666666666669" width="300" height="300.00000000000006"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Ev-zM-eA4">
+                                        <rect key="frame" x="245" y="15" width="40" height="40"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="40" id="gMh-2N-Qls"/>
+                                            <constraint firstAttribute="height" constant="40" id="kXg-jc-ium"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" image="Close"/>
+                                        <connections>
+                                            <action selector="action_Cancle:" destination="eVZ-0H-UkW" eventType="touchUpInside" id="YRK-KM-2yd"/>
+                                        </connections>
+                                    </button>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mic_selected" translatesAutoresizingMaskIntoConstraints="NO" id="NdC-5k-yGh">
+                                        <rect key="frame" x="90" y="90" width="120" height="120"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="120" id="0sP-0v-acd"/>
+                                            <constraint firstAttribute="height" constant="120" id="X4c-k3-IbN"/>
+                                        </constraints>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NGM-Cu-RDt">
+                                        <rect key="frame" x="50" y="229.99999999999994" width="200" height="50"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="OlP-Rs-gby"/>
+                                            <constraint firstAttribute="width" constant="200" id="z1B-kl-dQa"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Save">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="ActionSave:" destination="eVZ-0H-UkW" eventType="touchUpInside" id="7Tn-49-Wrd"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="NdC-5k-yGh" firstAttribute="centerX" secondItem="xFR-Po-YB9" secondAttribute="centerX" id="3gE-BE-0mP"/>
+                                    <constraint firstAttribute="height" constant="300" id="8w5-v7-YVO"/>
+                                    <constraint firstItem="NdC-5k-yGh" firstAttribute="centerY" secondItem="xFR-Po-YB9" secondAttribute="centerY" id="GlN-36-a7y"/>
+                                    <constraint firstAttribute="trailing" secondItem="1Ev-zM-eA4" secondAttribute="trailing" constant="15" id="QMq-k3-uSh"/>
+                                    <constraint firstItem="1Ev-zM-eA4" firstAttribute="top" secondItem="xFR-Po-YB9" secondAttribute="top" constant="15" id="jcq-Kr-Npp"/>
+                                    <constraint firstItem="NGM-Cu-RDt" firstAttribute="centerX" secondItem="NdC-5k-yGh" secondAttribute="centerX" id="jsu-Pf-eXU"/>
+                                    <constraint firstAttribute="width" constant="300" id="lEq-R8-ulm"/>
+                                    <constraint firstAttribute="bottom" secondItem="NGM-Cu-RDt" secondAttribute="bottom" constant="20" id="mNS-R6-p1R"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="CMl-J0-ZeK"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="xFR-Po-YB9" firstAttribute="centerY" secondItem="CMl-J0-ZeK" secondAttribute="centerY" id="UP4-2z-0iU"/>
+                            <constraint firstItem="xFR-Po-YB9" firstAttribute="centerX" secondItem="CMl-J0-ZeK" secondAttribute="centerX" id="VUz-SC-fwF"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="bt_Save" destination="NGM-Cu-RDt" id="YTN-Is-Vyj"/>
+                        <outlet property="imagVw" destination="NdC-5k-yGh" id="6gM-n3-hbA"/>
+                        <outlet property="main_Vw" destination="xFR-Po-YB9" id="QVr-XB-SMC"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rDP-uD-Cm8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="7790" y="278"/>
+        </scene>
         <!--Delete Pop UpVC-->
         <scene sceneID="BNn-He-nvs">
             <objects>
@@ -1682,6 +1767,7 @@ nec turpis facilisis hendrerit</string>
         <image name="Delete_icon" width="29.333333969116211" height="32.333332061767578"/>
         <image name="backward2" width="10.333333015441895" height="17.333333969116211"/>
         <image name="drpDown" width="29" height="20"/>
+        <image name="mic_selected" width="24" height="24"/>
         <image name="on" width="16.333333969116211" height="16.333333969116211"/>
         <image name="remove" width="6.6666665077209473" height="6.6666665077209473"/>
         <image name="uploadImga" width="18.666666030883789" height="18.666666030883789"/>
@@ -1698,7 +1784,7 @@ nec turpis facilisis hendrerit</string>
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

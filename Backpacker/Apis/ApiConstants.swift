@@ -30,8 +30,14 @@ struct ApiConstants {
         static let REFRESH_TOKEN = BASE_URL + "api/auth/refreshToken"
         static let ADD_HANGOUT = BASE_URL + "api/employer/hangout"
         static let ADD_ACCOMMODATION = BASE_URL + "api/employer/accommodation"
-        static func getBackpackersProfileURL(page: Int, perPage: Int) -> String {
-            return "\(BASE_URL)api/employer/backpackersProfile?page=\(page)&perPage=\(perPage)"
+        static func getBackpackersProfileURL(page: Int, perPage: Int,search: String? = nil, type: Int, appType : String) -> String {
+            var url = "\(BASE_URL)api/employer/backpackersProfile?page=\(page)&perPage=\(perPage)&type=\(type)&appType=\(appType)"
+            if let searchText = search?.trimmingCharacters(in: .whitespacesAndNewlines), !searchText.isEmpty {
+                let encodedSearch = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&search=\(encodedSearch)"
+            }
+            
+            return url
         }
         static let ADD_NEWJOB = BASE_URL + "api/employer/job"
         static let SWITCH_ROLE = BASE_URL + "api/employer/roleSwitch"

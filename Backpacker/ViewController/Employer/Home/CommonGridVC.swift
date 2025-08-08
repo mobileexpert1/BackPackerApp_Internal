@@ -47,17 +47,20 @@ class CommonGridVC: UIViewController {
         // Register the collection view cell
         self.setupPullToRefresh()
         self.setUpUI()
+        self.getListOfAll()
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.getListOfAll()
+        isComeFromPullTorefresh = false
+        
     }
     func setUpUI(){
         btn_searchCross.isHidden = true
         self.lbl_nodata_Found.isHidden = true
         self.lbl_nodata_Found.text = "No Jobs Found"
+        self.lbl_nodata_Found.isHidden = true
         let nib2 = UINib(nibName: "SkeltonCVC", bundle: nil)
                self.collVw.register(nib2, forCellWithReuseIdentifier: "SkeltonCVC")
         collVw.isSkeletonable = true
@@ -108,7 +111,7 @@ class CommonGridVC: UIViewController {
             lastSearchedText = ""
             page = 1
         txtFldSearch.resignFirstResponder()
-
+        self.btn_searchCross.isHidden = true
             getListOfAll()
     }
     
@@ -377,7 +380,10 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                 if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
                     isLoadingMoreData = true
                     page += 1
-                    getListOfAll()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 ){
+                        self.getListOfAll()
+                    }
+                   
                 }
             }
           

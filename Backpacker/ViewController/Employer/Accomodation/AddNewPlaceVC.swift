@@ -125,20 +125,91 @@ class AddNewPlaceVC: UIViewController {
     
   
     @IBAction func action_Name_Mic(_ sender: UIButton) {
-        handleMicTap(for: sender, textField: txtFldName, textView: nil)
+      //  handleMicTap(for: sender, textField: txtFldName, textView: nil) //Prevois btn functionality
+        
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "SpeechToTextVC") as? SpeechToTextVC {
+            vc.currentActiveTextVw = nil
+            vc.currentActiveTextField = txtFldName
+            vc.onSaveText = { [weak self] text in
+                let incomingText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+
+                if let existingText = self?.txtFldName.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                   !existingText.isEmpty {
+                    self?.txtFldName.text = existingText + " " + incomingText
+                } else {
+                    self?.txtFldName.text = incomingText
+                }
+                DispatchQueue.main.async {
+                    self?.txtFldName.resignFirstResponder()
+                    self?.txtFld_Address.resignFirstResponder()
+                    self?.txtVw_Description.resignFirstResponder()
+                }
+                
+               
+            }
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true, completion: nil)
+        }
     }
     
     
     
     @IBAction func action_address_mic(_ sender: UIButton) {
-        handleMicTap(for: sender, textField: txtFld_Address, textView: nil)
+      //  handleMicTap(for: sender, textField: txtFld_Address, textView: nil)
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "SpeechToTextVC") as? SpeechToTextVC {
+            vc.currentActiveTextVw = nil
+            vc.currentActiveTextField = txtFld_Address
+            vc.onSaveText = { [weak self] text in
+                if let existingText = self?.txtFld_Address.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                   !existingText.isEmpty {
+                    let newText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+                    self?.txtFld_Address.text = existingText + " " + newText
+                } else {
+                    self?.txtFld_Address.text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+                
+                DispatchQueue.main.async {
+                    self?.txtFldName.resignFirstResponder()
+                    self?.txtFld_Address.resignFirstResponder()
+                    self?.txtVw_Description.resignFirstResponder()
+                }
+                
+               
+               }
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true, completion: nil)
+        }
     }
     
     
     
     @IBAction func action_descritpion_mic(_ sender: UIButton) {
-        handleMicTap(for: sender, textField: nil, textView: txtVw_Description)
-        
+       // handleMicTap(for: sender, textField: nil, textView: txtVw_Description)
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let vc = storyboard.instantiateViewController(withIdentifier: "SpeechToTextVC") as? SpeechToTextVC {
+            vc.currentActiveTextVw = txtVw_Description
+            vc.currentActiveTextField = nil
+            vc.onSaveText = { [weak self] text in
+                if let existingText = self?.txtVw_Description.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                   !existingText.isEmpty {
+                    let newText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+                    self?.txtVw_Description.text = existingText + " " + newText
+                } else {
+                    self?.txtVw_Description.text = text.trimmingCharacters(in: .whitespacesAndNewlines)
+                }
+                DispatchQueue.main.async {
+                    self?.txtFldName.resignFirstResponder()
+                    self?.txtFld_Address.resignFirstResponder()
+                    self?.txtVw_Description.resignFirstResponder()
+                }
+                
+               
+               }
+            vc.modalPresentationStyle = .overFullScreen
+            self.present(vc, animated: true, completion: nil)
+        }
     }
    
     @IBAction func setLocation(_ sender: Any) {

@@ -705,7 +705,7 @@ Day Options Available</string>
                                                         <rect key="frame" x="0.0" y="30.333333333333343" width="353" height="50"/>
                                                         <subviews>
                                                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MFs-vB-tl6">
-                                                                <rect key="frame" x="12" y="2" width="4" height="46"/>
+                                                                <rect key="frame" x="12" y="2" width="291" height="46"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                 <textInputTraits key="textInputTraits"/>
                                                             </textField>
@@ -732,6 +732,7 @@ Day Options Available</string>
                                                             <constraint firstAttribute="bottom" secondItem="MFs-vB-tl6" secondAttribute="bottom" constant="2" id="Bsx-SZ-IHO"/>
                                                             <constraint firstItem="zOb-rQ-qvp" firstAttribute="top" secondItem="zBj-wL-aSG" secondAttribute="top" id="JvK-iY-84u"/>
                                                             <constraint firstItem="MFs-vB-tl6" firstAttribute="leading" secondItem="zBj-wL-aSG" secondAttribute="leading" constant="12" id="bnD-jB-PFV"/>
+                                                            <constraint firstItem="zOb-rQ-qvp" firstAttribute="leading" secondItem="MFs-vB-tl6" secondAttribute="trailing" constant="10" id="rza-HH-PL0"/>
                                                             <constraint firstItem="zOb-rQ-qvp" firstAttribute="centerY" secondItem="MFs-vB-tl6" secondAttribute="centerY" id="vGK-Do-SNT"/>
                                                         </constraints>
                                                         <userDefinedRuntimeAttributes>

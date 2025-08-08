@@ -13,9 +13,27 @@ class JobVM {
     func getBackpackersList<T: Codable>(
         page: Int,
         perPage: Int,
+        search: String,
+        type: Int,
+        isComeFromEmployer : Bool = false, // Manily for Backpacker app
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
     ) {
-        let url = ApiConstants.API.getBackpackersProfileURL(page: page, perPage: perPage)
+        var appType = String()
+        var typeOf = Int()
+#if Backapacker
+        //Type 1 for backpacke
+        //Type 2 for emplloyerr
+        appType = "backpacker"
+        if isComeFromEmployer == true{
+            typeOf = 2
+        }else{
+            typeOf = 1
+        }
+        #else
+        appType = "employer"
+        typeOf = 1
+#endif
+        let url = ApiConstants.API.getBackpackersProfileURL(page: page, perPage: perPage,search: search,type: typeOf,appType: appType)
 
         ServiceManager.sharedInstance.requestApi(
             url,

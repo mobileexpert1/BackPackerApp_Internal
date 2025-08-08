@@ -6,27 +6,24 @@
 //
 
 import Foundation
-
-import Foundation
-
 // MARK: - Root Response
 struct BackpackerListResponse: Codable {
     let success: Bool
     let message: String
-    let data: BackpackerData?
+    let data: BackpackersData?
     let errors: [String]?
 }
 
-// MARK: - Data Object
-struct BackpackerData: Codable {
+// MARK: - Data
+struct BackpackersData: Codable {
     let backpackersList: [Backpacker]
+    let total: Int
     let page: Int
     let perPage: Int
-    let total: Int
     let totalPages: Int
 }
 
-// MARK: - Backpacker Entry
+// MARK: - Backpacker
 struct Backpacker: Codable {
     let id: String
     let name: String
@@ -34,14 +31,11 @@ struct Backpacker: Codable {
     let countryCode: String
     let countryName: String
     let mobileNumber: String
+    let jobsCount: Int
+    let rating: Int
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
-        case name
-        case email
-        case countryCode
-        case countryName
-        case mobileNumber
+        case name, email, countryCode, countryName, mobileNumber, jobsCount, rating
     }
 }
-//MARK: - Add New Job
