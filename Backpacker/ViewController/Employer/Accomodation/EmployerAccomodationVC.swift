@@ -171,7 +171,7 @@ class EmployerAccomodationVC: UIViewController {
         vc.initialSortBy = self.sortByPrice     // e.g. "asc" or "desc"
         vc.initialRadius = self.radius != nil ? String(self.radius!) : nil
         vc.onApplyFilters = { [weak self] facilities, sortBy, radius in
-#if Backpacker
+#if Backapacker
             
             print("Facilities: \(facilities ?? "-")")
             print("Sort by: \(sortBy ?? "-")")
@@ -191,7 +191,7 @@ class EmployerAccomodationVC: UIViewController {
         
     }
     @IBAction func action_ClearTxtFld(_ sender: Any) {
-#if Backpacker
+#if Backapacker
             
         self.isComFromSearch = false
         txtFld_Search.text = ""

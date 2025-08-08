@@ -479,7 +479,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 return CGSize(width: (width / 2) - 12, height: 180)
             }
         case  .hangouts:
-                return CGSize(width: (width / 2) - 12, height: 205)
+                return CGSize(width: (width / 2) - 12, height: 210)
         case .jobs :
             if isComeFromJob == false{
                 return CGSize(width: (width / 2) - 12, height: 150)

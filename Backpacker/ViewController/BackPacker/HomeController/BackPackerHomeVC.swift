@@ -432,7 +432,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 case .accommodations:
                     return 230
                 case  .hangouts:
-                    return 205
+                    return 210
                 case .jobs :
                     return 180
                 }
