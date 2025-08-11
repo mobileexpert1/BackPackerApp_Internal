@@ -833,7 +833,14 @@ extension ServiceManager {
                             print("❌ Decoding Error:", error.localizedDescription)
                             completion(.failure(.jsonDecodingFailure, statusCode: statusCode))
                         }
-
+                    case 400:
+                        do {
+                            let decoded = try JSONDecoder().decode(T.self, from: data)
+                            completion(.success(decoded, statusCode: statusCode))
+                        } catch {
+                            print("❌ Decoding Error (400):", error.localizedDescription)
+                            completion(.failure(.jsonDecodingFailure, statusCode: statusCode))
+                        }
                     case 401:
                         // Access token expired — refresh token flow
                         completion(.failure(.unauthorized, statusCode: statusCode))
