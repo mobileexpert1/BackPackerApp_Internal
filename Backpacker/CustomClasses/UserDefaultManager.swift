@@ -16,6 +16,11 @@ class UserDefaultsManager {
         static let refreshToken = "refreshToken"
         static let userId = "userId"
         static let isLoggedIn = "isLoggedIn"
+        static let HirefcmToken = "HirefcmToken"
+        static let HirebearerToken = "HirebearerToken"
+        static let HirerefreshToken = "HirerefreshToken"
+        static let HireuserId = "HireuserId"
+        static let HIreisLoggedIn = "HireisLoggedIn"
     }
 
     // MARK: - Shared Instance

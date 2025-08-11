@@ -334,7 +334,7 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                 return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 225) // Adjust height based on content
             }
         }else{
-            return CGSize(width: (width / 2) - 4, height: 200)
+            return CGSize(width: (width / 2) - 4, height: 195)
         }
     }
 

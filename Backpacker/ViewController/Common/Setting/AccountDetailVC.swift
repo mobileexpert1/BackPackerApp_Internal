@@ -65,27 +65,26 @@ class AccountDetailVC: UIViewController {
         self.tblVw_Visa.dataSource = self
         self.btn_Edit.tag = 0
         handleBottomBtn()
-        if role == "3" || role == "4" ||  role == "2"{
-            self.visaTypeHeight.constant = 0.0
-            self.visaVw.isHidden = true
-            self.btn_drpdwn.tag = 0
-            self.manageHeightOfTable()
-            self.btn_drpdwn.isHidden = true
-            if role == "2" {
-                self.lbl_MainHeader.isHidden = true
-                self.btn_Edit.isHidden = true
-                self.btn_back.isHidden = true
-                self.btn_back.setImage(UIImage(named: ""), for: .normal)
-                self.btn_backHeight.constant = 0.0
-                self.btn_editHeight.constant  = 0.0
-                self.btn_Edit.tag = 1
-                self.handleBottomBtn()
-            }
-        }
-#if Backapacker
-        self.getProfileInfo()
         
-#endif
+        //MARK: - Unhide for 
+//        if role == "3" || role == "4" ||  role == "2"{
+//            self.visaTypeHeight.constant = 0.0
+//            self.visaVw.isHidden = true
+//            self.btn_drpdwn.tag = 0
+//            self.manageHeightOfTable()
+//            self.btn_drpdwn.isHidden = true
+//            if role == "2" {
+//                self.lbl_MainHeader.isHidden = true
+//                self.btn_Edit.isHidden = true
+//                self.btn_back.isHidden = true
+//                self.btn_back.setImage(UIImage(named: ""), for: .normal)
+//                self.btn_backHeight.constant = 0.0
+//                self.btn_editHeight.constant  = 0.0
+//                self.btn_Edit.tag = 1
+//                self.handleBottomBtn()
+//            }
+//        }
+        self.getProfileInfo()
     }
     
     private func setUpFonts(){
@@ -99,7 +98,7 @@ class AccountDetailVC: UIViewController {
         self.NameVw.setPlaceholder("Name")
         self.NameVw.setTitleLabel("Name")
         self.NameVw.lblErrorVisibility(val: true)
-        self.NameVw.isUserInteractionEnabled = false
+        self.NameVw.txtFld.isUserInteractionEnabled = false
         self.phoneNumberVw.setPlaceholder("Phone Number")
         self.phoneNumberVw.setTitleLabel("Phone Number")
         self.phoneNumberVw.lblErrorVisibility(val: true)
@@ -169,11 +168,12 @@ class AccountDetailVC: UIViewController {
         if self.btn_Edit.tag == 0{
             self.btn_Edit.tag = 1
             self.isComeFromUpdate = true
-            self.NameVw.txtFld.isUserInteractionEnabled = true
-            self.EmailVw.txtFld.isUserInteractionEnabled = true
-            self.stateVw.txtFld.isUserInteractionEnabled = true
-            self.CountryVw.txtFld.isUserInteractionEnabled = true
-            self.AreaVW.txtFld.isUserInteractionEnabled = true
+            DispatchQueue.main.async {
+                self.NameVw.txtFld.isUserInteractionEnabled = true
+                self.EmailVw.txtFld.isUserInteractionEnabled = true
+                self.stateVw.txtFld.isUserInteractionEnabled = true
+                self.AreaVW.txtFld.isUserInteractionEnabled = true
+            }
         }else{
             self.btn_Edit.tag = 0
             self.isComeFromUpdate = false

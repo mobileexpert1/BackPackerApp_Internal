@@ -280,7 +280,7 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
       
-        return 190
+        return 185
     }
     
     private func handleHeaderButtonTap(in section: Int) {

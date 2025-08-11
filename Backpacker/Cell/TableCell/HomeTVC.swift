@@ -401,6 +401,20 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     cell.lblAmount.text = "$\(amnt)"
                 }
                 cell.lbl_SubTitle.text = jobList?[indexPath.item].description ?? "No Data"
+                if let jobImage = jobList?[indexPath.item] {
+                    let imageURLString: String
+                    if jobImage.image.hasPrefix("http") {
+                        imageURLString = jobImage.image
+                    } else {
+                        imageURLString = "http://192.168.11.4:3001/assets/\(jobImage.image)"
+                    }
+                    
+                    cell.imgVw.sd_setImage(
+                        with: URL(string: imageURLString),
+                        placeholderImage: UIImage(named: "Profile")
+                    )
+                }
+
                 cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
                 return cell
             }
@@ -482,12 +496,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 return CGSize(width: (width / 2) - 12, height: 210)
         case .jobs :
             if isComeFromJob == false{
-                return CGSize(width: (width / 2) - 12, height: 150)
+                return CGSize(width: (width / 2) - 12, height: 160)
             }else{
-                return CGSize(width: (width / 2) - 12, height: 180)
+                return CGSize(width: (width / 2) - 12, height: 195)
             }
         case .none:
-            return CGSize(width: (width / 2) - 12, height: 190)
+            return CGSize(width: (width / 2) - 12, height: 185)
         }
   
 #endif
