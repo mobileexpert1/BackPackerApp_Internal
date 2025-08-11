@@ -35,8 +35,16 @@ class HomeJobCVC: UICollectionViewCell {
            setupUI()
         tap_Button.addTarget(self, action: #selector(tapButtonTapped), for: .touchUpInside)
         
-
+     
        }
+    
+    func SetUpHeight(isHeightShow : Bool = false){
+        if isHeightShow == false{
+            self.vw_Status_Height.constant = 0.0
+        }else{
+            self.vw_Status_Height.constant = 20.0
+        }
+    }
     func setUpUI(iscomeFromAccept : Bool = false,isComeForHiredetailpagee : Bool = false){
 #if BackpackerHire
         

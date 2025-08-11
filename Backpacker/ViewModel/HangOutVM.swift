@@ -19,6 +19,7 @@ class HangoutViewModel {
         locationText: String,
         description: String,
         image: Data?,
+        imagesArrayData : [Data],
         completion: @escaping (Bool, String?, Int?) -> Void
     ) {
         guard let token = UserDefaultsManager.shared.bearerToken, !token.isEmpty else {
@@ -37,24 +38,23 @@ class HangoutViewModel {
             "description": description
         ]
         let headers = ServiceManager.sharedInstance.getHeaders()
-        ServiceManager.sharedInstance.requestMultipartAPI(
+        ServiceManager.sharedInstance.requestMultipartMultiAPI(
             url,
-            image: image,
+            images: imagesArrayData,
             method: .post,
             parameters: params,
             headers: headers
-        ) { (result:  ApiResult<ApiResponseModel<HangoutResponseData>, APIError>) in
+        ) { (result: ApiResult<ApiResponseModel<HangoutResponseData>, APIError>) in
             switch result {
             case .success(let data, let statusCode):
-                print("Upload success")
+                print("Hangout uploaded successfully.")
                 completion(true, data?.message ?? "Hangout Added", statusCode)
 
             case .failure(let error, let statusCode):
-                print("Upload failed:", error.localizedDescription)
+                print("Hangiut upload failed:", error.localizedDescription)
                 completion(false, error.localizedDescription, statusCode)
             }
         }
-
     }
 }
 

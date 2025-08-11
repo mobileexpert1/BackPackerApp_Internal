@@ -188,11 +188,11 @@ extension LoginVC {
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                                 LoaderManager.shared.hide()
                                 self.push(OtpVC.self, fromStoryboard: "Main", identifier: "OtpVC") { vc in
-                                    vc.phoneNumbaer = self.txtFld_PhoneNumber.text ?? ""
+                                   // vc.phoneNumbaer = self.txtFld_PhoneNumber.text ?? ""
                                     vc.userId = UserDefaultsManager.shared.userId ?? ""
                                 }
                             }
-                            self.txtFld_PhoneNumber.text = ""
+                          //  self.txtFld_PhoneNumber.text = ""
                         } else {
                         }
                     }

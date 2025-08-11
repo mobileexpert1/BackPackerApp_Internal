@@ -352,6 +352,25 @@ extension AddNewJobVC : UITextFieldDelegate,UITextViewDelegate{
     func textFieldDidBeginEditing(_ textField: UITextField) {
         activeTextField = textField
     }
+    
+    
+    func textField(_ textField: UITextField,
+                   shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
+        if textField == txtFld_Rate {
+            // Current text after the change
+            let currentText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
+            
+            // Always ensure it starts with "$"
+            if !currentText.hasPrefix("$") && !currentText.isEmpty {
+                textField.text = "$" + currentText.replacingOccurrences(of: "$", with: "")
+                return false // we manually updated text
+            }
+        }
+        return true
+    }
+
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder() // hide keyboard
         return true
@@ -690,7 +709,21 @@ extension AddNewJobVC: CommonSearchDelegate {
                let jsonString = String(data: jsonData, encoding: .utf8) {
                 self.selectedBackPackerJSONString = jsonString
             }
-        self.txtFld_Backpacker.text = "John Doe" //backpacker.name
+        if backpacker.count == 1 {
+            let nameOrPhone = backpacker.first?.name.isEmpty == false
+                ? backpacker.first?.name
+            : backpacker.first?.mobileNumber
+            self.txtFld_Backpacker.text = nameOrPhone
+        }
+        else if backpacker.count > 1 {
+            self.txtFld_Backpacker.text = backpacker.map {
+                $0.name.isEmpty ? $0.mobileNumber : $0.name
+            }.joined(separator: ", ")
+        }
+        else {
+            self.txtFld_Backpacker.text = ""
+        }
+
     }
     func getSelectedBackpackersJSONString() -> String? {
         do {
@@ -838,7 +871,11 @@ extension AddNewJobVC {
     ) {
         let image = self.main_ImgVw.image?.jpegData(compressionQuality: 0.8)
         LoaderManager.shared.show()
-        viewModel.uploadNewJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: price, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, selectedBackpackerJSONString: selectedBackPackerJSONString ?? "", image: image) { success, message ,statusCode in
+        let priceWithoutSymbol = price
+            .replacingOccurrences(of: "$", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        viewModel.uploadNewJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: priceWithoutSymbol, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, selectedBackpackerJSONString: selectedBackPackerJSONString ?? "", image: image) { success, message ,statusCode in
             
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()

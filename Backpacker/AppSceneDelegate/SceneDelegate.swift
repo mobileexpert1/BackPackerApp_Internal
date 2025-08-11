@@ -106,6 +106,9 @@ extension SceneDelegate {
               let delegate = scene.delegate as? SceneDelegate,
               let window = delegate.window else { return }
 
+        
+        UserDefaultsManager.shared.bearerToken = nil
+        UserDefaultsManager.shared.refreshToken = nil
         window.rootViewController = vc
         window.makeKeyAndVisible()
     }

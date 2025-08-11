@@ -114,11 +114,19 @@ class CompanyDetailVC: UIViewController {
             self.vw_Table_Height.constant = 190
             self.tbl_Height.constant = 176.0
         }
-        
+        self.handleRemoveBtnVisibility()
     }
     
     func handleRemoveBtnVisibility(){
-        
+        if  self.btn_Industry.tag  == 0{
+            self.MainVw_Industries.layer.cornerRadius = 0.0
+            self.MainVw_Industries.layer.borderColor = UIColor.clear.cgColor
+            self.MainVw_Industries.layer.borderWidth = 0.0
+        }else{
+            self.MainVw_Industries.layer.cornerRadius = 10.0
+            self.MainVw_Industries.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+            self.MainVw_Industries.layer.borderWidth = 1.0
+        }
     }
 }
 

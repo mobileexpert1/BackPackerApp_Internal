@@ -468,7 +468,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         switch sectionType {
         case .banner:
             if isComeFromJob == false{
-                return CGSize(width: (width / 2) - 12, height: 205)
+                return CGSize(width: (width / 2) - 12, height: 215)
             }else{
                 return CGSize(width: (width / 2) - 12, height: 180)
             }

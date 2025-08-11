@@ -99,7 +99,7 @@ class AccountDetailVC: UIViewController {
         self.NameVw.setPlaceholder("Name")
         self.NameVw.setTitleLabel("Name")
         self.NameVw.lblErrorVisibility(val: true)
-        
+        self.NameVw.isUserInteractionEnabled = false
         self.phoneNumberVw.setPlaceholder("Phone Number")
         self.phoneNumberVw.setTitleLabel("Phone Number")
         self.phoneNumberVw.lblErrorVisibility(val: true)
@@ -107,11 +107,11 @@ class AccountDetailVC: UIViewController {
         self.EmailVw.setPlaceholder("Email")
         self.EmailVw.setTitleLabel("Email")
         self.EmailVw.lblErrorVisibility(val: true)
-        
+        self.EmailVw.txtFld.isUserInteractionEnabled = false
         self.stateVw.setPlaceholder("State")
         self.stateVw.setTitleLabel("State")
         self.stateVw.lblErrorVisibility(val: true)
-        
+        self.stateVw.txtFld.isUserInteractionEnabled = false
         self.CountryVw.setPlaceholder("Country")
         self.CountryVw.setTitleLabel("Country")
         self.CountryVw.lblErrorVisibility(val: true)
@@ -119,6 +119,8 @@ class AccountDetailVC: UIViewController {
         self.AreaVW.setPlaceholder("Area")
         self.AreaVW.setTitleLabel("Area")
         self.AreaVW.lblErrorVisibility(val: true)
+        self.AreaVW.txtFld.isUserInteractionEnabled = false
+        self.AreaVW.txtFld.keyboardType = .phonePad
     }
     
     private func setUpButtons(){
@@ -137,13 +139,14 @@ class AccountDetailVC: UIViewController {
         self.btn_Edit.titleLabel?.font = FontManager.inter(.medium, size: 16.0)
     }
     @IBAction func action_VisaDrpDwn(_ sender: Any) {
-        
-        if btn_drpdwn.tag == 0{
-            self.btn_drpdwn.tag = 1
-        }else{
-            self.btn_drpdwn.tag = 0
+        if btn_Edit.tag == 1 {
+            if btn_drpdwn.tag == 0{
+                self.btn_drpdwn.tag = 1
+            }else{
+                self.btn_drpdwn.tag = 0
+            }
+            self.manageHeightOfTable()
         }
-        self.manageHeightOfTable()
     }
     func manageHeightOfTable(){
         if self.btn_drpdwn.tag == 0{
@@ -166,6 +169,11 @@ class AccountDetailVC: UIViewController {
         if self.btn_Edit.tag == 0{
             self.btn_Edit.tag = 1
             self.isComeFromUpdate = true
+            self.NameVw.txtFld.isUserInteractionEnabled = true
+            self.EmailVw.txtFld.isUserInteractionEnabled = true
+            self.stateVw.txtFld.isUserInteractionEnabled = true
+            self.CountryVw.txtFld.isUserInteractionEnabled = true
+            self.AreaVW.txtFld.isUserInteractionEnabled = true
         }else{
             self.btn_Edit.tag = 0
             self.isComeFromUpdate = false

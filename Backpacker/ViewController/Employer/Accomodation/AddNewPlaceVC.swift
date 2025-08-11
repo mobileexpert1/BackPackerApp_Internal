@@ -38,7 +38,7 @@ class AddNewPlaceVC: UIViewController {
     var latitude: Double?
     var longitude: Double?
     var selectedImages: [UIImage] = []
-    
+    var selectedImagesData: [Data] = []
     //Mic btn OutLet
     
     @IBOutlet weak var btn_Name_mic: UIButton!
@@ -268,6 +268,14 @@ class AddNewPlaceVC: UIViewController {
         let desc = txtVw_Description.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let firstImage = self.selectedImages.first
        let imageData = firstImage?.jpegData(compressionQuality: 0.8)
+        
+        for image in selectedImages {
+            guard let data = image.jpegData(compressionQuality: 0.8) else {
+                // Skip this image if conversion fails
+                continue
+            }
+            self.selectedImagesData.append(data)
+        }
           guard validateHangoutFields(
               name: name,
               address: address,
@@ -278,7 +286,7 @@ class AddNewPlaceVC: UIViewController {
           ) else {
               return
           }
-        self.submitHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData)
+        self.submitHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData)
     }
     
 }
@@ -343,7 +351,7 @@ extension AddNewPlaceVC : SetLocationDelegate{
 
 
 extension AddNewPlaceVC{
-    func submitHangout(name: String, address: String, lat: Double, long: Double, locationText: String, description: String, image: Data?) {
+    func submitHangout(name: String, address: String, lat: Double, long: Double, locationText: String, description: String, image: Data?,imageArrayData : [Data]) {
         LoaderManager.shared.show()
             viewModel.uploadHangout(
                 name: name,
@@ -352,7 +360,7 @@ extension AddNewPlaceVC{
                        long: long,
                        locationText: locationText,
                        description: description,
-                       image: image
+                image: image, imagesArrayData: imageArrayData
             ) { success, message ,statusCode in
                 guard let statusCode = statusCode else {
                     LoaderManager.shared.hide()
@@ -377,7 +385,7 @@ extension AddNewPlaceVC{
                     case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                self.submitHangout(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, image: image) // Retry
+                                self.submitHangout(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, image: image, imageArrayData: self.selectedImagesData) // Retry
                             } else {
                                 NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                             }

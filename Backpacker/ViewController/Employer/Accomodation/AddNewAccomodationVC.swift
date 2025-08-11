@@ -268,7 +268,10 @@ class AddNewAccomodationVC: UIViewController {
         )
 
         if isValid {
-            self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: trimmedPrice, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, on: self)
+            let priceWithoutSymbol = trimmedPrice
+                .replacingOccurrences(of: "$", with: "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: priceWithoutSymbol, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, on: self)
         }
        
 
@@ -448,11 +451,26 @@ extension AddNewAccomodationVC : UITableViewDelegate,UITableViewDataSource{
    
 }
 extension AddNewAccomodationVC: UITextFieldDelegate, UITextViewDelegate {
+    func textField(_ textField: UITextField,
+                   shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
+        if textField == txtFldPrice {
+            // Current text after the change
+            let currentText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
+            
+            // Always ensure it starts with "$"
+            if !currentText.hasPrefix("$") && !currentText.isEmpty {
+                textField.text = "$" + currentText.replacingOccurrences(of: "$", with: "")
+                return false // we manually updated text
+            }
+        }
+        return true
+    }
 
     // Dismiss keyboard when Return is pressed in UITextField
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
+          textField.resignFirstResponder()
+          return true
     }
 
     // Dismiss keyboard when Return is pressed in UITextView
@@ -461,6 +479,7 @@ extension AddNewAccomodationVC: UITextFieldDelegate, UITextViewDelegate {
             textView.resignFirstResponder()
             return false
         }
+        
         return true
     }
 }

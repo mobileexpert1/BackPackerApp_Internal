@@ -260,15 +260,18 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                     cell.isComeForHiredetailpage = true
                     cell.lbl_jobStatus.text = ""
                     cell.statusVw.isHidden = true
+                    cell.SetUpHeight(isHeightShow: false)
                 } else if isComeFromHomeJob == true{
                     cell.isComeForHiredetailpage = true
                     cell.lbl_jobStatus.text = "Declined"
                     cell.statusVw.isHidden = false
                     cell.statusVw.backgroundColor = UIColor.red
+                    cell.SetUpHeight(isHeightShow: true)
                 }else{//Current job
                     cell.lbl_jobStatus.text = "Accepted"
                     cell.statusVw.isHidden = false
                     cell.statusVw.backgroundColor = UIColor(hex: "#00A925")
+                    cell.SetUpHeight(isHeightShow: true)
                 }
                  
                 
@@ -331,7 +334,7 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                 return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 225) // Adjust height based on content
             }
         }else{
-            return CGSize(width: (width / 2) - 4, height: 190)
+            return CGSize(width: (width / 2) - 4, height: 200)
         }
     }
 
