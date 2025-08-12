@@ -109,7 +109,7 @@ extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
             cell.configure(with: sectionItems,section: indexPath.section)
             cell.isComeFromJob = true
             cell.isComeForHireDetailPage = false
-            cell.onTap = { [weak self] in
+            cell.onTap = { [weak self] val  in
                     guard let self = self else { return }
                     print("Cell tapped at index: \(indexPath.item)")
                     // Navigate or perform any action
@@ -128,7 +128,7 @@ extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
             cell.isComeFromJob = true
             cell.isComeFromJobListSeeAll = true
             cell.isComeForHireDetailPage = false
-            cell.onTap = { [weak self] in
+            cell.onTap = { [weak self] val in
                     guard let self = self else { return }
                     print("Cell tapped at index: \(indexPath.item)")
                     // Navigate or perform any action
@@ -146,7 +146,7 @@ extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
             cell.configure(with: sectionItems,section: indexPath.section)
             cell.isComeFromJob = true
             cell.isComeForHireDetailPage = false
-            cell.onTap = { [weak self] in
+            cell.onTap = { [weak self] val in
                     guard let self = self else { return }
                     print("Cell tapped at index: \(indexPath.item)")
                     // Navigate or perform any action

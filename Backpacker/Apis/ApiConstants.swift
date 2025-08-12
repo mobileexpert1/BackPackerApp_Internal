@@ -15,10 +15,10 @@ struct ApiConstants {
         static let DEBUG_MODE_ON = true
         private static let BASE_URL : String = {
             if DEBUG_MODE_ON {
-                return "http://192.168.11.4:3001/"
+                return "http://192.168.11.4:3000/"
             }
             else {
-                return "http://192.168.11.4:3001/"
+                return "http://192.168.11.4:3000/"
             }
         }()
         
@@ -95,8 +95,33 @@ struct ApiConstants {
             }
             return url
         }
-
-
+        static func getBACKPACKER_HANGOUT_URL(
+            page: Int,
+            perPage: Int,
+            lat: Double,
+            long: Double,
+            radius: Int? = nil,
+            search: String? = nil
+        ) -> String {
+            var url = "\(BASE_URL)api/backpackers/hangout?page=\(page)&perPage=\(perPage)&lat=\(lat)&long=\(long)"
+            if let radius = radius {
+                url += "&radius=\(radius)"
+            }
+            if let searchText = search?.trimmingCharacters(in: .whitespacesAndNewlines), !searchText.isEmpty {
+                let encodedSearch = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&search=\(encodedSearch)"
+            }
+            return url
+        }
+        
+        static func getBACKPACKER_JOBDETAIL(jobID:String?) -> String {
+            var url = "\(BASE_URL)api/backpackers/jobs/"
+            if let jobID = jobID {
+                url += "\(jobID)"
+            }
+            return url
+        }
+        
     }
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"

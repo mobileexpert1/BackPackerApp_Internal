@@ -30,7 +30,7 @@ class BackPackerHomeVC: UIViewController {
     private let viewModelAuth = LogInVM()
     private var homeData: BackpackerHomeResponseModel?
     var isLoading: Bool = true // true while loading, false once data is ready
-
+    var jobId = String()
     var activeSections: [SectionType] {
         var sections: [SectionType] = []
         if let banners = homeData?.banners, !banners.isEmpty {
@@ -279,9 +279,16 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 cell.isComeFromJob = true
                 cell.isComeForHireDetailPage = false
                 // Handle final callback here
-                cell.onAddAccommodation = { [weak self] in
-                    
-                  
+//                cell.onAddAccommodation = { [weak self] in
+//                    
+//                  
+//                }
+                cell.onTap  = { [weak self] val in
+                    if let id =  self?.homeData?.jobslist[val].id {
+                        print("Cell tapped at index: \(id)")
+                        self?.jobId = id
+                        self?.navigateToDescriptionVC()
+                    }
                 }
                 cell.jobList = homeData?.jobslist  ?? []
                 cell.activeSections = activeSections
@@ -439,7 +446,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                
             }
             else{
-                return 180
+                return 195
             }
             
         }
@@ -631,6 +638,14 @@ extension  BackPackerHomeVC: SkeletonTableViewDataSource {
         let vc = storyboard.instantiateViewController(withIdentifier: "ForceUpdateVC") as! ForceUpdateVC
         vc.modalPresentationStyle = .overFullScreen
         self.present(vc, animated: true)
+    }
+    private func navigateToDescriptionVC(){
+        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+           if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
+               jobDescriptionVC.JobId = self.jobId
+               // Optional: pass selected job title
+               self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+           }
     }
 }
 

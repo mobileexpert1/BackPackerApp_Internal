@@ -14,7 +14,7 @@ class HomeTVC: UITableViewCell {
     var tableSection: Int = 0
     var onAddAccommodation: (() -> Void)?
     var isComeFromJob : Bool = false
-    var onTap: (() -> Void)?
+    var onTap: ((Int) -> Void)?
     var onTapAcceptJob: ((Int) -> Void)?
    // var isComeForHireDetailPage : Bool = false
     let role = UserDefaults.standard.string(forKey: "UserRoleType")
@@ -320,7 +320,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                               guard let self = self else { return }
                               print("Cell tapped at index: \(indexPath.item)")
                               // Navigate or perform any action
-                            self.onTap?()
+                            self.onTap?(indexPath.item)
                           }
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
@@ -341,7 +341,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                               guard let self = self else { return }
                               print("Cell tapped at index: \(indexPath.item)")
                               // Navigate or perform any action
-                            self.onTap?()
+                            self.onTap?(indexPath.item)
                           }
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
@@ -361,7 +361,8 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                               guard let self = self else { return }
                               print("Cell tapped at index: \(indexPath.item)")
                               // Navigate or perform any action
-                            self.onTap?()
+                           
+                            self.onTap?(indexPath.item)
                           }
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
@@ -392,7 +393,8 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                       guard let self = self else { return }
                       print("Cell tapped at index: \(indexPath.item)")
                       // Navigate or perform any action
-                    self.onTap?()
+                    self.onTap?(indexPath.item)
+                  //  self.onTap?(<#Int#>)
                   }
                 // Assign item to your label/image inside the cell
                 // cell.titleLabel.text = item
@@ -427,7 +429,16 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 #if Backapacker
-        
+//        if tableSection == 0 {
+//            if indexPath.item == 0{
+//                self.onTapAcceptJob?(indexPath.row)
+//            }else if indexPath.item == 1{
+//                self.onTapAcceptJob?(1)
+//            }else if indexPath.item == 2{
+//                self.onTapAcceptJob?(2)
+//            }
+//        }
+        self.onTapAcceptJob?(indexPath.row)
         #else
         if tableSection == 0 {
             if indexPath.item == 0{

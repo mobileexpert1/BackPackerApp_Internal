@@ -88,7 +88,7 @@ extension BackPackerDetailVC: UITableViewDelegate, UITableViewDataSource {
         cell.isComeForHireDetailPage  = true
         //cell.isComeFromJob = false
         cell.configure(with: sectionItems,section: indexPath.section)
-        cell.onTap = { [weak self] in
+        cell.onTap = { [weak self]  val  in
             guard let self = self else { return }
             print("Cell tapped at index: \(indexPath.item)")
             // Navigate or perform any action

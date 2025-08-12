@@ -56,5 +56,34 @@ class HangoutViewModel {
             }
         }
     }
+    
+    // MARK: - BackPacker: List of All Accommodation
+    func getBackPackerHangoutList<T: Codable>(
+        page: Int,
+        perPage: Int,
+        lat: Double,
+        long: Double,
+        radius: Int? = nil,
+        search: String? = nil,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getBACKPACKER_HANGOUT_URL(
+            page: page,
+            perPage: perPage,
+            lat: lat,
+            long: long,
+            radius: radius,
+            search: search
+        )
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 

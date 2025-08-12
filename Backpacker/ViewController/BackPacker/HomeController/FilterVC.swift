@@ -35,7 +35,7 @@ class FilterVC: UIViewController {
     var initialFacilities: String?
     var initialSortBy: String?
     var initialRadius: String?
-
+    var isComeFromHangOut : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
       
@@ -44,23 +44,26 @@ class FilterVC: UIViewController {
     }
     func applyInitialSelections() {
         // Facilities
-        if let facilitiesStr = initialFacilities {
-            let selected = facilitiesStr.components(separatedBy: ", ").map { $0.trimmingCharacters(in: .whitespaces) }
-            for (index, facility) in filterArrya.enumerated() {
-                if selected.contains(facility) {
-                    selectedFilterIndexes.insert(index)
+        if isComeFromHangOut == false {
+            if let facilitiesStr = initialFacilities {
+                let selected = facilitiesStr.components(separatedBy: ", ").map { $0.trimmingCharacters(in: .whitespaces) }
+                for (index, facility) in filterArrya.enumerated() {
+                    if selected.contains(facility) {
+                        selectedFilterIndexes.insert(index)
+                    }
+                }
+            }
+
+            // Sort by
+            if let sort = initialSortBy {
+                if sort.lowercased() == "asc" {
+                    selectedSortIndex = SortrArrya.firstIndex(where: { $0.contains("lowest") })
+                } else if sort.lowercased() == "desc" {
+                    selectedSortIndex = SortrArrya.firstIndex(where: { $0.contains("highest") })
                 }
             }
         }
-
-        // Sort by
-        if let sort = initialSortBy {
-            if sort.lowercased() == "asc" {
-                selectedSortIndex = SortrArrya.firstIndex(where: { $0.contains("lowest") })
-            } else if sort.lowercased() == "desc" {
-                selectedSortIndex = SortrArrya.firstIndex(where: { $0.contains("highest") })
-            }
-        }
+      
 
         // Radius
         if let radiusStr = initialRadius, let radiusFloat = Float(radiusStr) {
@@ -95,13 +98,24 @@ class FilterVC: UIViewController {
         self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 20.0)
         TblVw.isScrollEnabled = false // Disable scrolling
            TblVw.reloadData()
-           DispatchQueue.main.async {
-               self.TblVw.layoutIfNeeded()
-               let sortArrCount = self.SortrArrya.count
-               let filterarr = self.filterArrya.count
-               let adddON = (sortArrCount + filterarr) * 30
-               self.scroolViewHeight.constant = self.TblVw.contentSize.height + CGFloat(adddON)
-           }
+        if isComeFromHangOut == false{
+            DispatchQueue.main.async {
+                self.TblVw.layoutIfNeeded()
+                let sortArrCount = self.SortrArrya.count
+                let filterarr = self.filterArrya.count
+                let adddON = (sortArrCount + filterarr) * 30
+                self.scroolViewHeight.constant = self.TblVw.contentSize.height + CGFloat(adddON)
+            }
+        }else{
+            DispatchQueue.main.async {
+                self.TblVw.layoutIfNeeded()
+                self.TblVw.contentSize.height = 0.0
+                self.TblVw.isHidden = true
+                self.scroolViewHeight.constant = 180
+                self.ViewHeight.constant = 250
+            }
+        }
+         
         slider.setThumbImage(UIImage(named: "sliderThumb"), for: .normal)
             slider.minimumTrackTintColor = UIColor(hex: "#299EF5") // Start color"#299EF5"
             slider.maximumTrackTintColor = UIColor(hex: "#E8EDF0") // End color
@@ -139,6 +153,7 @@ class FilterVC: UIViewController {
         self.dismiss(animated: true)
     }
     @IBAction func action_submit(_ sender: Any) {
+    
         var facilitiesString = ""
            if !selectedFilterIndexes.isEmpty {
                let selectedFacilities = selectedFilterIndexes.map { filterArrya[$0] }
@@ -171,16 +186,26 @@ class FilterVC: UIViewController {
 extension FilterVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return header.count // 2 sections: "Filter", "Sort by"
+        if isComeFromHangOut == true{
+            return 0// 2 sections: "Filter", "Sort by"
+        }else{
+            return header.count // 2 sections: "Filter", "Sort by"
+        }
+        
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return filterArrya.count
-        } else if section == 1 {
-            return SortrArrya.count
+        if isComeFromHangOut == true{
+            return 0// 2 sections: "Filter", "Sort by"
+        }else{
+            if section == 0 {
+                return filterArrya.count
+            } else if section == 1 {
+                return SortrArrya.count
+            }
+            return 0
         }
-        return 0
+        
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -167,6 +167,7 @@ class EmployerAccomodationVC: UIViewController {
     @IBAction func action_Sort(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "FilterVC") as! FilterVC
+        vc.isComeFromHangOut = false
         vc.initialFacilities = self.facilities  // e.g. "Free Wifi, Swimming Pool"
         vc.initialSortBy = self.sortByPrice     // e.g. "asc" or "desc"
         vc.initialRadius = self.radius != nil ? String(self.radius!) : nil
@@ -271,9 +272,6 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
             }else{
                 cell.imgVw.image = UIImage(named: "aCCOMODATION")
             }
-            
-            
-            
             return cell
         }
         

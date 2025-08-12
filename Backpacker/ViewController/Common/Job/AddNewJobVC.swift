@@ -147,7 +147,6 @@ class AddNewJobVC: UIViewController {
     @IBAction func action_UploadImage(_ sender: Any) {
         mediaPicker = MediaPickerManager(presentingVC: self)
         mediaPicker?.showMediaOptions(isFromNewAccommodation: false) { image in
-            // Do something with the image
             print("Selected image: \(image)")
             self.main_ImgVw.image = image
             self.placeHolderImg.isHidden = true
@@ -156,6 +155,7 @@ class AddNewJobVC: UIViewController {
         }
         
     }
+
     @IBAction func action_ShowCalendarPopUp(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
         if let calendarVC = storyboard.instantiateViewController(withIdentifier: "CommonCalendarPopUpVC") as? CommonCalendarPopUpVC {

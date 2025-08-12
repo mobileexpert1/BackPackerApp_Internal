@@ -37,6 +37,7 @@ class HomeVC: UIViewController {
     let viewModel = JobVM()
     let viewModelAuth = LogInVM()
     var isLoading: Bool = true // true while loading, false once data is ready
+    var jobId = String()
     private var JobData: JobListResponse?
     var activeSections: [SectionTypeList] {
         var sections: [SectionTypeList] = []
@@ -165,14 +166,19 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
                 cell.isComeFromJob = true
                 cell.isComeForHireDetailPage = false
                 cell.isComeFromJobListSeeAll = true
-                cell.onTap = { [weak self] in
-                        guard let self = self else { return }
-                        print("Cell tapped at index: \(indexPath.item)")
-                        // Navigate or perform any action
-                    self.navigateToDescriptionVC()
-                    }
                 cell.currentJobslist = JobData?.data.currentJobslist
                 cell.activeSectionsList = self.activeSections
+                cell.onTap = { [weak self] val in
+                        guard let self = self else { return }
+                        print("Cell tapped at index----------: \(indexPath.item)")
+                        // Navigate or perform any action
+                    if let id = JobData?.data.currentJobslist[val].id {
+                        print("Cell tapped at index: \(id)")
+                        self.jobId = id
+                        self.navigateToDescriptionVC()
+                    }
+                   
+                    }
                 return cell
                 
             case .upcomingJob:
@@ -184,11 +190,15 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
                 cell.isComeFromJob = true
                 cell.isComeFromJobListSeeAll = true
                 cell.isComeForHireDetailPage = false
-                cell.onTap = { [weak self] in
+                cell.onTap = { [weak self] val in 
                         guard let self = self else { return }
-                        print("Cell tapped at index: \(indexPath.item)")
+                        print("Cell tapped at index------------: \(indexPath.item)")
                         // Navigate or perform any action
-                    self.navigateToDescriptionVC()
+                    if let id = JobData?.data.newJobslist[val].id {
+                        print("Cell tapped at index: \(id)")
+                        self.jobId = id
+                        self.navigateToDescriptionVC()
+                    }
                     }
                 cell.newjobList = JobData?.data.newJobslist
                 cell.activeSectionsList = self.activeSections
@@ -203,11 +213,15 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
                 cell.isComeFromJob = true
                 cell.isComeForHireDetailPage = false
                 cell.isComeFromJobListSeeAll = true
-                cell.onTap = { [weak self] in
+                cell.onTap = { [weak self] val in
                         guard let self = self else { return }
-                        print("Cell tapped at index: \(indexPath.item)")
+                        print("Cell tapped at index----------: \(indexPath.item)")
                         // Navigate or perform any action
-                    self.navigateToDescriptionVC()
+                    if let id = JobData?.data.declinedJobslist[val].id {
+                        print("Cell tapped at index: \(id)")
+                        self.jobId = id
+                        self.navigateToDescriptionVC()
+                    }
                     }
                 cell.declinedjobList = JobData?.data.declinedJobslist
                 cell.activeSectionsList = self.activeSections
@@ -290,7 +304,7 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     private func navigateToDescriptionVC(){
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
            if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
-               
+               jobDescriptionVC.JobId = self.jobId
                // Optional: pass selected job title
                self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
            }

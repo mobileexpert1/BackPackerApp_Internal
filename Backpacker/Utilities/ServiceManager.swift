@@ -338,30 +338,6 @@ extension ServiceManager {
             }
         }
     }
-
-    
-//    func requestMultipartApi<T: Codable>(
-//        _ url: URLConvertible,
-//        image: Data? = nil,
-//        method: HTTPMethod,
-//        parameters: Parameters? = nil,
-//        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
-//    ) {
-//        requestMultipartAPI(url, image: image, method: method, parameters: parameters, httpBody: nil) { (result: ApiResult<T?, APIError>) in
-//            switch result {
-//            case .success(let result, let statusCode):
-//                print("✅ Upload success. Status code: \(statusCode)")
-//                completion(true, result ?? nil, statusCode) // ✅ unwrap T??
-//
-//            case .failure(let error, let statusCode):
-//                print("❌ Upload failed. Error: \(error.customDescription), Status code: \(statusCode ?? -1)")
-//                completion(false, nil, statusCode)
-//            }
-//        }
-//    }
-
-    
-    
     func requestAsyncApi<T: Codable>(
         _ url: URLConvertible,
         method: HTTPMethod = .post,

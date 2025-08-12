@@ -141,5 +141,22 @@ class JobVM {
             completion(success, result, statusCode)
         }
     }
+    
+    // MARK: - BackPacker: JobDetail
+    func getBackPackerJobDetail<T: Codable>(
+        jobID:String,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getBACKPACKER_JOBDETAIL(jobID: jobID)
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 

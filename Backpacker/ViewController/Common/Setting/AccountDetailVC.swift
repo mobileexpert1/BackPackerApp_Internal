@@ -47,6 +47,7 @@ class AccountDetailVC: UIViewController {
         "Permanent Residency",
         "Investor Visa"
     ]
+    @IBOutlet weak var top_HeaderHeight: NSLayoutConstraint!
     @IBOutlet weak var lblzHeaderVisa: UILabel!
     let role = UserDefaults.standard.string(forKey: "UserRoleType")
     @IBOutlet weak var btn_back: UIButton!
@@ -66,24 +67,25 @@ class AccountDetailVC: UIViewController {
         self.btn_Edit.tag = 0
         handleBottomBtn()
         
-        //MARK: - Unhide for 
-//        if role == "3" || role == "4" ||  role == "2"{
-//            self.visaTypeHeight.constant = 0.0
-//            self.visaVw.isHidden = true
-//            self.btn_drpdwn.tag = 0
-//            self.manageHeightOfTable()
-//            self.btn_drpdwn.isHidden = true
-//            if role == "2" {
-//                self.lbl_MainHeader.isHidden = true
-//                self.btn_Edit.isHidden = true
-//                self.btn_back.isHidden = true
-//                self.btn_back.setImage(UIImage(named: ""), for: .normal)
-//                self.btn_backHeight.constant = 0.0
-//                self.btn_editHeight.constant  = 0.0
-//                self.btn_Edit.tag = 1
-//                self.handleBottomBtn()
-//            }
-//        }
+        //MARK: - Unhide for when show Company Detail VC
+#if BackpackerHire
+        if role == "3" || role == "4" ||  role == "2"{
+            self.visaTypeHeight.constant = 0.0
+            self.visaVw.isHidden = true
+            self.btn_drpdwn.tag = 0
+            self.manageHeightOfTable()
+            self.btn_drpdwn.isHidden = true
+            if role == "2" {
+                self.lbl_MainHeader.isHidden = true
+                self.btn_Edit.isHidden = false
+                self.btn_back.isHidden = true
+                self.btn_back.setImage(UIImage(named: ""), for: .normal)
+                self.handleBottomBtn()
+               
+            }
+        }
+#endif
+       
         self.getProfileInfo()
     }
     

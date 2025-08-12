@@ -6,9 +6,12 @@
 //
 
 import UIKit
-
+import SDWebImage
 class JobDescriptionVC: UIViewController {
 
+    @IBOutlet weak var mainScrollVw: UIScrollView!
+    @IBOutlet weak var mainScrollHeight: NSLayoutConstraint!
+    @IBOutlet weak var img_Profile: UIImageView!
     @IBOutlet weak var description_ContainerVW: UIView!
     @IBOutlet weak var lblEmployer: UILabel!
     @IBOutlet weak var lbl_Description: UILabel!
@@ -24,11 +27,18 @@ class JobDescriptionVC: UIViewController {
     @IBOutlet weak var segmentHeight: NSLayoutConstraint!
     @IBOutlet weak var lbl_Address: UILabel!
     
+    @IBOutlet weak var btn_Accept: UIButton!
     @IBOutlet weak var lbl_Time: UILabel!
     var firstVC: DescriptionController!
     var secondVC: EmployerController!
-
+    let refreshControl = UIRefreshControl()
     var currentChildVC: UIViewController?
+    var JobId : String?
+    @IBOutlet weak var btn_Decline: UIButton!
+    let viewMOdel = JobVM()
+    let viewModelAuth = LogInVM()
+    var isLoading: Bool = true // true while loading, false once data is ready
+    var jobDetailObj : JobDetail?
     override func viewDidLoad() {
         super.viewDidLoad()
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
@@ -36,22 +46,54 @@ class JobDescriptionVC: UIViewController {
            secondVC = storyboard.instantiateViewController(withIdentifier: "EmployerController") as? EmployerController
            
            self.setUPBtns()
-           self.showChild(firstVC)
+        self.setupPullToRefresh()
+        btn_Accept.layer.cornerRadius = 10
+        btn_Decline.layer.cornerRadius = 10
+        applyGradientButtonStyle(to: btn_Accept)
         // Do any additional setup after loading the view.
 #if Backapacker
         
+        self.getDetailOfJob()
         self.segmentHeight.constant = 50.0
+        self.btn_Accept.isHidden = false
+        self.btn_Accept.isUserInteractionEnabled = true
+        
+        self.btn_Decline.isHidden = false
+        self.btn_Decline.isUserInteractionEnabled = true
         #else
         
         self.segmentHeight.constant = 0.0
         self.lbl_Description.isHidden = true
         self.lblEmployer.isHidden = true
+        self.btn_Accept.isHidden = true
+        self.btn_Accept.isUserInteractionEnabled = false
+        
+        self.btn_Decline.isHidden = true
+        self.btn_Decline.isUserInteractionEnabled = false
 #endif
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     }
-
+    private func setupPullToRefresh() {
+        refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
+        refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
+        refreshControl.addTarget(self, action: #selector(refreshCollectionData), for: .valueChanged)
+        self.mainScrollVw.refreshControl = refreshControl
+    }
+    
+    @objc private func refreshCollectionData() {
+        // Reset pagination and loading flags
+#if Backapacker
+        // Fetch data
+        LoaderManager.shared.show()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.getDetailOfJob()
+        }
+#endif
+        
+    }
     private func setUPBtns(){
         self.btn_Description.tag = 1
         self.btn_Employer.tag = 0
@@ -83,6 +125,7 @@ class JobDescriptionVC: UIViewController {
         }
         self.setBtnTitle()
         self.showChild(firstVC)
+        self.handleBotmBtnAppearance()
     }
     @IBAction func action_BtnEmployer(_ sender: Any) {
         
@@ -96,6 +139,7 @@ class JobDescriptionVC: UIViewController {
         }
         self.setBtnTitle()
         self.showChild(secondVC)
+        self.handleBotmBtnAppearance()
     }
     
     @IBAction func action_Bck(_ sender: Any) {
@@ -108,6 +152,13 @@ class JobDescriptionVC: UIViewController {
     
     private func showChild(_ newVC: UIViewController) {
         // Remove current child if any
+        if let descVC = newVC as? DescriptionController {
+            descVC.delegate = self
+            descVC.objJobDetail = self.jobDetailObj
+            }
+            if let empVC = newVC as? EmployerController {
+                empVC.objJobDetail = self.jobDetailObj
+            }
         if let currentVC = currentChildVC {
             currentVC.willMove(toParent: nil)
             currentVC.view.removeFromSuperview()
@@ -130,4 +181,170 @@ class JobDescriptionVC: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
+}
+
+
+extension JobDescriptionVC {
+    
+   
+    func getDetailOfJob(){
+        LoaderManager.shared.show()
+        isLoading = true
+        if JobId?.isEmpty == true {
+            LoaderManager.shared.hide()
+                AlertManager.showAlert(
+                    on: self,
+                    title: "Alert",
+                    message: "Job ID is missing."
+                )
+            
+            return
+        }else{
+            viewMOdel.getBackPackerJobDetail(jobID: self.JobId ?? ""){ [weak self] (success: Bool, result: JobDetailResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                        self.isLoading = false
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                if result?.data.job != nil{
+                                    self.jobDetailObj = result?.data.job
+                                    self.setUpValues(obj: self.jobDetailObj!)
+                                    self.showChild(self.firstVC)
+                                }else{
+                                    
+                                }
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                
+                                self.isLoading = false
+                                LoaderManager.shared.hide()
+                            }
+                            self.refreshControl.endRefreshing()
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.getDetailOfJob()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.isLoading = false
+                                    self.refreshControl.endRefreshing()
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.isLoading = false
+                            self.refreshControl.endRefreshing()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.isLoading = false
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    func setUpValues(obj : JobDetail){
+        
+        self.lblTitle.text = obj.name
+        self.lbl_Address.text = obj.address
+        let duration = calculateDuration(startTime: obj.startTime, endTime: obj.endTime)
+        self.lbl_Time.text = duration
+        let imageStr = obj.image
+        if !imageStr.isEmpty {
+            let imageURLString = imageStr.hasPrefix("http")
+                ? imageStr
+                : "http://192.168.11.4:3000/assets/\(imageStr)"
+            
+            img_Profile.sd_setImage(
+                with: URL(string: imageURLString),
+                placeholderImage: UIImage(named: "Profile")
+            )
+        } else {
+            img_Profile.image = UIImage(named: "Profile")
+        }
+
+
+        
+    }
+    func calculateDuration(startTime: String, endTime: String) -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        
+        guard let start = dateFormatter.date(from: startTime),
+              let end = dateFormatter.date(from: endTime) else {
+            return "Invalid time"
+        }
+        
+        let diff = end.timeIntervalSince(start)
+        
+        let hours = Int(diff) / 3600
+        let minutes = (Int(diff) % 3600) / 60
+        
+        if minutes == 0 {
+            return "\(hours) hr"
+        } else {
+            return "\(hours) hr \(minutes) min"
+        }
+    }
+
+  
+
+}
+extension JobDescriptionVC : DescriptionControllerDelegate {
+    
+    
+    func descriptionController(_ controller: DescriptionController, didUpdateHeight height: CGFloat) {
+        print("Child view height is: \(height)")
+        //320 is View Height top like profile etc.
+        self.mainScrollVw.layoutIfNeeded()
+        self.mainScrollHeight.constant = 305 + height
+        
+    }
+    
+    func handleBotmBtnAppearance(){
+        if   self.btn_Description.tag == 1{
+            self.btn_Accept.isHidden = false
+            self.btn_Accept.isUserInteractionEnabled = true
+            
+            self.btn_Decline.isHidden = false
+            self.btn_Decline.isUserInteractionEnabled = true
+        }else{
+            
+            self.btn_Accept.isHidden = true
+            self.btn_Accept.isUserInteractionEnabled = false
+            
+            self.btn_Decline.isHidden = true
+            self.btn_Decline.isUserInteractionEnabled = false
+        }
+    }
 }
