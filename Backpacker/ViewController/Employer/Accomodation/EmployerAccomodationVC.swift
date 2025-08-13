@@ -18,6 +18,7 @@ class EmployerAccomodationVC: UIViewController {
     @IBOutlet weak var filterImgWidth: NSLayoutConstraint!
     
     @IBOutlet weak var btn_AddAccomodation: UIButton!
+    var accommodationID : String?
     let hotels = [
         "Little National Hotel Sydney",
         "Dorsett Melbourne",
@@ -272,6 +273,11 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
             }else{
                 cell.imgVw.image = UIImage(named: "aCCOMODATION")
             }
+            cell.onItemTapped = { [weak self] val in
+                let id = self?.accommodationList[indexPath.item].id
+                self?.moveToDetail(id: id ?? "")
+                
+            }
             return cell
         }
         
@@ -315,12 +321,9 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
     
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
-        if let accVC = storyboard.instantiateViewController(withIdentifier: "AccomodationDetailVC") as? AccomodationDetailVC {
-            self.navigationController?.pushViewController(accVC, animated: true)
-        } else {
-            print("❌ Could not instantiate AddNewAccomodationVC")
-        }
+        
+    
+     
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -352,11 +355,15 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
-        if let settingVC = storyboard.instantiateViewController(withIdentifier: "AccomodationDetailVC") as? AccomodationDetailVC {
-            self.navigationController?.pushViewController(settingVC, animated: true)
-        } else {
-            print("❌ Could not instantiate SettingVC")
+        let id = accommodationList[indexPath.item].id
+        if id.isEmpty == false {
+            let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+            if let accVC = storyboard.instantiateViewController(withIdentifier: "AccomodationDetailVC") as? AccomodationDetailVC {
+                accVC.accomodationID = id
+                self.navigationController?.pushViewController(accVC, animated: true)
+            } else {
+                print("❌ Could not instantiate AddNewAccomodationVC")
+            }
         }
     }
     func collectionView(_ collectionView: UICollectionView,
@@ -390,7 +397,17 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
         }
     }
     
-    
+    private func moveToDetail(id : String){
+        if id.isEmpty == false {
+            let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+            if let accVC = storyboard.instantiateViewController(withIdentifier: "AccomodationDetailVC") as? AccomodationDetailVC {
+                accVC.accomodationID = id
+                self.navigationController?.pushViewController(accVC, animated: true)
+            } else {
+                print("❌ Could not instantiate AddNewAccomodationVC")
+            }
+        }
+    }
 }
 extension EmployerAccomodationVC : UITextFieldDelegate{
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

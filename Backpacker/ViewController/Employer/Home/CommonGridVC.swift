@@ -41,7 +41,7 @@ class CommonGridVC: UIViewController {
     var isComeFromPullTorefresh : Bool = false
     var searchDebounceTimer: Timer?
     var lastSearchedText: String = ""
-
+    var jobId = String()
     override func viewDidLoad() {
         super.viewDidLoad()
         // Register the collection view cell
@@ -273,8 +273,17 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                     cell.statusVw.backgroundColor = UIColor(hex: "#00A925")
                     cell.SetUpHeight(isHeightShow: true)
                 }
-                 
-                
+                let strtTime = item.startTime
+                let endTime = item.endTime
+                let duration1 = Date.durationString(from: strtTime , to: endTime) // "8 hr"
+                cell.lbl_duration.text = "Duration \(duration1)"
+                cell.onTap = { [weak self] val in
+#if Backapacker
+                    let id = self?.jobslist[indexPath.item].id
+                    self?.jobId = id ?? ""
+                    self?.navigateToDescriptionVC()
+#endif
+                }
                 // Optionally configure cell
                 return cell
             }
@@ -292,6 +301,8 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
            
      
     }
+    
+  
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
 
@@ -439,12 +450,12 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
 extension CommonGridVC {
     func getListOfAll(){
         if page == 1 {
-               self.isLoading = true
-               LoaderManager.shared.show()
-           } else {
-               isLoadingMoreData = true
-               collVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
-           }
+            self.isLoading = true
+            LoaderManager.shared.show()
+        } else {
+            isLoadingMoreData = true
+            collVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
+        }
         viewModel.getJobListSeeAllWithType(page: page, perPage: perPage, search: self.lastSearchedText, type: self.type ?? 1) { [weak self] (success: Bool, result: JobsResponse?, statusCode: Int?) in
             guard let self = self else { return }
             DispatchQueue.main.async {
@@ -461,26 +472,26 @@ extension CommonGridVC {
                     switch httpStatus {
                     case .ok, .created:
                         if success == true {
-                                let newJobs = result?.data.jobslist ?? []
+                            let newJobs = result?.data.jobslist ?? []
                             
                             if self.page == 1 {
                                 if newJobs.isEmpty {
-                                self.lbl_nodata_Found.isHidden = false
+                                    self.lbl_nodata_Found.isHidden = false
                                     self.jobslist.removeAll()
                                     self.jobslist = newJobs
                                     self.collVw.isHidden = true
                                 } else {
                                     self.collVw.isHidden = false
-                                   self.lbl_nodata_Found.isHidden = true
+                                    self.lbl_nodata_Found.isHidden = true
                                     self.jobslist = newJobs
                                 }
                             } else {
                                 self.jobslist.append(contentsOf: newJobs)
                             }
-                          self.totalJobs = result?.data.total ?? 0
+                            self.totalJobs = result?.data.total ?? 0
                             // Pagination end check
                             self.isAllDataLoaded = newJobs.count < self.perPage
-
+                            
                             self.isLoading = false
                             self.isComeFromPullTorefresh = false
                             self.isLoadingMoreData = false
@@ -530,6 +541,16 @@ extension CommonGridVC {
                     }
                 }
             }
+        }
+    }
+    private func navigateToDescriptionVC(){
+        if self.jobId.isEmpty == false{
+            let storyboard = UIStoryboard(name: "Job", bundle: nil)
+            if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
+                jobDescriptionVC.JobId = self.jobId
+                // Optional: pass selected job title
+                self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
             }
+        }
     }
 }

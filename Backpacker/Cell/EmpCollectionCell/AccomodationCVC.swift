@@ -22,12 +22,18 @@ class AccomodationCVC: UICollectionViewCell {
     @IBOutlet weak var imgNgVw: UIView!
     @IBOutlet weak var mainVw: UIView!
     
+    @IBOutlet weak var btnTapeed: UIButton!
     
     
     var onHeartTapped: (() -> Void)?
+    var onItemTapped: ((Int) -> Void)?
+    var item : Int?
     override func awakeFromNib() {
         super.awakeFromNib()
         setupFonts()
+    }
+    @IBAction func action_Tap(_ sender: Any) {
+        onItemTapped?(item ?? 0)
     }
     
     private func setupFonts() {

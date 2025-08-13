@@ -25,6 +25,7 @@ class CommonImageCell: UICollectionViewCell {
         }else{
             img_Vw.image = UIImage(named: "aCCOMODATION") // fallback
         }
+        self.Bg_Vw.addShadowAllSides(radius: 0.5)
     }
 
     func setImage(with imageURL: String, isFavorite: Bool) {

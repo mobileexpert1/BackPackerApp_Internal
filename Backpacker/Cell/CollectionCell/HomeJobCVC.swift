@@ -77,6 +77,17 @@ class HomeJobCVC: UICollectionViewCell {
         }
 #endif
     }
+    
+    func setUpApeeranceOflbl_Amunt(isShow: Bool = false){
+        if isShow == true{
+            self.lbl_AmountHeight.constant = 20.0
+        }else{
+            self.lbl_AmountHeight.constant = 0.0
+        }
+        self.lbl_jobStatus.isHidden = true
+        self.statusVw.isHidden = true
+    }
+    
        private func setupUI() {
            self.lbl_jobStatus.font = FontManager.inter(.medium, size: 10.0)
            self.lblAmount.font = FontManager.inter(.medium, size: 12.0)

@@ -8,7 +8,7 @@
 import UIKit
 import SDWebImage
 class JobDescriptionVC: UIViewController {
-
+    
     @IBOutlet weak var mainScrollVw: UIScrollView!
     @IBOutlet weak var mainScrollHeight: NSLayoutConstraint!
     @IBOutlet weak var img_Profile: UIImageView!
@@ -42,34 +42,39 @@ class JobDescriptionVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
-           firstVC = storyboard.instantiateViewController(withIdentifier: "DescriptionController") as? DescriptionController
-           secondVC = storyboard.instantiateViewController(withIdentifier: "EmployerController") as? EmployerController
-           
-           self.setUPBtns()
+        firstVC = storyboard.instantiateViewController(withIdentifier: "DescriptionController") as? DescriptionController
+        secondVC = storyboard.instantiateViewController(withIdentifier: "EmployerController") as? EmployerController
+        
+        self.setUPBtns()
         self.setupPullToRefresh()
         btn_Accept.layer.cornerRadius = 10
         btn_Decline.layer.cornerRadius = 10
         applyGradientButtonStyle(to: btn_Accept)
         // Do any additional setup after loading the view.
-#if Backapacker
-        
-        self.getDetailOfJob()
-        self.segmentHeight.constant = 50.0
-        self.btn_Accept.isHidden = false
-        self.btn_Accept.isUserInteractionEnabled = true
-        
-        self.btn_Decline.isHidden = false
-        self.btn_Decline.isUserInteractionEnabled = true
-        #else
-        
-        self.segmentHeight.constant = 0.0
-        self.lbl_Description.isHidden = true
-        self.lblEmployer.isHidden = true
         self.btn_Accept.isHidden = true
         self.btn_Accept.isUserInteractionEnabled = false
         
         self.btn_Decline.isHidden = true
         self.btn_Decline.isUserInteractionEnabled = false
+#if Backapacker
+        
+        self.getDetailOfJob()
+        self.segmentHeight.constant = 50.0
+        //        self.btn_Accept.isHidden = false
+        //        self.btn_Accept.isUserInteractionEnabled = true
+        //
+        //        self.btn_Decline.isHidden = false
+        //        self.btn_Decline.isUserInteractionEnabled = true
+#else
+        
+        self.segmentHeight.constant = 0.0
+        self.lbl_Description.isHidden = true
+        self.lblEmployer.isHidden = true
+        //        self.btn_Accept.isHidden = true
+        //        self.btn_Accept.isUserInteractionEnabled = false
+        //
+        //        self.btn_Decline.isHidden = true
+        //        self.btn_Decline.isUserInteractionEnabled = false
 #endif
     }
     
@@ -113,7 +118,7 @@ class JobDescriptionVC: UIViewController {
         lbl_Description.font = FontManager.inter(.medium, size: 14.0)
         lblEmployer.font = FontManager.inter(.medium, size: 14.0)
     }
-
+    
     @IBAction func action_btnDescription(_ sender: Any) {
         self.btn_Description.tag = 1
         self.btn_Employer.tag = 0
@@ -155,28 +160,28 @@ class JobDescriptionVC: UIViewController {
         if let descVC = newVC as? DescriptionController {
             descVC.delegate = self
             descVC.objJobDetail = self.jobDetailObj
-            }
-            if let empVC = newVC as? EmployerController {
-                empVC.objJobDetail = self.jobDetailObj
-            }
+        }
+        if let empVC = newVC as? EmployerController {
+            empVC.objJobDetail = self.jobDetailObj
+        }
         if let currentVC = currentChildVC {
             currentVC.willMove(toParent: nil)
             currentVC.view.removeFromSuperview()
             currentVC.removeFromParent()
         }
-
+        
         // Add new child
         addChild(newVC)
         newVC.view.frame = description_ContainerVW.bounds // ✅ Corrected line
         newVC.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         description_ContainerVW.addSubview(newVC.view)
         newVC.didMove(toParent: self)
-
+        
         // Update current
         currentChildVC = newVC
     }
-
-
+    
+    
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
@@ -186,17 +191,17 @@ class JobDescriptionVC: UIViewController {
 
 extension JobDescriptionVC {
     
-   
+    
     func getDetailOfJob(){
         LoaderManager.shared.show()
         isLoading = true
         if JobId?.isEmpty == true {
             LoaderManager.shared.hide()
-                AlertManager.showAlert(
-                    on: self,
-                    title: "Alert",
-                    message: "Job ID is missing."
-                )
+            AlertManager.showAlert(
+                on: self,
+                title: "Alert",
+                message: "Job ID is missing."
+            )
             
             return
         }else{
@@ -282,8 +287,8 @@ extension JobDescriptionVC {
         let imageStr = obj.image
         if !imageStr.isEmpty {
             let imageURLString = imageStr.hasPrefix("http")
-                ? imageStr
-                : "http://192.168.11.4:3000/assets/\(imageStr)"
+            ? imageStr
+            : "http://192.168.11.4:3000/assets/\(imageStr)"
             
             img_Profile.sd_setImage(
                 with: URL(string: imageURLString),
@@ -292,8 +297,35 @@ extension JobDescriptionVC {
         } else {
             img_Profile.image = UIImage(named: "Profile")
         }
-
-
+        
+        if obj.jobAcceptStatus == 1 {
+            self.btn_Accept.isHidden = false
+            self.btn_Accept.isUserInteractionEnabled = true
+            self.btn_Decline.isHidden = false
+            self.btn_Decline.isUserInteractionEnabled = true
+            applyGradientButtonStyle(to: btn_Accept)
+        } else if obj.jobAcceptStatus == 2 {
+            self.btn_Accept.isHidden = false
+            self.btn_Accept.setTitle("Accepted", for: .normal)
+            self.btn_Accept.isUserInteractionEnabled = false
+            applyGradientButtonStyle(to: btn_Accept)
+            self.btn_Decline.isHidden = true
+            self.btn_Decline.isUserInteractionEnabled = false
+        }else if obj.jobAcceptStatus == 3 {
+            self.btn_Accept.isHidden = false
+            self.btn_Accept.isUserInteractionEnabled = false
+            self.btn_Accept.setTitle("Declined", for: .normal)
+            applyGradientButtonStyle(to: btn_Accept)
+            self.btn_Decline.isHidden = true
+            self.btn_Decline.isUserInteractionEnabled = false
+        }else{
+            self.btn_Accept.isHidden = true
+            self.btn_Accept.isUserInteractionEnabled = false
+            
+            self.btn_Decline.isHidden = true
+            self.btn_Decline.isUserInteractionEnabled = false
+        }
+        
         
     }
     func calculateDuration(startTime: String, endTime: String) -> String {
@@ -316,9 +348,9 @@ extension JobDescriptionVC {
             return "\(hours) hr \(minutes) min"
         }
     }
-
-  
-
+    
+    
+    
 }
 extension JobDescriptionVC : DescriptionControllerDelegate {
     

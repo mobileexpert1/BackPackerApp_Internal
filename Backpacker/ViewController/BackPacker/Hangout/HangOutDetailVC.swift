@@ -7,9 +7,10 @@
 
 import UIKit
 import MapKit
-
+import SDWebImage
 class HangOutDetailVC: UIViewController {
 
+    @IBOutlet weak var Bg_Vw_image_Collection: UIView!
     @IBOutlet weak var page_Controller: UIPageControl!
     @IBOutlet weak var img_CollectionVw: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
@@ -22,6 +23,7 @@ class HangOutDetailVC: UIViewController {
     
     @IBOutlet weak var title_About: UILabel!
     
+    @IBOutlet weak var mainScrollVw: UIScrollView!
     @IBOutlet weak var imgVw: UIImageView!
     
     @IBOutlet weak var lbl_restaurantName: UILabel!
@@ -29,13 +31,39 @@ class HangOutDetailVC: UIViewController {
     @IBOutlet weak var lbl_AboutDescription: UILabel!
     @IBOutlet weak var lbl_review: UILabel!
     @IBOutlet weak var lbl_Rating: UILabel!
+    let viewMOdel = HangoutViewModel()
+    let viewModelAuth = LogInVM()
+    var isLoading: Bool = true // true while loading, false once data is ready
+    var hangoutDetailObj : HangoutData?
+    var hangoutID : String?
+    let refreshControl = UIRefreshControl()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
+        self.getDetailOfHangout()
         self.setUpCollectionVw()
+        self.setupPullToRefresh()
         
     }
+    private func setupPullToRefresh() {
+        refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
+        refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
+        refreshControl.addTarget(self, action: #selector(refreshCollectionData), for: .valueChanged)
+        self.mainScrollVw.refreshControl = refreshControl
+    }
     
+    @objc private func refreshCollectionData() {
+        // Reset pagination and loading flags
+#if Backapacker
+        // Fetch data
+        LoaderManager.shared.show()
+        self.refreshControl.beginRefreshing()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            self.getDetailOfHangout()
+        }
+#endif
+        
+    }
     private func setUpUI(){
         self.title_Location.font = FontManager.inter(.semiBold, size: 14.0)
         self.lbl_Address.font = FontManager.inter(.regular, size: 12.0)
@@ -58,7 +86,7 @@ class HangOutDetailVC: UIViewController {
         img_CollectionVw.showsHorizontalScrollIndicator = false
         img_CollectionVw.decelerationRate = .fast
         
-        page_Controller.numberOfPages = 10
+        page_Controller.numberOfPages = self.hangoutDetailObj?.hangout.image.count ?? 0
         page_Controller.currentPage = 0
         page_Controller.currentPageIndicatorTintColor = UIColor(hex: "#299EF5") // ← Your highlight color
         page_Controller.pageIndicatorTintColor =  UIColor(hex: "#D9D9D9")
@@ -69,6 +97,7 @@ class HangOutDetailVC: UIViewController {
         img_CollectionVw.collectionViewLayout = layout
         img_CollectionVw.delegate = self
         img_CollectionVw.dataSource = self
+        self.mapView.delegate = self
     }
     @IBAction func action_VwOnMap(_ sender: Any) {
     }
@@ -80,24 +109,32 @@ class HangOutDetailVC: UIViewController {
 extension HangOutDetailVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-            return 10
+        if isLoading == true{
+            return 5
+        }else{
+            return hangoutDetailObj?.hangout.image.count ?? 0
+        }
+       
       
         
     }
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CommonImageCell", for: indexPath) as? CommonImageCell else {
+            return UICollectionViewCell()
+        }
         
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CommonImageCell", for: indexPath) as? CommonImageCell else {
-                return UICollectionViewCell()
-            }
         cell.isComeFromHangout = true
-            return cell
-       
         
+        if let img = hangoutDetailObj?.hangout.image[indexPath.item] {
+            let imageURLString = img.hasPrefix("http") ? img : "http://192.168.11.4:3000/assets/\(img)"
+            cell.img_Vw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "restaurantImg"))
+        } else {
+            cell.img_Vw.image = UIImage(named: "restaurantImg")
+        }
         
-     
+        return cell
     }
-    
+
     // Optional: Set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
@@ -124,4 +161,172 @@ extension HangOutDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,
         page_Controller.currentPage = page
     }
    
+}
+
+extension HangOutDetailVC {
+    func getDetailOfHangout(){
+        LoaderManager.shared.show()
+        isLoading = true
+        if hangoutID?.isEmpty == true {
+            LoaderManager.shared.hide()
+                AlertManager.showAlert(
+                    on: self,
+                    title: "Alert",
+                    message: "Hangout ID is missing."
+                )
+            
+            return
+        }else{
+            viewMOdel.getBackPackerHangutDetail(hangoutID: hangoutID ?? ""){ [weak self] (success: Bool, result: HangoutDetailResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                        self.isLoading = false
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                if result?.data != nil{
+                                    self.hangoutDetailObj = result?.data
+                                    self.setUpValues(obj: self.hangoutDetailObj!)
+                                }else{
+                                    AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
+                                }
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                
+                                self.isLoading = false
+                                LoaderManager.shared.hide()
+                            }
+                            self.isLoading = false
+                            self.refreshControl.endRefreshing()
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.getDetailOfHangout()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.isLoading = false
+                                    self.refreshControl.endRefreshing()
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.isLoading = false
+                            self.refreshControl.endRefreshing()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.isLoading = false
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    func setUpValues(obj : HangoutData){
+        DispatchQueue.main.async {
+            self.lbl_Address.text = obj.hangout.address
+            self.lbl_restaurantName.text = obj.hangout.name
+            self.lbl_AboutDescription.text = obj.hangout.description
+            if self.hangoutDetailObj?.hangout.image.count == 1 {
+                self.page_Controller.numberOfPages = 0
+                self.page_Controller.currentPage = 0
+                self.page_Controller.isHidden = true
+            }else{
+                self.page_Controller.numberOfPages = self.hangoutDetailObj?.hangout.image.count ?? 0
+                self.page_Controller.currentPage = 0
+                self.page_Controller.isHidden = false
+            }
+            
+            self.img_CollectionVw.reloadData()
+            self.setupMapAnnotations()
+        }
+    }
+}
+
+
+import MapKit
+
+extension HangOutDetailVC: MKMapViewDelegate {
+
+    func setupMapAnnotations() {
+        guard let nearbyUsers = self.hangoutDetailObj?.nearbyUsers else { return }
+        
+        for user in nearbyUsers {
+            let annotation = UserAnnotation(user: user)
+            mapView.addAnnotation(annotation)
+        }
+        
+        // Optionally zoom to show all annotations
+        mapView.showAnnotations(mapView.annotations, animated: true)
+    }
+    
+    // MARK: - MKMapViewDelegate
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        // Exclude user location blue dot
+        if annotation is MKUserLocation {
+            return nil
+        }
+        
+        guard annotation is UserAnnotation else { return nil }
+        
+        let identifier = "UserAnnotationViewAccomodatio"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        
+        if annotationView == nil {
+            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true
+            
+            // Set your custom marker image here
+            annotationView?.image = UIImage(named: "custom_marker")
+            
+            // Optional: Add a callout accessory button
+        } else {
+            annotationView?.annotation = annotation
+        }
+        
+        return annotationView
+    }
+}
+
+import MapKit
+
+class UserAnnotation: NSObject, MKAnnotation {
+    let coordinate: CLLocationCoordinate2D
+    let title: String?
+    let subtitle: String?
+    
+    init(user: NearbyUser) {
+        self.coordinate = CLLocationCoordinate2D(latitude: user.lat, longitude: user.long)
+        self.title = user.name
+        self.subtitle = user.email
+    }
 }

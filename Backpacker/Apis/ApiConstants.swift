@@ -121,7 +121,28 @@ struct ApiConstants {
             }
             return url
         }
+        static func getBACKPACKER_HANGOUTDETAIL(hangoutID:String?) -> String {
+            var url = "\(BASE_URL)api/backpackers/hangout/"
+            if let hangoutID = hangoutID {
+                url += "\(hangoutID)"
+            }
+            return url
+        }
+        static func getBACKPACKER_AccomodationDETAIL(accommodationID:String?) -> String {
+            var url = "\(BASE_URL)api/backpackers/accommodation/"
+            if let accommodationID = accommodationID {
+                url += "\(accommodationID)"
+            }
+            return url
+        }
         
+        
+        //MARK: - Employer
+        
+        
+        static let EMPLOYER_HOME = BASE_URL + "api/employer/home/employer"
+        static let EMPLOYER_ACCOMODATION_HOME = BASE_URL + "api/employer/home/accommodation"
+        static let EMPLOYER_HANGOUT_HOME = BASE_URL + "api/employer/home/hangout"
     }
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"

@@ -192,7 +192,7 @@
                                 <rect key="frame" x="0.0" y="99" width="393" height="719"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YV6-DE-8Ou">
-                                        <rect key="frame" x="0.0" y="0.0" width="393" height="850"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="565.66666666666663"/>
                                         <subviews>
                                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OLB-Fs-Kwo">
                                                 <rect key="frame" x="20" y="5" width="353" height="180"/>
@@ -232,7 +232,7 @@
                                                     <constraint firstAttribute="height" constant="15" id="b88-Xz-xas"/>
                                                 </constraints>
                                             </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5214 Prestro rd. Inglewood , Maine 457896" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TCk-4e-6EQ">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TCk-4e-6EQ">
                                                 <rect key="frame" x="40" y="226.33333333333331" width="333" height="20.333333333333343"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" name="blackColor"/>
@@ -269,16 +269,14 @@
                                                     <constraint firstAttribute="height" constant="20" id="XaS-hn-VWw"/>
                                                 </constraints>
                                             </pageControl>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dEV-sh-O0r">
-                                                <rect key="frame" x="20" y="456.66666666666663" width="353" height="40.666666666666686"/>
-                                                <string key="text">Old &amp; New Delhi City Tour – Half or Full 
-Day Options Available</string>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dEV-sh-O0r">
+                                                <rect key="frame" x="20" y="456.66666666666663" width="353" height="20.333333333333314"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" name="blackColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="4.3" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uFR-6M-cHN">
-                                                <rect key="frame" x="20" y="505.33333333333337" width="24.333333333333329" height="0.0"/>
+                                                <rect key="frame" x="20" y="485" width="24.333333333333329" height="0.0"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" id="REE-Vc-bow"/>
                                                 </constraints>
@@ -287,7 +285,7 @@ Day Options Available</string>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="(202 review)" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G5A-Qq-Mq2">
-                                                <rect key="frame" x="149.33333333333334" y="505.33333333333337" width="96" height="0.0"/>
+                                                <rect key="frame" x="149.33333333333334" y="485" width="96" height="0.0"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" id="NtL-fu-bm5"/>
                                                 </constraints>
@@ -296,7 +294,7 @@ Day Options Available</string>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gf0-SM-mIA" customClass="CosmosView" customModule="Cosmos">
-                                                <rect key="frame" x="49.333333333333343" y="505.33333333333337" width="80" height="0.0"/>
+                                                <rect key="frame" x="49.333333333333343" y="485" width="80" height="0.0"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" id="8N2-Hc-FXM"/>
@@ -309,14 +307,13 @@ Day Options Available</string>
                                                 </userDefinedRuntimeAttributes>
                                             </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="About" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="195-hx-H3R">
-                                                <rect key="frame" x="20" y="515.33333333333337" width="353" height="20.333333333333371"/>
+                                                <rect key="frame" x="20" y="495" width="353" height="20.333333333333371"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" name="blackColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z4s-wp-tHg">
-                                                <rect key="frame" x="20" y="545.66666666666663" width="353" height="284.33333333333337"/>
-                                                <string key="text">Rice Paper Scissors offers a punchy, share-style menu influenced by traditional South East Asian flavours. Guests will experience bold street food-inspired dining that showcases the very best in local produce. Indulge in our twice-cooked sticky pork belly, smothered in tamarind caramel or perhaps our sashimi grade        by traditional South East Asian flavours. Guests will experience bold street food-inspired dining that showcases the very best in local produce. Indulge in our twice-cooked sticky pork belly, smothered in tamarind caramel or perhaps our sashimi grade</string>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Z4s-wp-tHg">
+                                                <rect key="frame" x="20" y="525.33333333333337" width="353" height="20.333333333333371"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" red="0.41176470588235292" green="0.41176470588235292" blue="0.41176470588235292" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -385,6 +382,7 @@ Day Options Available</string>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="Bg_Vw_image_Collection" destination="ujr-b8-5jD" id="4BU-V9-adI"/>
                         <outlet property="btn_ViewOnMap" destination="uQt-Ar-O3U" id="pM6-nq-gBR"/>
                         <outlet property="img_CollectionVw" destination="PpA-ym-b3t" id="Y7n-9W-wYn"/>
                         <outlet property="lbl_AboutDescription" destination="Z4s-wp-tHg" id="j9j-rn-LTn"/>
@@ -392,6 +390,7 @@ Day Options Available</string>
                         <outlet property="lbl_Rating" destination="uFR-6M-cHN" id="0S5-Pa-bce"/>
                         <outlet property="lbl_restaurantName" destination="dEV-sh-O0r" id="Qn3-Ut-xd0"/>
                         <outlet property="lbl_review" destination="G5A-Qq-Mq2" id="lv7-d1-Pwa"/>
+                        <outlet property="mainScrollVw" destination="vIG-ty-nOB" id="a8Y-mt-11C"/>
                         <outlet property="mapView" destination="OLB-Fs-Kwo" id="zOn-3z-bV4"/>
                         <outlet property="page_Controller" destination="Hdv-HH-clQ" id="pDC-PC-fkg"/>
                         <outlet property="title_About" destination="195-hx-H3R" id="HJu-A5-P07"/>

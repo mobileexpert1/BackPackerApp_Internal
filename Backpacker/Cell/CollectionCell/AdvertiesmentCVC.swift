@@ -22,6 +22,7 @@ class AdvertiesmentCVC: UICollectionViewCell {
         self.isSkeletonable = true
         lbl_Name.isSkeletonable = true
        imageVw.isSkeletonable = true
+        self.contentView.addShadowAllSides(radius: 0.5)
     }
 }
 struct Advertisement {

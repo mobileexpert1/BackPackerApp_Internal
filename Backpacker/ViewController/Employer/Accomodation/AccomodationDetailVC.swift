@@ -14,6 +14,7 @@ class AccomodationDetailVC: UIViewController {
     
     @IBOutlet weak var btn_Availbility: UIButton!
     
+    @IBOutlet weak var main_bgVw_ImgCollection: UIView!
     @IBOutlet weak var btn_VwOnMap: UIButton!
     @IBOutlet weak var lbl_Review: UILabel!
     @IBOutlet weak var lbl_HotelName: UILabel!
@@ -33,6 +34,7 @@ class AccomodationDetailVC: UIViewController {
     
     @IBOutlet weak var lbl_LocationTitle: UILabel!
     
+    @IBOutlet weak var facility_coll_height: NSLayoutConstraint!
     
     @IBOutlet weak var img_Collection_Vw: UICollectionView!
     
@@ -47,15 +49,22 @@ class AccomodationDetailVC: UIViewController {
         Facility(image: "open", title: "24-hours Open"),
         Facility(image: "fitness", title: "Fitness Center")
     ]
+    var facilitiesArray: [Facility]?
     
-    
-    
+    let viewMOdel = AccommodationViewModel()
+    let viewModelAuth = LogInVM()
+    var isLoading: Bool = true // true while loading, false once data is ready
+    var accomodationDetailObj : AccommodationDetailData?
+    var accomodationID : String?
+    let refreshControl = UIRefreshControl()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
+        self.getDetailOfAccomodation()
     }
  
     private func setUpUI(){
+        
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
         self.lbl_HotelName.font = FontManager.inter(.semiBold, size: 16.0)
         self.lbl_Review.font = FontManager.inter(.regular, size: 10.0)
@@ -91,7 +100,7 @@ class AccomodationDetailVC: UIViewController {
         layout.minimumLineSpacing = 0
         layout.itemSize = CGSize(width: img_Collection_Vw.frame.width, height: img_Collection_Vw.frame.height)
         img_Collection_Vw.collectionViewLayout = layout
-
+        self.mapVw.delegate = self
 
     }
     
@@ -106,12 +115,30 @@ class AccomodationDetailVC: UIViewController {
 extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+#if Backapacker
+        
+        if isLoading == false{
+            if collectionView == img_Collection_Vw{
+                return self.accomodationDetailObj?.accommodation.image.count ?? 0
+            }else{
+                return facilitiesArray?.count ?? 0 // <-- Replace with your array count
+            }
+        }else{
+            return 1
+        }
+        
+#else
         if collectionView == img_Collection_Vw{
-            return 10
+            return self.accomodationDetailObj?.accommodation.image.count ?? 0
         }else{
             return facilities.count // <-- Replace with your array count
         }
         
+        
+#endif
+        
+      
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -121,19 +148,24 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
                 return UICollectionViewCell()
             }
             cell.isComeFromHangout = false
+            if let img = self.accomodationDetailObj?.accommodation.image[indexPath.item] {
+                let imageURLString = img.hasPrefix("http") ? img : "http://192.168.11.4:3000/assets/\(img)"
+                cell.img_Vw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "aCCOMODATION"))
+            } else {
+                cell.img_Vw.image = UIImage(named: "aCCOMODATION")
+            }
             return cell
         }else{
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FacilityCVC", for: indexPath) as? FacilityCVC else {
                 return UICollectionViewCell()
             }
-            
-            let facility = facilities[indexPath.item] // Use your model or static data
-            cell.setImageAndTitle(image: facility.image, Title: facility.title)
+            if facilitiesArray?.count ?? 0 > 0 {
+                let facility = facilitiesArray?[indexPath.item] // Use your model or static data
+                cell.setImageAndTitle(image: facility?.image ?? "", Title: facility?.title ?? "")
+            }
             
             return cell
         }
-        
-        
      
     }
     
@@ -176,12 +208,244 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
         let page = Int(scrollView.contentOffset.x / img_Collection_Vw.frame.width)
         page_Controller.currentPage = page
     }
-   
+ 
 }
+
+extension AccomodationDetailVC {
+    func getDetailOfAccomodation(){
+        LoaderManager.shared.show()
+        isLoading = true
+        if accomodationID?.isEmpty == true {
+            LoaderManager.shared.hide()
+                AlertManager.showAlert(
+                    on: self,
+                    title: "Alert",
+                    message: "Accomodation ID is missing."
+                )
+            
+            return
+        }else{
+            viewMOdel.getBackPackerAcommodationDetail(accommodationID: accomodationID ?? ""){ [weak self] (success: Bool, result: AccommodationDetailResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                        self.isLoading = false
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                if result?.data != nil{
+                                    self.accomodationDetailObj = result?.data
+                                    self.setUpValues(obj: self.accomodationDetailObj!)
+                                }else{
+                                    AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
+                                }
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                
+                                self.isLoading = false
+                                LoaderManager.shared.hide()
+                            }
+                            self.isLoading = false
+                            self.refreshControl.endRefreshing()
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.getDetailOfAccomodation()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.isLoading = false
+                                    self.refreshControl.endRefreshing()
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.isLoading = false
+                            self.refreshControl.endRefreshing()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.isLoading = false
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    func setUpValues(obj : AccommodationDetailData){
+        DispatchQueue.main.async {
+            self.lbl_Addrees.text = obj.accommodation.address
+            self.lbl_AboutDescription.text = obj.accommodation.description
+            self.lbl_HotelName.text = obj.accommodation.name
+                if obj.accommodation.image.count == 1 {
+                self.page_Controller.numberOfPages = 0
+                self.page_Controller.currentPage = 0
+                self.page_Controller.isHidden = true
+            }else{
+                self.page_Controller.numberOfPages = obj.accommodation.image.count
+                self.page_Controller.currentPage = 0
+                self.page_Controller.isHidden = false
+            }
+            
+            self.img_Collection_Vw.reloadData()
+            self.setFacilities(obj: obj)
+                
+            }
+        self.setupMapAnnotations()
+        }
+    
+    
+    func setFacilities(obj : AccommodationDetailData){
+        let facilities = obj.accommodation.facilities
+        var objPfFacilty = [Facility]()
+        for facility in facilities {
+            /*
+             Swimming Pool
+             WiFi
+             Parking
+             Elevator
+             Fitness Center
+             24-hours Open
+             
+             --
+             
+             let facilities: [Facility] = [
+                 Facility(image: "pool", title: "Swimming Pool"),
+                 Facility(image: "wifi", title: "WiFi"),
+                 Facility(image: "restaurant", title: "Restaurant"),
+                 Facility(image: "parking", title: "Parking"),
+                 Facility(image: "meeting", title: "Meeting Room"),
+                 Facility(image: "elevator", title: "Elevator"),
+                 Facility(image: "open", title: "24-hours Open"),
+                 Facility(image: "fitness", title: "Fitness Center")
+             ]
+             
+             */
+            if facility == "Free WiFi" {
+                let obj = Facility(image: "wifi", title: facility)
+                objPfFacilty.append(obj)
+            }
+            if facility == "Swimming Pool" {
+                let obj = Facility(image: "pool", title: facility)
+                objPfFacilty.append(obj)
+            }
+            if facility == "Parking" {
+                let obj = Facility(image: "parking", title: facility)
+                objPfFacilty.append(obj)
+            }
+            if facility == "Elevator" {
+                let obj = Facility(image: "elevator", title: facility)
+                objPfFacilty.append(obj)
+            }
+            if facility == "Fitness Center" {
+                let obj = Facility(image: "fitness", title: facility)
+                objPfFacilty.append(obj)
+            }
+            if facility == "24-hours Open" {
+                let obj = Facility(image: "open", title: facility)
+                objPfFacilty.append(obj)
+            }
+            self.facilitiesArray = objPfFacilty
+            if facilitiesArray?.count ?? 0 <= 4 {
+                self.facility_coll_height.constant = 100
+            }else{
+                self.facility_coll_height.constant = 200
+            }
+            self.facilityCollectionVw.reloadData()
+    }
+}
+}
+
+extension AccomodationDetailVC: MKMapViewDelegate {
+    
+    func setupMapAnnotations() {
+        guard let acc = self.accomodationDetailObj?.accommodation else { return }
+        
+       
+        let annotation = AccommodationAnnotation(accommodation: acc)
+        mapVw.addAnnotation(annotation)
+
+        
+        // Optionally zoom to show all annotations
+    }
+    
+    // MARK: - MKMapViewDelegate
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        // Exclude user location blue dot
+        if annotation is MKUserLocation {
+            return nil
+        }
+        
+        guard annotation is AccommodationAnnotation else { return nil }
+        
+        let identifier = "UserAnnotationViewAccomodationss"
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
+        
+        if annotationView == nil {
+            annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            annotationView?.canShowCallout = true
+            
+            // Set your custom marker image here
+            annotationView?.image = UIImage(named: "custom_marker")
+            
+            // Optional: Add a callout accessory button
+        } else {
+            annotationView?.annotation = annotation
+        }
+        
+        return annotationView
+    }
+}
+
+
+
+
+
+
 
 
 struct Facility {
     var image : String
     var title : String
     
+}
+import MapKit
+
+class AccommodationAnnotation: NSObject, MKAnnotation {
+    let coordinate: CLLocationCoordinate2D
+    let title: String?
+    let subtitle: String?
+    
+    init(accommodation: AccommodationDetail) {
+        self.coordinate = CLLocationCoordinate2D(latitude: accommodation.lat, longitude: accommodation.long)
+        self.title = accommodation.name
+        self.subtitle = accommodation.locationText
+    }
 }

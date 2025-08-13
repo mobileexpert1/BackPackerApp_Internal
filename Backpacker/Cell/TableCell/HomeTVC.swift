@@ -6,13 +6,14 @@
 //
 
 import UIKit
-
+import SDWebImage
 class HomeTVC: UITableViewCell {
     
     @IBOutlet weak var home_CollectionVw: UICollectionView!
     var items: [String] = []
     var tableSection: Int = 0
-    var onAddAccommodation: (() -> Void)?
+    var onAddAccommodation: ((Int) -> Void)?
+    var onHangOut: ((Int) -> Void)?
     var isComeFromJob : Bool = false
     var onTap: ((Int) -> Void)?
     var onTapAcceptJob: ((Int) -> Void)?
@@ -39,6 +40,12 @@ class HomeTVC: UITableViewCell {
     var currentJobslist : [JobItem]?
     var newjobList : [JobItem]?
     var declinedjobList : [JobItem]?
+    
+    //Employer
+    var totalJobCount : Int?
+    var declinedJobCount : Int?
+    var acceptedJobCount : Int?
+    var employerJobList : [EmployerJob]?
     override func awakeFromNib() {
         super.awakeFromNib()
         self.preservesSuperviewLayoutMargins = false
@@ -106,9 +113,17 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         if tableSection == 0 {
             return 3
         }else if tableSection == 1 {
-            return 4
+            if role == "2"{
+                return employerJobList?.count ?? 0
+            }else if role == "4"{
+                return hangoutList?.count ?? 0
+            }else if role == "3"{
+                return accomodationList?.count ?? 0
+            }else {
+                return 0
+            }
         }else{
-            return 10
+            return 0
         }
 #else
         if isComeFromJobListSeeAll == true{
@@ -156,7 +171,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                   guard let self = self else { return }
                   print("Cell tapped at index: \(indexPath.item)")
                   // Navigate or perform any action
-                self.onTap?()
+                self.onTap?(indexPath.item)
               }
             // Assign item to your label/image inside the cell
             // cell.titleLabel.text = item
@@ -165,68 +180,80 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         }else{
             if tableSection == 0{
                 if indexPath.item == 0 || indexPath.item == 1 || indexPath.item == 2{
-                   
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JobCountCVC", for: indexPath) as? JobCountCVC else {
                         return UICollectionViewCell()
                     }
                     if indexPath.item == 0{
-                        cell.lbl_Count.text = "20"
+                        if let total = self.totalJobCount {
+                            cell.lbl_Count.text = "\(total)"
+                        }else{
+                            cell.lbl_Count.text = "-"
+                        }
                         cell.lbl_title.text = "Total Job Offer"
                     }else if indexPath.item == 1{
-                        cell.lbl_Count.text = "12"
+                        
+                        if let decline = self.declinedJobCount {
+                            cell.lbl_Count.text = "\(decline)"
+                        }else{
+                            cell.lbl_Count.text = "-"
+                        }
                         cell.lbl_title.text = "Declined"
                     }else if indexPath.item == 2{
-                        cell.lbl_Count.text = "8"
+                        if let accepted = self.acceptedJobCount {
+                            cell.lbl_Count.text = "\(accepted)"
+                        }else{
+                            cell.lbl_Count.text = "-"
+                        }
                         cell.lbl_title.text = "Accepted"
                     }
-                  //  let item = items[indexPath.item]
-                    // cell.titleLabel.text = item
-                  
                     return cell
                 }else{
-                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AddAccomodationCVC", for: indexPath) as? AddAccomodationCVC else {
+                    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JobCountCVC", for: indexPath) as? JobCountCVC else {
                         return UICollectionViewCell()
                     }
-                    cell.onAddAccommodationTapped = {
-                           print("Add button tapped at index \(indexPath.row)")
-                           // Call your function or navigate here
-                        self.onAddAccommodation?()
-                       }
                     return cell
                 }
             }else{
-                
-                if role  == "4"{
+               
+                if role == "4"{
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
                         return UICollectionViewCell()
                     }
-
-                    // Configure your cell
-                    // cell.titleLabel.text = dataArr[indexPath.item]
-                    cell.imgVw.image = UIImage(named: "restaurantImg")
-                    cell.lbl_Title.text = "Mendoza's Social Club"
+                    if let hangout = hangoutList?[indexPath.item] {
+                        cell.lbl_Title.text = hangout.name
+                        if let firstIMage = hangout.image.first{
+                            let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
+                            cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "restaurantImg"))
+                        }else{
+                            cell.imgVw.image = UIImage(named: "restaurantImg")
+                        }
+                    }
                     cell.lblAmount.isHidden = true
                     cell.lblRating.isHidden = true
                     cell.lbl_review.isHidden = true
                     cell.cosmosVw.isHidden = true
+                     
                     return cell
-                } else if role  == "3"{
-                    
+                }else if role == "3"{
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
                         return UICollectionViewCell()
                     }
-
-                    // Configure your cell
-                    // cell.titleLabel.text = dataArr[indexPath.item]
-                    cell.imgVw.image = UIImage(named: "aCCOMODATION")
-                    cell.lbl_Title.text = "Mendoza's Social Club"
+                    if let accomodationList = accomodationList?[indexPath.item] {
+                        cell.lbl_Title.text = accomodationList.name
+                        cell.lblAmount.text = "From $, \(accomodationList.price) per adult"
+                        if let firstIMage = accomodationList.image.first{
+                            let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
+                            cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "aCCOMODATION"))
+                        }else{
+                            cell.imgVw.image = UIImage(named: "aCCOMODATION")
+                        }
+                    }
                     cell.lblAmount.isHidden = false
                     cell.lblRating.isHidden = true
                     cell.lbl_review.isHidden = true
                     cell.cosmosVw.isHidden = true
                     return cell
-                }
-                else{
+                }else{
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
                         return UICollectionViewCell()
                     }
@@ -235,11 +262,32 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                           print("Cell tapped at index: \(indexPath.item)")
                           // Navigate or perform any action
                         
-                        self.onTap?()
+                        self.onTap?(indexPath.item)
                       }
+                   
+                    
                     // Assign item to your label/image inside the cell
                     // cell.titleLabel.text = item
-                    cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: isComeForHireDetailPage)
+                    cell.setUpUI(iscomeFromAccept: true,isComeForHiredetailpagee: isComeForHireDetailPage)
+                    if  let obj = employerJobList?[indexPath.item] {
+                        cell.lbl_Title.text = obj.name
+                        cell.lbl_SubTitle.text = obj.address ?? obj.description
+                        if let price = obj.price {
+                            cell.lblAmount.text = "$\(price)"
+                        }
+                        if let firstIMage = obj.image{
+                            let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
+                            cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "profile"))
+                        }else{
+                            cell.imgVw.image = UIImage(named: "profile")
+                        }
+                        let strtTime = obj.startTime
+                        let endTime = obj.endTime
+                        let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
+                        cell.lbl_duration.text = "Duration \(duration1)"
+                    }
+                   
+                    cell.setUpApeeranceOflbl_Amunt(isShow: true)
                     return cell
                 }
             
@@ -271,13 +319,16 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     cell.lblRating.isHidden = true
                     cell.lbl_review.isHidden = true
                     cell.cosmosVw.isHidden = true
+                    cell.item = indexPath.item
                     if let firstIMage = accommodation.image.first{
                         let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
                         cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "aCCOMODATION"))
                     }else{
                         cell.imgVw.image = UIImage(named: "aCCOMODATION")
                     }
-                  
+                    cell.onItemTapped = { [weak self]  index in
+                        self?.onAddAccommodation?(indexPath.item)
+                    }
                 }
 
             case .hangouts:
@@ -287,12 +338,15 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     cell.lblRating.isHidden = true
                     cell.lbl_review.isHidden = true
                     cell.cosmosVw.isHidden = true
-                    
+                    cell.item = indexPath.item
                     if let firstIMage = hangout.image.first{
                         let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
-                        cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "aCCOMODATION"))
+                        cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "restaurantImg"))
                     }else{
                         cell.imgVw.image = UIImage(named: "restaurantImg")
+                    }
+                    cell.onItemTapped = { [weak self]  index in
+                        self?.onHangOut?(indexPath.item)
                     }
                 }
 
@@ -332,6 +386,10 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         let imageURLString = declineJob.image.hasPrefix("http") ? declineJob.image : "http://192.168.11.4:3001/assets/\(declineJob.image)"
                         cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "Profile"))
                         cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
+                        let strtTime = currentJobslist?[indexPath.item].startTime
+                        let endTime = currentJobslist?[indexPath.item].endTime
+                        let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
+                        cell.lbl_duration.text = "Duration \(duration1)"
                     }
 
                 case .upcomingJob:
@@ -352,6 +410,10 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         cell.lbl_SubTitle.text = newjobList?[indexPath.item].description ?? "No Data"
                         let imageURLString = new.image.hasPrefix("http") ? new.image : "http://192.168.11.4:3001/assets/\(new.image)"
                         cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "Profile"))
+                        let strtTime = newjobList?[indexPath.item].startTime
+                        let endTime = newjobList?[indexPath.item].endTime
+                        let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
+                        cell.lbl_duration.text = "Duration \(duration1)"
                         cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
                     }
 
@@ -373,6 +435,10 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         cell.lbl_SubTitle.text = declinedjobList?[indexPath.item].description ?? "No Data"
                         let imageURLString = declineJob.image.hasPrefix("http") ? declineJob.image : "http://192.168.11.4:3001/assets/\(declineJob.image)"
                         cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "Profile"))
+                        let strtTime = declinedjobList?[indexPath.item].startTime
+                        let endTime = declinedjobList?[indexPath.item].endTime
+                        let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
+                        cell.lbl_duration.text = "Duration \(duration1)"
                         cell.setUpUI(iscomeFromAccept: true,isComeForHiredetailpagee: true)
                     }
 
@@ -416,7 +482,10 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         placeholderImage: UIImage(named: "Profile")
                     )
                 }
-
+                let strtTime = jobList?[indexPath.item].startTime
+                let endTime = jobList?[indexPath.item].endTime
+                let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
+                cell.lbl_duration.text = "Duration \(duration1)"
                 cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
                 return cell
             }
@@ -429,16 +498,36 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 #if Backapacker
-//        if tableSection == 0 {
-//            if indexPath.item == 0{
-//                self.onTapAcceptJob?(indexPath.row)
-//            }else if indexPath.item == 1{
-//                self.onTapAcceptJob?(1)
-//            }else if indexPath.item == 2{
-//                self.onTapAcceptJob?(2)
-//            }
+
+        
+//        let sectionType = activeSections?[tableSection]
+//        switch sectionType {
+//        case .banner:
+//          
+//        case .accommodations:
+//         
+//        case  .hangouts:
+//                
+//        case .jobs :
+//          
+//        case .none:
+//            
 //        }
+        
+        
+        
+        
+        
         self.onTapAcceptJob?(indexPath.row)
+        //        if tableSection == 0 {
+        //            if indexPath.item == 0{
+        //                self.onTapAcceptJob?(indexPath.row)
+        //            }else if indexPath.item == 1{
+        //                self.onTapAcceptJob?(1)
+        //            }else if indexPath.item == 2{
+        //                self.onTapAcceptJob?(2)
+        //            }
+        //        }
         #else
         if tableSection == 0 {
             if indexPath.item == 0{

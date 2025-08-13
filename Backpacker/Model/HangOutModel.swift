@@ -20,14 +20,8 @@ struct HangoutRequest {
 struct HangoutResponseData: Codable {
     let _id: String
 }
-struct ApiResponseModel<T: Codable>: Codable {
-    let success: Bool
-    let message: String
-    let data: T?
-    let errors: [String]?
-}
 
-struct EmptyData: Codable {}
+
 import Foundation
 
 struct BackPackerHangoutResponse: Codable {
@@ -43,7 +37,6 @@ struct BackPackerHangoutData: Codable {
     let perPage: Int
     let totalPages: Int
     let total: Int
-   // let userList: [BackPackerHangoutUser]
 }
 
 struct BackPackerHangoutItem: Codable {
@@ -75,3 +68,62 @@ struct BackPackerHangoutUser: Codable {
         case name, email, image, lat, long
     }
 }
+
+
+
+//MARK: - Hangout etail Backpacker response model
+
+struct HangoutDetailResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: HangoutData
+    let errors: [String]
+}
+
+struct HangoutData: Codable {
+    let hangout: Hangout
+    var nearbyUsers: [NearbyUser]
+}
+
+struct Hangout: Codable {
+    let id: String
+    let name: String
+    let address: String
+    let lat: Double
+    let long: Double
+    let locationText: String
+    let description: String
+    let image: [String]
+    let v: Int
+//    let favoriteStatus: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case name, address, lat, long, locationText, description, image//, favoriteStatus
+        case v = "__v"
+    }
+}
+
+struct NearbyUser: Codable {
+    var id: String
+    var name: String
+    var email: String
+    var image: String
+    var lat: Double
+    var long: Double
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case name, email, image, lat, long
+    }
+}
+
+
+//MARK: - Response moedl
+struct ApiResponseModel<T: Codable>: Codable {
+    let success: Bool
+    let message: String
+    let data: T?
+    let errors: [String]?
+}
+struct EmptyData: Codable {}

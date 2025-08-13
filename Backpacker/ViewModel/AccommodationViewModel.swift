@@ -101,6 +101,55 @@ class AccommodationViewModel {
         }
     }
 
+    //MARK: - Backpacker Accomodation detail
+    
+    // MARK: - BackPacker: JobDetail
+    func getBackPackerAcommodationDetail<T: Codable>(
+        accommodationID:String,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getBACKPACKER_AccomodationDETAIL(accommodationID: accommodationID)
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
+    
+    
+    //MARK: - Emplyer accomodtion Home
+    
+    func getEmployerAccommodationHomeData(
+        completion: @escaping (Bool, EmployerAccommodationData?, String?, Int?) -> Void
+    ) {
+        guard let token = UserDefaultsManager.shared.bearerToken, !token.isEmpty else {
+            completion(false, nil, "Authorization token is missing.", nil)
+            return
+        }
+
+        let url = ApiConstants.API.EMPLOYER_ACCOMODATION_HOME  // e.g., BASE_URL + "api/backpackers/home"
+        
+        let headers = ServiceManager.sharedInstance.getHeaders()
+        
+        ServiceManager.sharedInstance.requestValidatedApi(
+            url,
+            method: .get,
+            parameters: nil,
+            headers: headers
+        ) { (result: ApiResult<ApiResponseModel<EmployerAccommodationData>, APIError>) in
+            switch result {
+            case .success(let response, let statusCode):
+                completion(true, response?.data, response?.message, statusCode)
+            case .failure(let error, let statusCode):
+                completion(false, nil, error.customDescription, statusCode)
+            }
+        }
+
+    }
+    
     
     
 }

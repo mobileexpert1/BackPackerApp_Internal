@@ -85,5 +85,58 @@ class HangoutViewModel {
             completion(success, result, statusCode)
         }
     }
+    
+    
+    
+    // MARK: - BackPacker: HangOutDetail
+    func getBackPackerHangutDetail<T: Codable>(
+        hangoutID:String,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getBACKPACKER_HANGOUTDETAIL(hangoutID: hangoutID)
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
+    
+    
+    
+    //MARK: - Employer Hangout Home Data
+    
+    
+    func getEmployerHangOutHomeData(
+        completion: @escaping (Bool, EmployerHangoutData?, String?, Int?) -> Void
+    ) {
+        guard let token = UserDefaultsManager.shared.bearerToken, !token.isEmpty else {
+            completion(false, nil, "Authorization token is missing.", nil)
+            return
+        }
+
+        let url = ApiConstants.API.EMPLOYER_HANGOUT_HOME  // e.g., BASE_URL + "api/backpackers/home"
+        
+        let headers = ServiceManager.sharedInstance.getHeaders()
+        
+        ServiceManager.sharedInstance.requestValidatedApi(
+            url,
+            method: .get,
+            parameters: nil,
+            headers: headers
+        ) { (result: ApiResult<ApiResponseModel<EmployerHangoutData>, APIError>) in
+            switch result {
+            case .success(let response, let statusCode):
+                completion(true, response?.data, response?.message, statusCode)
+            case .failure(let error, let statusCode):
+                completion(false, nil, error.customDescription, statusCode)
+            }
+        }
+
+    }
+    
 }
 

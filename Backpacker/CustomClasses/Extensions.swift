@@ -62,7 +62,6 @@ extension UILabel {
 }
 
 extension String {
-    
     /// Calculates height for given string, font, and width
     func heightForLabel(font: UIFont, width: CGFloat) -> CGFloat {
         let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
@@ -75,4 +74,35 @@ extension String {
         return max(40, ceil(boundingBox.height))
     }
 
+}
+import Foundation
+
+extension Date {
+    /// Calculates duration between two times in "HH:mm" format.
+    static func durationString(from startTime: String, to endTime: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        
+        guard let start = formatter.date(from: startTime),
+              let end = formatter.date(from: endTime) else {
+            return "Invalid time"
+        }
+        
+        var diff = end.timeIntervalSince(start)
+        
+        // Handle next-day case
+        if diff < 0 {
+            diff += 24 * 60 * 60
+        }
+        
+        let hours = Int(diff) / 3600
+        let minutes = (Int(diff) % 3600) / 60
+        
+        if minutes == 0 {
+            return "\(hours) hr"
+        } else {
+            return "\(hours) hr \(minutes) min"
+        }
+    }
 }

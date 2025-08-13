@@ -28,7 +28,14 @@ class BackPackerHomeVC: UIViewController {
     let role = UserDefaults.standard.string(forKey: "UserRoleType")
     private let viewModel = BackPackerHomeVM()
     private let viewModelAuth = LogInVM()
+   
     private var homeData: BackpackerHomeResponseModel?
+    
+    private let viewModelEmpAccomodationHome = AccommodationViewModel()
+    
+    private var accomdationEmpHomeData: EmployerAccommodationData?
+    private let viewModelEmpHangoutHome = HangoutViewModel()
+    private var hangoutEmpHomeData: EmployerHangoutData?
     var isLoading: Bool = true // true while loading, false once data is ready
     var jobId = String()
     var activeSections: [SectionType] {
@@ -53,8 +60,11 @@ class BackPackerHomeVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupPullToRefresh()
+        Vw_SearchHeight.constant = 0.0
+        txtFldVw.isHidden = true
+        img_placeholde_Search.isHidden = true
+        self.vw_searchBtm.constant = 5.0
 #if BackpackerHire
-        self.isLoading = false
         if role == "2" {
             sectionTitles = ["","Jobs"]
         }else if role == "3" {
@@ -69,10 +79,7 @@ class BackPackerHomeVC: UIViewController {
         }
 #else
         sectionTitles = ["","Accommodations","Backpackers Hangout","Jobs"]
-        Vw_SearchHeight.constant = 0.0
-        txtFldVw.isHidden = true
-        img_placeholde_Search.isHidden = true
-        self.vw_searchBtm.constant = 5.0
+       
 #endif
         
         let nib4 = UINib(nibName: "SkeltonTVC", bundle: nil)
@@ -81,7 +88,7 @@ class BackPackerHomeVC: UIViewController {
         let nib5 = UINib(nibName: "SkeltonCollectionTVC", bundle: nil)
         self.homeTblVw.register(nib5, forCellReuseIdentifier: "SkeltonCollectionTVC")
         
-        self.setUpUI()
+        
         let nib = UINib(nibName: "HomeTVC", bundle: nil)
         self.homeTblVw.register(nib, forCellReuseIdentifier: "HomeTVC")
         let nib2 = UINib(nibName: "AdvertiesmentTVC", bundle: nil)
@@ -99,11 +106,37 @@ class BackPackerHomeVC: UIViewController {
         
         
         txtFldVw.delegate = self
+        self.setUpUI()
 #if Backapacker
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
         {
             LoaderManager.shared.show()
             self.HomeApiCall()
+        }
+#endif
+        
+        
+#if BackpackerHire
+        if role == "3"{
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
+            {
+                LoaderManager.shared.show()
+                self.EmployerAccomodationHome()
+            }
+            
+           
+        }
+        
+        if role == "4"{
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
+            {
+                LoaderManager.shared.show()
+                self.EmployerHangoutApiCall()
+            }
+            
+           
         }
 #endif
     }
@@ -207,8 +240,6 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 return cell
                 
             }
-        
-
         }else{
             
     #if BackpackerHire
@@ -217,12 +248,19 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                     return UITableViewCell()
                 }
     #if BackpackerHire
+                if role == "3"{
+                    let adsData = accomdationEmpHomeData?.banners
+                    if let adsData  = adsData {
+                        cell.ads = adsData
+                    }
+                }
                 
-                cell.adsHire = [
-                 Advertisement(name: "Flat 50%", address: "New York", image: UIImage(named: "advertiesment")!),
-                 Advertisement(name: "Flat 70%", address: "Los Angeles", image: UIImage(named: "advertiesment")!),
-                ]
-
+                if role == "4"{
+                    let adsData = hangoutEmpHomeData?.banners
+                    if let adsData  = adsData {
+                        cell.ads = adsData
+                    }
+                }
     #else
                 let adsData = homeData?.banners
                 if let adsData  = adsData {
@@ -235,6 +273,42 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
             }
             else  if indexPath.section == 1 || indexPath.section == 2 {
                 
+#if BackpackerHire
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                    return UITableViewCell()
+                }
+                if role == "3"{
+                    cell.configure(with: sectionTitles,section: indexPath.section)
+                    cell.isComeFromJob = false
+                    cell.isComeForHireDetailPage = false
+                    // Handle final callback here
+                    cell.onAddAccommodation = { [weak self] val  in
+                        print("ASccomodation Item",val)
+                        let id = self?.accomdationEmpHomeData?.accommodationList[val].id
+                        //self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: false)
+                    }
+                    cell.accomodationList = accomdationEmpHomeData?.accommodationList
+                }else if role == "4"{
+                    cell.configure(with: sectionTitles,section: indexPath.section)
+                    cell.isComeFromJob = false
+                    cell.isComeForHireDetailPage = false
+                    // Handle final callback here
+                    cell.onAddAccommodation = { [weak self] val  in
+                        print("ASccomodation Item",val)
+                        let id = self?.hangoutEmpHomeData?.hangoutList[val].id
+                        //self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: false)
+                    }
+                    cell.hangoutList = hangoutEmpHomeData?.hangoutList
+                }else{
+                    cell.configure(with: sectionTitles,section: indexPath.section)
+                    cell.isComeFromJob = false
+                    cell.isComeForHireDetailPage = false
+                    // Handle final callback here
+                    cell.onAddAccommodation = { [weak self] val  in
+                    }
+                }
+                return cell
+                #else
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
                     return UITableViewCell()
                 }
@@ -242,9 +316,12 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 cell.isComeFromJob = false
                 cell.isComeForHireDetailPage = false
                 // Handle final callback here
-                cell.onAddAccommodation = { [weak self] in
+                cell.onAddAccommodation = { [weak self] val  in
                 }
                 return cell
+                
+#endif
+               
             }else{
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
                     return UITableViewCell()
@@ -253,7 +330,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 cell.isComeFromJob = true
                 cell.isComeForHireDetailPage = false
                 // Handle final callback here
-                cell.onAddAccommodation = { [weak self] in
+                cell.onAddAccommodation = { [weak self] val  in
                 }
                 return cell
             }
@@ -302,7 +379,10 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 cell.isComeFromJob = false
                 cell.isComeForHireDetailPage = false
                 // Handle final callback here
-                cell.onAddAccommodation = { [weak self] in
+                cell.onHangOut = { [weak self] val in
+                    print("Hangout Item",val)
+                    let id = self?.homeData?.hangoutList[val].id
+                    self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: true)
                 }
                 cell.hangoutList = homeData?.hangoutList  ?? []
                 cell.activeSections = activeSections
@@ -316,7 +396,10 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 cell.isComeFromJob = false
                 cell.isComeForHireDetailPage = false
                 // Handle final callback here
-                cell.onAddAccommodation = { [weak self] in
+                cell.onAddAccommodation = { [weak self] val in
+                    print("ASccomodation Item",val)
+                    let id = self?.homeData?.accommodationList[val].id
+                    self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: false)
                   
                 }
                 cell.accomodationList = homeData?.accommodationList  ?? []
@@ -478,7 +561,21 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
             self.HomeApiCall()
         }
         #else
-        self.refreshControl?.endRefreshing()
+        if role == "3"{
+            self.isLoading = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
+            {
+                self.EmployerAccomodationHome()
+            }
+        }
+        if role == "4"{
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
+            {
+                LoaderManager.shared.show()
+                self.EmployerHangoutApiCall()
+            }
+        }
+       
 #endif
       
     }
@@ -503,7 +600,29 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
             }
         }
     }
-    
+   private func moveToDetailPage(id:String,isComeFromHangOut: Bool = false){
+        if id.isEmpty == false {
+            if isComeFromHangOut == false {
+                let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+                if let accVC = storyboard.instantiateViewController(withIdentifier: "AccomodationDetailVC") as? AccomodationDetailVC {
+                    accVC.accomodationID = id
+                    self.navigationController?.pushViewController(accVC, animated: true)
+                } else {
+                    print("❌ Could not instantiate AddNewAccomodationVC")
+                }
+            }else{
+                let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
+                if let accVC = storyboard.instantiateViewController(withIdentifier: "HangOutDetailVC") as? HangOutDetailVC {
+                    accVC.hangoutID = id
+                    self.navigationController?.pushViewController(accVC, animated: true)
+                } else {
+                    print("❌ Could not instantiate AddNewAccomodationVC")
+                }
+            }
+            
+           
+        }
+    }
 }
 
 
@@ -649,3 +768,148 @@ extension  BackPackerHomeVC: SkeletonTableViewDataSource {
     }
 }
 
+extension BackPackerHomeVC {
+#if BackpackerHire
+    func EmployerAccomodationHome(){
+        LoaderManager.shared.show()
+        viewModelEmpAccomodationHome.getEmployerAccommodationHomeData() { [weak self] success, data, message, statusCode in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            self.accomdationEmpHomeData = data
+                            if self.accomdationEmpHomeData?.name.isEmpty == true && self.accomdationEmpHomeData?.email.isEmpty == true{
+                                self.showForceUpdatePopUp()
+                            }
+                            DispatchQueue.main.async {
+                                self.isLoading = false
+                                LoaderManager.shared.hide()
+                                self.refreshControl?.endRefreshing()
+                                self.homeTblVw.setContentOffset(.zero, animated: true)
+                                self.homeTblVw.reloadData()
+                            }
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                            self.refreshControl?.endRefreshing()
+                            self.homeTblVw.setContentOffset(.zero, animated: true)
+                            LoaderManager.shared.hide()
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.EmployerAccomodationHome()
+                            } else {
+                                LoaderManager.shared.hide()
+                                self.refreshControl?.endRefreshing()
+                                self.homeTblVw.setContentOffset(.zero, animated: true)
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                            }
+                        }
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.refreshControl?.endRefreshing()
+                        self.homeTblVw.setContentOffset(.zero, animated: true)
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.refreshControl?.endRefreshing()
+                        self.homeTblVw.setContentOffset(.zero, animated: true)
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    func EmployerHangoutApiCall(){
+        LoaderManager.shared.show()
+        viewModelEmpHangoutHome.getEmployerHangOutHomeData() { [weak self] success, data, message, statusCode in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            self.hangoutEmpHomeData = data
+                            if self.hangoutEmpHomeData?.name.isEmpty == true && self.hangoutEmpHomeData?.email.isEmpty == true{
+                                self.showForceUpdatePopUp()
+                            }
+                            DispatchQueue.main.async {
+                                self.isLoading = false
+                                LoaderManager.shared.hide()
+                                self.refreshControl?.endRefreshing()
+                                self.homeTblVw.setContentOffset(.zero, animated: true)
+                                self.homeTblVw.reloadData()
+                            }
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                            self.refreshControl?.endRefreshing()
+                            self.homeTblVw.setContentOffset(.zero, animated: true)
+                            LoaderManager.shared.hide()
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.EmployerHangoutApiCall()
+                            } else {
+                                LoaderManager.shared.hide()
+                                self.refreshControl?.endRefreshing()
+                                self.homeTblVw.setContentOffset(.zero, animated: true)
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                            }
+                        }
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.refreshControl?.endRefreshing()
+                        self.homeTblVw.setContentOffset(.zero, animated: true)
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.refreshControl?.endRefreshing()
+                        self.homeTblVw.setContentOffset(.zero, animated: true)
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                }
+            }
+        }
+        
+        
+    }
+    
+    #endif
+    
+    
+}

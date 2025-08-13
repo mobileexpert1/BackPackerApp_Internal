@@ -26,7 +26,7 @@ class HangOutVC: UIViewController {
     var hangOutList = [BackPackerHangoutItem]()
     
     var page = 1
-    let perPage = 4
+    let perPage = 10
     var totalAccomodations = Int()
     var isLoadingMoreData = false
     var isAllDataLoaded = false
@@ -62,8 +62,8 @@ class HangOutVC: UIViewController {
         self.lbl_NDataFound.font = FontManager.inter(.medium, size: 16.0)
         self.lbl_NDataFound.isHidden = true
 #if BackpackerHire
-        self.maVw_Height.constant = 0
-        self.lbl_nearBackpacker_Height.constant = 0
+//        self.maVw_Height.constant = 0
+//        self.lbl_nearBackpacker_Height.constant = 0
         self.btnAdd.isHidden = false
         self.btnAdd.isUserInteractionEnabled = true
 #else
@@ -144,10 +144,12 @@ class HangOutVC: UIViewController {
             print("Facilities: \(facilities ?? "-")")
             print("Sort by: \(sortBy ?? "-")")
             print("Radius: \(radius ?? "-")")
+#if Backapacker
             self?.radius = Int(radius ?? "")
             // You can now use the data to filter your content
             self?.page = 1
             self?.listOfAllBackPackerHangOuts()
+            #endif
         }
         
         vc.modalPresentationStyle = .overFullScreen
@@ -176,8 +178,6 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        
-        
         if isLoading == true  {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SkeltonCVC", for: indexPath) as? SkeltonCVC else {
                 return UICollectionViewCell()
@@ -190,33 +190,56 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
             
             // Configure your cell
             // cell.titleLabel.text = dataArr[indexPath.item]
-            
-            
-            let hangOut = hangOutList[indexPath.item]
-            cell.lbl_Title.text = "sfsfsfsdf"//hangOut.name
-            cell.lblAmount.isHidden = true
-            cell.lblRating.isHidden = true
-            cell.lbl_review.isHidden = true
-            cell.cosmosVw.isHidden = true
-            if let firstIMage = hangOut.image.first{
-                let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
-                cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "restaurantImg"))
+            if hangOutList.count > 0{
+                let hangOut = hangOutList[indexPath.item]
+                cell.lbl_Title.text = hangOut.name
+                cell.lblAmount.isHidden = true
+                cell.lblRating.isHidden = true
+                cell.lbl_review.isHidden = true
+                cell.cosmosVw.isHidden = true
+                if let firstIMage = hangOut.image.first{
+                    let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
+                    cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "restaurantImg"))
+                }else{
+                    cell.imgVw.image = UIImage(named: "restaurantImg")
+               }
+                cell.onItemTapped = { [weak self] val in
+                    let id = self?.hangOutList[indexPath.item].id
+                    self?.moveToDetail(id: id ?? "")
+                    
+                }
+                return cell
             }else{
-                cell.imgVw.image = UIImage(named: "restaurantImg")
-           }
-            return cell
+                return UICollectionViewCell()
+            }
+            
+           
         }
         
         
     }
-    
+    private func moveToDetail(id : String){
+        if id.isEmpty == false {
+            let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
+            if let accVC = storyboard.instantiateViewController(withIdentifier: "HangOutDetailVC") as? HangOutDetailVC {
+                accVC.hangoutID = id
+                self.navigationController?.pushViewController(accVC, animated: true)
+            } else {
+                print("❌ Could not instantiate AddNewAccomodationVC")
+            }
+        }
+    }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
+        
+         let id  = hangOutList[indexPath.item].id
+            let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
         if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "HangOutDetailVC") as? HangOutDetailVC {
-            
+            jobDescriptionVC.hangoutID = id
             // Optional: pass selected job title
             self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
         }
+        
+       
     }
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
@@ -371,7 +394,7 @@ extension HangOutVC{
                                             AlertManager.showAlert(
                                                 on: self,
                                                 title: "No Results",
-                                                message: "No accommodations found near your current location. Try expanding your search radius or adjusting filters."
+                                                message: "No Hangout found near your current location. Try expanding your search radius or adjusting filters."
                                             )
                                         }
                                         self.lbl_NDataFound.isHidden = false

@@ -42,3 +42,41 @@ struct Accommodation: Codable {
         case name, lat, long, description, image, price, facilities, favoriteStatus
     }
 }
+
+
+//MARK: - Backpacker Accommodation detail model
+import Foundation
+
+struct AccommodationDetailResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: AccommodationDetailData
+    let errors: [String]
+}
+
+struct AccommodationDetailData: Codable {
+    let accommodation: AccommodationDetail
+}
+
+struct AccommodationDetail: Codable {
+    let id: String
+    let name: String
+    let address: String
+    let lat: Double
+    let long: Double
+    let locationText: String
+    let description: String
+    let image: [String]
+    let price: Int
+    let facilities: [String]
+    let v: Int
+  //  let favoriteStatus: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case name, address, lat, long, locationText, description, image, price, facilities//, favoriteStatus
+        case v = "__v"
+    }
+}
+
+//MARK: -
