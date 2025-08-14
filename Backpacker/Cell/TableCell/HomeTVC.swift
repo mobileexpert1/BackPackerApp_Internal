@@ -224,11 +224,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             cell.lblAmount.text = "$\(amnt)"
                         }
                         cell.lbl_SubTitle.text = empCurrentJobslist?[indexPath.item].description ?? "No Data"
-                        let baseURL = "http://192.168.11.4:3001/assets/"
-                        let imageURLString: String
+                        let baseURL1 = "http://192.168.11.4:3001/assets/"
+                        let baseURL2 = "http://192.168.11.4:3000/assets/"
 
-                        if let imagePath = declineJob.image {
-                            imageURLString = imagePath.hasPrefix("http") ? imagePath : baseURL + imagePath
+                        let imageURLString: String
+                        if let imagePath = declineJob.image, !imagePath.isEmpty {
+                            imageURLString = imagePath.hasPrefix("http") ? imagePath : baseURL1 + imagePath
                         } else {
                             imageURLString = ""
                         }
@@ -236,7 +237,16 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         cell.imgVw.sd_setImage(
                             with: URL(string: imageURLString),
                             placeholderImage: UIImage(named: "Profile")
-                        )
+                        ) { image, _, _, _ in
+                            if image == nil, let imagePath = declineJob.image, !imagePath.isEmpty {
+                                let fallbackURL = imagePath.hasPrefix("http") ? imagePath : baseURL2 + imagePath
+                                cell.imgVw.sd_setImage(
+                                    with: URL(string: fallbackURL),
+                                    placeholderImage: UIImage(named: "Profile")
+                                )
+                            }
+                        }
+
 
                         cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
                         let strtTime = empCurrentJobslist?[indexPath.item].startTime
@@ -263,11 +273,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             cell.lblAmount.text = "$\(amnt)"
                         }
                         cell.lbl_SubTitle.text = empNewjobList?[indexPath.item].description ?? "No Data"
-                        let baseURL = "http://192.168.11.4:3001/assets/"
-                        let imageURLString: String
+                        let baseURL1 = "http://192.168.11.4:3001/assets/"
+                        let baseURL2 = "http://192.168.11.4:3000/assets/"
 
-                        if let imagePath = new.image {
-                            imageURLString = imagePath.hasPrefix("http") ? imagePath : baseURL + imagePath
+                        let imageURLString: String
+                        if let imagePath = new.image, !imagePath.isEmpty {
+                            imageURLString = imagePath.hasPrefix("http") ? imagePath : baseURL1 + imagePath
                         } else {
                             imageURLString = ""
                         }
@@ -275,7 +286,16 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         cell.imgVw.sd_setImage(
                             with: URL(string: imageURLString),
                             placeholderImage: UIImage(named: "Profile")
-                        )
+                        ) { image, _, _, _ in
+                            if image == nil, let imagePath = new.image, !imagePath.isEmpty {
+                                let fallbackURL = imagePath.hasPrefix("http") ? imagePath : baseURL2 + imagePath
+                                cell.imgVw.sd_setImage(
+                                    with: URL(string: fallbackURL),
+                                    placeholderImage: UIImage(named: "Profile")
+                                )
+                            }
+                        }
+
 
                         let strtTime = empNewjobList?[indexPath.item].startTime
                         let endTime = empNewjobList?[indexPath.item].endTime
@@ -301,11 +321,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             cell.lblAmount.text = "$\(amnt)"
                         }
                         cell.lbl_SubTitle.text = empPostedjobList?[indexPath.item].description ?? "No Data"
-                        let baseURL = "http://192.168.11.4:3001/assets/"
-                        let imageURLString: String
+                        let baseURL1 = "http://192.168.11.4:3001/assets/"
+                        let baseURL2 = "http://192.168.11.4:3000/assets/"
 
-                        if let imagePath = declineJob.image {
-                            imageURLString = imagePath.hasPrefix("http") ? imagePath : baseURL + imagePath
+                        let imageURLString: String
+                        if let imagePath = declineJob.image, !imagePath.isEmpty {
+                            imageURLString = imagePath.hasPrefix("http") ? imagePath : baseURL1 + imagePath
                         } else {
                             imageURLString = ""
                         }
@@ -313,7 +334,16 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         cell.imgVw.sd_setImage(
                             with: URL(string: imageURLString),
                             placeholderImage: UIImage(named: "Profile")
-                        )
+                        ) { image, _, _, _ in
+                            if image == nil, let imagePath = declineJob.image, !imagePath.isEmpty {
+                                let fallbackURL = imagePath.hasPrefix("http") ? imagePath : baseURL2 + imagePath
+                                cell.imgVw.sd_setImage(
+                                    with: URL(string: fallbackURL),
+                                    placeholderImage: UIImage(named: "Profile")
+                                )
+                            }
+                        }
+
 
                         let strtTime = empPostedjobList?[indexPath.item].startTime
                         let endTime = empPostedjobList?[indexPath.item].endTime
@@ -375,13 +405,36 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             return UICollectionViewCell()
                         }
                         if let hangout = hangoutList?[indexPath.item] {
+                            cell.item = indexPath.item
                             cell.lbl_Title.text = hangout.name
                             if let firstIMage = hangout.image.first{
-                                let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
-                                cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "restaurantImg"))
+                                let baseURL1 = "http://192.168.11.4:3001/assets/"
+                                let baseURL2 = "http://192.168.11.4:3000/assets/"
+
+                                let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : baseURL1 + firstIMage
+
+                                cell.imgVw.sd_setImage(
+                                    with: URL(string: imageURLString),
+                                    placeholderImage: UIImage(named: "restaurantImg")
+                                ) { image, _, _, _ in
+                                    if image == nil {
+                                        let fallbackURL = firstIMage.hasPrefix("http") ? firstIMage : baseURL2 + firstIMage
+                                        cell.imgVw.sd_setImage(
+                                            with: URL(string: fallbackURL),
+                                            placeholderImage: UIImage(named: "restaurantImg")
+                                        )
+                                    }
+                                }
+
                             }else{
                                 cell.imgVw.image = UIImage(named: "restaurantImg")
                             }
+                        }
+                        cell.onItemTapped = { [weak self] item in
+                            
+                            print("Item",item)
+                            self?.onHangOut?(item)
+                            
                         }
                         cell.lblAmount.isHidden = true
                         cell.lblRating.isHidden = true
@@ -394,13 +447,36 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             return UICollectionViewCell()
                         }
                         if let accomodationList = accomodationList?[indexPath.item] {
+                            cell.item = indexPath.item
                             cell.lbl_Title.text = accomodationList.name
                             cell.lblAmount.text = "From $, \(accomodationList.price) per adult"
                             if let firstIMage = accomodationList.image.first{
-                                let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
-                                cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "aCCOMODATION"))
+                                let baseURL1 = "http://192.168.11.4:3001/assets/"
+                                let baseURL2 = "http://192.168.11.4:3000/assets/"
+
+                                let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : baseURL1 + firstIMage
+
+                                cell.imgVw.sd_setImage(
+                                    with: URL(string: imageURLString),
+                                    placeholderImage: UIImage(named: "aCCOMODATION")
+                                ) { image, _, _, _ in
+                                    if image == nil {
+                                        let fallbackURL = firstIMage.hasPrefix("http") ? firstIMage : baseURL2 + firstIMage
+                                        cell.imgVw.sd_setImage(
+                                            with: URL(string: fallbackURL),
+                                            placeholderImage: UIImage(named: "aCCOMODATION")
+                                        )
+                                    }
+                                }
+
                             }else{
                                 cell.imgVw.image = UIImage(named: "aCCOMODATION")
+                            }
+                            cell.onItemTapped = { [weak self] item in
+                                
+                                print("Item",item)
+                                self?.onAddAccommodation?(item)
+                                
                             }
                         }
                         cell.lblAmount.isHidden = false
@@ -425,14 +501,31 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         // cell.titleLabel.text = item
                         cell.setUpUI(iscomeFromAccept: true,isComeForHiredetailpagee: isComeForHireDetailPage)
                         if  let obj = employerJobList?[indexPath.item] {
+                            cell.indexPath = indexPath.item
                             cell.lbl_Title.text = obj.name
                             cell.lbl_SubTitle.text = obj.address ?? obj.description
                             if let price = obj.price {
                                 cell.lblAmount.text = "$\(price)"
                             }
                             if let firstIMage = obj.image{
-                                let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
-                                cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "profile"))
+                                let baseURL1 = "http://192.168.11.4:3001/assets/"
+                                let baseURL2 = "http://192.168.11.4:3000/assets/"
+
+                                let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : baseURL1 + firstIMage
+
+                                cell.imgVw.sd_setImage(
+                                    with: URL(string: imageURLString),
+                                    placeholderImage: UIImage(named: "profile")
+                                ) { image, _, _, _ in
+                                    if image == nil {
+                                        let fallbackURL = firstIMage.hasPrefix("http") ? firstIMage : baseURL2 + firstIMage
+                                        cell.imgVw.sd_setImage(
+                                            with: URL(string: fallbackURL),
+                                            placeholderImage: UIImage(named: "profile")
+                                        )
+                                    }
+                                }
+
                             }else{
                                 cell.imgVw.image = UIImage(named: "profile")
                             }
@@ -478,8 +571,24 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     cell.cosmosVw.isHidden = true
                     cell.item = indexPath.item
                     if let firstIMage = accommodation.image.first{
-                        let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
-                        cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "aCCOMODATION"))
+                        let baseURL1 = "http://192.168.11.4:3001/assets/"
+                        let baseURL2 = "http://192.168.11.4:3000/assets/"
+
+                        let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : baseURL1 + firstIMage
+
+                        cell.imgVw.sd_setImage(
+                            with: URL(string: imageURLString),
+                            placeholderImage: UIImage(named: "aCCOMODATION")
+                        ) { image, _, _, _ in
+                            if image == nil {
+                                let fallbackURL = firstIMage.hasPrefix("http") ? firstIMage : baseURL2 + firstIMage
+                                cell.imgVw.sd_setImage(
+                                    with: URL(string: fallbackURL),
+                                    placeholderImage: UIImage(named: "aCCOMODATION")
+                                )
+                            }
+                        }
+
                     }else{
                         cell.imgVw.image = UIImage(named: "aCCOMODATION")
                     }
@@ -497,8 +606,19 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     cell.cosmosVw.isHidden = true
                     cell.item = indexPath.item
                     if let firstIMage = hangout.image.first{
-                        let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
-                        cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "restaurantImg"))
+                        let baseURL3000 = "http://192.168.11.4:3000/assets/"
+                        let baseURL3001 = "http://192.168.11.4:3001/assets/"
+
+                        // Choose which one you want to use
+                        let baseURL = baseURL3000 // or baseURL3001
+
+                        let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : baseURL + firstIMage
+
+                        cell.imgVw.sd_setImage(
+                            with: URL(string: imageURLString),
+                            placeholderImage: UIImage(named: "restaurantImg")
+                        )
+
                     }else{
                         cell.imgVw.image = UIImage(named: "restaurantImg")
                     }
@@ -540,8 +660,23 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             cell.lblAmount.text = "$\(amnt)"
                         }
                         cell.lbl_SubTitle.text = currentJobslist?[indexPath.item].description ?? "No Data"
-                        let imageURLString = declineJob.image.hasPrefix("http") ? declineJob.image : "http://192.168.11.4:3001/assets/\(declineJob.image)"
-                        cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "Profile"))
+                        if declineJob.image.hasPrefix("http") {
+                            cell.imgVw.sd_setImage(
+                                with: URL(string: declineJob.image),
+                                placeholderImage: UIImage(named: "Profile")
+                            )
+                        } else {
+                            let port3000 = "http://192.168.11.4:3000/assets/\(declineJob.image)"
+                            let port3001 = "http://192.168.11.4:3001/assets/\(declineJob.image)"
+                            
+                            cell.imgVw.sd_setImage(with: URL(string: port3000), placeholderImage: UIImage(named: "Profile")) { image, _, _, _ in
+                                if image == nil {
+                                    // Fallback to 3001 if 3000 failed
+                                    cell.imgVw.sd_setImage(with: URL(string: port3001), placeholderImage: UIImage(named: "Profile"))
+                                }
+                            }
+                        }
+
                         cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
                         let strtTime = currentJobslist?[indexPath.item].startTime
                         let endTime = currentJobslist?[indexPath.item].endTime
@@ -565,8 +700,19 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             cell.lblAmount.text = "$\(amnt)"
                         }
                         cell.lbl_SubTitle.text = newjobList?[indexPath.item].description ?? "No Data"
-                        let imageURLString = new.image.hasPrefix("http") ? new.image : "http://192.168.11.4:3001/assets/\(new.image)"
-                        cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "Profile"))
+                        if new.image.hasPrefix("http") {
+                            cell.imgVw.sd_setImage(with: URL(string: new.image), placeholderImage: UIImage(named: "Profile"))
+                        } else {
+                            let url3000 = "http://192.168.11.4:3000/assets/\(new.image)"
+                            let url3001 = "http://192.168.11.4:3001/assets/\(new.image)"
+                            
+                            cell.imgVw.sd_setImage(with: URL(string: url3000), placeholderImage: UIImage(named: "Profile")) { img, _, _, _ in
+                                if img == nil {
+                                    cell.imgVw.sd_setImage(with: URL(string: url3001), placeholderImage: UIImage(named: "Profile"))
+                                }
+                            }
+                        }
+
                         let strtTime = newjobList?[indexPath.item].startTime
                         let endTime = newjobList?[indexPath.item].endTime
                         let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
@@ -627,17 +773,31 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 }
                 cell.lbl_SubTitle.text = jobList?[indexPath.item].description ?? "No Data"
                 if let jobImage = jobList?[indexPath.item] {
-                    let imageURLString: String
+                    let base3000 = "http://192.168.11.4:3000/assets/"
+                    let base3001 = "http://192.168.11.4:3001/assets/"
+
                     if jobImage.image.hasPrefix("http") {
-                        imageURLString = jobImage.image
+                        cell.imgVw.sd_setImage(
+                            with: URL(string: jobImage.image),
+                            placeholderImage: UIImage(named: "Profile")
+                        )
                     } else {
-                        imageURLString = "http://192.168.11.4:3001/assets/\(jobImage.image)"
+                        let url3000 = URL(string: base3000 + jobImage.image)
+                        let url3001 = URL(string: base3001 + jobImage.image)
+
+                        cell.imgVw.sd_setImage(
+                            with: url3000,
+                            placeholderImage: UIImage(named: "Profile")
+                        ) { image, error, _, _ in
+                            if image == nil { // failed to load from 3000, try 3001
+                                cell.imgVw.sd_setImage(
+                                    with: url3001,
+                                    placeholderImage: UIImage(named: "Profile")
+                                )
+                            }
+                        }
                     }
-                    
-                    cell.imgVw.sd_setImage(
-                        with: URL(string: imageURLString),
-                        placeholderImage: UIImage(named: "Profile")
-                    )
+
                 }
                 let strtTime = jobList?[indexPath.item].startTime
                 let endTime = jobList?[indexPath.item].endTime
@@ -823,3 +983,4 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
     }
    
 }
+

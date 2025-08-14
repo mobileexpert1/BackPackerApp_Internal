@@ -27,6 +27,7 @@ class EmployerHomeVC: UIViewController {
     var homeData : EmployerHomeData?
     var refreshControl: UIRefreshControl?
     var isLoading : Bool = true
+    var jobID = String()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lblnodataFound.isHidden = true
@@ -175,7 +176,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                     
                     cell.onTapAcceptJob = { index in
                         print("Tapped index total: \(index)")
-                        self.HandleNavigationforAcceptDelinedJob(in: index)
+                  //      self.HandleNavigationforAcceptDelinedJob(in: index)
                     }
                     cell.totalJobCount = homeData?.totalJobs ?? 0
                     cell.declinedJobCount = homeData?.declinedJobs ?? 0
@@ -197,6 +198,13 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                     cell.onTapAcceptJob = { index in
                         print("Tapped index total: \(index)")
                         self.HandleNavigationforAcceptDelinedJob(in: index)
+                    }
+                    
+                    cell.onTap = { index in
+                        print("Tapped index total: \(index)")
+                        let id = self.homeData?.jobslist?[index].id
+                        self.jobID = id ?? ""
+                        self.navigateToDescriptionVC()
                     }
 
                     return cell
@@ -253,6 +261,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
 #if BackpackerHire
         
         if roleType == "2"{
+           
             header.headerButton.isHidden = true
             header.headerButton.isUserInteractionEnabled = false
         }
@@ -271,7 +280,12 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         if section == 0 {
             return 0.0
         }
-        return 40
+        if self.homeData?.jobslist?.count ?? 0 > 0 {
+            return 40
+        }else{
+            return 0
+        }
+       
         
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -420,14 +434,7 @@ extension  EmployerHomeVC: SkeletonTableViewDataSource {
         vc.modalPresentationStyle = .overFullScreen
         self.present(vc, animated: true)
     }
-    private func navigateToDescriptionVC(){
-        let storyboard = UIStoryboard(name: "Job", bundle: nil)
-           if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
-           //    jobDescriptionVC.JobId = self.jobId
-               // Optional: pass selected job title
-               self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
-           }
-    }
+    
     private func showNoData(isShow : Bool = false){
         if isShow == true{
             self.lblnodataFound.isHidden = false
@@ -435,6 +442,16 @@ extension  EmployerHomeVC: SkeletonTableViewDataSource {
         }else{
             self.lblnodataFound.isHidden = true
             self.tblVw.isHidden = false
+        }
+    }
+    private func navigateToDescriptionVC(){
+        if self.jobID.isEmpty == false{
+            let storyboard = UIStoryboard(name: "Job", bundle: nil)
+            if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
+                jobDescriptionVC.JobId = self.jobID
+                // Optional: pass selected job title
+                self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+            }
         }
     }
 }

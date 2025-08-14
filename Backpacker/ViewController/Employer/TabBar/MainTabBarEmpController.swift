@@ -99,7 +99,7 @@ class MainTabBarEmpController: UITabBarController,UITabBarControllerDelegate {
         appearance.selectionIndicatorImage = pillImage
         
         appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
-            .font: FontManager.inter(.regular, size: 10.0),
+            .font: FontManager.inter(.regular, size: 12.0),
             .foregroundColor: UIColor.black
         ]
         appearance.stackedLayoutAppearance.selected.titleTextAttributes = [

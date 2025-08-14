@@ -22,10 +22,17 @@ class HangoutViewModel {
         imagesArrayData : [Data],
         completion: @escaping (Bool, String?, Int?) -> Void
     ) {
-        guard let token = UserDefaultsManager.shared.bearerToken, !token.isEmpty else {
-            completion(false, "Authorization token is missing.",nil)
-            return
-        }
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, "Authorization token is missing.", nil)
+      return
+  }
 
         let url = ApiConstants.API.ADD_HANGOUT
         
@@ -113,11 +120,17 @@ class HangoutViewModel {
     func getEmployerHangOutHomeData(
         completion: @escaping (Bool, EmployerHangoutData?, String?, Int?) -> Void
     ) {
-        guard let token = UserDefaultsManager.shared.bearerToken, !token.isEmpty else {
-            completion(false, nil, "Authorization token is missing.", nil)
-            return
-        }
-
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, nil, "Authorization token is missing.", nil)
+      return
+  }
         let url = ApiConstants.API.EMPLOYER_HANGOUT_HOME  // e.g., BASE_URL + "api/backpackers/home"
         
         let headers = ServiceManager.sharedInstance.getHeaders()
@@ -137,6 +150,49 @@ class HangoutViewModel {
         }
 
     }
-    
+    // MARK: - Employer: List of All Accommodation
+    func getEmployerHangoutList<T: Codable>(
+        page: Int,
+        perPage: Int,
+        lat: Double,
+        long: Double,
+        radius: Int? = nil,
+        search: String? = nil,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getEmployer_HANGOUT_URL(
+            page: page,
+            perPage: perPage,
+            lat: lat,
+            long: long,
+            radius: radius,
+            search: search
+        )
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
+   //MAR: Employer detail hangout
+    func getEmployerHangutDetail<T: Codable>(
+        hangoutID:String,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getEMPLOYER_HANGOUTDETAIL(hangoutID: hangoutID)
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 

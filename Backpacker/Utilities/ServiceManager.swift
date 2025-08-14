@@ -302,13 +302,21 @@ class ServiceManager: NSObject {
     }
     
     
-    @objc func getHeaders()->[String:String]{
-        guard let apiToken = UserDefaultsManager.shared.bearerToken else {return [:]}
-        let httpHeaders = ["Authorization":"Bearer \(apiToken)"]
-        print("HEADERS: ",httpHeaders)
+
+    @objc func getHeaders() -> [String: String] {
+        #if BackpackerHire
+        let apiToken = UserDefaultsManager.shared.employerbearerToken
+        #else
+        let apiToken = UserDefaultsManager.shared.bearerToken
+        #endif
+        
+        guard let token = apiToken else { return [:] }
+        
+        let httpHeaders = ["Authorization": "Bearer \(token)"]
+        print("HEADERS: ", httpHeaders)
         return httpHeaders
     }
-    
+
 }
 
 

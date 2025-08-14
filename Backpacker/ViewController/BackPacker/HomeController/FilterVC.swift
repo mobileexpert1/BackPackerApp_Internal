@@ -21,7 +21,9 @@ class FilterVC: UIViewController {
     @IBOutlet weak var btn_Submit: UIButton!
     @IBOutlet weak var slider: UISlider!
     let header = ["Filter","Sort by"]
-    let filterArrya = ["Free Wifi","Swimming Pool","Laundary","TV"]
+    let filterArrya = ["Free WiFi","Swimming Pool","Parking","Elevator","Fitness Center","24-hours Open"]
+    
+
     let SortrArrya = ["Price (lowest first)","Price (highest first)"]
     var selectedFilterIndexes: Set<Int> = []
 
@@ -104,7 +106,7 @@ class FilterVC: UIViewController {
                 let sortArrCount = self.SortrArrya.count
                 let filterarr = self.filterArrya.count
                 let adddON = (sortArrCount + filterarr) * 30
-                self.scroolViewHeight.constant = self.TblVw.contentSize.height + CGFloat(adddON)
+                self.scroolViewHeight.constant = CGFloat(adddON) + 280
             }
         }else{
             DispatchQueue.main.async {

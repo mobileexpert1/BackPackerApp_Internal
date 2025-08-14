@@ -44,7 +44,10 @@ class HangOutVC: UIViewController {
         
         self.setUpUI()
 #if Backapacker
-        self.listOfAllBackPackerHangOuts()
+                self.listOfAllBackPackerHangOuts()
+                
+                #else
+                self.listOfAllEmployerHangOuts()
 #endif
         
     }
@@ -104,7 +107,7 @@ class HangOutVC: UIViewController {
     
     @objc private func refreshCollectionData() {
         // Reset pagination and loading flags
-#if Backapacker
+
         self.page = 1
         self.isAllDataLoaded = false
         self.isLoadingMoreData = false
@@ -114,25 +117,33 @@ class HangOutVC: UIViewController {
         
         isComeFromPullTorefresh = true
         // Fetch data
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.listOfAllBackPackerHangOuts()
-        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+#if Backapacker
+                self.listOfAllBackPackerHangOuts()
+                
+                #else
+                self.listOfAllEmployerHangOuts()
 #endif
+       
+        }
         
     }
    
     @IBAction func action_ClearTExtFld(_ sender: Any) {
-#if Backapacker
-            
+
         self.isComFromSearch = false
         txtFld.text = ""
         lastSearchedText = ""
         page = 1
         txtFld.resignFirstResponder()
         self.btn_cleartxtFld.isHidden = true
-        listOfAllBackPackerHangOuts()
-            
+#if Backapacker
+                self.listOfAllBackPackerHangOuts()
+                
+                #else
+                self.listOfAllEmployerHangOuts()
 #endif
+       
     }
     
     @IBAction func action_filter(_ sender: Any) {
@@ -144,12 +155,16 @@ class HangOutVC: UIViewController {
             print("Facilities: \(facilities ?? "-")")
             print("Sort by: \(sortBy ?? "-")")
             print("Radius: \(radius ?? "-")")
-#if Backapacker
+
             self?.radius = Int(radius ?? "")
             // You can now use the data to filter your content
             self?.page = 1
-            self?.listOfAllBackPackerHangOuts()
-            #endif
+#if Backapacker
+                self?.listOfAllBackPackerHangOuts()
+                
+                #else
+                self?.listOfAllEmployerHangOuts()
+#endif
         }
         
         vc.modalPresentationStyle = .overFullScreen
@@ -198,8 +213,22 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
                 cell.lbl_review.isHidden = true
                 cell.cosmosVw.isHidden = true
                 if let firstIMage = hangOut.image.first{
-                    let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
-                    cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "restaurantImg"))
+                    if firstIMage.hasPrefix("http") {
+                        cell.imgVw.sd_setImage(
+                            with: URL(string: firstIMage),
+                            placeholderImage: UIImage(named: "restaurantImg")
+                        )
+                    } else {
+                        let url3000 = URL(string: "http://192.168.11.4:3000/assets/\(firstIMage)")
+                        let url3001 = URL(string: "http://192.168.11.4:3001/assets/\(firstIMage)")
+
+                        cell.imgVw.sd_setImage(with: url3000, placeholderImage: UIImage(named: "restaurantImg")) { image, _, _, _ in
+                            if image == nil {
+                                cell.imgVw.sd_setImage(with: url3001, placeholderImage: UIImage(named: "restaurantImg"))
+                            }
+                        }
+                    }
+
                 }else{
                     cell.imgVw.image = UIImage(named: "restaurantImg")
                }
@@ -290,18 +319,22 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
         
         // Check if near bottom
         if offsetY > contentHeight - frameHeight - 300 {
-        #if Backapacker
+     
             if !isComeFromPullTorefresh {
                 if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
                     isLoadingMoreData = true
                     page += 1
                     collectIOnVw.reloadSections(IndexSet(integer: 0))
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                        self.listOfAllBackPackerHangOuts()
+#if Backapacker
+                self.listOfAllBackPackerHangOuts()
+                
+                #else
+                self.listOfAllEmployerHangOuts()
+#endif
                     }
                 }
             }
-        #endif
         }
     }
 
@@ -482,6 +515,142 @@ extension HangOutVC{
     
 #endif
     
+#if BackpackerHire
+    
+    func listOfAllEmployerHangOuts(){
+        if page == 1 {
+            self.isLoading = true
+            LoaderManager.shared.show()
+        } else {
+            isLoadingMoreData = true
+            collectIOnVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
+        }
+        let lat = LocationManager.shared.latitude
+        let long = LocationManager.shared.longitude
+        if lat ==  0.0 || long == 0.0{
+            LoaderManager.shared.hide()
+            if isComFromSearch == false{
+                AlertManager.showAlert(
+                    on: self,
+                    title: "Location Missing",
+                    message: "We couldn't fetch your current location. Please enable location services or try again later."
+                )
+            }
+            return
+        }else{
+            viewModel.getEmployerHangoutList(page: page, perPage: perPage, lat: lat ?? 0.0, long: long ?? 0.0,radius: self.radius,search: self.lastSearchedText){ [weak self] (success: Bool, result: BackPackerHangoutResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                let newAccommodations = result?.data.hangoutList ?? []
+                                
+                                if self.page == 1 {
+                                    if newAccommodations.isEmpty {
+                                        if self.isComFromSearch == false{
+                                            AlertManager.showAlert(
+                                                on: self,
+                                                title: "No Results",
+                                                message: "No Hangout found near your current location. Try expanding your search radius or adjusting filters."
+                                            )
+                                        }
+                                        self.lbl_NDataFound.isHidden = false
+                                        self.hangOutList.removeAll()
+                                        self.hangOutList = newAccommodations
+                                        self.collectIOnVw.isHidden = true
+                                    } else {
+                                        self.hangOutList.removeAll()
+                                        self.collectIOnVw.isHidden = false
+                                        self.lbl_NDataFound.isHidden = true
+                                        self.isLoading = false
+                                        self.hangOutList = newAccommodations
+                                    }
+                                } else {
+                                    self.isLoading = false
+                                    self.hangOutList.append(contentsOf: newAccommodations)
+                                }
+                                self.totalAccomodations = result?.data.total ?? 0
+                                // Pagination end check
+                                self.isAllDataLoaded = newAccommodations.count < self.perPage
+                                
+                             
+                                self.isLoadingMoreData = false
+                                self.collectIOnVw.reloadData()
+                                self.refreshControl.endRefreshing()
+                                self.isComeFromPullTorefresh = false
+                                self.lastContentOffset = 0.0
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                self.refreshControl.endRefreshing()
+                                self.collectIOnVw.setContentOffset(.zero, animated: true)
+                                self.isLoadingMoreData = false
+                                self.isComeFromPullTorefresh = false
+                                self.lastContentOffset = 0.0
+                                LoaderManager.shared.hide()
+                            }
+                            
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.listOfAllEmployerHangOuts()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.refreshControl.endRefreshing()
+                                    self.isLoading = false
+                                    self.lastContentOffset = 0.0
+                                    self.collectIOnVw.setContentOffset(.zero, animated: true)
+                                    self.isComeFromPullTorefresh = false
+                                    self.lastContentOffset = 0.0
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            self.lastContentOffset = 0.0
+                            self.collectIOnVw.setContentOffset(.zero, animated: true)
+                            self.isComeFromPullTorefresh = false
+                            
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            self.lastContentOffset = 0.0
+                            self.collectIOnVw.setContentOffset(.zero, animated: true)
+                            self.isComeFromPullTorefresh = false
+                           
+                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    
+#endif
+    
 }
 extension HangOutVC: SkeletonCollectionViewDataSource {
     
@@ -517,16 +686,21 @@ extension HangOutVC : UITextFieldDelegate{
         searchDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
             guard let self = self else { return }
             let trimmedSearch = updatedText.trimmingCharacters(in: .whitespacesAndNewlines)
-#if Backapacker
+
             
             if self.lastSearchedText != trimmedSearch {
                 self.lastSearchedText = trimmedSearch
                 self.page = 1
                 self.isComFromSearch = true
+#if Backapacker
                 self.listOfAllBackPackerHangOuts()
+                
+                #else
+                self.listOfAllEmployerHangOuts()
+#endif
             }
             
-            #endif
+           
             
          
         }

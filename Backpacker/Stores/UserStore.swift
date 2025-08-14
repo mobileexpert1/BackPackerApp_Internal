@@ -60,12 +60,17 @@ class UserStore: ServiceManager , UserSearchable {
     func refreshToken<T: Codable>(
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
     ) {
-        guard let refreshToken = UserDefaultsManager.shared.refreshToken, !refreshToken.isEmpty else {
-            print("⚠️ No refresh token found.")
-            completion(false, nil, nil)
-            return
-        }
-
+#if BackpackerHire
+        let refreshToken = UserDefaultsManager.shared.employerrefreshToken
+  #else
+  let refreshToken = UserDefaultsManager.shared.refreshToken
+  #endif
+  
+  guard let token = refreshToken, !token.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, nil, nil)
+      return
+  }
         let params: [String: Any] = ["refreshToken": refreshToken]
         let url = ApiConstants.API.REFRESH_TOKEN
         requestApi(url, method: .post, parameters: params) { (success, result, statusCode) in
@@ -78,12 +83,17 @@ class UserStore: ServiceManager , UserSearchable {
         params: Parameters,
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
     ) {
-        guard let bearerToken = UserDefaultsManager.shared.bearerToken, !bearerToken.isEmpty else {
-               print("⚠️ No bearerToken found.")
-               completion(false, nil, nil)
-               return
-           }
-
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, nil, nil)
+      return
+  }
         let url = ApiConstants.API.SWITCH_ROLE
            let headers = getHeaders()
            requestApi(url, method: .put, parameters: params, headers: headers) { (success, result, statusCode) in

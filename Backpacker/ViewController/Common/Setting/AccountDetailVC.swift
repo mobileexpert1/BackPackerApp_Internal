@@ -121,7 +121,7 @@ class AccountDetailVC: UIViewController {
         self.AreaVW.setTitleLabel("Area")
         self.AreaVW.lblErrorVisibility(val: true)
         self.AreaVW.txtFld.isUserInteractionEnabled = false
-        self.AreaVW.txtFld.keyboardType = .phonePad
+        self.AreaVW.txtFld.keyboardType = .default
     }
     
     private func setUpButtons(){
@@ -199,6 +199,10 @@ class AccountDetailVC: UIViewController {
         let isAreaValid = AreaVW.validateNotEmpty(errorMessage: "Please enter your area")
         // Visa type validation
         let isVisaTypeValid: Bool
+#if BackpackerHire
+        isVisaTypeValid = true
+        
+        #else
         if self.lbl_VisaTitle.text == "Select Visa Type" {
             self.lbl_error_SelectVisaType.isHidden = false
             self.lbl_error_VisaHeight.constant = 20.0
@@ -208,13 +212,22 @@ class AccountDetailVC: UIViewController {
             self.lbl_error_VisaHeight.constant = 0.0
             isVisaTypeValid = true
         }
+        
+#endif
+       
+       
         if isNameValid && isEmailValid && isPhoneValid && isCountryValid && isStateValid && isAreaValid && isVisaTypeValid{
             if isComeFromUpdate == true{
                 let name = NameVw.txtFld.text!
                 let email = EmailVw.txtFld.text!
                 let state = stateVw.txtFld.text!
                 let area = AreaVW.txtFld.text!
+#if BackpackerHire
+                let visaType = ""
+#else
                 let visaType = self.lbl_VisaTitle.text!
+#endif
+                
                 self.updateProfileInfo(name: name, email: email, state: state, area: area, visaType: visaType)
             }
         } else {

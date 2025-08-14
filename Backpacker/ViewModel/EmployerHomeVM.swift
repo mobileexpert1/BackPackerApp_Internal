@@ -12,11 +12,18 @@ class EmployerHomeVM {
     func getEmployerHomeData(
         completion: @escaping (Bool, EmployerHomeData?, String?, Int?) -> Void
     ) {
-        guard let token = UserDefaultsManager.shared.bearerToken, !token.isEmpty else {
-            completion(false, nil, "Authorization token is missing.", nil)
-            return
-        }
-
+      
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, nil, "Authorization token is missing.", nil)
+      return
+  }
         let url = ApiConstants.API.EMPLOYER_HOME  // e.g., BASE_URL + "api/backpackers/home"
         
         let headers = ServiceManager.sharedInstance.getHeaders()

@@ -184,12 +184,23 @@ extension LoginVC {
                     print("✅ Success:", httpStatus.description)
                     DispatchQueue.main.async {
                         if success, let userId = response?.data?.userId {
+#if BackpackerHire
+                            UserDefaultsManager.shared.employeruserId = userId
+#else
                             UserDefaultsManager.shared.userId = userId
+                            
+#endif
+                           
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                                 LoaderManager.shared.hide()
                                 self.push(OtpVC.self, fromStoryboard: "Main", identifier: "OtpVC") { vc in
                                    // vc.phoneNumbaer = self.txtFld_PhoneNumber.text ?? ""
+#if BackpackerHire
+                                    vc.userId = UserDefaultsManager.shared.employeruserId ?? ""
+#else
                                     vc.userId = UserDefaultsManager.shared.userId ?? ""
+                            
+#endif
                                 }
                             }
                           //  self.txtFld_PhoneNumber.text = ""

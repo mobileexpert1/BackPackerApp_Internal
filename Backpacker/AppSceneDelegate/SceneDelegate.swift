@@ -28,9 +28,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func setRoot(){
         let hasSeenWalkthrough = UserDefaults.standard.bool(forKey: "hasSeenWalkthrough")
         // Grab stored values from UserDefaultsManager
-        let userId = UserDefaultsManager.shared.userId
-        let accessToken = UserDefaultsManager.shared.bearerToken
+#if BackpackerHire
+        let userId = UserDefaultsManager.shared.employeruserId
+let accessToken = UserDefaultsManager.shared.employerbearerToken
+#else
+let userId = UserDefaultsManager.shared.userId
+let accessToken = UserDefaultsManager.shared.bearerToken
+#endif
 
+        
         // Decide which screen to show
         let rootVC: UIViewController
 
@@ -106,9 +112,14 @@ extension SceneDelegate {
               let delegate = scene.delegate as? SceneDelegate,
               let window = delegate.window else { return }
 
-        
+#if BackpackerHire
+        UserDefaultsManager.shared.employerbearerToken = nil
+        UserDefaultsManager.shared.employerrefreshToken = nil
+#else
         UserDefaultsManager.shared.bearerToken = nil
         UserDefaultsManager.shared.refreshToken = nil
+#endif
+       
         window.rootViewController = vc
         window.makeKeyAndVisible()
     }

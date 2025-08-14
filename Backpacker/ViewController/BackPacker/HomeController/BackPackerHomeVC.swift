@@ -279,13 +279,14 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 }
                 if role == "3"{
                     cell.configure(with: sectionTitles,section: indexPath.section)
+                    
                     cell.isComeFromJob = false
                     cell.isComeForHireDetailPage = false
                     // Handle final callback here
                     cell.onAddAccommodation = { [weak self] val  in
                         print("ASccomodation Item",val)
                         let id = self?.accomdationEmpHomeData?.accommodationList[val].id
-                        //self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: false)
+                        self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: false)
                     }
                     cell.accomodationList = accomdationEmpHomeData?.accommodationList
                 }else if role == "4"{
@@ -293,10 +294,10 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                     cell.isComeFromJob = false
                     cell.isComeForHireDetailPage = false
                     // Handle final callback here
-                    cell.onAddAccommodation = { [weak self] val  in
+                    cell.onHangOut = { [weak self] val  in
                         print("ASccomodation Item",val)
                         let id = self?.hangoutEmpHomeData?.hangoutList[val].id
-                        //self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: false)
+                        self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: true)
                     }
                     cell.hangoutList = hangoutEmpHomeData?.hangoutList
                 }else{
@@ -305,6 +306,8 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                     cell.isComeForHireDetailPage = false
                     // Handle final callback here
                     cell.onAddAccommodation = { [weak self] val  in
+                        
+                        
                     }
                 }
                 return cell
@@ -911,5 +914,15 @@ extension BackPackerHomeVC {
     
     #endif
     
-    
+    private func moveToDetail(id : String){
+        if id.isEmpty == false {
+            let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+            if let accVC = storyboard.instantiateViewController(withIdentifier: "AccomodationDetailVC") as? AccomodationDetailVC {
+                accVC.accomodationID = id
+                self.navigationController?.pushViewController(accVC, animated: true)
+            } else {
+                print("❌ Could not instantiate AddNewAccomodationVC")
+            }
+        }
+    }
 }

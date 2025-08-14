@@ -348,8 +348,30 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                 cell.lblAmount.text = "$\(item.price)"
                 cell.lbl_SubTitle.text = item.description
                 
-                let imageURLString = item.image.hasPrefix("http") ? item.image : "http://192.168.11.4:3001/assets/\(item.image)"
-                cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "profile"))
+                if item.image.hasPrefix("http") {
+                    cell.imgVw.sd_setImage(
+                        with: URL(string: item.image),
+                        placeholderImage: UIImage(named: "Profile")
+                    )
+                } else {
+                    let url3000 = URL(string: "http://192.168.11.4:3000/assets/\(item.image)")
+                    let url3001 = URL(string: "http://192.168.11.4:3001/assets/\(item.image)")
+
+                    cell.imgVw.sd_setImage(with: url3000, placeholderImage: UIImage(named: "Profile")) { image, _, _, _ in
+                        if image == nil {
+                            cell.imgVw.sd_setImage(with: url3001, placeholderImage: UIImage(named: "Profile"))
+                        }
+                    }
+                }
+
+#if BackpackerHire
+              
+                    cell.isComeForHiredetailpage = true
+                    cell.lbl_jobStatus.text = ""
+                    cell.statusVw.isHidden = true
+                    cell.SetUpHeight(isHeightShow: false)
+              
+#else
                 if isComeFromHomeHangout == true { // New Job
                     cell.isComeForHiredetailpage = true
                     cell.lbl_jobStatus.text = ""
@@ -367,16 +389,17 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                     cell.statusVw.backgroundColor = UIColor(hex: "#00A925")
                     cell.SetUpHeight(isHeightShow: true)
                 }
+#endif
                 let strtTime = item.startTime
                 let endTime = item.endTime
                 let duration1 = Date.durationString(from: strtTime , to: endTime) // "8 hr"
                 cell.lbl_duration.text = "Duration \(duration1)"
                 cell.onTap = { [weak self] val in
-#if Backapacker
+
                     let id = self?.jobslist[indexPath.item].id
                     self?.jobId = id ?? ""
                     self?.navigateToDescriptionVC()
-#endif
+
                 }
                 // Optionally configure cell
                 return cell
@@ -489,9 +512,9 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
             if isComeFromPullTorefresh == false{
                 if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
                     isLoadingMoreData = true
-                    self.collVw.reloadData()
+                    collVw.reloadSections(IndexSet(integer: 0))
                     page += 1
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 ){
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5 ){
 #if BackpackerHire
         self.EmploerGetListOfAll()
 #else

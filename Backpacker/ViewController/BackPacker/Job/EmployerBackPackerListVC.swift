@@ -33,6 +33,7 @@ class EmployerBackPackerListVC: UIViewController {
     var isComeFromPullTorefresh : Bool = false
     var searchDebounceTimer: Timer?
     var lastSearchedText: String = ""
+    var lastContentOffset: CGFloat = 0
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
@@ -159,9 +160,21 @@ extension EmployerBackPackerListVC : UITableViewDelegate,UITableViewDataSource{
     
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < 0 {
+            return
+        }
+        
+        // Detect scroll direction
+        let isScrollingDown = scrollView.contentOffset.y > lastContentOffset
+        lastContentOffset = scrollView.contentOffset.y
+        
+        // Only proceed if scrolling down
+        guard isScrollingDown else { return }
+        
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
         let frameHeight = scrollView.frame.size.height
+        
      
         if offsetY > contentHeight - frameHeight - 300 {
             if isComeFromPullTorefresh == false{
@@ -169,7 +182,7 @@ extension EmployerBackPackerListVC : UITableViewDelegate,UITableViewDataSource{
                     isLoadingMoreData = true
                     page += 1
                     tbaleView.tableFooterView = createTableFooterView()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 ){
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5 ){
                         self.backpackerListApiCall()
                     }
                     

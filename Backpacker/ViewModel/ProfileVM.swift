@@ -15,11 +15,18 @@ class ProfileVM {
         isComeFromUpdate:Bool = false,
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
     ) {
-        
-        guard let token = UserDefaultsManager.shared.bearerToken, !token.isEmpty else {
-            completion(false, nil,nil)
-            return
-        }
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, nil,nil)
+      return
+  }
+      
         let url = ApiConstants.API.BACKPACKER_Profile
 
         ServiceManager.sharedInstance.requestApi(
@@ -41,10 +48,17 @@ class ProfileVM {
         notificationStatus: Bool,
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
     ) {
-        guard let token = UserDefaultsManager.shared.bearerToken, !token.isEmpty else {
-            completion(false, nil, nil)
-            return
-        }
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, nil,nil)
+      return
+  }
 
         let url = ApiConstants.API.BACKPACKER_Profile
 

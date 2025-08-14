@@ -39,6 +39,7 @@ class JobDescriptionVC: UIViewController {
     let viewModelAuth = LogInVM()
     var isLoading: Bool = true // true while loading, false once data is ready
     var jobDetailObj : JobDetail?
+    var jobDetailEmployerObj : EmployerJobDetail?
     override func viewDidLoad() {
         super.viewDidLoad()
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
@@ -70,11 +71,7 @@ class JobDescriptionVC: UIViewController {
         self.segmentHeight.constant = 0.0
         self.lbl_Description.isHidden = true
         self.lblEmployer.isHidden = true
-        //        self.btn_Accept.isHidden = true
-        //        self.btn_Accept.isUserInteractionEnabled = false
-        //
-        //        self.btn_Decline.isHidden = true
-        //        self.btn_Decline.isUserInteractionEnabled = false
+        self.getEmployeeDetailOfJob()
 #endif
     }
     
@@ -90,13 +87,18 @@ class JobDescriptionVC: UIViewController {
     
     @objc private func refreshCollectionData() {
         // Reset pagination and loading flags
-#if Backapacker
+
         // Fetch data
         LoaderManager.shared.show()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            
+#if BackpackerHire
+            self.getEmployeeDetailOfJob()
+#else
             self.getDetailOfJob()
-        }
 #endif
+        }
+
         
     }
     private func setUPBtns(){
@@ -159,7 +161,12 @@ class JobDescriptionVC: UIViewController {
         // Remove current child if any
         if let descVC = newVC as? DescriptionController {
             descVC.delegate = self
+#if BackpackerHire
+            descVC.EmpobjJobDetail = self.jobDetailEmployerObj
+#else
             descVC.objJobDetail = self.jobDetailObj
+#endif
+           
         }
         if let empVC = newVC as? EmployerController {
             empVC.objJobDetail = self.jobDetailObj
@@ -276,6 +283,95 @@ extension JobDescriptionVC {
         }
         
     }
+    
+#if BackpackerHire
+    func getEmployeeDetailOfJob(){
+        LoaderManager.shared.show()
+        isLoading = true
+        if JobId?.isEmpty == true {
+            LoaderManager.shared.hide()
+            AlertManager.showAlert(
+                on: self,
+                title: "Alert",
+                message: "Job ID is missing."
+            )
+            
+            return
+        }else{
+            viewMOdel.getEmployerJobDetail(jobID: self.JobId ?? ""){ [weak self] (success: Bool, result: EmployerJobDetailResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                     
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                if result?.data.job != nil{
+                                    self.jobDetailEmployerObj = result?.data.job
+                                    self.setUpValuesEmployer(obj:  self.jobDetailEmployerObj!)
+                                    self.isLoading = false
+                                    self.showChild(self.firstVC)
+                                }else{
+                                    
+                                }
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                
+                                LoaderManager.shared.hide()
+                            }
+                            self.refreshControl.endRefreshing()
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.getEmployeeDetailOfJob()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.isLoading = false
+                                    self.refreshControl.endRefreshing()
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    
+#endif
     func setUpValues(obj : JobDetail){
         
         self.lblTitle.text = obj.name
@@ -284,14 +380,24 @@ extension JobDescriptionVC {
         self.lbl_Time.text = duration
         let imageStr = obj.image
         if !imageStr.isEmpty {
-            let imageURLString = imageStr.hasPrefix("http")
-            ? imageStr
-            : "http://192.168.11.4:3000/assets/\(imageStr)"
-            
+            let baseURL1 = "http://192.168.11.4:3000/assets/"
+            let baseURL2 = "http://192.168.11.4:3001/assets/"
+
+            let imageURLString = imageStr.hasPrefix("http") ? imageStr : baseURL1 + imageStr
+
             img_Profile.sd_setImage(
                 with: URL(string: imageURLString),
                 placeholderImage: UIImage(named: "Profile")
-            )
+            ) { image, error, _, _ in
+                if image == nil { // If first attempt fails
+                    let fallbackURL = imageStr.hasPrefix("http") ? imageStr : baseURL2 + imageStr
+                    self.img_Profile.sd_setImage(
+                        with: URL(string: fallbackURL),
+                        placeholderImage: UIImage(named: "Profile")
+                    )
+                }
+            }
+
         } else {
             img_Profile.image = UIImage(named: "Profile")
         }
@@ -323,6 +429,75 @@ extension JobDescriptionVC {
             self.btn_Decline.isHidden = true
             self.btn_Decline.isUserInteractionEnabled = false
         }
+        
+        
+    }
+    func setUpValuesEmployer(obj : EmployerJobDetail){
+        DispatchQueue.main.async {
+            self.lblTitle.text = obj.name
+            self.lbl_Address.text = obj.address
+            let duration = self.calculateDuration(startTime: obj.startTime, endTime: obj.endTime)
+            self.lbl_Time.text = duration
+            let imageStr = obj.image
+            if !imageStr.isEmpty {
+                let baseURL1 = "http://192.168.11.4:3000/assets/"
+                let baseURL2 = "http://192.168.11.4:3001/assets/"
+
+                let imageURLString = imageStr.hasPrefix("http") ? imageStr : baseURL1 + imageStr
+
+                self.img_Profile.sd_setImage(
+                    with: URL(string: imageURLString),
+                    placeholderImage: UIImage(named: "Profile")
+                ) { image, error, _, _ in
+                    if image == nil { // If first attempt fails
+                        let fallbackURL = imageStr.hasPrefix("http") ? imageStr : baseURL2 + imageStr
+                        self.img_Profile.sd_setImage(
+                            with: URL(string: fallbackURL),
+                            placeholderImage: UIImage(named: "Profile")
+                        )
+                    }
+                }
+
+            } else {
+                self.img_Profile.image = UIImage(named: "Profile")
+            }
+            self.btn_Accept.isHidden = true
+            self.btn_Accept.isUserInteractionEnabled = false
+            
+            self.btn_Decline.isHidden = true
+            self.btn_Decline.isUserInteractionEnabled = false
+        }
+ 
+        /*
+         if obj.jobAcceptStatus == 1 {
+             self.btn_Accept.isHidden = false
+             self.btn_Accept.isUserInteractionEnabled = true
+             self.btn_Decline.isHidden = false
+             self.btn_Decline.isUserInteractionEnabled = true
+             applyGradientButtonStyle(to: btn_Accept)
+         } else if obj.jobAcceptStatus == 2 {
+             self.btn_Accept.isHidden = false
+             self.btn_Accept.setTitle("Accepted", for: .normal)
+             self.btn_Accept.isUserInteractionEnabled = false
+             applyGradientButtonStyle(to: btn_Accept)
+             self.btn_Decline.isHidden = true
+             self.btn_Decline.isUserInteractionEnabled = false
+         }else if obj.jobAcceptStatus == 3 {
+             self.btn_Accept.isHidden = false
+             self.btn_Accept.isUserInteractionEnabled = false
+             self.btn_Accept.setTitle("Declined", for: .normal)
+             applyGradientButtonStyle(to: btn_Accept)
+             self.btn_Decline.isHidden = true
+             self.btn_Decline.isUserInteractionEnabled = false
+         }else{
+             self.btn_Accept.isHidden = true
+             self.btn_Accept.isUserInteractionEnabled = false
+             
+             self.btn_Decline.isHidden = true
+             self.btn_Decline.isUserInteractionEnabled = false
+         }
+         */
+       
         
         
     }

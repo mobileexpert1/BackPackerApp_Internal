@@ -84,8 +84,24 @@ extension AdvertiesmentTVC: UICollectionViewDelegate, UICollectionViewDataSource
         } else {
             let ad = ads[indexPath.item]
             cell.lbl_Name.text = ad.description
-            let imageURLString = ad.image.hasPrefix("http") ? ad.image : "http://192.168.11.4:3001/assets/\(ad.image)"
-            cell.imageVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "placeholder"))
+            let baseURL1 = "http://192.168.11.4:3001/assets/"
+            let baseURL2 = "http://192.168.11.4:3000/assets/"
+
+            let imageURLString = ad.image.hasPrefix("http") ? ad.image : baseURL1 + ad.image
+
+            cell.imageVw.sd_setImage(
+                with: URL(string: imageURLString),
+                placeholderImage: UIImage(named: "placeholder")
+            ) { image, _, _, _ in
+                if image == nil { // First attempt failed
+                    let fallbackURL = ad.image.hasPrefix("http") ? ad.image : baseURL2 + ad.image
+                    cell.imageVw.sd_setImage(
+                        with: URL(string: fallbackURL),
+                        placeholderImage: UIImage(named: "placeholder")
+                    )
+                }
+            }
+
         }
 
      

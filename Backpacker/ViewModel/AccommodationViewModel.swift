@@ -23,10 +23,17 @@ class AccommodationViewModel {
         imagesArrayData : [Data],
         completion: @escaping (Bool, String?, Int?) -> Void
     ) {
-        guard let token = UserDefaultsManager.shared.bearerToken, !token.isEmpty else {
-            completion(false, "Authorization token is missing.", nil)
-            return
-        }
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, nil, nil)
+      return
+  }
 
         let url = ApiConstants.API.ADD_ACCOMMODATION // 🔁 Replace with correct endpoint
 
@@ -125,10 +132,17 @@ class AccommodationViewModel {
     func getEmployerAccommodationHomeData(
         completion: @escaping (Bool, EmployerAccommodationData?, String?, Int?) -> Void
     ) {
-        guard let token = UserDefaultsManager.shared.bearerToken, !token.isEmpty else {
-            completion(false, nil, "Authorization token is missing.", nil)
-            return
-        }
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, nil, "Authorization token is missing.", nil)
+      return
+  }
 
         let url = ApiConstants.API.EMPLOYER_ACCOMODATION_HOME  // e.g., BASE_URL + "api/backpackers/home"
         
@@ -150,8 +164,53 @@ class AccommodationViewModel {
 
     }
     
-    
-    
+    // MARK: - BackPacker: List of All Accommodation
+    func getEMPLOYERAccommodationList<T: Codable>(
+        page: Int,
+        perPage: Int,
+        lat: Double,
+        long: Double,
+        radius: Int? = nil,
+        sortByPrice: String? = nil,
+        facilities: String? = nil,
+        search: String? = nil,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getEMPLOYER_ACCOMMODATION_URL(
+            page: page,
+            perPage: perPage,
+            lat: lat,
+            long: long,
+            radius: radius,
+            sortByPrice: sortByPrice,
+            facilities: facilities,
+            search: search
+        )
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
+    // MARK: - BackPacker: JobDetail
+    func getEmployerAcommodationDetail<T: Codable>(
+        accommodationID:String,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getAccomodation_AccomodationDETAIL(accommodationID: accommodationID)
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 struct AccommodationResponseData: Codable {
     let _id: String

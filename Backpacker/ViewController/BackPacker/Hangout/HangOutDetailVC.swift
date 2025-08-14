@@ -40,7 +40,14 @@ class HangOutDetailVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
+#if BackpackerHire
+        
+        self.getEmployerDetailOfHangout()
+#else
         self.getDetailOfHangout()
+        
+#endif
+        
         self.setUpCollectionVw()
         self.setupPullToRefresh()
         
@@ -54,14 +61,19 @@ class HangOutDetailVC: UIViewController {
     
     @objc private func refreshCollectionData() {
         // Reset pagination and loading flags
-#if Backapacker
+
         // Fetch data
         LoaderManager.shared.show()
         self.refreshControl.beginRefreshing()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.getDetailOfHangout()
-        }
+#if BackpackerHire
+        
+        self.getEmployerDetailOfHangout()
+#else
+        self.getDetailOfHangout()
+        
 #endif
+        }
         
     }
     private func setUpUI(){
@@ -126,8 +138,23 @@ extension HangOutDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,
         cell.isComeFromHangout = true
         
         if let img = hangoutDetailObj?.hangout.image[indexPath.item] {
-            let imageURLString = img.hasPrefix("http") ? img : "http://192.168.11.4:3000/assets/\(img)"
-            cell.img_Vw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "restaurantImg"))
+            let baseURL1 = "http://192.168.11.4:3000/assets/"
+            let baseURL2 = "http://192.168.11.4:3001/assets/"
+
+            let imageURLString = img.hasPrefix("http") ? img : baseURL1 + img
+
+            cell.img_Vw.sd_setImage(
+                with: URL(string: imageURLString),
+                placeholderImage: UIImage(named: "restaurantImg")
+            ) { image, error, _, _ in
+                if image == nil { // First attempt failed
+                    let fallbackURL = img.hasPrefix("http") ? img : baseURL2 + img
+                    cell.img_Vw.sd_setImage(
+                        with: URL(string: fallbackURL),
+                        placeholderImage: UIImage(named: "restaurantImg")
+                    )
+                }
+            }
         } else {
             cell.img_Vw.image = UIImage(named: "restaurantImg")
         }
@@ -164,6 +191,95 @@ extension HangOutDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,
 }
 
 extension HangOutDetailVC {
+    
+#if BackpackerHire
+    func getEmployerDetailOfHangout(){
+        LoaderManager.shared.show()
+        isLoading = true
+        if hangoutID?.isEmpty == true {
+            LoaderManager.shared.hide()
+                AlertManager.showAlert(
+                    on: self,
+                    title: "Alert",
+                    message: "Hangout ID is missing."
+                )
+            
+            return
+        }else{
+            viewMOdel.getEmployerHangutDetail(hangoutID: hangoutID ?? ""){ [weak self] (success: Bool, result: HangoutDetailResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                if result?.data != nil{
+                                    self.isLoading = false
+                                    self.hangoutDetailObj = result?.data
+                                    self.setUpValues(obj: self.hangoutDetailObj!)
+                                }else{
+                                    AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
+                                }
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                LoaderManager.shared.hide()
+                            }
+                          
+                            self.refreshControl.endRefreshing()
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.getEmployerDetailOfHangout()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.isLoading = false
+                                    self.refreshControl.endRefreshing()
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    
+    
+    #else
+    
     func getDetailOfHangout(){
         LoaderManager.shared.show()
         isLoading = true
@@ -246,6 +362,9 @@ extension HangOutDetailVC {
         }
         
     }
+    
+#endif
+  
     func setUpValues(obj : HangoutData){
         DispatchQueue.main.async {
             self.lbl_Address.text = obj.hangout.address

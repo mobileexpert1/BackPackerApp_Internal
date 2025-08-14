@@ -66,6 +66,41 @@ class UserDefaultsManager {
         defaults.removeObject(forKey: Keys.userId)
         defaults.removeObject(forKey: Keys.isLoggedIn)
     }
+    
+    
+    
+    //MARK: -  Emploer
+    
+    // MARK: - FCM Token
+    var employerfcmToken: String? {
+        get { defaults.string(forKey: Keys.HirefcmToken) }
+        set { defaults.set(newValue, forKey: Keys.HirefcmToken) }
+    }
+
+    // MARK: - Bearer Token
+    var employerbearerToken: String? {
+        get { defaults.string(forKey: Keys.HirebearerToken) }
+        set { defaults.set(newValue, forKey: Keys.HirebearerToken) }
+    }
+
+    // MARK: - Refresh Token
+    var employerrefreshToken: String? {
+        get { defaults.string(forKey: Keys.HirerefreshToken) }
+        set { defaults.set(newValue, forKey: Keys.HirerefreshToken) }
+    }
+
+    // MARK: - User ID
+    var employeruserId: String? {
+        get { defaults.string(forKey: Keys.HireuserId) }
+        set { defaults.set(newValue, forKey: Keys.HireuserId) }
+    }
+
+    // MARK: - Login State
+    var employerisLoggedIn: Bool {
+        get { defaults.bool(forKey: Keys.HIreisLoggedIn) }
+        set { defaults.set(newValue, forKey: Keys.HIreisLoggedIn) }
+    }
+
 }
 
 

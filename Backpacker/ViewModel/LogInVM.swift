@@ -27,8 +27,14 @@ class LogInVM {
             if success {
                 print("✅ Response Otp:", result as Any)
                 if let val = result {
+#if BackpackerHire
+                    UserDefaultsManager.shared.employerbearerToken = val.data?.accessToken
+                    UserDefaultsManager.shared.employerrefreshToken = val.data?.refreshToken
+#else
                     UserDefaultsManager.shared.bearerToken = val.data?.accessToken
                     UserDefaultsManager.shared.refreshToken = val.data?.refreshToken
+#endif
+                 
                 }
                 completion(true, result, statusCode)
             } else {
@@ -59,8 +65,15 @@ class LogInVM {
             if success {
                 print("🔄 Refresh token success:", result as Any)
                 if let val = result {
+#if BackpackerHire
+                    UserDefaultsManager.shared.employerbearerToken = val.data?.accessToken
+                    UserDefaultsManager.shared.employerrefreshToken = val.data?.refreshToken
+#else
                     UserDefaultsManager.shared.bearerToken = val.data?.accessToken
                     UserDefaultsManager.shared.refreshToken = val.data?.refreshToken
+#endif
+                 
+                
                 }
                 completion(true, result, statusCode)
             } else {
@@ -79,8 +92,14 @@ class LogInVM {
                 print("🔄 Role Type Api:", result as Any)
                 
                 if let val = result {
+#if BackpackerHire
+                    UserDefaultsManager.shared.employerbearerToken = val.data?.accessToken
+                    UserDefaultsManager.shared.employerrefreshToken = val.data?.refreshToken
+#else
                     UserDefaultsManager.shared.bearerToken = val.data?.accessToken
                     UserDefaultsManager.shared.refreshToken = val.data?.refreshToken
+#endif
+              
                     UserDefaults.standard.set(val.data?.subRoleType, forKey: "UserRoleType")
                     UserDefaults.standard.synchronize() // optional
                 }

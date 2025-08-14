@@ -54,7 +54,7 @@ class AddNewAccomodationVC: UIViewController {
     @IBOutlet weak var BgVwPrice: UIView!
     @IBOutlet weak var BgVwAddress: UIView!
     var selectedFilterIndexes: Set<Int> = []
-    let filterArrya = ["Free Wifi","Swimming Pool","Parking"]
+    let filterArrya = ["Free WiFi","Swimming Pool","Parking","Elevator","Fitness Center","24-hours Open"]
     let viewModel = AccommodationViewModel()
     let viewModelAuth = LogInVM()
     var latitude: Double?

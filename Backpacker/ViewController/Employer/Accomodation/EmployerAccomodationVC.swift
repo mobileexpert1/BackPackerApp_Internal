@@ -19,6 +19,7 @@ class EmployerAccomodationVC: UIViewController {
     
     @IBOutlet weak var btn_AddAccomodation: UIButton!
     var accommodationID : String?
+    var lastContentOffset: CGFloat = 0
     let hotels = [
         "Little National Hotel Sydney",
         "Dorsett Melbourne",
@@ -41,7 +42,7 @@ class EmployerAccomodationVC: UIViewController {
     var accommodationList = [Accommodation]()
     
     var page = 1
-    let perPage = 6
+    let perPage = 2
     var totalAccomodations = Int()
     var isLoadingMoreData = false
     var isAllDataLoaded = false
@@ -85,6 +86,8 @@ class EmployerAccomodationVC: UIViewController {
         self.lbl_No_AccomdodationFound.isHidden = true
 
 #if BackpackerHire
+        
+        self.listOfAllAccommodationEmployer()
 #else
         self.listOfAllAccommodation()
 #endif
@@ -124,13 +127,7 @@ class EmployerAccomodationVC: UIViewController {
     
     @objc private func refreshCollectionData() {
         // Reset pagination and loading flags
-#if BackpackerHire
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            self.refreshControl.endRefreshing()
-        }
-#else
-        
+
         self.page = 1
         self.isAllDataLoaded = false
         self.isLoadingMoreData = false
@@ -141,9 +138,15 @@ class EmployerAccomodationVC: UIViewController {
         isComeFromPullTorefresh = true
         // Fetch data
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            
+#if BackpackerHire
+            self.listOfAllAccommodationEmployer()
+#else
             self.listOfAllAccommodation()
-        }
+            
 #endif
+        }
+
         
     }
     
@@ -173,7 +176,7 @@ class EmployerAccomodationVC: UIViewController {
         vc.initialSortBy = self.sortByPrice     // e.g. "asc" or "desc"
         vc.initialRadius = self.radius != nil ? String(self.radius!) : nil
         vc.onApplyFilters = { [weak self] facilities, sortBy, radius in
-#if Backapacker
+
             
             print("Facilities: \(facilities ?? "-")")
             print("Sort by: \(sortBy ?? "-")")
@@ -183,8 +186,11 @@ class EmployerAccomodationVC: UIViewController {
             self?.radius = Int(radius ?? "")
             // You can now use the data to filter your content
             self?.page = 1
+#if Backapacker
             self?.listOfAllAccommodation()
+            #else
             
+            self?.listOfAllAccommodationEmployer()
 #endif
             
         }
@@ -193,7 +199,7 @@ class EmployerAccomodationVC: UIViewController {
         
     }
     @IBAction func action_ClearTxtFld(_ sender: Any) {
-#if Backapacker
+
             
         self.isComFromSearch = false
         txtFld_Search.text = ""
@@ -201,8 +207,10 @@ class EmployerAccomodationVC: UIViewController {
         page = 1
         txtFld_Search.resignFirstResponder()
         self.btn_cleartxtFld.isHidden = true
+#if Backapacker
         listOfAllAccommodation()
-            
+#else
+        listOfAllAccommodationEmployer()
 #endif
      
     }
@@ -210,44 +218,17 @@ class EmployerAccomodationVC: UIViewController {
 extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-#if BackpackerHire
-        return 20
-        
-#else
         if isLoading ==  true{
             return 8
         }else{
             return accommodationList.count
         }
         
-#endif
-        
         
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-#if BackpackerHire
-        
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
-            return UICollectionViewCell()
-        }
-        
-        // Configure your cell
-        // cell.titleLabel.text = dataArr[indexPath.item]
-        cell.lbl_Title.text = "Hotel Velly"
-        cell.lblAmount.isHidden = false
-        cell.lblAmount.text = "$400"
-        cell.lbl_review.isHidden = true
-        cell.cosmosVw.isHidden = true
-        cell.imgVw.image = UIImage(named: "aCCOMODATION")
-        
-        
-        
-        return cell
-        
-        
-#else
         if isLoading == true  {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SkeltonCVC", for: indexPath) as? SkeltonCVC else {
                 return UICollectionViewCell()
@@ -268,8 +249,22 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
             cell.cosmosVw.isHidden = true
             
             if let firstIMage = accomodation.image.first{
-                let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : "http://192.168.11.4:3001/assets/\(firstIMage)"
-                cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "aCCOMODATION"))
+                if firstIMage.hasPrefix("http") {
+                    cell.imgVw.sd_setImage(
+                        with: URL(string: firstIMage),
+                        placeholderImage: UIImage(named: "aCCOMODATION")
+                    )
+                } else {
+                    let url3000 = URL(string: "http://192.168.11.4:3000/assets/\(firstIMage)")
+                    let url3001 = URL(string: "http://192.168.11.4:3001/assets/\(firstIMage)")
+
+                    cell.imgVw.sd_setImage(with: url3000, placeholderImage: UIImage(named: "aCCOMODATION")) { image, _, _, _ in
+                        if image == nil {
+                            cell.imgVw.sd_setImage(with: url3001, placeholderImage: UIImage(named: "aCCOMODATION"))
+                        }
+                    }
+                }
+
             }else{
                 cell.imgVw.image = UIImage(named: "aCCOMODATION")
             }
@@ -280,11 +275,6 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
             }
             return cell
         }
-        
-#endif
-        
-        
-        
         
     }
     
@@ -373,25 +363,44 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < 0 {
+            return
+        }
+        
+        // Detect scroll direction
+        let isScrollingDown = scrollView.contentOffset.y > lastContentOffset
+        lastContentOffset = scrollView.contentOffset.y
+        
+        // Only proceed if scrolling down
+        guard isScrollingDown else { return }
+        
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
         let frameHeight = scrollView.frame.size.height
         
+        
         if offsetY > contentHeight - frameHeight - 300 {
-#if Backpacker
+
             
             if isComeFromPullTorefresh == false{
                 if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
                     isLoadingMoreData = true
                     page += 1
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 ){
+                    coollVw.reloadSections(IndexSet(integer: 0))
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5 ){
+#if Backapacker
                         self.listOfAllAccommodation()
+                        #else
+                        
+                        self.listOfAllAccommodationEmployer()
+                        
+#endif
                     }
                     
                 }
             }
             
-            #endif
+          
            
             
         }
@@ -433,16 +442,21 @@ extension EmployerAccomodationVC : UITextFieldDelegate{
         searchDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
             guard let self = self else { return }
             let trimmedSearch = updatedText.trimmingCharacters(in: .whitespacesAndNewlines)
-#if Backapacker
+
             
             if self.lastSearchedText != trimmedSearch {
                 self.lastSearchedText = trimmedSearch
                 self.page = 1
                 self.isComFromSearch = true
+#if Backapacker
                 self.listOfAllAccommodation()
+                
+#else
+                self.listOfAllAccommodationEmployer()
+#endif
             }
             
-            #endif
+           
             
          
         }
@@ -458,6 +472,134 @@ extension EmployerAccomodationVC : UITextFieldDelegate{
 
 
 extension EmployerAccomodationVC {
+    
+    func listOfAllAccommodationEmployer(){
+        if page == 1 {
+            self.isLoading = true
+            LoaderManager.shared.show()
+        } else {
+            isLoadingMoreData = true
+            coollVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
+        }
+        let lat = LocationManager.shared.latitude
+        let long = LocationManager.shared.longitude
+        if lat ==  0.0 || long == 0.0{
+            LoaderManager.shared.hide()
+            if isComFromSearch == false{
+                AlertManager.showAlert(
+                    on: self,
+                    title: "Location Missing",
+                    message: "We couldn't fetch your current location. Please enable location services or try again later."
+                )
+            }
+            return
+        }else{
+            viewModel.getEMPLOYERAccommodationList(page: page, perPage: perPage, lat: lat ?? 0.0, long: long ?? 0.0,radius: self.radius, sortByPrice:self.sortByPrice, facilities: facilities,search: self.lastSearchedText){ [weak self] (success: Bool, result: AccommodationResponseModel?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                let newAccommodations = result?.data.accommodationList ?? []
+                                
+                                if self.page == 1 {
+                                    if newAccommodations.isEmpty {
+                                        if self.isComFromSearch == false{
+                                            AlertManager.showAlert(
+                                                on: self,
+                                                title: "No Results",
+                                                message: "No accommodations found."
+                                            )
+                                        }
+                                        self.lbl_No_AccomdodationFound.isHidden = false
+                                        self.accommodationList.removeAll()
+                                        self.accommodationList = newAccommodations
+                                        self.coollVw.isHidden = true
+                                    } else {
+                                        self.isLoading = false
+                                        self.coollVw.isHidden = false
+                                        self.lbl_No_AccomdodationFound.isHidden = true
+                                        self.accommodationList = newAccommodations
+                                    }
+                                } else {
+                                    self.isLoading = false
+                                    self.accommodationList.append(contentsOf: newAccommodations)
+                                }
+                                self.totalAccomodations = result?.data.total ?? 0
+                                // Pagination end check
+                                self.isAllDataLoaded = newAccommodations.count < self.perPage
+                                
+                              
+                                self.isComeFromPullTorefresh = false
+                                self.isLoadingMoreData = false
+                                self.coollVw.reloadData()
+                                self.refreshControl.endRefreshing()
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                self.refreshControl.endRefreshing()
+                                self.coollVw.setContentOffset(.zero, animated: true)
+                                self.isLoading = false
+                                self.isLoadingMoreData = false
+                                self.isComeFromPullTorefresh = false
+                                LoaderManager.shared.hide()
+                            }
+                            
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.listOfAllAccommodationEmployer()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.refreshControl.endRefreshing()
+                                    self.isLoading = false
+                                    self.isComeFromPullTorefresh = false
+                                    self.coollVw.setContentOffset(.zero, animated: true)
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            self.isComeFromPullTorefresh = false
+                            self.coollVw.setContentOffset(.zero, animated: true)
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            self.isComeFromPullTorefresh = false
+                            self.coollVw.setContentOffset(.zero, animated: true)
+                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    
+   
+    
     
     func listOfAllAccommodation(){
         if page == 1 {

@@ -136,7 +136,6 @@ struct ApiConstants {
             return url
         }
         
-        
         //MARK: - Employer
         
         
@@ -152,6 +151,82 @@ struct ApiConstants {
                 url += "&search=\(encodedSearch)"
             }
             
+            return url
+        }
+        
+        static func getEMPLOYER_JOBDETAIL(jobID:String?) -> String {
+            var url = "\(BASE_URL)api/employer/job/"
+            if let jobID = jobID {
+                url += "\(jobID)"
+            }
+            return url
+        }
+        
+        
+        static func getEMPLOYER_ACCOMMODATION_URL(
+            page: Int,
+            perPage: Int,
+            lat: Double,
+            long: Double,
+            radius: Int? = nil,
+            sortByPrice: String? = nil,
+            facilities: String? = nil,
+            search: String? = nil
+        ) -> String {
+            var url = "\(BASE_URL)api/employer/accommodation?page=\(page)&perPage=\(perPage)&lat=\(lat)&long=\(long)"
+            
+            if let radius = radius {
+                url += "&radius=\(radius)"
+            }
+            
+            if let sort = sortByPrice?.trimmingCharacters(in: .whitespacesAndNewlines), !sort.isEmpty {
+                url += "&sortByPrice=\(sort)"
+            }
+            
+            if let facilities = facilities?.trimmingCharacters(in: .whitespacesAndNewlines), !facilities.isEmpty {
+                let encodedFacilities = facilities.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&facilities=\(encodedFacilities)"
+            }
+            if let searchText = search?.trimmingCharacters(in: .whitespacesAndNewlines), !searchText.isEmpty {
+                let encodedSearch = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&search=\(encodedSearch)"
+            }
+            return url
+        }
+        static func getAccomodation_AccomodationDETAIL(accommodationID:String?) -> String {
+            var url = "\(BASE_URL)api/employer/accommodation/"
+            if let accommodationID = accommodationID {
+                url += "\(accommodationID)"
+            }
+            return url
+        }
+        
+       
+        static func getEmployer_HANGOUT_URL(
+            page: Int,
+            perPage: Int,
+            lat: Double,
+            long: Double,
+            radius: Int? = nil,
+            search: String? = nil
+        ) -> String {
+            var url = "\(BASE_URL)api/employer/hangout?page=\(page)&perPage=\(perPage)&lat=\(lat)&long=\(long)"
+            if let radius = radius {
+                url += "&radius=\(radius)"
+            }
+            if let searchText = search?.trimmingCharacters(in: .whitespacesAndNewlines), !searchText.isEmpty {
+                let encodedSearch = searchText.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&search=\(encodedSearch)"
+            }
+            return url
+        }
+        
+        
+        static func getEMPLOYER_HANGOUTDETAIL(hangoutID:String?) -> String {
+            var url = "\(BASE_URL)api/employer/hangout/"
+            if let hangoutID = hangoutID {
+                url += "\(hangoutID)"
+            }
             return url
         }
     }

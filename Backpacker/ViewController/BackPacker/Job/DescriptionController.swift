@@ -47,6 +47,7 @@ class DescriptionController: UIViewController {
     
     @IBOutlet weak var vwEndTime: UIView!
     var objJobDetail : JobDetail?
+    var EmpobjJobDetail : EmployerJobDetail?
     var lbl_Descripyion_ContentHeight : CGFloat?
     var lbl_requirment__ContentHeight : CGFloat?
     weak var delegate: DescriptionControllerDelegate?
@@ -57,9 +58,17 @@ class DescriptionController: UIViewController {
         mapVw.delegate = self
         setupButtonBorders()
         self.setUpFonts()
+#if BackpackerHire
+        if let obj = self.EmpobjJobDetail {
+            self.setUpUIEmployer(obj: obj)
+        }
+        #else
+        
         if let obj = self.objJobDetail {
             self.setUpUI(obj: obj)
         }
+#endif
+        
     }
   
     private func setupButtonBorders() {
@@ -121,6 +130,31 @@ class DescriptionController: UIViewController {
         mapItem.openInMaps(launchOptions: options)
     }
     func setUpUI(obj: JobDetail){
+        if let formatted = obj.startDate.formattedISODate() {
+            self.lbl_Val_StartDate.text = formatted
+        }
+        if let start = obj.startTime.toAmPmFormat(), let end = obj.endTime.toAmPmFormat() {
+            print("Start: \(start), End: \(end)")
+            self.lbl_Val_EndTime.text = end
+            self.lbl_Val_StartTime.text = start
+        }
+        self.val_Rate.text = "$\(obj.price)"
+        self.lbl_Description_Value.text = obj.description
+        self.lbl_RequirmentValue.text = obj.requirements
+        print("Scroll Content height", self.contentView.frame.height)
+        self.lbl_MapLocation_Value.text  = obj.address
+        let font = FontManager.inter(.medium, size: 13.0)
+        let labelWidth = view.frame.width - 40 // e.g. 16 padding on each side
+        let calculatedHeightDescription = obj.description.heightForLabel(font: font, width: labelWidth)
+        let calculatedHeightRequirment = obj.requirements.heightForLabel(font: font, width: labelWidth)
+        self.lbl_Descripyion_ContentHeight = calculatedHeightDescription
+        self.lbl_requirment__ContentHeight =  calculatedHeightRequirment
+        let lat = obj.lat
+        let lon = obj.long
+        showMarkerOnMap(latitude: lat, longitude: lon, title: obj.address)
+        self.setUpHeight()
+    }
+    func setUpUIEmployer(obj: EmployerJobDetail){
         if let formatted = obj.startDate.formattedISODate() {
             self.lbl_Val_StartDate.text = formatted
         }

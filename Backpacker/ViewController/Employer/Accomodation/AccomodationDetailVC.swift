@@ -55,14 +55,46 @@ class AccomodationDetailVC: UIViewController {
     let viewModelAuth = LogInVM()
     var isLoading: Bool = true // true while loading, false once data is ready
     var accomodationDetailObj : AccommodationDetailData?
+    @IBOutlet weak var mainScrollVw: UIScrollView!
     var accomodationID : String?
     let refreshControl = UIRefreshControl()
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.setUpUI()
+        
+#if BackpackerHire
+        
+        self.getDetailOfAccomodationEmployer()
+        #else
+        
         self.getDetailOfAccomodation()
+#endif
+        self.setUpUI()
+        self.setupPullToRefresh()
     }
- 
+    private func setupPullToRefresh() {
+        refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
+        refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
+        refreshControl.addTarget(self, action: #selector(refreshCollectionData), for: .valueChanged)
+        self.mainScrollVw.refreshControl = refreshControl
+    }
+    
+    @objc private func refreshCollectionData() {
+        // Reset pagination and loading flags
+
+        // Fetch data
+        LoaderManager.shared.show()
+        self.refreshControl.beginRefreshing()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+#if BackpackerHire
+        
+        self.getDetailOfAccomodationEmployer()
+        #else
+        
+        self.getDetailOfAccomodation()
+#endif
+        }
+        
+    }
     private func setUpUI(){
         
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
@@ -116,8 +148,6 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-#if Backapacker
-        
         if isLoading == false{
             if collectionView == img_Collection_Vw{
                 return self.accomodationDetailObj?.accommodation.image.count ?? 0
@@ -127,16 +157,7 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
         }else{
             return 1
         }
-        
-#else
-        if collectionView == img_Collection_Vw{
-            return self.accomodationDetailObj?.accommodation.image.count ?? 0
-        }else{
-            return facilities.count // <-- Replace with your array count
-        }
-        
-        
-#endif
+
         
       
     }
@@ -149,8 +170,24 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
             }
             cell.isComeFromHangout = false
             if let img = self.accomodationDetailObj?.accommodation.image[indexPath.item] {
-                let imageURLString = img.hasPrefix("http") ? img : "http://192.168.11.4:3000/assets/\(img)"
-                cell.img_Vw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "aCCOMODATION"))
+                let baseURL1 = "http://192.168.11.4:3000/assets/"
+                let baseURL2 = "http://192.168.11.4:3001/assets/"
+
+                let imageURLString = img.hasPrefix("http") ? img : baseURL1 + img
+
+                cell.img_Vw.sd_setImage(
+                    with: URL(string: imageURLString),
+                    placeholderImage: UIImage(named: "aCCOMODATION")
+                ) { image, error, _, _ in
+                    if image == nil { // If first attempt fails
+                        let fallbackURL = img.hasPrefix("http") ? img : baseURL2 + img
+                        cell.img_Vw.sd_setImage(
+                            with: URL(string: fallbackURL),
+                            placeholderImage: UIImage(named: "aCCOMODATION")
+                        )
+                    }
+                }
+
             } else {
                 cell.img_Vw.image = UIImage(named: "aCCOMODATION")
             }
@@ -212,6 +249,93 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
 }
 
 extension AccomodationDetailVC {
+    
+#if BackpackerHire
+    func getDetailOfAccomodationEmployer(){
+        LoaderManager.shared.show()
+        isLoading = true
+        if accomodationID?.isEmpty == true {
+            LoaderManager.shared.hide()
+                AlertManager.showAlert(
+                    on: self,
+                    title: "Alert",
+                    message: "Accomodation ID is missing."
+                )
+            
+            return
+        }else{
+            viewMOdel.getEmployerAcommodationDetail(accommodationID: accomodationID ?? ""){ [weak self] (success: Bool, result: AccommodationDetailResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                if result?.data != nil{
+                                    self.accomodationDetailObj = result?.data
+                                    self.setUpValues(obj: self.accomodationDetailObj!)
+                                    
+                                    self.isLoading = false
+                                }else{
+                                    AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
+                                }
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                
+                                LoaderManager.shared.hide()
+                            }
+                            self.refreshControl.endRefreshing()
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.getDetailOfAccomodation()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.refreshControl.endRefreshing()
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    #endif
+    
     func getDetailOfAccomodation(){
         LoaderManager.shared.show()
         isLoading = true
@@ -343,7 +467,7 @@ extension AccomodationDetailVC {
              ]
              
              */
-            if facility == "Free WiFi" {
+            if facility == "Free WiFi" || facility == "Free Wifi" {//
                 let obj = Facility(image: "wifi", title: facility)
                 objPfFacilty.append(obj)
             }
@@ -373,7 +497,12 @@ extension AccomodationDetailVC {
             }else{
                 self.facility_coll_height.constant = 200
             }
-            self.facilityCollectionVw.reloadData()
+            
+            DispatchQueue.main.async{
+                self.facilityCollectionVw.reloadData()
+            }
+           
+           
     }
 }
 }
