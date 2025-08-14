@@ -47,6 +47,7 @@ struct JobsData: Codable {
 struct Job: Codable {
     let id: String
     let name: String
+    var address : String?
     let description: String
     let image: String
     let startDate: String
@@ -69,3 +70,26 @@ struct Job: Codable {
         case favoriteStatus
     }
 }
+
+
+//MARK: - Employer Job List See All
+
+
+import Foundation
+
+// MARK: - Root Response
+struct EmployerJobsResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: JobData?
+    let errors: [String]?
+}
+
+// MARK: - Job Data
+struct JobData: Codable {
+    let currentJobslist: [EmployerJob]?
+    let postedJobList: [EmployerJob]?
+    let upcomingJobList: [EmployerJob]?
+}
+
+

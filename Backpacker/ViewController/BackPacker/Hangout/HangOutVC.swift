@@ -375,7 +375,6 @@ extension HangOutVC{
                     LoaderManager.shared.hide()
                     guard let statusCode = statusCode else {
                         LoaderManager.shared.hide()
-                        self.isLoading = false
                         AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
                         return
                     }
@@ -405,16 +404,18 @@ extension HangOutVC{
                                         self.hangOutList.removeAll()
                                         self.collectIOnVw.isHidden = false
                                         self.lbl_NDataFound.isHidden = true
+                                        self.isLoading = false
                                         self.hangOutList = newAccommodations
                                     }
                                 } else {
+                                    self.isLoading = false
                                     self.hangOutList.append(contentsOf: newAccommodations)
                                 }
                                 self.totalAccomodations = result?.data.total ?? 0
                                 // Pagination end check
                                 self.isAllDataLoaded = newAccommodations.count < self.perPage
                                 
-                                self.isLoading = false
+                             
                                 self.isLoadingMoreData = false
                                 self.collectIOnVw.reloadData()
                                 self.refreshControl.endRefreshing()
@@ -424,7 +425,6 @@ extension HangOutVC{
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                                 self.refreshControl.endRefreshing()
                                 self.collectIOnVw.setContentOffset(.zero, animated: true)
-                                self.isLoading = false
                                 self.isLoadingMoreData = false
                                 self.isComeFromPullTorefresh = false
                                 self.lastContentOffset = 0.0
@@ -452,7 +452,6 @@ extension HangOutVC{
                         case .unauthorizedToken:
                             LoaderManager.shared.hide()
                             self.refreshControl.endRefreshing()
-                            self.isLoading = false
                             self.lastContentOffset = 0.0
                             self.collectIOnVw.setContentOffset(.zero, animated: true)
                             self.isComeFromPullTorefresh = false
@@ -461,7 +460,6 @@ extension HangOutVC{
                         case .unknown:
                             LoaderManager.shared.hide()
                             self.refreshControl.endRefreshing()
-                            self.isLoading = false
                             self.lastContentOffset = 0.0
                             self.collectIOnVw.setContentOffset(.zero, animated: true)
                             self.isComeFromPullTorefresh = false

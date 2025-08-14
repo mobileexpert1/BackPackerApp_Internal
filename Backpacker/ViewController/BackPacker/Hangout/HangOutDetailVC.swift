@@ -183,7 +183,6 @@ extension HangOutDetailVC {
                     LoaderManager.shared.hide()
                     guard let statusCode = statusCode else {
                         LoaderManager.shared.hide()
-                        self.isLoading = false
                         AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
                         return
                     }
@@ -195,6 +194,7 @@ extension HangOutDetailVC {
                         case .ok, .created:
                             if success == true {
                                 if result?.data != nil{
+                                    self.isLoading = false
                                     self.hangoutDetailObj = result?.data
                                     self.setUpValues(obj: self.hangoutDetailObj!)
                                 }else{
@@ -202,11 +202,9 @@ extension HangOutDetailVC {
                                 }
                             } else {
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                                
-                                self.isLoading = false
                                 LoaderManager.shared.hide()
                             }
-                            self.isLoading = false
+                          
                             self.refreshControl.endRefreshing()
                         case .badRequest:
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
@@ -224,12 +222,10 @@ extension HangOutDetailVC {
                             
                         case .unauthorizedToken:
                             LoaderManager.shared.hide()
-                            self.isLoading = false
                             self.refreshControl.endRefreshing()
                             NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
                         case .unknown:
                             LoaderManager.shared.hide()
-                            self.isLoading = false
                             self.refreshControl.endRefreshing()
                             AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
                                 self.navigationController?.popViewController(animated: true)

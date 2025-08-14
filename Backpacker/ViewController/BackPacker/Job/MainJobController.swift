@@ -117,8 +117,8 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
 #if BackpackerHire
         switch selectedIndex {
         case 0:
-            storyboardName = "Job"
-            vcIdentifier = "JobCollectionVC"
+            storyboardName = "Home"
+            vcIdentifier = "HomeVC"
         case 1:
             storyboardName = "Job"
             vcIdentifier = "EmployerBackPackerListVC"
@@ -132,9 +132,8 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
         if let newVC = loadViewController(from: storyboardName, identifier: vcIdentifier) {
             // Pass data based on controller type
                 switch newVC {
-                case let listVC as JobCollectionVC:
-                    listVC.filteredDesignations = designationsJobs
-                    listVC.isSearchViewVisible = true
+                case let homeVC as HomeVC:
+                    break
                     
                 case let listVC as EmployerBackPackerListVC:
                     listVC.iscomeFromEmployer = false

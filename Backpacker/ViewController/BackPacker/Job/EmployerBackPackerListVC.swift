@@ -271,9 +271,13 @@ extension EmployerBackPackerListVC {
                                     } else {
                                         self.tbaleView.isHidden = false
                                         self.lbl_NoDataFound.isHidden = true
+                                        
+                                        self.isLoading = false
                                         self.searchData = list
                                     }
                                 } else {
+                                    
+                                    self.isLoading = false
                                     self.searchData.append(contentsOf: list)
                                 }
                                 self.totalJobs = result?.data?.total ?? 0
@@ -282,7 +286,6 @@ extension EmployerBackPackerListVC {
                                 if self.isAllDataLoaded == true {
                                     self.removeTableFooterView()
                                 }
-                                self.isLoading = false
                                 self.isComeFromPullTorefresh = false
                                 self.isLoadingMoreData = false
                                 self.tbaleView.reloadData()
@@ -304,7 +307,6 @@ extension EmployerBackPackerListVC {
                             } else {
                                 LoaderManager.shared.hide()
                                 self.refreshControl.endRefreshing()
-                                self.isLoading = false
                                 self.tbaleView.setContentOffset(.zero, animated: true)
                                 NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
                                 

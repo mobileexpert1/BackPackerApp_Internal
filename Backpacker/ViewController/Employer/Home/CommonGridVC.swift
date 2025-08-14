@@ -15,7 +15,7 @@ class CommonGridVC: UIViewController {
     var isFetchingData = false
     var hasMorePages = true
     var isLoadingMore = false
-    
+    var lastContentOffset: CGFloat = 0
     @IBOutlet weak var btn_searchCross: UIButton!
     @IBOutlet weak var lbl_nodata_Found: UILabel!
     @IBOutlet weak var txtFldSearch: UITextField!
@@ -34,7 +34,7 @@ class CommonGridVC: UIViewController {
     var accommodationList = [Accommodation]()
     
     var page = 1
-    let perPage = 6
+    let perPage = 10
     var totalJobs = Int()
     var isLoadingMoreData = false
     var isAllDataLoaded = false
@@ -47,7 +47,12 @@ class CommonGridVC: UIViewController {
         // Register the collection view cell
         self.setupPullToRefresh()
         self.setUpUI()
+#if BackpackerHire
+        self.EmploerGetListOfAll()
+#else
         self.getListOfAll()
+#endif
+        
     }
     
     
@@ -101,8 +106,12 @@ class CommonGridVC: UIViewController {
         self.refreshControl.beginRefreshing()
         isComeFromPullTorefresh = true
         // Fetch data
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
-            self.getListOfAll()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+#if BackpackerHire
+        self.EmploerGetListOfAll()
+#else
+        self.getListOfAll()
+#endif
         }
        
     }
@@ -112,10 +121,64 @@ class CommonGridVC: UIViewController {
             page = 1
         txtFldSearch.resignFirstResponder()
         self.btn_searchCross.isHidden = true
-            getListOfAll()
+#if BackpackerHire
+        self.EmploerGetListOfAll()
+#else
+        self.getListOfAll()
+#endif
+           
     }
     
     func setUpStatus(){
+        
+#if BackpackerHire
+        
+        if isComeFromJobSections == false{
+            if isComeFromHomeJob == true{
+                self.isComeFromHomeHangout = false
+                self.isComeFromHomeAccomodation = false
+                print("IsComefrom JOb")
+                self.main_Header.text = "Jobs"
+                
+            }else  if isComeFromHomeHangout == true{
+                self.isComeFromHomeJob = false
+                self.isComeFromHomeAccomodation = false
+                print("IsComefrom Hangout")
+                self.main_Header.text = "Backpacker Hangout"
+                
+            }else  if isComeFromHomeAccomodation == true{
+                self.isComeFromHomeJob = false
+                self.isComeFromHomeHangout = false
+                print("IsComefrom Accomodation")
+                self.main_Header.text = "Accommodations"
+                
+            }
+        }else{
+            if isComeFromHomeJob == true{
+                self.isComeFromHomeHangout = false
+                self.isComeFromHomeAccomodation = false
+                print("IsComefrom JOb")
+                self.main_Header.text = "Posted"
+                self.type = 3
+                
+            }else  if isComeFromHomeHangout == true{
+                self.isComeFromHomeJob = false
+                self.isComeFromHomeAccomodation = false
+                print("IsComefrom Hangout")
+                self.main_Header.text = "Upcoming"
+                self.type = 2
+                
+            }else  if isComeFromHomeAccomodation == true{
+                self.isComeFromHomeJob = false
+                self.isComeFromHomeHangout = false
+                print("IsComefrom Accomodation")
+                self.main_Header.text = "Current Jobs"
+                self.type = 1
+                
+            }
+        }
+        
+#else
         if isComeFromJobSections == false{
             if isComeFromHomeJob == true{
                 self.isComeFromHomeHangout = false
@@ -160,10 +223,46 @@ class CommonGridVC: UIViewController {
                 
             }
         }
+#endif
+        
+       
        
         self.setTitleForSearch()
     }
     func setTitleForSearch(){
+        
+#if BackpackerHire
+        
+        if isComeFromJobSections == false {
+            if isComeFromHomeJob == true{
+                txtFldSearch.attributedPlaceholder = NSAttributedString(
+                    string: "Posted",
+                    attributes: [
+                        .foregroundColor: UIColor.black,
+                        .font: FontManager.inter(.regular, size: 14.0)
+                    ])
+               
+                
+            }else  if isComeFromHomeHangout == true{
+                txtFldSearch.attributedPlaceholder = NSAttributedString(
+                    string: "UpComing",
+                    attributes: [
+                        .foregroundColor: UIColor.black,
+                        .font: FontManager.inter(.regular, size: 14.0)
+                    ])
+                
+            }else  if isComeFromHomeAccomodation == true{
+                txtFldSearch.attributedPlaceholder = NSAttributedString(
+                    string: "Current Jobs",
+                    attributes: [
+                        .foregroundColor: UIColor.black,
+                        .font: FontManager.inter(.regular, size: 14.0)
+                    ])
+            }
+        }else{
+            
+        }
+#else
         if isComeFromJobSections == false {
             if isComeFromHomeJob == true{
                 txtFldSearch.attributedPlaceholder = NSAttributedString(
@@ -193,6 +292,8 @@ class CommonGridVC: UIViewController {
         }else{
             
         }
+#endif
+        
        
     }
     @IBAction func action_back(_ sender: Any) {
@@ -204,17 +305,12 @@ class CommonGridVC: UIViewController {
 extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-#if BackpackerHire
-            return 20
-      
-        #else
+
         if isLoading ==  true{
             return 8
         }else{
             return jobslist.count
         }
-        
-#endif
       
        
       
@@ -222,8 +318,6 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        
-#if Backapacker
         if isLoading == true  {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SkeltonCVC", for: indexPath) as? SkeltonCVC else {
                 return UICollectionViewCell()
@@ -288,16 +382,7 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                 return cell
             }
         }
-        
-        #else
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
-            return UICollectionViewCell()
-        }
-        // Optionally configure cell
-        return cell
-        
-        
-#endif
+      
            
      
     }
@@ -385,6 +470,17 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
     }
    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y < 0 {
+            return
+        }
+        
+        // Detect scroll direction
+        let isScrollingDown = scrollView.contentOffset.y > lastContentOffset
+        lastContentOffset = scrollView.contentOffset.y
+        
+        // Only proceed if scrolling down
+        guard isScrollingDown else { return }
+        
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
         let frameHeight = scrollView.frame.size.height
@@ -393,9 +489,14 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
             if isComeFromPullTorefresh == false{
                 if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
                     isLoadingMoreData = true
+                    self.collVw.reloadData()
                     page += 1
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 ){
-                        self.getListOfAll()
+#if BackpackerHire
+        self.EmploerGetListOfAll()
+#else
+        self.getListOfAll()
+#endif
                     }
                    
                 }
@@ -431,7 +532,11 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                   if self.lastSearchedText != trimmedSearch {
                       self.lastSearchedText = trimmedSearch
                       self.page = 1
-                      self.getListOfAll()
+#if BackpackerHire
+        self.EmploerGetListOfAll()
+#else
+        self.getListOfAll()
+#endif
                   }
               }
 
@@ -481,18 +586,20 @@ extension CommonGridVC {
                                     self.jobslist = newJobs
                                     self.collVw.isHidden = true
                                 } else {
+                                    self.isLoading = false
                                     self.collVw.isHidden = false
                                     self.lbl_nodata_Found.isHidden = true
                                     self.jobslist = newJobs
                                 }
                             } else {
+                                self.isLoading = false
                                 self.jobslist.append(contentsOf: newJobs)
                             }
                             self.totalJobs = result?.data.total ?? 0
                             // Pagination end check
                             self.isAllDataLoaded = newJobs.count < self.perPage
                             
-                            self.isLoading = false
+                            
                             self.isComeFromPullTorefresh = false
                             self.isLoadingMoreData = false
                             self.collVw.reloadData()
@@ -522,13 +629,11 @@ extension CommonGridVC {
                     case .unauthorizedToken:
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
-                        self.isLoading = false
                         self.collVw.setContentOffset(.zero, animated: true)
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
-                        self.isLoading = false
                         self.collVw.setContentOffset(.zero, animated: true)
                         AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
                             self.navigationController?.popViewController(animated: true)
@@ -543,6 +648,105 @@ extension CommonGridVC {
             }
         }
     }
+    
+#if BackpackerHire
+    private func EmploerGetListOfAll(){
+        if page == 1 {
+            self.isLoading = true
+            LoaderManager.shared.show()
+        } else {
+            isLoadingMoreData = true
+            collVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
+        }
+        viewModel.getEmpJobListSeeAllWithType(page: page, perPage: perPage, search: self.lastSearchedText, type: self.type ?? 1) { [weak self] (success: Bool, result: JobsResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            let newJobs = result?.data.jobslist ?? []
+                            
+                            if self.page == 1 {
+                                if newJobs.isEmpty {
+                                    self.lbl_nodata_Found.isHidden = false
+                                    self.jobslist.removeAll()
+                                    self.jobslist = newJobs
+                                    self.collVw.isHidden = true
+                                } else {
+                                    self.isLoading = false
+                                    self.collVw.isHidden = false
+                                    self.lbl_nodata_Found.isHidden = true
+                                    self.jobslist = newJobs
+                                }
+                            } else {
+                                self.isLoading = false
+                                self.jobslist.append(contentsOf: newJobs)
+                            }
+                            self.totalJobs = result?.data.total ?? 0
+                            // Pagination end check
+                            self.isAllDataLoaded = newJobs.count < self.perPage
+                            
+                            
+                            self.isComeFromPullTorefresh = false
+                            self.isLoadingMoreData = false
+                            self.collVw.reloadData()
+                            self.refreshControl.endRefreshing()
+                            
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            self.refreshControl.endRefreshing()
+                            self.collVw.setContentOffset(.zero, animated: true)
+                            LoaderManager.shared.hide()
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.EmploerGetListOfAll()
+                            } else {
+                                LoaderManager.shared.hide()
+                                self.refreshControl.endRefreshing()
+                                self.isLoading = false
+                                self.collVw.setContentOffset(.zero, animated: true)
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                            }
+                        }
+                        
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.collVw.setContentOffset(.zero, animated: true)
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.collVw.setContentOffset(.zero, animated: true)
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        
+                    }
+                }
+            }
+        }
+    }
+#endif
+    
     private func navigateToDescriptionVC(){
         if self.jobId.isEmpty == false{
             let storyboard = UIStoryboard(name: "Job", bundle: nil)

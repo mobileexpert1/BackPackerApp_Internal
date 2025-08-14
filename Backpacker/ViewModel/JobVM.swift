@@ -158,5 +158,44 @@ class JobVM {
             completion(success, result, statusCode)
         }
     }
+    
+    
+    
+    
+    
+    //MARK: - Employer Job list
+    
+    func getEmployerJobListSeeAll<T: Codable>(
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.EMPLOYER_JOB_TODAY
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
+    func getEmpJobListSeeAllWithType<T: Codable>(
+        page: Int,
+        perPage: Int,
+        search:String,
+        type:Int,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getEMPLOYER_JOBSSEEALLURLWITHTYPE(page: page, perPage: perPage,search: search, type: type)
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 

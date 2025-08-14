@@ -146,3 +146,13 @@ extension JobCollectionVC  : UITextFieldDelegate{
         return true
     }
 }
+
+
+extension JobCollectionVC {
+    
+    
+    func EmployerJobList(){
+        
+    }
+    
+}

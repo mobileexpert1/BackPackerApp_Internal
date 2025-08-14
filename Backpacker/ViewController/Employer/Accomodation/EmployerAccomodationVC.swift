@@ -486,7 +486,6 @@ extension EmployerAccomodationVC {
                     LoaderManager.shared.hide()
                     guard let statusCode = statusCode else {
                         LoaderManager.shared.hide()
-                        self.isLoading = false
                         AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
                         return
                     }
@@ -513,18 +512,20 @@ extension EmployerAccomodationVC {
                                         self.accommodationList = newAccommodations
                                         self.coollVw.isHidden = true
                                     } else {
+                                        self.isLoading = false
                                         self.coollVw.isHidden = false
                                         self.lbl_No_AccomdodationFound.isHidden = true
                                         self.accommodationList = newAccommodations
                                     }
                                 } else {
+                                    self.isLoading = false
                                     self.accommodationList.append(contentsOf: newAccommodations)
                                 }
                                 self.totalAccomodations = result?.data.total ?? 0
                                 // Pagination end check
                                 self.isAllDataLoaded = newAccommodations.count < self.perPage
                                 
-                                self.isLoading = false
+                              
                                 self.isComeFromPullTorefresh = false
                                 self.isLoadingMoreData = false
                                 self.coollVw.reloadData()
@@ -558,14 +559,12 @@ extension EmployerAccomodationVC {
                         case .unauthorizedToken:
                             LoaderManager.shared.hide()
                             self.refreshControl.endRefreshing()
-                            self.isLoading = false
                             self.isComeFromPullTorefresh = false
                             self.coollVw.setContentOffset(.zero, animated: true)
                             NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
                         case .unknown:
                             LoaderManager.shared.hide()
                             self.refreshControl.endRefreshing()
-                            self.isLoading = false
                             self.isComeFromPullTorefresh = false
                             self.coollVw.setContentOffset(.zero, animated: true)
                             AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){

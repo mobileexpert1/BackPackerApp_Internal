@@ -289,8 +289,10 @@ extension CommonSearchVC {
                                         self.tblVw.isHidden = false
                                        self.lbl_No_backpacker.isHidden = true
                                         self.searchData = list
+                                        self.isLoading = false
                                     }
                                 } else {
+                                    self.isLoading = false
                                     self.searchData.append(contentsOf: list)
                                 }
                                 self.totalJobs = result?.data?.total ?? 0
@@ -299,7 +301,7 @@ extension CommonSearchVC {
                                 if self.isAllDataLoaded == true {
                                     self.removeTableFooterView()
                                 }
-                                self.isLoading = false
+                                
                                 self.isComeFromPullTorefresh = false
                                 self.isLoadingMoreData = false
                                 self.tblVw.reloadData()
@@ -321,7 +323,6 @@ extension CommonSearchVC {
                             } else {
                                 LoaderManager.shared.hide()
                                 self.refreshControl.endRefreshing()
-                                self.isLoading = false
                                 self.tblVw.setContentOffset(.zero, animated: true)
                                 NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
                                 

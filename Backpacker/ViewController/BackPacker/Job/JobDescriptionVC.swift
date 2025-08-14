@@ -211,7 +211,7 @@ extension JobDescriptionVC {
                     LoaderManager.shared.hide()
                     guard let statusCode = statusCode else {
                         LoaderManager.shared.hide()
-                        self.isLoading = false
+                     
                         AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
                         return
                     }
@@ -225,6 +225,7 @@ extension JobDescriptionVC {
                                 if result?.data.job != nil{
                                     self.jobDetailObj = result?.data.job
                                     self.setUpValues(obj: self.jobDetailObj!)
+                                    self.isLoading = false
                                     self.showChild(self.firstVC)
                                 }else{
                                     
@@ -232,7 +233,6 @@ extension JobDescriptionVC {
                             } else {
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                                 
-                                self.isLoading = false
                                 LoaderManager.shared.hide()
                             }
                             self.refreshControl.endRefreshing()
@@ -252,12 +252,10 @@ extension JobDescriptionVC {
                             
                         case .unauthorizedToken:
                             LoaderManager.shared.hide()
-                            self.isLoading = false
                             self.refreshControl.endRefreshing()
                             NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
                         case .unknown:
                             LoaderManager.shared.hide()
-                            self.isLoading = false
                             self.refreshControl.endRefreshing()
                             AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
                                 self.navigationController?.popViewController(animated: true)

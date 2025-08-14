@@ -19,6 +19,9 @@ class SkeltonCollectionTVC: UITableViewCell {
                collVw.delegate = self
                collVw.dataSource = self
                collVw.isSkeletonable = true
+        self.collVw.showsHorizontalScrollIndicator = false
+        self.collVw.showsVerticalScrollIndicator = false
+        self.collVw.isScrollEnabled = false
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -31,7 +34,7 @@ class SkeltonCollectionTVC: UITableViewCell {
 extension SkeltonCollectionTVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return 4
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

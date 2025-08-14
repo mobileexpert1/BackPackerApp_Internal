@@ -9,6 +9,7 @@ import UIKit
 import SkeletonView
 class EmployerHomeVC: UIViewController {
 
+    @IBOutlet weak var lblnodataFound: UILabel!
     @IBOutlet weak var header_Imahe: UIImageView!
     @IBOutlet weak var mainHeaderVwHeight: NSLayoutConstraint!
     @IBOutlet weak var lbl_NotificationCount: UILabel!
@@ -28,6 +29,7 @@ class EmployerHomeVC: UIViewController {
     var isLoading : Bool = true
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.lblnodataFound.isHidden = true
         if roleType == "2" {
             sectionTitles = ["", "Jobs"]
         }else if roleType == "3" {
@@ -338,14 +340,18 @@ extension EmployerHomeVC{
                     case .ok, .created:
                         if success == true {
                             if data != nil {
+                                
                                 self.homeData = data
+                                
+                                    self.isLoading = false
+                            }else{
+                                self.showNoData(isShow: true)
                             }
                            
                             if self.homeData?.name?.isEmpty == true && self.homeData?.email?.isEmpty == true{
-                                //self.showForceUpdatePopUp()
+                                self.showForceUpdatePopUp()
                             }
                             DispatchQueue.main.async {
-                                self.isLoading = false
                                 LoaderManager.shared.hide()
                                 self.refreshControl?.endRefreshing()
                                 self.tblVw.setContentOffset(.zero, animated: true)
@@ -355,7 +361,6 @@ extension EmployerHomeVC{
                             AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                         self.refreshControl?.endRefreshing()
                             self.tblVw.setContentOffset(.zero, animated: true)
-                            self.isLoading = false
                             LoaderManager.shared.hide()
                         }
                     case .badRequest:
@@ -367,7 +372,6 @@ extension EmployerHomeVC{
                             } else {
                                 LoaderManager.shared.hide()
                                 self.refreshControl?.endRefreshing()
-                                self.isLoading = false
                                 self.tblVw.setContentOffset(.zero, animated: true)
                                 NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                             }
@@ -375,13 +379,11 @@ extension EmployerHomeVC{
                     case .unauthorizedToken:
                         LoaderManager.shared.hide()
                         self.refreshControl?.endRefreshing()
-                        self.isLoading = false
                         self.tblVw.setContentOffset(.zero, animated: true)
                         NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
                         self.refreshControl?.endRefreshing()
-                        self.isLoading = false
                         self.tblVw.setContentOffset(.zero, animated: true)
                         AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
                     case .methodNotAllowed:
@@ -425,5 +427,14 @@ extension  EmployerHomeVC: SkeletonTableViewDataSource {
                // Optional: pass selected job title
                self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
            }
+    }
+    private func showNoData(isShow : Bool = false){
+        if isShow == true{
+            self.lblnodataFound.isHidden = false
+            self.tblVw.isHidden = true
+        }else{
+            self.lblnodataFound.isHidden = true
+            self.tblVw.isHidden = false
+        }
     }
 }
