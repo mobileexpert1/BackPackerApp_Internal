@@ -840,7 +840,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             return CGSize(width: (width / 2) - 5, height: 180)
         }else if tableSection == 1 {
             if role == "4"{
-                return CGSize(width: (width / 2) - 12, height: 205)
+                return CGSize(width: (width / 2) - 12, height: 210)
             }else if role  == "3"{
                 return CGSize(width: (width / 2) - 12, height: 235)
             }else if role  == "2"{

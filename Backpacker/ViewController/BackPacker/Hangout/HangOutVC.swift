@@ -341,7 +341,7 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 205) // Adjust height based on content
+        return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 210) // Adjust height based on content
     }
     
     
