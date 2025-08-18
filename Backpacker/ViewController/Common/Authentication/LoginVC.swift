@@ -231,6 +231,7 @@ extension LoginVC {
                     AlertManager.showAlert(on: self, title: "Error", message: httpStatus.description)
                 }
             }else{
+                LoaderManager.shared.hide()
                 AlertManager.showAlert(on: self, title: "Error", message: "Something went wrong.")
             }
             

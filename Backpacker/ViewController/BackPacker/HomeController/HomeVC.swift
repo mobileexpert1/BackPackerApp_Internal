@@ -11,6 +11,7 @@ class HomeVC: UIViewController {
     
    let sectionTitles = ["Current Jobs","New Jobs","Declined Jobs"]
     
+    @IBOutlet weak var lbl_noJobs: UILabel!
     let itemsPerSection = [
         ["Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa"],
         ["Leh",
@@ -78,6 +79,7 @@ class HomeVC: UIViewController {
        // self.setUpUI()
         //  LoaderManager.shared.show()
         self.setupPullToRefresh()
+        self.lbl_noJobs.font = FontManager.inter(.medium, size: 15.0)
         LocationManager.shared.requestLocationPermission()
         let nib = UINib(nibName: "HomeTVC", bundle: nil)
         self.home_TblVw.register(nib, forCellReuseIdentifier: "HomeTVC")
@@ -92,6 +94,7 @@ class HomeVC: UIViewController {
         Vw_Chat.addShadowAllSides()
         let nib5 = UINib(nibName: "SkeltonCollectionTVC", bundle: nil)
         self.home_TblVw.register(nib5, forCellReuseIdentifier: "SkeltonCollectionTVC")
+        self.lbl_noJobs.isHidden = true
 #if BackpackerHire
         self.getEmployerJobList()
         
@@ -515,8 +518,20 @@ extension HomeVC {
                             self.home_TblVw.setContentOffset(.zero, animated: true)
                             LoaderManager.shared.hide()
                         }
+                        if self.JobData?.data.currentJobslist.count == 0 &&  self.JobData?.data.declinedJobslist.count == 0 &&
+                            self.JobData?.data.newJobslist.count == 0 {
+                            self.lbl_noJobs.isHidden = false
+                        }else{
+                            self.lbl_noJobs.isHidden = true
+                        }
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        if self.JobData?.data.currentJobslist.count == 0 &&  self.JobData?.data.declinedJobslist.count == 0 &&
+                            self.JobData?.data.newJobslist.count == 0 {
+                            self.lbl_noJobs.isHidden = false
+                        }else{
+                            self.lbl_noJobs.isHidden = true
+                        }
                     case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -539,10 +554,28 @@ extension HomeVC {
                         self.refreshControl.endRefreshing()
                         self.home_TblVw.setContentOffset(.zero, animated: true)
                         AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                        if self.JobData?.data.currentJobslist.count == 0 &&  self.JobData?.data.declinedJobslist.count == 0 &&
+                            self.JobData?.data.newJobslist.count == 0 {
+                            self.lbl_noJobs.isHidden = false
+                        }else{
+                            self.lbl_noJobs.isHidden = true
+                        }
                     case .methodNotAllowed:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        if self.JobData?.data.currentJobslist.count == 0 &&  self.JobData?.data.declinedJobslist.count == 0 &&
+                            self.JobData?.data.newJobslist.count == 0 {
+                            self.lbl_noJobs.isHidden = false
+                        }else{
+                            self.lbl_noJobs.isHidden = true
+                        }
                     case .internalServerError:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        if self.JobData?.data.currentJobslist.count == 0 &&  self.JobData?.data.declinedJobslist.count == 0 &&
+                            self.JobData?.data.newJobslist.count == 0 {
+                            self.lbl_noJobs.isHidden = false
+                        }else{
+                            self.lbl_noJobs.isHidden = true
+                        }
                     }
                 }
             }
@@ -582,8 +615,20 @@ extension HomeVC {
                             self.home_TblVw.setContentOffset(.zero, animated: true)
                             LoaderManager.shared.hide()
                         }
+                        if self.EmployerJobData?.data?.currentJobslist?.count == 0 &&  self.EmployerJobData?.data?.postedJobList?.count == 0 &&
+                            self.EmployerJobData?.data?.upcomingJobList?.count == 0 {
+                            self.lbl_noJobs.isHidden = false
+                        }else{
+                            self.lbl_noJobs.isHidden = true
+                        }
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        if self.EmployerJobData?.data?.currentJobslist?.count == 0 &&  self.EmployerJobData?.data?.postedJobList?.count == 0 &&
+                            self.EmployerJobData?.data?.upcomingJobList?.count == 0 {
+                            self.lbl_noJobs.isHidden = false
+                        }else{
+                            self.lbl_noJobs.isHidden = true
+                        }
                     case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -606,10 +651,28 @@ extension HomeVC {
                         self.refreshControl.endRefreshing()
                         self.home_TblVw.setContentOffset(.zero, animated: true)
                         AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                        if self.EmployerJobData?.data?.currentJobslist?.count == 0 &&  self.EmployerJobData?.data?.postedJobList?.count == 0 &&
+                            self.EmployerJobData?.data?.upcomingJobList?.count == 0 {
+                            self.lbl_noJobs.isHidden = false
+                        }else{
+                            self.lbl_noJobs.isHidden = true
+                        }
                     case .methodNotAllowed:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        if self.EmployerJobData?.data?.currentJobslist?.count == 0 &&  self.EmployerJobData?.data?.postedJobList?.count == 0 &&
+                            self.EmployerJobData?.data?.upcomingJobList?.count == 0 {
+                            self.lbl_noJobs.isHidden = false
+                        }else{
+                            self.lbl_noJobs.isHidden = true
+                        }
                     case .internalServerError:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        if self.EmployerJobData?.data?.currentJobslist?.count == 0 &&  self.EmployerJobData?.data?.postedJobList?.count == 0 &&
+                            self.EmployerJobData?.data?.upcomingJobList?.count == 0 {
+                            self.lbl_noJobs.isHidden = false
+                        }else{
+                            self.lbl_noJobs.isHidden = true
+                        }
                     }
                 }
             }

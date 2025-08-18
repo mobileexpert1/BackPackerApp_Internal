@@ -24,6 +24,7 @@ class OtpVC: UIViewController {
     @IBOutlet weak var txt5: UITextField!
     @IBOutlet weak var txt6: UITextField!
     // Outer views (optional for borders, animations)
+    @IBOutlet weak var lbl_Timer: UILabel!
     @IBOutlet weak var view1: UIView!
     @IBOutlet weak var view2: UIView!
     @IBOutlet weak var view3: UIView!
@@ -36,6 +37,8 @@ class OtpVC: UIViewController {
     var phoneNumbaer : String = ""
     var viewModel = LogInVM()
     var userId = String()
+    private var timer: Timer?
+        private var remainingSeconds = 30
     override func viewDidLoad() {
         super.viewDidLoad()
         otpTextFields = [txt1, txt2, txt3, txt4, txt5, txt6]
@@ -48,8 +51,10 @@ class OtpVC: UIViewController {
         self.btn_verifyHeight.constant = 50.0
         applyGradientButtonStyle(to: btn_verify, opacity: 0.4, isUserInteractionEnabled: false)
         self.btn_verify.isUserInteractionEnabled = false
+        
     }
     private func setUpUI(){
+        self.lbl_Timer.font =  FontManager.inter(.regular, size: 12.0)
         self.lbl_title.font = FontManager.inter(.regular, size: 26.0)
         self.lbl_EnterOtp.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_dontReceive.font = FontManager.inter(.regular, size: 14.0)
@@ -240,7 +245,15 @@ extension OtpVC {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Invalid OTP")
                     }
                 case .badRequest:
-                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong."){
+                        self.txt1.text = ""
+                        self.txt2.text = ""
+                        self.txt3.text = ""
+                        self.txt4.text = ""
+                        self.txt5.text = ""
+                        self.txt6.text = ""
+                        
+                    }
                 case .unauthorized :
                     self.viewModel.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -279,6 +292,7 @@ extension OtpVC {
                 case .ok, .created:
                     if success, let message = result?.message {
                         AlertManager.showAlert(on: self, title: "", message: message)
+                        self.startTimer()
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Resend OTP failed.")
                     }
@@ -307,4 +321,33 @@ extension OtpVC {
         }
         
     }
+    func startTimer() {
+            // Disable button
+        btn_Resend.isEnabled = false
+        btn_Resend.alpha = 0.5
+            
+            // Show label
+            remainingSeconds = 30
+        lbl_Timer.isHidden = false
+        lbl_Timer.text = "Please wait \(remainingSeconds)s"
+            
+            // Invalidate existing timer
+            timer?.invalidate()
+            
+            // Start countdown
+            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] t in
+                guard let self = self else { return }
+                
+                self.remainingSeconds -= 1
+                self.lbl_Timer.text = "Please wait \(self.remainingSeconds)s"
+                
+                if self.remainingSeconds <= 0 {
+                    t.invalidate()
+                    self.timer = nil
+                    self.lbl_Timer.isHidden = true
+                    self.btn_Resend.isEnabled = true
+                    self.btn_Resend.alpha = 1.0
+                }
+            }
+        }
 }

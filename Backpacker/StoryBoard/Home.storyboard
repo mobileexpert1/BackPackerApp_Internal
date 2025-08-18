@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="PG1-e0-rGJ">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -21,6 +22,12 @@
                                 <rect key="frame" x="10" y="59" width="373" height="759"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Jobs Found" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G8R-lz-bEm">
+                                <rect key="frame" x="139" y="428" width="115.33333333333331" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="egA-LH-qAz">
                                 <rect key="frame" x="323" y="748" width="50" height="50"/>
                                 <subviews>
@@ -53,6 +60,8 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="HTv-7q-uOR" firstAttribute="bottom" secondItem="45L-mC-6H2" secondAttribute="bottom" id="DYa-iM-K7c"/>
+                            <constraint firstItem="G8R-lz-bEm" firstAttribute="centerX" secondItem="HTv-7q-uOR" secondAttribute="centerX" id="FFp-2H-ytX"/>
+                            <constraint firstItem="G8R-lz-bEm" firstAttribute="centerY" secondItem="HTv-7q-uOR" secondAttribute="centerY" id="YOY-Hg-vEY"/>
                             <constraint firstItem="45L-mC-6H2" firstAttribute="leading" secondItem="HTv-7q-uOR" secondAttribute="leading" constant="10" id="ahu-ID-gYr"/>
                             <constraint firstItem="HTv-7q-uOR" firstAttribute="trailing" secondItem="egA-LH-qAz" secondAttribute="trailing" constant="20" id="czH-n3-uHG"/>
                             <constraint firstItem="HTv-7q-uOR" firstAttribute="bottom" secondItem="egA-LH-qAz" secondAttribute="bottom" constant="20" id="qW6-al-6Of"/>
@@ -64,6 +73,7 @@
                     <connections>
                         <outlet property="Vw_Chat" destination="egA-LH-qAz" id="kP4-XL-tLW"/>
                         <outlet property="home_TblVw" destination="45L-mC-6H2" id="Do1-vx-tXW"/>
+                        <outlet property="lbl_noJobs" destination="G8R-lz-bEm" id="sJ8-ml-kNP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="M3k-MO-JO1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -666,7 +676,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemPinkColor">
-            <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

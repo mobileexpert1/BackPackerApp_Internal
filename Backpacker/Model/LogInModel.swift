@@ -28,6 +28,27 @@ struct OtpResponse: Codable {
     let data: OtpData?
     let errors: [FieldError]?
 }
+
+struct OtpData: Codable {
+    let userId: String?
+    let accessToken: String?
+    let refreshToken: String?
+    let subRoleType: String?
+
+    enum CodingKeys: String, CodingKey {
+        case userId, accessToken, refreshToken, subRoleType
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        userId = try container.decodeIfPresent(String.self, forKey: .userId)
+        accessToken = try container.decodeIfPresent(String.self, forKey: .accessToken)
+        refreshToken = try container.decodeIfPresent(String.self, forKey: .refreshToken)
+        subRoleType = try container.decodeIfPresent(String.self, forKey: .subRoleType)
+    }
+}
+
+
 //MARK: '- ChooseRoleType
 struct RoleTypeResponse: Codable {
     let success: BoolOrInt
@@ -42,12 +63,6 @@ struct RoleTypeData : Codable{
     let subRoleType : String
 }
 
-struct OtpData : Codable {
-    let userId : String?
-    let accessToken :String?
-    let refreshToken : String
-    let subRoleType : String
-}
 
 struct BoolOrInt: Codable {
     let value: Bool

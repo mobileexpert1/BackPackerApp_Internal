@@ -473,7 +473,24 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         if section == 0 {
             return 0.0
         }
-        return 40
+            if role == "2"{
+                return 40
+            }else if role == "3"{
+                if accomdationEmpHomeData?.accommodationList.count ?? 0 > 0{
+                    return 40
+                }else{
+                    return 0
+                }
+            } else if role == "4"{
+                if hangoutEmpHomeData?.hangoutList.count ?? 0 > 0{
+                    return 40
+                }else{
+                    return 0
+                }
+            }else{
+                return 40
+            }
+       
 #endif
         }
 

@@ -42,7 +42,7 @@ class EmployerAccomodationVC: UIViewController {
     var accommodationList = [Accommodation]()
     
     var page = 1
-    let perPage = 2
+    let perPage = 10
     var totalAccomodations = Int()
     var isLoadingMoreData = false
     var isAllDataLoaded = false
@@ -85,6 +85,11 @@ class EmployerAccomodationVC: UIViewController {
         
         self.lbl_No_AccomdodationFound.isHidden = true
 
+
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        isComeFromPullTorefresh = false
 #if BackpackerHire
         
         self.listOfAllAccommodationEmployer()
@@ -92,10 +97,6 @@ class EmployerAccomodationVC: UIViewController {
         self.listOfAllAccommodation()
 #endif
         
-    }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        isComeFromPullTorefresh = false
     }
     
     

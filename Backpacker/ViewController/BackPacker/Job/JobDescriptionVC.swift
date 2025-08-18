@@ -96,7 +96,18 @@ class JobDescriptionVC: UIViewController {
             self.getEmployeeDetailOfJob()
 #else
             self.getDetailOfJob()
+            self.btn_Description.tag = 1
+            self.btn_Employer.tag = 0
+            if self.btn_Description.tag == 1 {
+                self.vW_Description.backgroundColor  = UIColor(named: "themeColor")
+                self.lbl_Description.textColor = .white
+                self.lblEmployer.textColor =  .black
+                self.vW_Employer.backgroundColor = .clear
+            }
+            self.setBtnTitle()
+            self.handleBotmBtnAppearance()
 #endif
+           
         }
 
         

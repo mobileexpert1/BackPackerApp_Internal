@@ -43,17 +43,21 @@ class HangOutVC: UIViewController {
         super.viewDidLoad()
         
         self.setUpUI()
+
+        
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 #if Backapacker
                 self.listOfAllBackPackerHangOuts()
                 
                 #else
                 self.listOfAllEmployerHangOuts()
 #endif
-        
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
     }
     func setUpUI(){
         

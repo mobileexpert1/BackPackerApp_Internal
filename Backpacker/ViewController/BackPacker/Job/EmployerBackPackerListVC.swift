@@ -280,10 +280,7 @@ extension EmployerBackPackerListVC {
                                         self.lbl_NoDataFound.isHidden = false
                                         self.searchData.removeAll()
                                         self.searchData = list
-                                        self.tbaleView.isHidden = true
                                     } else {
-                                        self.tbaleView.isHidden = false
-                                        self.lbl_NoDataFound.isHidden = true
                                         
                                         self.isLoading = false
                                         self.searchData = list
@@ -304,15 +301,25 @@ extension EmployerBackPackerListVC {
                                 self.tbaleView.reloadData()
                                 self.refreshControl.endRefreshing()
                             }
-                            
+                           
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                             self.refreshControl.endRefreshing()
                             self.tbaleView.setContentOffset(.zero, animated: true)
                             LoaderManager.shared.hide()
                         }
+                        if self.searchData.count <= 0 {
+                            self.lbl_NoDataFound.isHidden = false
+                        }else{
+                            self.lbl_NoDataFound.isHidden = true
+                        }
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        if self.searchData.count <= 0 {
+                            self.lbl_NoDataFound.isHidden = false
+                        }else{
+                            self.lbl_NoDataFound.isHidden = true
+                        }
                     case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -335,10 +342,25 @@ extension EmployerBackPackerListVC {
                         self.refreshControl.endRefreshing()
                         self.tbaleView.setContentOffset(.zero, animated: true)
                         AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                        if self.searchData.count <= 0 {
+                            self.lbl_NoDataFound.isHidden = false
+                        }else{
+                            self.lbl_NoDataFound.isHidden = true
+                        }
                     case .methodNotAllowed:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        if self.searchData.count <= 0 {
+                            self.lbl_NoDataFound.isHidden = false
+                        }else{
+                            self.lbl_NoDataFound.isHidden = true
+                        }
                     case .internalServerError:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        if self.searchData.count <= 0 {
+                            self.lbl_NoDataFound.isHidden = false
+                        }else{
+                            self.lbl_NoDataFound.isHidden = true
+                        }
                     }
                 }
             }

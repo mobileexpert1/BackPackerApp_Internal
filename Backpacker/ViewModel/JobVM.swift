@@ -21,8 +21,6 @@ class JobVM {
         var appType = String()
         var typeOf = Int()
 #if Backapacker
-        //Type 1 for backpacke
-        //Type 2 for emplloyerr
         appType = "backpacker"
         if isComeFromEmployer == true{
             typeOf = 2
