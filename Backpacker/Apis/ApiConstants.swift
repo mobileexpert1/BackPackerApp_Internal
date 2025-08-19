@@ -23,6 +23,7 @@ struct ApiConstants {
         }()
         
         private static let API_URL = BASE_URL + "/customer"
+         static let API_IMAGEURL = BASE_URL + "/assets/"
         private static let VERSION = API_URL  + ""
         static let LOGIN_USER = BASE_URL + "api/auth/login"
         static let OTP_SEND = BASE_URL + "api/auth/verifyOtp"

@@ -170,8 +170,8 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
             }
             cell.isComeFromHangout = false
             if let img = self.accomodationDetailObj?.accommodation.image[indexPath.item] {
-                let baseURL1 = "http://192.168.11.4:3000/assets/"
-                let baseURL2 = "http://192.168.11.4:3001/assets/"
+                let baseURL1 = ApiConstants.API.API_IMAGEURL
+                let baseURL2 = ApiConstants.API.API_IMAGEURL
 
                 let imageURLString = img.hasPrefix("http") ? img : baseURL1 + img
 

@@ -38,8 +38,34 @@ class BackPackerHomeVC: UIViewController {
     private var hangoutEmpHomeData: EmployerHangoutData?
     var isLoading: Bool = true // true while loading, false once data is ready
     var jobId = String()
+    
     var activeSections: [SectionType] {
         var sections: [SectionType] = []
+        
+#if BackpackerHire
+        if role == "3"{
+            if let banners = accomdationEmpHomeData?.banners, !banners.isEmpty {
+                sections.append(.banner)
+            }
+            if let accommodations = accomdationEmpHomeData?.accommodationList, !accommodations.isEmpty {
+                sections.append(.accommodations)
+            }
+        }
+        
+        
+        if role == "4"{
+            if let banners = hangoutEmpHomeData?.banners, !banners.isEmpty {
+                sections.append(.banner)
+            }
+            if let accommodations = hangoutEmpHomeData?.hangoutList, !accommodations.isEmpty {
+                sections.append(.hangouts)
+            }
+        }
+       
+       
+        
+        
+        #else
         if let banners = homeData?.banners, !banners.isEmpty {
             sections.append(.banner)
         }
@@ -52,6 +78,9 @@ class BackPackerHomeVC: UIViewController {
         if let jobs = homeData?.jobslist, !jobs.isEmpty {
             sections.append(.jobs)
         }
+        
+#endif
+       
         
         return sections
     }
@@ -204,19 +233,12 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
            if isLoading {
             return 4 // Show 5 skeleton cells (or however many you want)
         } else {
-#if Backapacker
         let count = activeSections.count
         if count == 0{
             return 0
         }else{
             return count
         }
-       
-#else
-        return sectionTitles.count
-        
-#endif
-        
         }
 
     }
@@ -243,11 +265,13 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         }else{
             
     #if BackpackerHire
-            if indexPath.section == 0 {
+            let sectionType = activeSections[indexPath.section]
+            
+            switch sectionType {
+            case .banner:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "AdvertiesmentTVC", for: indexPath) as? AdvertiesmentTVC else {
                     return UITableViewCell()
                 }
-    #if BackpackerHire
                 if role == "3"{
                     let adsData = accomdationEmpHomeData?.banners
                     if let adsData  = adsData {
@@ -261,57 +285,9 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                         cell.ads = adsData
                     }
                 }
-    #else
-                let adsData = homeData?.banners
-                if let adsData  = adsData {
-                    cell.ads = adsData
-                }
-                
-    #endif
-               
                 return cell
-            }
-            else  if indexPath.section == 1 || indexPath.section == 2 {
                 
-#if BackpackerHire
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                    return UITableViewCell()
-                }
-                if role == "3"{
-                    cell.configure(with: sectionTitles,section: indexPath.section)
-                    
-                    cell.isComeFromJob = false
-                    cell.isComeForHireDetailPage = false
-                    // Handle final callback here
-                    cell.onAddAccommodation = { [weak self] val  in
-                        print("ASccomodation Item",val)
-                        let id = self?.accomdationEmpHomeData?.accommodationList[val].id
-                        self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: false)
-                    }
-                    cell.accomodationList = accomdationEmpHomeData?.accommodationList
-                }else if role == "4"{
-                    cell.configure(with: sectionTitles,section: indexPath.section)
-                    cell.isComeFromJob = false
-                    cell.isComeForHireDetailPage = false
-                    // Handle final callback here
-                    cell.onHangOut = { [weak self] val  in
-                        print("ASccomodation Item",val)
-                        let id = self?.hangoutEmpHomeData?.hangoutList[val].id
-                        self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: true)
-                    }
-                    cell.hangoutList = hangoutEmpHomeData?.hangoutList
-                }else{
-                    cell.configure(with: sectionTitles,section: indexPath.section)
-                    cell.isComeFromJob = false
-                    cell.isComeForHireDetailPage = false
-                    // Handle final callback here
-                    cell.onAddAccommodation = { [weak self] val  in
-                        
-                        
-                    }
-                }
-                return cell
-                #else
+            case .jobs:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
                     return UITableViewCell()
                 }
@@ -320,23 +296,48 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 cell.isComeForHireDetailPage = false
                 // Handle final callback here
                 cell.onAddAccommodation = { [weak self] val  in
+                    
+                    
                 }
-                return cell
+                cell.activeSections = activeSections
+            return cell
                 
-#endif
-               
-            }else{
+            case .hangouts:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
                     return UITableViewCell()
                 }
                 cell.configure(with: sectionTitles,section: indexPath.section)
-                cell.isComeFromJob = true
+                cell.isComeFromJob = false
+                cell.isComeForHireDetailPage = false
+                // Handle final callback here
+                cell.onHangOut = { [weak self] val  in
+                    print("ASccomodation Item",val)
+                    let id = self?.hangoutEmpHomeData?.hangoutList[val].id
+                    self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: true)
+                }
+                cell.hangoutList = hangoutEmpHomeData?.hangoutList
+                cell.activeSections = activeSections
+                return cell
+                
+            case .accommodations:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                    return UITableViewCell()
+                }
+                cell.configure(with: sectionTitles,section: indexPath.section)
+                
+                cell.isComeFromJob = false
                 cell.isComeForHireDetailPage = false
                 // Handle final callback here
                 cell.onAddAccommodation = { [weak self] val  in
+                    print("ASccomodation Item",val)
+                    let id = self?.accomdationEmpHomeData?.accommodationList[val].id
+                    self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: false)
                 }
+                cell.accomodationList = accomdationEmpHomeData?.accommodationList
+                cell.activeSections = activeSections
                 return cell
             }
+           
     #else
             let sectionType = activeSections[indexPath.section]
             
@@ -416,7 +417,6 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
-#if Backapacker
         let sectionType = activeSections[section]
         switch sectionType {
         case .banner:
@@ -424,7 +424,6 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         default:
             break
         }
-#endif
         
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HomeHeaderView") as? HomeHeaderView else {
             return nil
@@ -434,21 +433,22 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         header.contentView.backgroundColor = .white
         header.headerButton.isUserInteractionEnabled = false
         header.headerButton.isHidden = true
-#if Backapacker
         switch sectionType {
         case .accommodations:
             header.titleLaBLE.text = "Accommodations"
         case .hangouts:
+#if BackpackerHire
+            header.titleLaBLE.text = "Hangouts"
+#else
             header.titleLaBLE.text = "Backpacker Hangout"
+            
+#endif
+            
         case .jobs:
             header.titleLaBLE.text = "Jobs"
         default:
             break
         }
-#else
-        header.titleLaBLE.text = sectionTitles[section]
-#endif
-        
         header.onButtonTap = { [weak self] tappedSection in
             self?.handleHeaderButtonTap(in: tappedSection,title: header.titleLaBLE.text ?? "")
         }
@@ -461,7 +461,6 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         if isLoading {
             return 0.0
         }else{
-#if Backapacker
         let sectionType = activeSections[section]
         switch sectionType {
         case .banner:
@@ -469,29 +468,6 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         case .accommodations, .hangouts, .jobs:
             return 40
         }
-#else
-        if section == 0 {
-            return 0.0
-        }
-            if role == "2"{
-                return 40
-            }else if role == "3"{
-                if accomdationEmpHomeData?.accommodationList.count ?? 0 > 0{
-                    return 40
-                }else{
-                    return 0
-                }
-            } else if role == "4"{
-                if hangoutEmpHomeData?.hangoutList.count ?? 0 > 0{
-                    return 40
-                }else{
-                    return 0
-                }
-            }else{
-                return 40
-            }
-       
-#endif
         }
 
     }
@@ -507,6 +483,19 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
             
         }else{
             if indexPath.section == 0 {
+#if BackpackerHire
+                    let sectionType = activeSections[indexPath.section]
+                    switch sectionType {
+                    case .banner:
+                        return 160
+                    case .accommodations:
+                        return 230
+                    case  .hangouts:
+                        return 210
+                    case .jobs :
+                        return 180
+                    }
+                #else
                 let sectionType = activeSections[indexPath.section]
                 switch sectionType {
                 case .banner:
@@ -518,6 +507,8 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 case .jobs :
                     return 180
                 }
+#endif
+              
             }else if  indexPath.section == 1  {
     #if BackpackerHire
                 if role == "4"   {

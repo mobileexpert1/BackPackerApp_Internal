@@ -28,6 +28,28 @@ class EmployerHomeVC: UIViewController {
     var refreshControl: UIRefreshControl?
     var isLoading : Bool = true
     var jobID = String()
+    let role = UserDefaults.standard.string(forKey: "UserRoleType")
+    var activeSections: [SectionType] {
+        var sections: [SectionType] = []
+        
+#if BackpackerHire
+        if role == "2"{
+            sections.append(.banner)
+            if let accommodations = homeData?.jobslist, !accommodations.isEmpty {
+                sections.append(.jobs)
+            }
+        }
+#endif
+        return sections
+    }
+    
+    
+    
+    
+    
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lblnodataFound.isHidden = true
@@ -113,7 +135,13 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         if isLoading == true {
             return 4
         }else{
-            return sectionTitles.count
+//            return sectionTitles.count
+            let count = activeSections.count
+            if count == 0{
+                return 0
+            }else{
+                return count
+            }
         }
         
     }
@@ -123,21 +151,24 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
             
             return 1
         }else{
-            if roleType == "2"{
-                if section == 0  {
-                    return 1
-                } else if section == 1 {
-                    return 1
-                } else{
-                    return 0
-                }
-            }else{
-                if section == 0 || section == 1 {
-                    return 1
-                } else{
-                    return   1//self.homeData?.jobslist?.count ?? 0
-                }
+            
+            let sectionType = activeSections[section]
+            
+            switch sectionType {
+            case .banner:
+                return 1
+            case .jobs:
+                return 1
+                
+            case .hangouts:
+                return 1
+                
+            case .accommodations:
+                return 1
             }
+            
+            
+            
         }
         
     }
@@ -160,32 +191,69 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         
 
         }else{
-            if roleType == "2"{
-                
-                if indexPath.section == 0  {
-                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                        return UITableViewCell()
-                    }
-                    cell.isComeForHireDetailPage = false
-            //        let sectionItems = itemsPerSection[indexPath.section]
-                    cell.configure(with: sectionTitles,section: indexPath.section)
-                    // Handle final callback here
-                        cell.onAddAccommodation = { [weak self] val  in
-                            self?.moveToAddAccomodationVC()
-                        }
+            let sectionType = activeSections[indexPath.section]
+            
+            switch sectionType {
+            case .banner:
+                if roleType == "2"{
                     
-                    cell.onTapAcceptJob = { index in
-                        print("Tapped index total: \(index)")
-                  //      self.HandleNavigationforAcceptDelinedJob(in: index)
+              //      if indexPath.section == 0  {
+                        guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                            return UITableViewCell()
+                        }
+                        cell.isComeForHireDetailPage = false
+                //        let sectionItems = itemsPerSection[indexPath.section]
+                        cell.configure(with: sectionTitles,section: indexPath.section)
+                        // Handle final callback here
+                            cell.onAddAccommodation = { [weak self] val  in
+                                self?.moveToAddAccomodationVC()
+                            }
+                        
+                        cell.onTapAcceptJob = { index in
+                            print("Tapped index total: \(index)")
+                      //      self.HandleNavigationforAcceptDelinedJob(in: index)
+                        }
+                        cell.totalJobCount = homeData?.totalJobs ?? 0
+                        cell.declinedJobCount = homeData?.declinedJobs ?? 0
+                        cell.acceptedJobCount = homeData?.acceptedJobs ?? 0
+                    cell.activeSections = activeSections
+                        return cell
+                   
+                }else{
+                    if indexPath.section == 0 || indexPath.section == 1 {
+                        guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                            return UITableViewCell()
+                        }
+                        cell.isComeForHireDetailPage = false
+                //        let sectionItems = itemsPerSection[indexPath.section]
+                        cell.configure(with: sectionTitles,section: indexPath.section)
+                        // Handle final callback here
+                            cell.onAddAccommodation = { [weak self] val  in
+                                self?.moveToAddAccomodationVC()
+                            }
+                        
+                        cell.onTapAcceptJob = { index in
+                            print("Tapped index total: \(index)")
+                            self.HandleNavigationforAcceptDelinedJob(in: index)
+                        }
+                        cell.activeSections = activeSections
+                        return cell
+                    }else{
+                        guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmployerJobTVC", for: indexPath) as? EmployerJobTVC else {
+                            return UITableViewCell()
+                        }
+                //        let sectionItems = itemsPerSection[indexPath.section]
+                       // cell.configure(with: sectionTitles,section: indexPath.section)
+                        return cell
                     }
-                    cell.totalJobCount = homeData?.totalJobs ?? 0
-                    cell.declinedJobCount = homeData?.declinedJobs ?? 0
-                    cell.acceptedJobCount = homeData?.acceptedJobs ?? 0
-                    return cell
-                } else if indexPath.section == 1 {
-                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                        return UITableViewCell()
-                    }
+                }
+                
+                
+            case .jobs:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                    return UITableViewCell()
+                }
+                if role == "2"{
                     cell.isComeForHireDetailPage = false
             //        let sectionItems = itemsPerSection[indexPath.section]
                     cell.employerJobList = self.homeData?.jobslist
@@ -206,17 +274,8 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                         self.jobID = id ?? ""
                         self.navigateToDescriptionVC()
                     }
-
-                    return cell
-                }
-                return UITableViewCell()
-                
-               
-            }else{
-                if indexPath.section == 0 || indexPath.section == 1 {
-                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                        return UITableViewCell()
-                    }
+                    cell.activeSections = activeSections
+                }else{
                     cell.isComeForHireDetailPage = false
             //        let sectionItems = itemsPerSection[indexPath.section]
                     cell.configure(with: sectionTitles,section: indexPath.section)
@@ -229,21 +288,23 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                         print("Tapped index total: \(index)")
                         self.HandleNavigationforAcceptDelinedJob(in: index)
                     }
-
-                    return cell
-                }else{
-                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmployerJobTVC", for: indexPath) as? EmployerJobTVC else {
-                        return UITableViewCell()
-                    }
-            //        let sectionItems = itemsPerSection[indexPath.section]
-                   // cell.configure(with: sectionTitles,section: indexPath.section)
-                    return cell
+                    cell.activeSections = activeSections
                 }
+               
+                return cell
+                
+                
+            case .hangouts:
+                break
+                
+            case .accommodations:
+                
+                break
             }
         }
         
         
-        
+        return UITableViewCell()
         
         
        

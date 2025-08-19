@@ -391,8 +391,8 @@ extension JobDescriptionVC {
         self.lbl_Time.text = duration
         let imageStr = obj.image
         if !imageStr.isEmpty {
-            let baseURL1 = "http://192.168.11.4:3000/assets/"
-            let baseURL2 = "http://192.168.11.4:3001/assets/"
+            let baseURL1 = ApiConstants.API.API_IMAGEURL
+            let baseURL2 = ApiConstants.API.API_IMAGEURL
 
             let imageURLString = imageStr.hasPrefix("http") ? imageStr : baseURL1 + imageStr
 
@@ -451,8 +451,8 @@ extension JobDescriptionVC {
             self.lbl_Time.text = duration
             let imageStr = obj.image
             if !imageStr.isEmpty {
-                let baseURL1 = "http://192.168.11.4:3000/assets/"
-                let baseURL2 = "http://192.168.11.4:3001/assets/"
+                let baseURL1 = ApiConstants.API.API_IMAGEURL
+                let baseURL2 = ApiConstants.API.API_IMAGEURL
 
                 let imageURLString = imageStr.hasPrefix("http") ? imageStr : baseURL1 + imageStr
 

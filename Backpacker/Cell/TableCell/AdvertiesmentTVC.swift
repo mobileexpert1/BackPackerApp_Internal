@@ -84,11 +84,11 @@ extension AdvertiesmentTVC: UICollectionViewDelegate, UICollectionViewDataSource
         } else {
             let ad = ads[indexPath.item]
             cell.lbl_Name.text = ad.description
-            let baseURL1 = "http://192.168.11.4:3001/assets/"
-            let baseURL2 = "http://192.168.11.4:3000/assets/"
+            let baseURL1 = ApiConstants.API.API_IMAGEURL
+            let baseURL2 = ApiConstants.API.API_IMAGEURL
 
             let imageURLString = ad.image.hasPrefix("http") ? ad.image : baseURL1 + ad.image
-
+            ApiConstants.API.API_IMAGEURL
             cell.imageVw.sd_setImage(
                 with: URL(string: imageURLString),
                 placeholderImage: UIImage(named: "placeholder")

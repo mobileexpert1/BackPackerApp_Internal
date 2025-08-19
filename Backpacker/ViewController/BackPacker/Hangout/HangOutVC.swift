@@ -223,8 +223,8 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
                             placeholderImage: UIImage(named: "restaurantImg")
                         )
                     } else {
-                        let url3000 = URL(string: "http://192.168.11.4:3000/assets/\(firstIMage)")
-                        let url3001 = URL(string: "http://192.168.11.4:3001/assets/\(firstIMage)")
+                        let url3000 = URL(string: "\(ApiConstants.API.API_IMAGEURL)\(firstIMage)")
+                        let url3001 = URL(string: "\(ApiConstants.API.API_IMAGEURL)\(firstIMage)")
 
                         cell.imgVw.sd_setImage(with: url3000, placeholderImage: UIImage(named: "restaurantImg")) { image, _, _, _ in
                             if image == nil {
