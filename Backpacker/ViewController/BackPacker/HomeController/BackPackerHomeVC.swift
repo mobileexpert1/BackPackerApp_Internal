@@ -507,7 +507,17 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
             
         }else{
             if indexPath.section == 0 {
-                return 160
+                let sectionType = activeSections[indexPath.section]
+                switch sectionType {
+                case .banner:
+                    return 160
+                case .accommodations:
+                    return 230
+                case  .hangouts:
+                    return 210
+                case .jobs :
+                    return 180
+                }
             }else if  indexPath.section == 1  {
     #if BackpackerHire
                 if role == "4"   {

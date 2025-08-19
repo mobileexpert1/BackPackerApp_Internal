@@ -773,28 +773,36 @@ extension ServiceManager {
         do {
             var request = try URLRequest(url: url.asURL())
             request.httpMethod = method.rawValue
-            request.httpBody = httpBody?.data(using: .utf8)
             request.addValue("application/json", forHTTPHeaderField: "Accept")
             request.addValue(contentType.stringValue, forHTTPHeaderField: "Content-Type")
 
+            // Attach custom headers
             for (key, value) in getHeaders() {
                 request.setValue(value, forHTTPHeaderField: key)
             }
 
-      
+            // Encode parameters
             if let parameters = parameters {
-                  if method == .get {
-                      let encodedRequest = try URLEncoding.queryString.encode(request, with: parameters)
-                      request = encodedRequest
-                  } else {
-                      request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
-                  }
-              } else {
-                  request.httpBody = httpBody?.data(using: .utf8)
-              }
+                if method == .get {
+                    // Encode as query params for GET
+                    request = try URLEncoding.queryString.encode(request, with: parameters)
+                } else {
+                    // Encode as JSON body for POST/PUT/etc
+                    request.httpBody = try JSONSerialization.data(withJSONObject: parameters, options: [])
+                }
+            } else if let httpBody = httpBody {
+                // If no parameters, attach raw httpBody if provided
+                request.httpBody = httpBody.data(using: .utf8)
+            }
+
+            // Debug logging
             print("📨 Headers:", request.allHTTPHeaderFields ?? [:])
             print("📦 Params:", parameters ?? [:])
             print("📬 Method:", method.rawValue)
+            if let body = request.httpBody {
+                print("📝 Body:", String(data: body, encoding: .utf8) ?? "")
+            }
+
             APIManager.Manager.request(request).responseData { response in
                 guard let statusCode = response.response?.statusCode else {
                                 completion(.failure(.responseUnsuccessful(description: "No status code received from server"), statusCode: nil))
@@ -1253,9 +1261,9 @@ extension ServiceManager : URLSessionTaskDelegate{
 
 class APIManager {
     static var Manager: Alamofire.Session = {
-        let manager = ServerTrustManager(evaluators: ["dev.tykit.net": DisabledTrustEvaluator(),
-                                                      "uat.tykit.net": DisabledTrustEvaluator()])
+        let manager = ServerTrustManager(evaluators: ["backpacker.csdevhub.com": DisabledTrustEvaluator()])
         let session = Session(serverTrustManager: manager)
+        
         return session
     }()
 }

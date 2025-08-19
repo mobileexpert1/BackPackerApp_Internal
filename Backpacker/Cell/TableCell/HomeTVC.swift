@@ -891,7 +891,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             if isComeFromJob == false{
                 return CGSize(width: (width / 2) - 12, height: 160)
             }else{
-                return CGSize(width: (width / 2) - 12, height: 195)
+                return CGSize(width: (width / 2) - 12, height: 180)
             }
         case .none:
             return CGSize(width: (width / 2) - 12, height: 185)
