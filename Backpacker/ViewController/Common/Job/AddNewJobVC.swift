@@ -98,6 +98,11 @@ class AddNewJobVC: UIViewController {
     var selectedBackPackerList: [BackpackerIdWrapper] = []
     var selectedBackPackerJSONString: String?
 
+    //Edit
+    
+    var isComeFromEdit : Bool = false
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()

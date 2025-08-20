@@ -230,6 +230,22 @@ struct ApiConstants {
             }
             return url
         }
+        
+        static func EDITACCOMMODATION(accomodation:String?) -> String {
+            var url = "\(BASE_URL)api/employer/accommodation/"
+            if let hangoutID = accomodation {
+                url += "\(hangoutID)"
+            }
+            return url
+        }
+        
+        static func EDITHANGOUT(hangout:String?) -> String {
+            var url = "\(BASE_URL)api/employer/hangout/"
+            if let hangoutID = hangout {
+                url += "\(hangoutID)"
+            }
+            return url
+        }
     }
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"

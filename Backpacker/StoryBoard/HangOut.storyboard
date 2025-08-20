@@ -189,7 +189,7 @@
                                 </connections>
                             </button>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vIG-ty-nOB">
-                                <rect key="frame" x="0.0" y="99" width="393" height="719"/>
+                                <rect key="frame" x="0.0" y="107" width="393" height="711"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YV6-DE-8Ou">
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="565.66666666666663"/>
@@ -369,6 +369,24 @@
                                 <viewLayoutGuide key="contentLayoutGuide" id="VuD-CY-eJP"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="7DC-3O-41L"/>
                             </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8KB-Lc-8bg">
+                                <rect key="frame" x="293" y="61.666666666666657" width="80" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="3Zl-YH-Gt2"/>
+                                    <constraint firstAttribute="width" constant="80" id="qgd-a3-NuY"/>
+                                </constraints>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Edit"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <integer key="value" value="10"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="action_Edit:" destination="ygx-Eq-TLD" eventType="touchUpInside" id="nvs-uU-TaU"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Wac-nw-ceW"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -376,13 +394,16 @@
                             <constraint firstItem="Wac-nw-ceW" firstAttribute="trailing" secondItem="vIG-ty-nOB" secondAttribute="trailing" id="3Ik-ZR-PVP"/>
                             <constraint firstItem="vIG-ty-nOB" firstAttribute="bottom" secondItem="Wac-nw-ceW" secondAttribute="bottom" id="8kR-aL-NDh"/>
                             <constraint firstItem="4pt-aR-2h0" firstAttribute="top" secondItem="Wac-nw-ceW" secondAttribute="top" id="910-wH-sNr"/>
+                            <constraint firstItem="8KB-Lc-8bg" firstAttribute="centerY" secondItem="4pt-aR-2h0" secondAttribute="centerY" id="Fhj-qa-pMF"/>
                             <constraint firstItem="vIG-ty-nOB" firstAttribute="leading" secondItem="Wac-nw-ceW" secondAttribute="leading" id="Oar-nE-4vo"/>
                             <constraint firstItem="4pt-aR-2h0" firstAttribute="leading" secondItem="Wac-nw-ceW" secondAttribute="leading" constant="10" id="XKb-nF-ED7"/>
-                            <constraint firstItem="vIG-ty-nOB" firstAttribute="top" secondItem="4pt-aR-2h0" secondAttribute="bottom" id="e0N-vh-3Bq"/>
+                            <constraint firstItem="vIG-ty-nOB" firstAttribute="top" secondItem="4pt-aR-2h0" secondAttribute="bottom" constant="8" id="e0N-vh-3Bq"/>
+                            <constraint firstItem="8KB-Lc-8bg" firstAttribute="trailing" secondItem="OLB-Fs-Kwo" secondAttribute="trailing" id="iCk-OM-fkb"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="Bg_Vw_image_Collection" destination="ujr-b8-5jD" id="4BU-V9-adI"/>
+                        <outlet property="btn_Edit" destination="8KB-Lc-8bg" id="OyK-7d-yDL"/>
                         <outlet property="btn_ViewOnMap" destination="uQt-Ar-O3U" id="pM6-nq-gBR"/>
                         <outlet property="img_CollectionVw" destination="PpA-ym-b3t" id="Y7n-9W-wYn"/>
                         <outlet property="lbl_AboutDescription" destination="Z4s-wp-tHg" id="j9j-rn-LTn"/>
@@ -399,7 +420,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WMa-OJ-8Li" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="730.53435114503816" y="-27.464788732394368"/>
+            <point key="canvasLocation" x="744" y="-27"/>
         </scene>
         <!--Add New PlaceVC-->
         <scene sceneID="ExW-lT-ddz">

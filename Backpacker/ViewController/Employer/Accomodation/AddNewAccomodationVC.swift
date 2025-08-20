@@ -10,14 +10,14 @@ import CoreLocation
 
 
 class AddNewAccomodationVC: UIViewController {
-
+    
     @IBOutlet weak var scroolHeight: NSLayoutConstraint!
     @IBOutlet weak var lbl_MainHeader: UILabel!
     
     //@IBOutlet weak var btn_Remove: UIButton!
     @IBOutlet weak var tblVw: UITableView!
     
-   // @IBOutlet weak var tblHeight: NSLayoutConstraint!
+    // @IBOutlet weak var tblHeight: NSLayoutConstraint!
     @IBOutlet weak var btn_Cancle: UIButton!
     @IBOutlet weak var btn_Save: UIButton!
     @IBOutlet weak var BgVwDescription: UIView!
@@ -67,6 +67,26 @@ class AddNewAccomodationVC: UIViewController {
     var currentActiveTextField: UITextField?
     var currentActiveTextVw: UITextView?
     var currentlyRecordingButton: UIButton?
+    //Edit
+    var editName: String?
+    var editLocation: String?
+    var editAddress: String?
+    var editDescription: String?
+    var editPrice : String?
+    var editLat: Double?
+    var editLongitude: Double?
+    var editFacilities : [String] = []
+    var isComeFromEdit : Bool = false
+    var editedimageStrings: [String] = []
+    var editImages: [UIImage] = [] // already loaded images
+    var removedStrings: String = ""
+    var editedImages: [EditedImage] = []
+    var isMediaPickerTap : Bool = false
+    
+    
+    // Example of adding one
+    
+    var accomodationID: String?
     override func viewDidLoad() {
         super.viewDidLoad()
         let nib = UINib(nibName: "FacilityTVC", bundle: nil)
@@ -75,18 +95,18 @@ class AddNewAccomodationVC: UIViewController {
         self.tblVw.dataSource = self
         tblVw.isScrollEnabled = false
         tblVw.rowHeight = 30
-          tblVw.estimatedRowHeight = 0
-          tblVw.tableHeaderView = UIView()
-          tblVw.tableFooterView = UIView()
+        tblVw.estimatedRowHeight = 0
+        tblVw.tableHeaderView = UIView()
+        tblVw.tableFooterView = UIView()
         txtFldAddress.isUserInteractionEnabled = false
-          tblVw.reloadData()
-
-          DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-              self.tblVw.layoutIfNeeded()
-              self.scroolHeight.constant = self.tblVw.contentSize.height
-              self.view.layoutIfNeeded()
-          }
-
+        tblVw.reloadData()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+            self.tblVw.layoutIfNeeded()
+            self.scroolHeight.constant = self.tblVw.contentSize.height
+            self.view.layoutIfNeeded()
+        }
+        
         self.setupui()
         self.setUpTxtFlds()
         self.setUPLocationText()
@@ -94,8 +114,46 @@ class AddNewAccomodationVC: UIViewController {
         self.imageCollectionView.delegate = self
         self.imageCollectionView.dataSource = self
         self.setupSpeechCallbacks()
+        self.setupEditData()
     }
-    
+    func setupEditData(){
+        if isComeFromEdit == true{
+            self.lbl_MainHeader.text = "Edit Accommodation"
+            self.btn_Save.setTitle("Update", for: .normal)
+            if let name = editName {
+                self.txtFldName.text = name
+            }
+            if let addr = editAddress {
+                self.txtFldAddress.text = addr
+            }
+            if let desc = editDescription {
+                self.txtVwDescription.text = desc
+            }
+            if let loc = editLocation {
+                self.valLocation.text = loc
+            }
+            if let price = editPrice {
+                self.txtFldPrice.text = "$\(price)"
+            }
+            let facility = editFacilities
+            for (index, filter) in filterArrya.enumerated() {
+                if facility.contains(filter) {
+                    selectedFilterIndexes.insert(index)
+                }
+            }
+            if !editImages.isEmpty {
+                editedImages = zip(editedimageStrings, editImages).enumerated().map { index, pair in
+                    let (name, img) = pair
+                    return EditedImage(name: name, image: img, index: index)
+                }
+            }
+            self.latitude = editLat
+            self.longitude = editLongitude
+            self.selectedImages.removeAll()
+        }
+        
+        
+    }
     func setUPLocationText(){
         self.valLocation.font = FontManager.inter(.regular, size: 14.0)
         if valLocation.text == "Current Location"{
@@ -170,44 +228,47 @@ class AddNewAccomodationVC: UIViewController {
         }
         
         txtFldName.attributedPlaceholder = NSAttributedString(
-                   string: "Name",
-                   attributes: [
-                    .foregroundColor: UIColor(hex: "#9D9D9D"),
-                       .font: FontManager.inter(.regular, size: 14.0)
-                   ])
+            string: "Name",
+            attributes: [
+                .foregroundColor: UIColor(hex: "#9D9D9D"),
+                .font: FontManager.inter(.regular, size: 14.0)
+            ])
         
         
         txtFldName.delegate = self
         
         txtFldPrice.attributedPlaceholder = NSAttributedString(
-                   string: "Price",
-                   attributes: [
-                    .foregroundColor: UIColor(hex: "#9D9D9D"),
-                       .font: FontManager.inter(.regular, size: 14.0)
-                   ])
+            string: "Price",
+            attributes: [
+                .foregroundColor: UIColor(hex: "#9D9D9D"),
+                .font: FontManager.inter(.regular, size: 14.0)
+            ])
         
         
         txtFldPrice.delegate = self
         
         
         txtFldAddress.attributedPlaceholder = NSAttributedString(
-                   string: "Address",
-                   attributes: [
-                    .foregroundColor: UIColor(hex: "#9D9D9D"),
-                       .font: FontManager.inter(.regular, size: 14.0)
-                   ])
+            string: "Address",
+            attributes: [
+                .foregroundColor: UIColor(hex: "#9D9D9D"),
+                .font: FontManager.inter(.regular, size: 14.0)
+            ])
         
         
         txtFldAddress.delegate = self
     }
-   
-   
+    
+    
     
     @IBAction func action_Location(_ sender: Any) {
         
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
             settingVC.delegate = self
+            if isComeFromEdit == true {
+                settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
+            }
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
             print("❌ Could not instantiate SettingVC")
@@ -226,7 +287,7 @@ class AddNewAccomodationVC: UIViewController {
         
         // Remove previous if exists
         view.layer.sublayers?.removeAll(where: { $0 is CAShapeLayer })
-
+        
         view.layer.addSublayer(shapeLayer)
     }
     
@@ -241,7 +302,7 @@ class AddNewAccomodationVC: UIViewController {
         let trimmedLocationText = valLocation.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let trimmedDescription = txtVwDescription.text?.trimmingCharacters(in: .whitespacesAndNewlines)  ?? ""
         let trimmedPrice = txtFldPrice.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-         let firstImage = self.selectedImages.first
+        let firstImage = self.selectedImages.first
         let imageData = firstImage?.jpegData(compressionQuality: 0.8)
         
         for image in selectedImages {
@@ -254,7 +315,7 @@ class AddNewAccomodationVC: UIViewController {
         let selectedFacilities = selectedFilterIndexes.compactMap { index in
             return filterArrya.indices.contains(index) ? filterArrya[index] : nil
         }
-
+        
         let isValid = validateAccommodationFields(
             name: trimmedName,
             address: trimmedAddress,
@@ -266,15 +327,20 @@ class AddNewAccomodationVC: UIViewController {
             mainImageView: self.placeholderImg,
             on: self
         )
-
+        
         if isValid {
             let priceWithoutSymbol = trimmedPrice
                 .replacingOccurrences(of: "$", with: "")
                 .trimmingCharacters(in: .whitespacesAndNewlines)
-            self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: priceWithoutSymbol, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, on: self)
+            if isComeFromEdit {
+                self.editAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: priceWithoutSymbol, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, accId: self.accomodationID ?? "", remvedImages: self.removedStrings, on: self)
+            }else{
+                self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: priceWithoutSymbol, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, on: self)
+            }
+            
         }
-       
-
+        
+        
     }
     
     
@@ -291,29 +357,56 @@ class AddNewAccomodationVC: UIViewController {
         mediaPicker?.showMediaOptions(
             isFromNewAccommodation: true,
             singleImageHandler: { image in
-                self.selectedImages.append(image)
+              
+                if self.isComeFromEdit == true{
+                   
+                        let edt = EditedImage(name: "image_1.jpg", image: image, index: 1)
+                        self.editedImages.append(edt)
+                        self.editedimageStrings.append("image_\(1).jpg")
+                        self.editImages.append(image)
+                        self.selectedImages.append(image)
+                  
+                    
+                    self.isMediaPickerTap = true
+                }else{
+                    self.selectedImages.append(image)
+                }
+                
                 self.imageCollectionView.reloadData()
             },
             multipleImagesHandler: { images in
                 print("Selected image: \(images)")
-                for img in images{
-                    self.selectedImages.append(img)
+                if self.isComeFromEdit == true{
+                    for (index, img) in images.enumerated() {
+                        let edt = EditedImage(name: "image_\(index).jpg", image: img, index: index)
+                        self.editedImages.append(edt)
+                        self.editedimageStrings.append("image_\(index).jpg")
+                        self.editImages.append(img)
+                        self.selectedImages.append(img)
+                    }
+                    
+                    self.isMediaPickerTap = true
+                }else{
+                    for img in images{
+                        self.selectedImages.append(img)
+                    }
                 }
+               
                 self.imageCollectionView.reloadData()
             }
         )
         
     }
- 
+    
     @IBAction func action_Btnname_Mic(_ sender: UIButton) {
-  //      handleMicTap(for: sender, textField: txtFldName, textView: nil)
+        //      handleMicTap(for: sender, textField: txtFldName, textView: nil)
         let storyboard = UIStoryboard(name: "Setting", bundle: nil)
         if let vc = storyboard.instantiateViewController(withIdentifier: "SpeechToTextVC") as? SpeechToTextVC {
             vc.currentActiveTextVw = nil
             vc.currentActiveTextField = txtFldName
             vc.onSaveText = { [weak self] text in
                 let incomingText = text.trimmingCharacters(in: .whitespacesAndNewlines)
-
+                
                 if let existingText = self?.txtFldName.text?.trimmingCharacters(in: .whitespacesAndNewlines),
                    !existingText.isEmpty {
                     self?.txtFldName.text = existingText + " " + incomingText
@@ -332,14 +425,14 @@ class AddNewAccomodationVC: UIViewController {
     }
     
     @IBAction func action_description_mic(_ sender: UIButton) {
-       // handleMicTap(for: sender, textField: txtFldAddress, textView: nil)
+        // handleMicTap(for: sender, textField: txtFldAddress, textView: nil)
         let storyboard = UIStoryboard(name: "Setting", bundle: nil)
         if let vc = storyboard.instantiateViewController(withIdentifier: "SpeechToTextVC") as? SpeechToTextVC {
             vc.currentActiveTextVw = txtVwDescription
             vc.currentActiveTextField = nil
             vc.onSaveText = { [weak self] text in
                 let incomingText = text.trimmingCharacters(in: .whitespacesAndNewlines)
-
+                
                 if let existingText = self?.txtVwDescription.text?.trimmingCharacters(in: .whitespacesAndNewlines),
                    !existingText.isEmpty {
                     self?.txtVwDescription.text = existingText + " " + incomingText
@@ -364,7 +457,7 @@ class AddNewAccomodationVC: UIViewController {
             vc.currentActiveTextField = txtFldAddress
             vc.onSaveText = { [weak self] text in
                 let incomingText = text.trimmingCharacters(in: .whitespacesAndNewlines)
-
+                
                 if let existingText = self?.txtFldAddress.text?.trimmingCharacters(in: .whitespacesAndNewlines),
                    !existingText.isEmpty {
                     self?.txtFldAddress.text = existingText + " " + incomingText
@@ -387,28 +480,68 @@ class AddNewAccomodationVC: UIViewController {
 extension AddNewAccomodationVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return selectedImages.count
+        if isComeFromEdit == true{
+            return editedImages.count
+        }else{
+            return selectedImages.count
+        }
+        
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CommonImagCVC", for: indexPath) as? CommonImagCVC else {
             return UICollectionViewCell()
         }
-        cell.img_Vw.image = selectedImages[indexPath.item]
+        if isComeFromEdit == true{
+            cell.img_Vw.image = editedImages[indexPath.item].image
             cell.delegate = self
             cell.indexPath = indexPath
+        }else{
+            cell.img_Vw.image = selectedImages[indexPath.item]
+            cell.delegate = self
+            cell.indexPath = indexPath
+        }
+        
         return cell
     }
-
+    
     // Optional: Cell size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-
+        
         return CGSize(width: 110, height: 100)
     }
 }
 extension AddNewAccomodationVC: CommonImagCVCDelegate {
     func didTapRemove(at indexPath: IndexPath) {
-        selectedImages.remove(at: indexPath.item)
+        if isComeFromEdit == true{
+            let removedImageStr = editedimageStrings[indexPath.item]
+            
+            // Remove from both arrays
+            editImages.remove(at: indexPath.item)
+            editedimageStrings.remove(at: indexPath.item)
+            let removedImage = editedImages[indexPath.item]
+            
+            // Remove from editedImages
+            editedImages.remove(at: indexPath.item)
+            if removedStrings.isEmpty {
+                removedStrings = removedImageStr
+            } else {
+                removedStrings += ",\(removedImageStr)"
+            }
+            print("Removed image string: \(self.removedStrings)")
+            if isMediaPickerTap == true{
+                if let index = selectedImages.firstIndex(where: { $0.pngData() == removedImage.image.pngData() }) {
+                    selectedImages.remove(at: index)
+                }
+            }
+            
+            
+        }else{
+            selectedImages.remove(at: indexPath.item)
+            
+        }
+        
+        
         imageCollectionView.reloadData()
     }
 }
@@ -419,36 +552,36 @@ extension AddNewAccomodationVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filterArrya.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-             let cell = tableView.dequeueReusableCell(withIdentifier: "FacilityTVC", for: indexPath) as! FacilityTVC
-             cell.lblTitle.text = filterArrya[indexPath.row]
-             
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: "FacilityTVC", for: indexPath) as! FacilityTVC
+        cell.lblTitle.text = filterArrya[indexPath.row]
+        
         if selectedFilterIndexes.contains(indexPath.row) {
             cell.imgCheckBox.image = UIImage(named: "Checkbox2")
         } else {
             cell.imgCheckBox.image = UIImage(named: "Checkbox")
         }
-             return cell
-
-     
+        return cell
+        
+        
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-                // Toggle selection for filter section
+        // Toggle selection for filter section
         if selectedFilterIndexes.contains(indexPath.row) {
-               selectedFilterIndexes.remove(indexPath.row)
-           } else {
-               selectedFilterIndexes.insert(indexPath.row)
-           }
-          
-            
+            selectedFilterIndexes.remove(indexPath.row)
+        } else {
+            selectedFilterIndexes.insert(indexPath.row)
+        }
+        
+        
         tblVw.reloadSections(IndexSet(integer: indexPath.section), with: .none)
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 30.0
     }
-   
+    
 }
 extension AddNewAccomodationVC: UITextFieldDelegate, UITextViewDelegate {
     func textField(_ textField: UITextField,
@@ -466,13 +599,13 @@ extension AddNewAccomodationVC: UITextFieldDelegate, UITextViewDelegate {
         }
         return true
     }
-
+    
     // Dismiss keyboard when Return is pressed in UITextField
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-          textField.resignFirstResponder()
-          return true
+        textField.resignFirstResponder()
+        return true
     }
-
+    
     // Dismiss keyboard when Return is pressed in UITextView
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if text == "\n" {
@@ -490,10 +623,10 @@ extension AddNewAccomodationVC : SetLocationDelegate{
         valLocation.text = locationName
         txtFldAddress.text = fullAddress
         print("Lat: \(coordinate.latitude), Long: \(coordinate.longitude)")
-
+        
         self.latitude = coordinate.latitude
         self.longitude = coordinate.longitude
-       }
+    }
 }
 extension AddNewAccomodationVC {
     func validateAccommodationFields(
@@ -507,7 +640,7 @@ extension AddNewAccomodationVC {
         mainImageView: UIImageView,
         on viewController: UIViewController
     ) -> Bool {
-      
+        
         if name.isEmpty {
             AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter name.")
             return false
@@ -517,7 +650,7 @@ extension AddNewAccomodationVC {
             AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter address.")
             return false
         }
-
+        
         if locationText.isEmpty || locationText == "Current Location" {
             AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter location.")
             return false
@@ -535,15 +668,23 @@ extension AddNewAccomodationVC {
             AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter description.")
             return false
         }
-        if selectedImages.count == 0  {
-            AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select at least one image.")
-            return false
+        if isComeFromEdit == true{
+            if editImages.count == 0  {
+                AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select at least one image.")
+                return false
+            }
+        }else{
+            if selectedImages.count == 0  {
+                AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select at least one image.")
+                return false
+            }
         }
-      
-
+        
+        
+        
         return true
     }
-
+    
     func submitAccommodation(
         name: String,
         address: String,
@@ -559,7 +700,7 @@ extension AddNewAccomodationVC {
         mainImageView: UIImageView,
         on viewController: UIViewController
     ) {
-
+        
         // Call API
         LoaderManager.shared.show()
         viewModel.uploadAccommodation(
@@ -616,7 +757,78 @@ extension AddNewAccomodationVC {
             }
         }
     }
-
+    func editAccommodation(
+        name: String,
+        address: String,
+        lat: Double,
+        long: Double,
+        locationText: String,
+        description: String,
+        price: String,
+        facilitiesIndexes: Set<Int>,
+        filterArray: [String],
+        image: Data?,
+        ImagesData : [Data],
+        mainImageView: UIImageView,
+        accId : String,
+        remvedImages : String,
+        on viewController: UIViewController
+    ) {
+        
+        // Call API
+        LoaderManager.shared.show()
+        viewModel.editAccommodation(  name: name,
+                                      address: address,
+                                      lat: lat,
+                                      long: long,
+                                      locationText: locationText,
+                                      description: description,
+                                      price: price,
+                                      facilities: filterArray,
+                                      image: image, imagesArrayData: ImagesData, removedImages: remvedImages, accId: accId  ) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Accomodation uploaded.")
+                        {
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.editAccommodation(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, price: price, facilitiesIndexes: facilitiesIndexes, filterArray: filterArray, image: image, ImagesData: ImagesData, mainImageView: mainImageView, accId: self.accomodationID!,remvedImages: remvedImages, on: self)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    
+                }
+            }
+        }
+    }
     
 }
 
@@ -628,30 +840,30 @@ extension AddNewAccomodationVC {
     }
     private func setupSpeechCallbacks() {
         speechManager.onResult = { [weak self] text in
-                DispatchQueue.main.async {
-                    if self?.btn_Name_Mic.tag == 1 {
-                        self?.txtFldName.text = text
-                      
-                    }
+            DispatchQueue.main.async {
+                if self?.btn_Name_Mic.tag == 1 {
+                    self?.txtFldName.text = text
                     
-                    if self?.btn_address_mic.tag == 1 {
-                        self?.txtFldAddress.text = text
-                       
-                        
-                    }
+                }
+                
+                if self?.btn_address_mic.tag == 1 {
+                    self?.txtFldAddress.text = text
                     
-                    if self?.btn_description_mic.tag == 1 {
-                        self?.txtVwDescription.text = text
-                    }
+                    
+                }
+                
+                if self?.btn_description_mic.tag == 1 {
+                    self?.txtVwDescription.text = text
                 }
             }
-
-            speechManager.onError = { error in
-                print("Speech error:", error.localizedDescription)
-            }
-
-       
-     }
+        }
+        
+        speechManager.onError = { error in
+            print("Speech error:", error.localizedDescription)
+        }
+        
+        
+    }
     func handleMicTap(for button: UIButton, textField: UITextField?, textView: UITextView?) {
         // Stop if same button tapped again
         if button == currentlyRecordingButton && button.tag == 1 {
@@ -664,7 +876,7 @@ extension AddNewAccomodationVC {
             
             return
         }
-
+        
         // If a different mic is already recording
         if let previousButton = currentlyRecordingButton, previousButton != button {
             previousButton.tag = 0
@@ -683,15 +895,22 @@ extension AddNewAccomodationVC {
             startRecording(for: button, textField: textField, textView: textView)
         }
     }
-
+    
     private func startRecording(for button: UIButton, textField: UITextField?, textView: UITextView?) {
         button.tag = 1
         currentlyRecordingButton = button
         button.imageView?.image?.withTintColor(.blue)
         currentActiveTextField = textField
         currentActiveTextVw = textView
-
+        
         speechManager.startRecording()
     }
-   
+    
+    
+    
+}
+struct EditedImage {
+    let name: String   // string (filename or url)
+    let image: UIImage // uiimage
+    let index: Int     // position
 }

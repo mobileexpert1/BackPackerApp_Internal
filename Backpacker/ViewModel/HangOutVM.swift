@@ -63,7 +63,63 @@ class HangoutViewModel {
             }
         }
     }
+    //MARK: - Edit Hangout
     
+    func editHangout(
+        name: String,
+        address: String,
+        lat: Double,
+        long: Double,
+        locationText: String,
+        description: String,
+        image: Data?,
+        imagesArrayData : [Data],
+        removedImages:String,
+        hangoutId:String,
+        completion: @escaping (Bool, String?, Int?) -> Void
+    ) {
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, "Authorization token is missing.", nil)
+      return
+  }
+
+        let url = ApiConstants.API.EDITHANGOUT(hangout: hangoutId)
+        
+        let params: Parameters = [
+            "name": name,
+            "address": address,
+            "lat": lat,
+            "long": long,
+            "locationText": locationText,
+            "description": description,
+            "removedImages" : removedImages
+        ]
+        let headers = ServiceManager.sharedInstance.getHeaders()
+        ServiceManager.sharedInstance.requestMultipartMultiAPI(
+            url,
+            images: imagesArrayData,
+            method: .put,
+            parameters: params,
+            headers: headers
+        ) { (result: ApiResult<ApiResponseModel<HangoutResponseData>, APIError>) in
+            switch result {
+            case .success(let data, let statusCode):
+                print("Hangout uploaded successfully.")
+                completion(true, data?.message ?? "Hangout Added", statusCode)
+
+            case .failure(let error, let statusCode):
+                print("Hangiut upload failed:", error.localizedDescription)
+                completion(false, error.localizedDescription, statusCode)
+            }
+        }
+    }
     // MARK: - BackPacker: List of All Accommodation
     func getBackPackerHangoutList<T: Codable>(
         page: Int,
@@ -192,6 +248,61 @@ class HangoutViewModel {
             httpBody: nil
         ) { (success: Bool, result: T?, statusCode: Int?) in
             completion(success, result, statusCode)
+        }
+    }
+    
+        //MARK: - Employe edit hnagout
+    
+    func editHangout(
+        name: String,
+        address: String,
+        lat: Double,
+        long: Double,
+        locationText: String,
+        description: String,
+        image: Data?,
+        imagesArrayData : [Data],
+        completion: @escaping (Bool, String?, Int?) -> Void
+    ) {
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, "Authorization token is missing.", nil)
+      return
+  }
+
+        let url = ApiConstants.API.ADD_HANGOUT
+        
+        let params: Parameters = [
+            "name": name,
+            "address": address,
+            "lat": lat,
+            "long": long,
+            "locationText": locationText,
+            "description": description
+        ]
+        let headers = ServiceManager.sharedInstance.getHeaders()
+        ServiceManager.sharedInstance.requestMultipartMultiAPI(
+            url,
+            images: imagesArrayData,
+            method: .post,
+            parameters: params,
+            headers: headers
+        ) { (result: ApiResult<ApiResponseModel<HangoutResponseData>, APIError>) in
+            switch result {
+            case .success(let data, let statusCode):
+                print("Hangout uploaded successfully.")
+                completion(true, data?.message ?? "Hangout Added", statusCode)
+
+            case .failure(let error, let statusCode):
+                print("Hangiut upload failed:", error.localizedDescription)
+                completion(false, error.localizedDescription, statusCode)
+            }
         }
     }
 }

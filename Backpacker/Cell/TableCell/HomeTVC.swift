@@ -754,7 +754,6 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             
                             cell.imgVw.sd_setImage(with: URL(string: port3000), placeholderImage: UIImage(named: "Profile")) { image, _, _, _ in
                                 if image == nil {
-                                    // Fallback to 3001 if 3000 failed
                                     cell.imgVw.sd_setImage(with: URL(string: port3001), placeholderImage: UIImage(named: "Profile"))
                                 }
                             }

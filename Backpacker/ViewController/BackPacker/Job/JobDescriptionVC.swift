@@ -9,6 +9,7 @@ import UIKit
 import SDWebImage
 class JobDescriptionVC: UIViewController {
     
+    @IBOutlet weak var btn_edit: UIButton!
     @IBOutlet weak var mainScrollVw: UIScrollView!
     @IBOutlet weak var mainScrollHeight: NSLayoutConstraint!
     @IBOutlet weak var img_Profile: UIImageView!
@@ -168,6 +169,17 @@ class JobDescriptionVC: UIViewController {
         self.lblEmployer.text = "Employer"
     }
     
+    @IBAction func action_Edit(_ sender: Any) {
+        
+        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+        if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewJobVC") as? AddNewJobVC {
+            self.navigationController?.pushViewController(accVC, animated: true)
+        } else {
+            print("❌ Could not instantiate AddNewAccomodationVC")
+        }
+        
+        
+    }
     private func showChild(_ newVC: UIViewController) {
         // Remove current child if any
         if let descVC = newVC as? DescriptionController {

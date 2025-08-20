@@ -73,7 +73,73 @@ class AccommodationViewModel {
         
         
     }
-    
+    //MARK: Edit  New Accommodation
+        func editAccommodation(
+            name: String,
+            address: String,
+            lat: Double,
+            long: Double,
+            locationText: String,
+            description: String,
+            price: String,
+            facilities: [String],
+            image: Data?,
+            imagesArrayData : [Data],
+            removedImages : String,
+            accId: String,
+            completion: @escaping (Bool, String?, Int?) -> Void
+        ) {
+    #if BackpackerHire
+            let bearerToken = UserDefaultsManager.shared.employerbearerToken
+      #else
+      let bearerToken = UserDefaultsManager.shared.bearerToken
+      #endif
+      
+      guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+          print("⚠️ No refresh token found.")
+          completion(false, nil, nil)
+          return
+      }
+
+            let url = ApiConstants.API.EDITACCOMMODATION(accomodation: accId) // 🔁 Replace with correct endpoint
+
+            var params: Parameters = [
+                        "name": name,
+                        "address": address,
+                        "lat": lat,
+                        "long": long,
+                        "locationText": locationText,
+                        "description": description,
+                        "price": price,
+                        "removedImages":removedImages
+                    ]
+            
+            // Append array of string correctly as comma-separated string
+            if !facilities.isEmpty {
+                params["facilities"] = facilities.joined(separator: ",")
+            }
+
+            let headers = ServiceManager.sharedInstance.getHeaders()
+            ServiceManager.sharedInstance.requestMultipartMultiAPI(
+                url,
+                images: imagesArrayData,
+                method: .put,
+                parameters: params,
+                headers: headers
+            ) { (result: ApiResult<ApiResponseModel<UpdateData>, APIError>) in
+                switch result {
+                case .success(let data, let statusCode):
+                    print("Accommodation updated successfully.")
+                    completion(true, data?.message ?? "Accommodation Added", statusCode)
+
+                case .failure(let error, let statusCode):
+                    print("Accommodation updtE   failed:", error.localizedDescription)
+                    completion(false, error.localizedDescription, statusCode)
+                }
+            }
+            
+            
+        }
     
     // MARK: - BackPacker: List of All Accommodation
     func getAccommodationList<T: Codable>(
@@ -214,4 +280,18 @@ class AccommodationViewModel {
 }
 struct AccommodationResponseData: Codable {
     let _id: String
+}
+struct UpdateAccommodationResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: UpdateData?
+    let errors: [String]?
+}
+
+struct UpdateData: Codable {
+    let id: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+    }
 }

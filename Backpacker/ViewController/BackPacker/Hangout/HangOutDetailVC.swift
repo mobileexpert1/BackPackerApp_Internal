@@ -10,6 +10,7 @@ import MapKit
 import SDWebImage
 class HangOutDetailVC: UIViewController {
 
+    @IBOutlet weak var btn_Edit: UIButton!
     @IBOutlet weak var Bg_Vw_image_Collection: UIView!
     @IBOutlet weak var page_Controller: UIPageControl!
     @IBOutlet weak var img_CollectionVw: UICollectionView!
@@ -43,8 +44,10 @@ class HangOutDetailVC: UIViewController {
 #if BackpackerHire
         
         self.getEmployerDetailOfHangout()
+        self.btn_Edit.isHidden = false
 #else
         self.getDetailOfHangout()
+        self.btn_Edit.isHidden = true
         
 #endif
         
@@ -85,7 +88,14 @@ class HangOutDetailVC: UIViewController {
         self.title_About.font = FontManager.inter(.semiBold, size: 14.0)
         self.lbl_AboutDescription.font = FontManager.inter(.regular, size: 12.0)
         btn_ViewOnMap.titleLabel?.font = FontManager.inter(.regular, size: 12.0)
+#if BackpackerHire
+        self.btn_Edit.titleLabel?.font = FontManager.inter(.semiBold, size: 16)
+        self.btn_Edit.layer.cornerRadius = 10.0
+        applyGradientButtonStyle(to: self.btn_Edit)
+        #else
+        self.btn_Edit.isHidden = true
         
+#endif
     
 
     }
@@ -111,6 +121,47 @@ class HangOutDetailVC: UIViewController {
         img_CollectionVw.dataSource = self
         self.mapView.delegate = self
     }
+    
+    
+    @IBAction func action_Edit(_ sender: Any) {
+        
+#if BackpackerHire
+        let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
+        if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "AddNewPlaceVC") as? AddNewPlaceVC {
+            jobDescriptionVC.hangoutId = self.hangoutID
+            
+            let addres = self.hangoutDetailObj?.hangout.address ?? ""
+            let name = self.hangoutDetailObj?.hangout.name ?? ""
+            let description = self.hangoutDetailObj?.hangout.description ?? ""
+            let loc = self.hangoutDetailObj?.hangout.locationText ?? ""
+            let lat = self.hangoutDetailObj?.hangout.lat ?? 0.0
+            let long = self.hangoutDetailObj?.hangout.long ?? 0.0
+            jobDescriptionVC.isComeFromEdit = true
+            if let imageUrls = self.hangoutDetailObj?.hangout.image {
+                ImageLoader.loadImages(from: imageUrls) { images in
+                    // here you get your [UIImage]
+                    jobDescriptionVC.editImages = images
+                    
+                    jobDescriptionVC.editName = name
+                    jobDescriptionVC.editAddress = addres
+                    jobDescriptionVC.editDescription = description
+                    jobDescriptionVC.editLocation = loc
+                    jobDescriptionVC.editLat = lat
+                    jobDescriptionVC.editLongitude = long
+                    jobDescriptionVC.editedimageStrings = self.hangoutDetailObj?.hangout.image ?? []
+                    self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+                }
+                
+            }
+        }
+        
+#endif
+        
+    }
+   
+
+    
+    
     @IBAction func action_VwOnMap(_ sender: Any) {
     }
     
@@ -445,3 +496,5 @@ class UserAnnotation: NSObject, MKAnnotation {
         self.subtitle = user.email
     }
 }
+
+

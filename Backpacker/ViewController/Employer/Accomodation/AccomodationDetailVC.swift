@@ -21,6 +21,7 @@ class AccomodationDetailVC: UIViewController {
     
     @IBOutlet weak var lbl_price: UILabel!
     
+    @IBOutlet weak var btn_edit: UIButton!
     @IBOutlet weak var mapVw: MKMapView!
     @IBOutlet weak var lbl_ReviewCount: UILabel!
     
@@ -62,10 +63,10 @@ class AccomodationDetailVC: UIViewController {
         super.viewDidLoad()
         
 #if BackpackerHire
-        
+        self.btn_edit.isHidden = false
         self.getDetailOfAccomodationEmployer()
         #else
-        
+        self.btn_edit.isHidden = true
         self.getDetailOfAccomodation()
 #endif
         self.setUpUI()
@@ -143,6 +144,44 @@ class AccomodationDetailVC: UIViewController {
     @IBAction func action_Availibilty(_ sender: Any) {
     }
     
+    @IBAction func action_Edit(_ sender: Any) {
+        
+        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+        if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewAccomodationVC") as? AddNewAccomodationVC {
+            
+            accVC.accomodationID = self.accomodationID
+            
+            let addres = self.accomodationDetailObj?.accommodation.address ?? ""
+            let name = self.accomodationDetailObj?.accommodation.name ?? ""
+            let description = self.accomodationDetailObj?.accommodation.description ?? ""
+            let price = self.accomodationDetailObj?.accommodation.price ?? 0
+            let loc = self.accomodationDetailObj?.accommodation.locationText ?? ""
+            let lat = self.accomodationDetailObj?.accommodation.lat ?? 0.0
+            let long = self.accomodationDetailObj?.accommodation.long ?? 0.0
+            accVC.isComeFromEdit = true
+            if let imageUrls = self.accomodationDetailObj?.accommodation.image {
+                ImageLoader.loadImages(from: imageUrls) { images in
+                    // here you get your [UIImage]
+                    accVC.editImages = images
+                    
+                    accVC.editName = name
+                    accVC.editAddress = addres
+                    accVC.editDescription = description
+                    accVC.editLocation = loc
+                    accVC.editLat = lat
+                    accVC.editLongitude = long
+                    accVC.editPrice = "\(price)"
+                    accVC.editFacilities = self.accomodationDetailObj?.accommodation.facilities ?? []
+                    accVC.editedimageStrings = self.accomodationDetailObj?.accommodation.image ?? []
+                    self.navigationController?.pushViewController(accVC, animated: true)
+                }
+                
+            }
+        } else {
+            print("❌ Could not instantiate AddNewAccomodationVC")
+        }
+        
+    }
 }
 extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     

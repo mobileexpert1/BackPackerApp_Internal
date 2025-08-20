@@ -116,7 +116,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
           let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
           let token = tokenParts.joined()
           print("✅ Device Token: \(token)")
-          UserDefaultsManager.shared.fcmToken = token
+          UserDefaultsManager.shared.fcmToken = "hfhfh6576hgf675"
           // Save or send to server
           UserDefaults.standard.set(token, forKey: "device_token")
       }

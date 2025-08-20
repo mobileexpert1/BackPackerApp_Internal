@@ -27,17 +27,35 @@ class SetLocationVC: UIViewController,MKMapViewDelegate {
       var selectedLocationName: String?
       var selectedCoordinate: CLLocationCoordinate2D?
       var selectedFullAddress: String?
-        override func viewDidLoad() {
-            super.viewDidLoad()
-            applyGradientButtonStyle(to: self.btn_sabve)
-                    lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
+    var initialCoordinate: CLLocationCoordinate2D?
 
-                    mapView.delegate = self
-                    locationManager.delegate = self
-                    locationManager.desiredAccuracy = kCLLocationAccuracyBest
-                    locationManager.requestWhenInUseAuthorization()
-                    locationManager.startUpdatingLocation()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        applyGradientButtonStyle(to: self.btn_sabve)
+        lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
+
+        mapView.delegate = self
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.requestWhenInUseAuthorization()
+
+        if let coordinate = initialCoordinate {
+            // 📍 Use passed coordinate
+            selectedCoordinate = coordinate
+            fetchLocationDetails(for: coordinate)
+
+            let region = MKCoordinateRegion(center: coordinate,
+                                            latitudinalMeters: 5000,   // 5 km
+                                            longitudinalMeters: 5000)  // 5 km
+            mapView.setRegion(region, animated: true)
+
+            addCustomPin(at: coordinate)
+        } else {
+            // 📍 No coordinate passed → fallback to current location
+            locationManager.startUpdatingLocation()
         }
+    }
+
 
     func fetchLocationDetails(for coordinate: CLLocationCoordinate2D) {
            let location = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
@@ -70,8 +88,7 @@ class SetLocationVC: UIViewController,MKMapViewDelegate {
        func addCustomPin(at coordinate: CLLocationCoordinate2D) {
            let annotation = MKPointAnnotation()
            annotation.coordinate = coordinate
-           annotation.title = "Selected Location"
-
+           annotation.title = self.selectedFullAddress
            mapView.removeAnnotations(mapView.annotations)
            mapView.addAnnotation(annotation)
        }

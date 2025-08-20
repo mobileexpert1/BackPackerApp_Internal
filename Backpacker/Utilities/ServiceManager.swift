@@ -605,7 +605,7 @@ extension ServiceManager {
                 },
                 to: url,
                 usingThreshold: UInt64.init(),
-                method: .post,
+                method: method,
                 headers: request.headers
             )
             .responseJSON { [weak self] response1 in

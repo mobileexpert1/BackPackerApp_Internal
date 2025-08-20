@@ -106,3 +106,29 @@ extension Date {
         }
     }
 }
+
+class ImageLoader {
+    static func loadImages(from urls: [String], completion: @escaping ([UIImage]) -> Void) {
+        var uiImages: [UIImage] = []
+        let group = DispatchGroup()
+        let lock = NSLock()
+        
+        for urlStr in urls {
+            if let url = URL(string: "\(ApiConstants.API.API_IMAGEURL)\(urlStr)") {
+                group.enter()
+                URLSession.shared.dataTask(with: url) { data, _, _ in
+                    if let data = data, let image = UIImage(data: data) {
+                        lock.lock()
+                        uiImages.append(image)
+                        lock.unlock()
+                    }
+                    group.leave()
+                }.resume()
+            }
+        }
+        
+        group.notify(queue: .main) {
+            completion(uiImages)
+        }
+    }
+}
