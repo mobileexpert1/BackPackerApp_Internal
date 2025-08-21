@@ -122,6 +122,7 @@ class HangOutDetailVC: UIViewController {
     }
     
     @IBAction func action_delete(_ sender: Any) {
+#if BackpackerHire
         
         AlertManager.showConfirmationAlert(on: self,
                                            title: "Delete Hangout",
@@ -136,6 +137,9 @@ class HangOutDetailVC: UIViewController {
             
         })
         
+        
+#endif
+      
         
     }
     

@@ -164,7 +164,29 @@ class JobVM {
         }
     }
     
-    
+    // MARK: - Accept reject job: JobDetail
+    func acceptRejectJob<T: Codable>(
+        jobID: String,
+        status: String, // <-- add this parameter so you can pass "rejected" or "accepted"
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.ACCEPT_REJECTJOB(jobId: jobID)
+
+        // Create the body
+        let body: Parameters = [
+            "status": status
+        ]
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .patch,
+            parameters: nil,   // keep this nil, since we're sending body separately
+            httpBody: body.toJsonString()
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
+
     
     
     

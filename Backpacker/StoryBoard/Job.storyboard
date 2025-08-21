@@ -260,6 +260,9 @@
                                                                 <integer key="value" value="10"/>
                                                             </userDefinedRuntimeAttribute>
                                                         </userDefinedRuntimeAttributes>
+                                                        <connections>
+                                                            <action selector="action_JobAccept:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="3Xm-wy-nRX"/>
+                                                        </connections>
                                                     </button>
                                                     <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BkI-vU-g9s">
                                                         <rect key="frame" x="0.0" y="0.0" width="0.0" height="34.333333333333336"/>
@@ -274,6 +277,9 @@
                                                                 <integer key="value" value="10"/>
                                                             </userDefinedRuntimeAttribute>
                                                         </userDefinedRuntimeAttributes>
+                                                        <connections>
+                                                            <action selector="action_Decline:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="Vyc-Tq-WPV"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                                 <constraints>
@@ -2847,7 +2853,7 @@
         <image name="mic" width="24" height="24"/>
         <image name="remove" width="6.6666665077209473" height="6.6666665077209473"/>
         <image name="search" width="14" height="14"/>
-        <image name="time" width="21.666666030883789" height="21.333333969116211"/>
+        <image name="time" width="12.666666984558105" height="12.666666984558105"/>
         <image name="uploadImga" width="18.666666030883789" height="18.666666030883789"/>
         <image name="user-setting 1" width="25" height="25"/>
         <namedColor name="Red">

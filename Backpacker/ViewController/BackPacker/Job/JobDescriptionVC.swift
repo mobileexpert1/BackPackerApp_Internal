@@ -205,6 +205,7 @@ class JobDescriptionVC: UIViewController {
     
     @IBAction func action_delete(_ sender: Any) {
       
+#if BackpackerHire
         AlertManager.showConfirmationAlert(on: self,
                                            title: "Delete JOb",
                                            message: "Are you sure you want to delete the job?",
@@ -217,6 +218,8 @@ class JobDescriptionVC: UIViewController {
            
             
         })
+#endif
+       
     }
     @IBAction func action_Edit(_ sender: Any) {
         
@@ -323,6 +326,42 @@ class JobDescriptionVC: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
+    @IBAction func action_JobAccept(_ sender: Any) {
+        
+#if Backapacker
+        AlertManager.showConfirmationAlert(on: self,
+                                           title: "",
+                                           message: "Are you sure you want to accept the job?",
+                                           confirmAction: {
+            if let id = self.JobId{
+                self.acceptRejectJob(status: "accepted")
+            }else{
+                AlertManager.showAlert(on: self, title: "Missing", message: "Job Id Is Missing")
+            }
+           
+            
+        })
+       
+#endif
+    }
+    @IBAction func action_Decline(_ sender: Any) {
+        
+#if Backapacker
+        AlertManager.showConfirmationAlert(on: self,
+                                           title: "",
+                                           message: "Are you sure you want to reject the job?",
+                                           confirmAction: {
+            if let id = self.JobId{
+                self.acceptRejectJob(status: "rejected")
+            }else{
+                AlertManager.showAlert(on: self, title: "Missing", message: "Job Id Is Missing")
+            }
+           
+            
+        })
+      
+#endif
+    }
 }
 
 
@@ -412,6 +451,87 @@ extension JobDescriptionVC {
             }
         }
         
+    }
+    
+    
+    private func acceptRejectJob(status:String){
+        LoaderManager.shared.show()
+        isLoading = true
+        if JobId?.isEmpty == true {
+            LoaderManager.shared.hide()
+            AlertManager.showAlert(
+                on: self,
+                title: "Alert",
+                message: "Job ID is missing."
+            )
+            
+            return
+        }else{
+            
+            viewMOdel.acceptRejectJob(jobID: self.JobId ?? "", status: status){ [weak self] (success: Bool, result: DeleteJobResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                     
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? ""){
+                                    self.getDetailOfJob()
+                                }
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                
+                            }
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.getDetailOfJob()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.isLoading = false
+                                    self.refreshControl.endRefreshing()
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+        }
     }
     
 #if BackpackerHire

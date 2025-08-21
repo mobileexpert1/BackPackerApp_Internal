@@ -15,10 +15,10 @@ struct ApiConstants {
         static let DEBUG_MODE_ON = true
         private static let BASE_URL : String = {
             if DEBUG_MODE_ON {
-                return "https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
+                return "http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
             }
             else {
-                return "https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
+                return "http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
             }
         }()
         
@@ -137,6 +137,15 @@ struct ApiConstants {
             return url
         }
         
+        
+       
+        static func ACCEPT_REJECTJOB(jobId:String?) -> String {
+            var url = "\(BASE_URL)api/backpackers/jobs/"
+            if let jobIds = jobId {
+                url += "\(jobIds)"
+            }
+            return url
+        }
         //MARK: - Employer
         
         
@@ -274,6 +283,9 @@ struct ApiConstants {
             }
             return url
         }
+        
+        
+        
     }
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"
