@@ -42,7 +42,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yWY-bU-eOb">
-                                        <rect key="frame" x="338" y="7.6666666666666714" width="35" height="35"/>
+                                        <rect key="frame" x="293" y="7.6666666666666714" width="35" height="35"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="35" id="ean-Nx-skQ"/>
                                             <constraint firstAttribute="height" constant="35" id="rqO-fg-hCN"/>
@@ -53,15 +53,29 @@
                                             <action selector="action_Edit:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="72K-zJ-zu6"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Aax-FW-nf4">
+                                        <rect key="frame" x="338" y="7.6666666666666714" width="35" height="35"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="35" id="Ch0-xa-Ah5"/>
+                                            <constraint firstAttribute="width" constant="35" id="Gfd-Dn-Myy"/>
+                                        </constraints>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" image="Delete"/>
+                                        <connections>
+                                            <action selector="action_delete:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="bqG-XQ-GhF"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="Aax-FW-nf4" secondAttribute="trailing" constant="20" id="4gS-yn-D2h"/>
                                     <constraint firstItem="yWY-bU-eOb" firstAttribute="centerY" secondItem="a5K-Oa-y6T" secondAttribute="centerY" id="Ico-T1-jJz"/>
                                     <constraint firstItem="tlx-W6-8QR" firstAttribute="centerX" secondItem="gUm-9p-yj6" secondAttribute="centerX" id="OH6-wG-Q29"/>
-                                    <constraint firstAttribute="trailing" secondItem="yWY-bU-eOb" secondAttribute="trailing" constant="20" id="XKo-dg-gIi"/>
                                     <constraint firstAttribute="height" constant="50" id="dLF-VX-vGI"/>
                                     <constraint firstItem="tlx-W6-8QR" firstAttribute="centerY" secondItem="gUm-9p-yj6" secondAttribute="centerY" id="dNW-ez-dR9"/>
                                     <constraint firstItem="a5K-Oa-y6T" firstAttribute="leading" secondItem="gUm-9p-yj6" secondAttribute="leading" constant="5" id="l3b-f4-BQ3"/>
+                                    <constraint firstItem="Aax-FW-nf4" firstAttribute="leading" secondItem="yWY-bU-eOb" secondAttribute="trailing" constant="10" id="pFZ-B9-x8l"/>
+                                    <constraint firstItem="Aax-FW-nf4" firstAttribute="centerY" secondItem="yWY-bU-eOb" secondAttribute="centerY" id="pxi-ZP-G2o"/>
                                     <constraint firstItem="a5K-Oa-y6T" firstAttribute="centerY" secondItem="gUm-9p-yj6" secondAttribute="centerY" id="tYi-ip-kv2"/>
                                 </constraints>
                             </view>
@@ -311,6 +325,7 @@
                         <outlet property="btn_Decline" destination="BkI-vU-g9s" id="zIa-9y-eft"/>
                         <outlet property="btn_Description" destination="37g-aK-pOg" id="3aZ-Kx-hvq"/>
                         <outlet property="btn_Employer" destination="4JJ-qC-DT9" id="9WP-n7-n3r"/>
+                        <outlet property="btn_delete" destination="Aax-FW-nf4" id="gWa-Rb-Ygu"/>
                         <outlet property="btn_edit" destination="yWY-bU-eOb" id="KqF-qD-145"/>
                         <outlet property="description_ContainerVW" destination="ZzX-bU-6ff" id="1ba-Ez-Rgp"/>
                         <outlet property="img_Profile" destination="aWP-GS-8Tb" id="Kew-2w-9eW"/>
@@ -1662,18 +1677,6 @@
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kyd-5z-Znr">
-                                <rect key="frame" x="346" y="51.666666666666657" width="35" height="35"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="35" id="D7l-QG-jvY"/>
-                                    <constraint firstAttribute="width" constant="35" id="mvN-Y2-guY"/>
-                                </constraints>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" image="Close"/>
-                                <connections>
-                                    <action selector="action_Dismiss:" destination="e56-7q-F13" eventType="touchUpInside" id="GPc-hv-cX4"/>
-                                </connections>
-                            </button>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pED-8M-tLq">
                                 <rect key="frame" x="0.0" y="99.333333333333371" width="393" height="1266.6666666666665"/>
                                 <subviews>
@@ -2461,16 +2464,42 @@
                                 <viewLayoutGuide key="contentLayoutGuide" id="7Zw-Ef-axn"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="zG7-Hh-jvk"/>
                             </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HDk-Bu-4LL">
+                                <rect key="frame" x="343" y="51.666666666666657" width="35" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="Htg-gZ-eQq"/>
+                                    <constraint firstAttribute="width" constant="35" id="VVo-ei-aQY"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="Close"/>
+                                <connections>
+                                    <action selector="action_MicCommon:" destination="e56-7q-F13" eventType="touchUpInside" id="9cG-tT-jbr"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kyd-5z-Znr">
+                                <rect key="frame" x="10" y="51.666666666666657" width="35" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="D7l-QG-jvY"/>
+                                    <constraint firstAttribute="width" constant="35" id="mvN-Y2-guY"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="Close"/>
+                                <connections>
+                                    <action selector="action_Dismiss:" destination="e56-7q-F13" eventType="touchUpInside" id="GPc-hv-cX4"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="YeT-8w-f6R"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="YeT-8w-f6R" firstAttribute="trailing" secondItem="pED-8M-tLq" secondAttribute="trailing" id="02I-si-9OF"/>
+                            <constraint firstItem="kyd-5z-Znr" firstAttribute="leading" secondItem="YeT-8w-f6R" secondAttribute="leading" constant="10" id="AJG-Uc-fHW"/>
+                            <constraint firstItem="YeT-8w-f6R" firstAttribute="trailing" secondItem="HDk-Bu-4LL" secondAttribute="trailing" constant="15" id="J7X-mk-spW"/>
                             <constraint firstItem="YeT-8w-f6R" firstAttribute="bottom" secondItem="pED-8M-tLq" secondAttribute="bottom" id="P7k-vm-wQp"/>
+                            <constraint firstItem="HDk-Bu-4LL" firstAttribute="centerY" secondItem="NGl-5V-g2X" secondAttribute="centerY" id="Rvs-gf-sIQ"/>
                             <constraint firstItem="pED-8M-tLq" firstAttribute="top" secondItem="NGl-5V-g2X" secondAttribute="bottom" constant="20" id="TmU-wI-mpx"/>
                             <constraint firstItem="kyd-5z-Znr" firstAttribute="centerY" secondItem="NGl-5V-g2X" secondAttribute="centerY" id="Vls-Mi-fMf"/>
                             <constraint firstItem="NGl-5V-g2X" firstAttribute="top" secondItem="YeT-8w-f6R" secondAttribute="top" id="gOc-Tr-n0U"/>
-                            <constraint firstItem="YeT-8w-f6R" firstAttribute="trailing" secondItem="kyd-5z-Znr" secondAttribute="trailing" constant="12" id="hFL-Y3-rXA"/>
                             <constraint firstItem="NGl-5V-g2X" firstAttribute="centerX" secondItem="YeT-8w-f6R" secondAttribute="centerX" id="oKd-Yj-jcd"/>
                             <constraint firstItem="pED-8M-tLq" firstAttribute="leading" secondItem="YeT-8w-f6R" secondAttribute="leading" id="znp-1c-050"/>
                         </constraints>
@@ -2494,6 +2523,7 @@
                         <outlet property="Main_Header" destination="NGl-5V-g2X" id="9Wa-M3-MqH"/>
                         <outlet property="bgVwPlacehder" destination="VLd-01-iJE" id="mJe-GQ-Ib0"/>
                         <outlet property="bgVw_MainImge" destination="3Dh-Vn-hL4" id="PH0-6O-J6C"/>
+                        <outlet property="btn_Mic" destination="HDk-Bu-4LL" id="P23-n9-7Kg"/>
                         <outlet property="btn_Remove" destination="GIs-rt-NgA" id="O4l-a6-0s5"/>
                         <outlet property="btn_Save" destination="4z4-8v-TSg" id="uPd-Fs-nxo"/>
                         <outlet property="btn_adress_mic" destination="Tsd-z0-cOZ" id="JhH-2u-jNh"/>
@@ -2805,6 +2835,7 @@
         <image name="BgUploadImage" width="343" height="96"/>
         <image name="Calendar" width="24" height="24"/>
         <image name="Close" width="19" height="21"/>
+        <image name="Delete" width="25" height="25"/>
         <image name="Profile" width="46" height="46"/>
         <image name="Setting" width="26" height="26"/>
         <image name="address" width="10.666666984558105" height="14"/>
@@ -2816,7 +2847,7 @@
         <image name="mic" width="24" height="24"/>
         <image name="remove" width="6.6666665077209473" height="6.6666665077209473"/>
         <image name="search" width="14" height="14"/>
-        <image name="time" width="12.666666984558105" height="12.666666984558105"/>
+        <image name="time" width="21.666666030883789" height="21.333333969116211"/>
         <image name="uploadImga" width="18.666666030883789" height="18.666666030883789"/>
         <image name="user-setting 1" width="25" height="25"/>
         <namedColor name="Red">

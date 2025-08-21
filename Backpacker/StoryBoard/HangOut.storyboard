@@ -369,15 +369,15 @@
                                 <viewLayoutGuide key="contentLayoutGuide" id="VuD-CY-eJP"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="7DC-3O-41L"/>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8KB-Lc-8bg">
-                                <rect key="frame" x="293" y="61.666666666666657" width="80" height="35"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8KB-Lc-8bg">
+                                <rect key="frame" x="293" y="61.666666666666657" width="35" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="3Zl-YH-Gt2"/>
-                                    <constraint firstAttribute="width" constant="80" id="qgd-a3-NuY"/>
+                                    <constraint firstAttribute="width" constant="35" id="qgd-a3-NuY"/>
                                 </constraints>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal" title="Edit"/>
+                                <state key="normal" title="Edit" image="edit"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                         <integer key="value" value="10"/>
@@ -387,24 +387,39 @@
                                     <action selector="action_Edit:" destination="ygx-Eq-TLD" eventType="touchUpInside" id="nvs-uU-TaU"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mWU-G5-SBa">
+                                <rect key="frame" x="338" y="61.666666666666657" width="35" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="35" id="T1R-65-DHn"/>
+                                    <constraint firstAttribute="height" constant="35" id="oc7-JB-DCt"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="Delete"/>
+                                <connections>
+                                    <action selector="action_delete:" destination="ygx-Eq-TLD" eventType="touchUpInside" id="KgR-tM-KLu"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Wac-nw-ceW"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="mWU-G5-SBa" firstAttribute="leading" secondItem="8KB-Lc-8bg" secondAttribute="trailing" constant="10" id="18A-g7-xzZ"/>
                             <constraint firstItem="Wac-nw-ceW" firstAttribute="trailing" secondItem="vIG-ty-nOB" secondAttribute="trailing" id="3Ik-ZR-PVP"/>
                             <constraint firstItem="vIG-ty-nOB" firstAttribute="bottom" secondItem="Wac-nw-ceW" secondAttribute="bottom" id="8kR-aL-NDh"/>
                             <constraint firstItem="4pt-aR-2h0" firstAttribute="top" secondItem="Wac-nw-ceW" secondAttribute="top" id="910-wH-sNr"/>
+                            <constraint firstItem="mWU-G5-SBa" firstAttribute="centerY" secondItem="8KB-Lc-8bg" secondAttribute="centerY" id="A3Y-Gp-NaQ"/>
                             <constraint firstItem="8KB-Lc-8bg" firstAttribute="centerY" secondItem="4pt-aR-2h0" secondAttribute="centerY" id="Fhj-qa-pMF"/>
                             <constraint firstItem="vIG-ty-nOB" firstAttribute="leading" secondItem="Wac-nw-ceW" secondAttribute="leading" id="Oar-nE-4vo"/>
                             <constraint firstItem="4pt-aR-2h0" firstAttribute="leading" secondItem="Wac-nw-ceW" secondAttribute="leading" constant="10" id="XKb-nF-ED7"/>
                             <constraint firstItem="vIG-ty-nOB" firstAttribute="top" secondItem="4pt-aR-2h0" secondAttribute="bottom" constant="8" id="e0N-vh-3Bq"/>
-                            <constraint firstItem="8KB-Lc-8bg" firstAttribute="trailing" secondItem="OLB-Fs-Kwo" secondAttribute="trailing" id="iCk-OM-fkb"/>
+                            <constraint firstItem="Wac-nw-ceW" firstAttribute="trailing" secondItem="mWU-G5-SBa" secondAttribute="trailing" constant="20" id="nbo-su-N0e"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="Bg_Vw_image_Collection" destination="ujr-b8-5jD" id="4BU-V9-adI"/>
                         <outlet property="btn_Edit" destination="8KB-Lc-8bg" id="OyK-7d-yDL"/>
                         <outlet property="btn_ViewOnMap" destination="uQt-Ar-O3U" id="pM6-nq-gBR"/>
+                        <outlet property="btn_delete" destination="mWU-G5-SBa" id="v3O-w1-tqa"/>
                         <outlet property="img_CollectionVw" destination="PpA-ym-b3t" id="Y7n-9W-wYn"/>
                         <outlet property="lbl_AboutDescription" destination="Z4s-wp-tHg" id="j9j-rn-LTn"/>
                         <outlet property="lbl_Address" destination="TCk-4e-6EQ" id="o79-1G-NiL"/>
@@ -887,7 +902,9 @@
     <resources>
         <image name="Back Arrow" width="9" height="15"/>
         <image name="Close" width="19" height="21"/>
+        <image name="Delete" width="25" height="25"/>
         <image name="currentLoc" width="20" height="20"/>
+        <image name="edit" width="13.333333015441895" height="13.333333015441895"/>
         <image name="filter" width="28" height="28"/>
         <image name="mic" width="24" height="24"/>
         <image name="search" width="14" height="14"/>

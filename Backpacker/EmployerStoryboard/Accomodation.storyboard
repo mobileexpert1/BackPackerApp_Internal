@@ -898,8 +898,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hotel Details" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NqA-3l-VNj">
-                                <rect key="frame" x="148" y="59.000000000000007" width="97" height="20.333333333333336"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Accommodation Detail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NqA-3l-VNj">
+                                <rect key="frame" x="110.33333333333333" y="59.000000000000007" width="172.33333333333337" height="20.333333333333336"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
@@ -1191,7 +1191,7 @@
                                 <viewLayoutGuide key="frameLayoutGuide" id="OLA-4F-lgW"/>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B4b-Sf-pps">
-                                <rect key="frame" x="338" y="51.666666666666657" width="35" height="35"/>
+                                <rect key="frame" x="293" y="51.666666666666657" width="35" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="AmD-HT-msL"/>
                                     <constraint firstAttribute="width" constant="35" id="hym-LL-fvZ"/>
@@ -1202,13 +1202,26 @@
                                     <action selector="action_Edit:" destination="yU2-Gq-pgo" eventType="touchUpInside" id="Vdp-ph-KE6"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yTI-ga-Xb8">
+                                <rect key="frame" x="338" y="51.666666666666657" width="35" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="eXl-vQ-t93"/>
+                                    <constraint firstAttribute="width" constant="35" id="fYa-i2-yE6"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="Delete"/>
+                                <connections>
+                                    <action selector="action_delete:" destination="yU2-Gq-pgo" eventType="touchUpInside" id="gNe-RN-jdT"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="UIA-0C-CHj"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="UIA-0C-CHj" firstAttribute="trailing" secondItem="B4b-Sf-pps" secondAttribute="trailing" constant="20" id="2iV-gV-DSv"/>
                             <constraint firstItem="NqA-3l-VNj" firstAttribute="top" secondItem="UIA-0C-CHj" secondAttribute="top" id="3ux-03-moN"/>
                             <constraint firstItem="UIA-0C-CHj" firstAttribute="trailing" secondItem="1Cb-F1-Ywc" secondAttribute="trailing" id="Ok8-dd-seS"/>
+                            <constraint firstItem="UIA-0C-CHj" firstAttribute="trailing" secondItem="yTI-ga-Xb8" secondAttribute="trailing" constant="20" id="QI1-aB-kPf"/>
+                            <constraint firstItem="yTI-ga-Xb8" firstAttribute="centerY" secondItem="B4b-Sf-pps" secondAttribute="centerY" id="RRw-74-7iF"/>
                             <constraint firstItem="1Cb-F1-Ywc" firstAttribute="leading" secondItem="UIA-0C-CHj" secondAttribute="leading" id="WD3-fS-AD3"/>
                             <constraint firstItem="1Cb-F1-Ywc" firstAttribute="top" secondItem="NqA-3l-VNj" secondAttribute="bottom" id="XrI-hY-gF1"/>
                             <constraint firstItem="iy8-8t-OdP" firstAttribute="centerY" secondItem="NqA-3l-VNj" secondAttribute="centerY" id="aqe-Bh-5WB"/>
@@ -1216,11 +1229,13 @@
                             <constraint firstItem="UIA-0C-CHj" firstAttribute="bottom" secondItem="1Cb-F1-Ywc" secondAttribute="bottom" id="nA3-zH-Zi7"/>
                             <constraint firstItem="B4b-Sf-pps" firstAttribute="centerY" secondItem="iy8-8t-OdP" secondAttribute="centerY" id="q80-d5-eVQ"/>
                             <constraint firstItem="NqA-3l-VNj" firstAttribute="centerX" secondItem="UIA-0C-CHj" secondAttribute="centerX" id="qPC-mK-xUq"/>
+                            <constraint firstItem="yTI-ga-Xb8" firstAttribute="leading" secondItem="B4b-Sf-pps" secondAttribute="trailing" constant="10" id="xYC-EX-Iod"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="btn_Availbility" destination="xop-hP-wJo" id="7FD-Na-gGn"/>
                         <outlet property="btn_VwOnMap" destination="dic-SV-bRc" id="wiO-ZP-40a"/>
+                        <outlet property="btn_delete" destination="yTI-ga-Xb8" id="PrW-qq-1IL"/>
                         <outlet property="btn_edit" destination="B4b-Sf-pps" id="ypi-oW-Vnz"/>
                         <outlet property="facilityCollectionVw" destination="QM1-RD-eoJ" id="3rP-qC-8aO"/>
                         <outlet property="facility_coll_height" destination="n0Z-Kh-n26" id="W0E-d6-J3K"/>
@@ -1325,6 +1340,7 @@
     <resources>
         <image name="Back Arrow" width="9" height="15"/>
         <image name="Close" width="19" height="21"/>
+        <image name="Delete" width="25" height="25"/>
         <image name="currentLoc" width="20" height="20"/>
         <image name="edit" width="13.333333015441895" height="13.333333015441895"/>
         <image name="filter" width="28" height="28"/>

@@ -246,6 +246,34 @@ struct ApiConstants {
             }
             return url
         }
+        static func EDITJOB(jobId:String?) -> String {
+            var url = "\(BASE_URL)api/employer/job/"
+            if let jobId = jobId {
+                url += "\(jobId)"
+            }
+            return url
+        }
+        static func DELETE_JOB(jobID:String?) -> String {
+            var url = "\(BASE_URL)api/employer/job/"
+            if let jobID = jobID {
+                url += "\(jobID)"
+            }
+            return url
+        }
+        static func DELETE_ACCOMMODATION(accID:String?) -> String {
+            var url = "\(BASE_URL)api/employer/accommodation/"
+            if let accID = accID {
+                url += "\(accID)"
+            }
+            return url
+        }
+        static func DELETE_HANGOUT(hangID:String?) -> String {//api/employer/accommodation
+            var url = "\(BASE_URL)api/employer/hangout/"
+            if let hangID = hangID {
+                url += "\(hangID)"
+            }
+            return url
+        }
     }
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"

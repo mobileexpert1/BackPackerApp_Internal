@@ -234,7 +234,7 @@ class HangoutViewModel {
             completion(success, result, statusCode)
         }
     }
-   //MAR: Employer detail hangout
+   //MARK: Employer detail hangout
     func getEmployerHangutDetail<T: Codable>(
         hangoutID:String,
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
@@ -250,7 +250,22 @@ class HangoutViewModel {
             completion(success, result, statusCode)
         }
     }
-    
+    //MARK: Delet
+     func delete<T: Codable>(
+         hangoutID:String,
+         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+     ) {
+         let url = ApiConstants.API.DELETE_HANGOUT(hangID: hangoutID)
+
+         ServiceManager.sharedInstance.requestApi(
+             url,
+             method: .delete,
+             parameters: nil,
+             httpBody: nil
+         ) { (success: Bool, result: T?, statusCode: Int?) in
+             completion(success, result, statusCode)
+         }
+     }
         //MARK: - Employe edit hnagout
     
     func editHangout(

@@ -30,7 +30,7 @@ class CommonCalendarPopUpVC: UIViewController {
             return df
         }()
     weak var delegate: CommonCalendarPopUpVCDelegate?
-
+    var isComeFromEdit : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
@@ -41,7 +41,7 @@ class CommonCalendarPopUpVC: UIViewController {
     
     func setUpYearList(){
         let currentYear = Calendar.current.component(.year, from: Date())
-        let years = (currentYear...2040).map { "\($0)" }
+        let years = (currentYear...2030).map { "\($0)" }
 
         dropdownHelper = DropdownHelper(
             parentView: self.view,
@@ -116,8 +116,7 @@ class CommonCalendarPopUpVC: UIViewController {
         calendarView.appearance.headerMinimumDissolvedAlpha = 0.0
         calendarView.headerHeight = 50
         calendarView.appearance.headerMinimumDissolvedAlpha = 0.0
-        calendarView.delegate = self
-        calendarView.dataSource = self
+      
         let bottomLine = UIView()
         bottomLine.backgroundColor = UIColor(hex:"#EBEBEB")
         bottomLine.translatesAutoresizingMaskIntoConstraints = false
@@ -137,12 +136,19 @@ class CommonCalendarPopUpVC: UIViewController {
             calendarView.setCurrentPage(selectedDate, animated: false)
             lbl_year.text = formatter.string(from: selectedDate)
         } else {
-            let today = calendarView.today ?? Date()
-            calendarView.select(today)
-            calendarView.setCurrentPage(today, animated: false)
-            self.selectedDate = today
-            lbl_year.text = formatter.string(from: selectedDate ?? Date())
+            if isComeFromEdit == false {
+                let today = calendarView.today ?? Date()
+                calendarView.select(today)
+                calendarView.setCurrentPage(today, animated: false)
+                self.selectedDate = today
+                lbl_year.text = formatter.string(from: selectedDate ?? Date())
+            }else{
+                calendarView.today = nil
+            }
+            
         }
+        calendarView.delegate = self
+        calendarView.dataSource = self
     }
     
     
@@ -169,20 +175,43 @@ class CommonCalendarPopUpVC: UIViewController {
      
      
      func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillDefaultColorFor date: Date) -> UIColor? {
-         // If start and end exist, highlight all dates in range
+         let cal = Calendar.current
+         
          if let start = startDate, let end = endDate {
-             if date >= start && date <= end {
-                 return UIColor(red: 41/255, green: 158/255, blue: 245/255, alpha: 1) // color for range (including start & end)
+             let rangeStart = min(start, end)
+             let rangeEnd = max(start, end)
+             
+             if (cal.compare(date, to: rangeStart, toGranularity: .day) != .orderedAscending) &&
+                (cal.compare(date, to: rangeEnd, toGranularity: .day) != .orderedDescending) {
+                 
+                 return UIColor(red: 41/255, green: 158/255, blue: 245/255, alpha: 1)
              }
          }
          
-         // If only a single date is selected
-         if let only = selectedDate, Calendar.current.isDate(date, inSameDayAs: only) {
+         if let only = selectedDate, cal.isDate(date, inSameDayAs: only) {
              return UIColor(red: 41/255, green: 158/255, blue: 245/255, alpha: 1)
          }
-
+         
          return nil
      }
+
+     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
+         let cal = Calendar.current
+         if let start = startDate, let end = endDate {
+             let rangeStart = min(start, end)
+             let rangeEnd = max(start, end)
+             
+             if (cal.compare(date, to: rangeStart, toGranularity: .day) != .orderedAscending) &&
+                (cal.compare(date, to: rangeEnd, toGranularity: .day) != .orderedDescending) {
+                 return .white
+             }
+         }
+         if let only = selectedDate, cal.isDate(date, inSameDayAs: only) {
+             return .white
+         }
+         return nil
+     }
+
 
 
      func minimumDate(for calendar: FSCalendar) -> Date {
@@ -197,21 +226,18 @@ class CommonCalendarPopUpVC: UIViewController {
      func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at position: FSCalendarMonthPosition) {
              cell.isHidden = false
      }
-     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
-         if let start = startDate, let end = endDate, date >= start && date <= end {
-             return .white // text color for range
-         }
-         if let only = selectedDate, Calendar.current.isDate(date, inSameDayAs: only) {
-             return .white // text color for single selection
-         }
-         return nil // default for others
-     }
-
     
+//     func calendar(_ calendar: FSCalendar, shouldSelect date: Date, at monthPosition: FSCalendarMonthPosition) -> Bool {
+//         return date >= Calendar.current.startOfDay(for: Date()) && monthPosition == .current
+//     }
+
      func calendar(_ calendar: FSCalendar, shouldSelect date: Date, at monthPosition: FSCalendarMonthPosition) -> Bool {
+         // prevent auto-selection of today's date
+         if Calendar.current.isDateInToday(date) {
+             return false
+         }
          return date >= Calendar.current.startOfDay(for: Date()) && monthPosition == .current
      }
-
 
      func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
          if startDate == nil && endDate == nil {

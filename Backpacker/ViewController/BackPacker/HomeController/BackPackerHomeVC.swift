@@ -136,6 +136,10 @@ class BackPackerHomeVC: UIViewController {
         
         txtFldVw.delegate = self
         self.setUpUI()
+
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 #if Backapacker
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
         {
@@ -168,10 +172,6 @@ class BackPackerHomeVC: UIViewController {
            
         }
 #endif
-    }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
     }
     func showTopView(isShow : Bool = false,title : String = "Employer"){
         if isShow == true{

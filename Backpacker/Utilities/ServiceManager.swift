@@ -690,7 +690,7 @@ extension ServiceManager {
                 if image != nil {
                     multipartFormData.append(image!, withName: "image", fileName: "file.jpg", mimeType: "image/jpg")
                 }
-            }, to: url, usingThreshold: UInt64.init(), method: .post, headers: request.headers ).responseJSON {[weak self] response1 in
+            }, to: url, usingThreshold: UInt64.init(), method: method, headers: request.headers ).responseJSON {[weak self] response1 in
                 let statusCode = response1.response?.statusCode
 
                 if let error = response1.error {

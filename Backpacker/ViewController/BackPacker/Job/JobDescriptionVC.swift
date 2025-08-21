@@ -9,6 +9,7 @@ import UIKit
 import SDWebImage
 class JobDescriptionVC: UIViewController {
     
+    @IBOutlet weak var btn_delete: UIButton!
     @IBOutlet weak var btn_edit: UIButton!
     @IBOutlet weak var mainScrollVw: UIScrollView!
     @IBOutlet weak var mainScrollHeight: NSLayoutConstraint!
@@ -43,6 +44,8 @@ class JobDescriptionVC: UIViewController {
     var jobDetailEmployerObj : EmployerJobDetail?
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.btn_edit.isHidden = true
+        self.btn_delete.isHidden = true
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
         firstVC = storyboard.instantiateViewController(withIdentifier: "DescriptionController") as? DescriptionController
         secondVC = storyboard.instantiateViewController(withIdentifier: "EmployerController") as? EmployerController
@@ -58,26 +61,57 @@ class JobDescriptionVC: UIViewController {
         
         self.btn_Decline.isHidden = true
         self.btn_Decline.isUserInteractionEnabled = false
-#if Backapacker
-        
-        self.getDetailOfJob()
-        self.segmentHeight.constant = 50.0
-        //        self.btn_Accept.isHidden = false
-        //        self.btn_Accept.isUserInteractionEnabled = true
-        //
-        //        self.btn_Decline.isHidden = false
-        //        self.btn_Decline.isUserInteractionEnabled = true
-#else
-        
-        self.segmentHeight.constant = 0.0
-        self.lbl_Description.isHidden = true
-        self.lblEmployer.isHidden = true
-        self.getEmployeeDetailOfJob()
-#endif
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+#if Backapacker
+        self.getDetailOfJob()
+        self.segmentHeight.constant = 50.0
+#else
+        self.segmentHeight.constant = 0.0
+        self.lbl_Description.isHidden = true
+        self.lblEmployer.isHidden = true
+        self.getEmployeeDetailOfJob()
+       
+#endif
+    }
+    
+    private func handleEditBtnAppearance(){
+#if BackpackerHire
+        self.btn_edit.isHidden = true
+        if jobDetailEmployerObj?.jobAcceptStatus == 1 {
+            if let startDateString = jobDetailEmployerObj?.startDate {
+                
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+                formatter.locale = Locale(identifier: "en_US_POSIX")
+                
+                if let startDate = formatter.date(from: startDateString) {
+                    let today = Date()
+                    
+                    if startDate > today {
+                        // ✅ Start date is greater than current date
+                        // Show Edit button here
+                        self.btn_edit.isHidden = false
+                        self.btn_delete.isHidden = false
+                        print("Show Edit button")
+                    } else {
+                        // ❌ Start date is today or past
+                        self.btn_edit.isHidden = true
+                        self.btn_delete.isHidden = true
+                        print("Hide Edit button")
+                    }
+                }
+            }
+        }
+
+        #else
+        self.btn_edit.isHidden = true
+        
+        #endif
+
     }
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
@@ -169,11 +203,63 @@ class JobDescriptionVC: UIViewController {
         self.lblEmployer.text = "Employer"
     }
     
+    @IBAction func action_delete(_ sender: Any) {
+      
+        AlertManager.showConfirmationAlert(on: self,
+                                           title: "Delete JOb",
+                                           message: "Are you sure you want to delete the job?",
+                                           confirmAction: {
+            if let id = self.JobId{
+                self.empDeleteJOb(jobID: id)
+            }else{
+                AlertManager.showAlert(on: self, title: "Missing", message: "Job Id Is Missing")
+            }
+           
+            
+        })
+    }
     @IBAction func action_Edit(_ sender: Any) {
         
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
         if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewJobVC") as? AddNewJobVC {
-            self.navigationController?.pushViewController(accVC, animated: true)
+            accVC.jobID = self.JobId ?? ""
+            
+            let addres = self.jobDetailEmployerObj?.address ?? ""
+            let name = self.jobDetailEmployerObj?.name ?? ""
+            let description = self.jobDetailEmployerObj?.description ?? ""
+            let price = self.jobDetailEmployerObj?.price ?? 0
+            let loc = self.jobDetailEmployerObj?.locationText ?? ""
+            let lat = self.jobDetailEmployerObj?.lat ?? 0.0
+            let long = self.jobDetailEmployerObj?.long ?? 0.0
+            accVC.isComeFromEdit = true
+            let date = self.jobDetailEmployerObj?.startDate ?? ""
+            let enddate = self.jobDetailEmployerObj?.endDate ?? ""
+            let strtTime = self.jobDetailEmployerObj?.startTime ?? ""
+            let endTime = self.jobDetailEmployerObj?.endTime ?? ""
+            let req  = self.jobDetailEmployerObj?.requests
+        //    let assgnBckPkr = self.jobDetailObj.
+            if let imageUrls = self.jobDetailEmployerObj?.image {
+                ImageLoader.loadImages(from: [imageUrls]) { images in
+                    // here you get your [UIImage]
+                  //  accVC.editImagess = images.first
+                    accVC.editImageData = images.first
+                    accVC.editImagess = self.jobDetailEmployerObj?.image
+                    accVC.editBackPackersList = self.jobDetailEmployerObj?.requests
+                    accVC.editName = name
+                    accVC.editHeadAddress = addres
+                    accVC.editdescription = description
+                    accVC.editrequirment = self.jobDetailEmployerObj?.requirements ?? ""
+                    accVC.editLocation = loc
+                    accVC.editLat = lat
+                    accVC.editLongitude = long
+                    accVC.editrate = "\(price)"
+                    accVC.editDate = date
+                    accVC.editEndDate = enddate
+                    accVC.editStartTime = strtTime
+                    accVC.editEndTime = endTime
+                    self.navigationController?.pushViewController(accVC, animated: true)
+                }
+            }
         } else {
             print("❌ Could not instantiate AddNewAccomodationVC")
         }
@@ -182,18 +268,23 @@ class JobDescriptionVC: UIViewController {
     }
     private func showChild(_ newVC: UIViewController) {
         // Remove current child if any
-        if let descVC = newVC as? DescriptionController {
-            descVC.delegate = self
-#if BackpackerHire
-            descVC.EmpobjJobDetail = self.jobDetailEmployerObj
-#else
-            descVC.objJobDetail = self.jobDetailObj
-#endif
+        /*
+         if let descVC = newVC as? DescriptionController {
+             descVC.delegate = self
+ #if BackpackerHire
+             descVC.EmpobjJobDetail = self.jobDetailEmployerObj
+           //  descVC.refreshData?(obj: self.jobDetailEmployerObj)
+             if let obj = self.jobDetailEmployerObj{
+                 descVC.refreshData(obj: obj)
+             }
            
-        }
-        if let empVC = newVC as? EmployerController {
-            empVC.objJobDetail = self.jobDetailObj
-        }
+ #else
+             descVC.objJobDetail = self.jobDetailObj
+ #endif
+            
+         }
+         */
+      
         if let currentVC = currentChildVC {
             currentVC.willMove(toParent: nil)
             currentVC.view.removeFromSuperview()
@@ -209,6 +300,22 @@ class JobDescriptionVC: UIViewController {
         
         // Update current
         currentChildVC = newVC
+        if let descVC = newVC as? DescriptionController {
+            descVC.delegate = self
+#if BackpackerHire
+            descVC.EmpobjJobDetail = self.jobDetailEmployerObj
+            if let obj = self.jobDetailEmployerObj{
+                descVC.refreshData(obj: obj)
+            }
+          
+#else
+            descVC.objJobDetail = self.jobDetailObj
+#endif
+           
+        }
+        if let empVC = newVC as? EmployerController {
+            empVC.objJobDetail = self.jobDetailObj
+        }
     }
     
     
@@ -394,6 +501,84 @@ extension JobDescriptionVC {
     }
     
     
+    func empDeleteJOb(jobID:String){
+        LoaderManager.shared.show()
+        isLoading = true
+        if JobId?.isEmpty == true {
+            LoaderManager.shared.hide()
+            AlertManager.showAlert(
+                on: self,
+                title: "Alert",
+                message: "Job ID is missing."
+            )
+            
+            return
+        }else{
+            viewMOdel.deleteJob(jobID: self.JobId ?? ""){ [weak self] (success: Bool, result: DeleteJobResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                     
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Job deleted successfully"){
+                                    self.navigationController?.popViewController(animated: true)
+                                }
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                
+                            }
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.empDeleteJOb(jobID: self.JobId ?? "")
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.isLoading = false
+                                    self.refreshControl.endRefreshing()
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+        }
+    }
 #endif
     func setUpValues(obj : JobDetail){
         
@@ -489,6 +674,7 @@ extension JobDescriptionVC {
             
             self.btn_Decline.isHidden = true
             self.btn_Decline.isUserInteractionEnabled = false
+            self.handleEditBtnAppearance()
         }
  
         /*

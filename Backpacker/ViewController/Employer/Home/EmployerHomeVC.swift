@@ -85,6 +85,10 @@ class EmployerHomeVC: UIViewController {
         self.lbl_MainHeader.font  =  FontManager.inter(.bold, size: 14.0)
         self.lbl_NotificationCount.font = FontManager.inter(.medium, size: 8.0)
         self.setupPullToRefresh()
+
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 #if BackpackerHire
         if roleType == "2"{
             self.HomeApi()
@@ -94,7 +98,6 @@ class EmployerHomeVC: UIViewController {
         }
 #endif
     }
-    
     func showTopView(isShow : Bool = false,title : String = "Employer"){
         if isShow == true{
             self.lbl_MainHeader.text = title

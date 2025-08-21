@@ -6,10 +6,16 @@
 //
 
 import UIKit
+#if BackpackerHire
 import MapKit
+#else
+import MapKit
+#endif
+
 import SDWebImage
 class HangOutDetailVC: UIViewController {
 
+    @IBOutlet weak var btn_delete: UIButton!
     @IBOutlet weak var btn_Edit: UIButton!
     @IBOutlet weak var Bg_Vw_image_Collection: UIView!
     @IBOutlet weak var page_Controller: UIPageControl!
@@ -88,14 +94,7 @@ class HangOutDetailVC: UIViewController {
         self.title_About.font = FontManager.inter(.semiBold, size: 14.0)
         self.lbl_AboutDescription.font = FontManager.inter(.regular, size: 12.0)
         btn_ViewOnMap.titleLabel?.font = FontManager.inter(.regular, size: 12.0)
-#if BackpackerHire
-        self.btn_Edit.titleLabel?.font = FontManager.inter(.semiBold, size: 16)
-        self.btn_Edit.layer.cornerRadius = 10.0
-        applyGradientButtonStyle(to: self.btn_Edit)
-        #else
-        self.btn_Edit.isHidden = true
-        
-#endif
+
     
 
     }
@@ -122,6 +121,23 @@ class HangOutDetailVC: UIViewController {
         self.mapView.delegate = self
     }
     
+    @IBAction func action_delete(_ sender: Any) {
+        
+        AlertManager.showConfirmationAlert(on: self,
+                                           title: "Delete Hangout",
+                                           message: "Are you sure you want to delete the Hangout?",
+                                           confirmAction: {
+            if let id = self.hangoutID{
+                self.deleteHangout()
+            }else{
+                AlertManager.showAlert(on: self, title: "Missing", message: "Accommodation Id Is Missing")
+            }
+           
+            
+        })
+        
+        
+    }
     
     @IBAction func action_Edit(_ sender: Any) {
         
@@ -159,9 +175,6 @@ class HangOutDetailVC: UIViewController {
         
     }
    
-
-    
-    
     @IBAction func action_VwOnMap(_ sender: Any) {
     }
     
@@ -326,7 +339,84 @@ extension HangOutDetailVC {
         }
         
     }
-    
+    func deleteHangout(){
+        LoaderManager.shared.show()
+        isLoading = true
+        if hangoutID?.isEmpty == true {
+            LoaderManager.shared.hide()
+                AlertManager.showAlert(
+                    on: self,
+                    title: "Alert",
+                    message: "Hangout ID is missing."
+                )
+            
+            return
+        }else{
+            viewMOdel.delete(hangoutID: hangoutID ?? ""){ [weak self] (success: Bool, result: DeleteJobResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Hangout deleted successfully"){
+                                    self.navigationController?.popViewController(animated: true)
+                                }
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                
+                            }
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.deleteHangout()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.isLoading = false
+                                    self.refreshControl.endRefreshing()
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
     
     
     #else
@@ -438,8 +528,6 @@ extension HangOutDetailVC {
 }
 
 
-import MapKit
-
 extension HangOutDetailVC: MKMapViewDelegate {
 
     func setupMapAnnotations() {
@@ -483,7 +571,6 @@ extension HangOutDetailVC: MKMapViewDelegate {
     }
 }
 
-import MapKit
 
 class UserAnnotation: NSObject, MKAnnotation {
     let coordinate: CLLocationCoordinate2D

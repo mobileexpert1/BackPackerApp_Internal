@@ -58,6 +58,11 @@ class DescriptionController: UIViewController {
         mapVw.delegate = self
         setupButtonBorders()
         self.setUpFonts()
+
+        
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 #if BackpackerHire
         if let obj = self.EmpobjJobDetail {
             self.setUpUIEmployer(obj: obj)
@@ -68,9 +73,32 @@ class DescriptionController: UIViewController {
             self.setUpUI(obj: obj)
         }
 #endif
-        
     }
-  
+    func refreshData(obj: EmployerJobDetail) {
+        if let formatted = obj.startDate.formattedISODate() {
+            self.lbl_Val_StartDate.text = formatted
+        }
+        if let start = obj.startTime.toAmPmFormat(), let end = obj.endTime.toAmPmFormat() {
+            print("Start: \(start), End: \(end)")
+            self.lbl_Val_EndTime.text = end
+            self.lbl_Val_StartTime.text = start
+        }
+        self.val_Rate.text = "$\(obj.price)"
+        self.lbl_Description_Value.text = obj.description
+        self.lbl_RequirmentValue.text = obj.requirements
+        print("Scroll Content height", self.contentView.frame.height)
+        self.lbl_MapLocation_Value.text  = obj.address
+        let font = FontManager.inter(.medium, size: 13.0)
+        let labelWidth = view.frame.width - 40 // e.g. 16 padding on each side
+        let calculatedHeightDescription = obj.description.heightForLabel(font: font, width: labelWidth)
+        let calculatedHeightRequirment = obj.requirements.heightForLabel(font: font, width: labelWidth)
+        self.lbl_Descripyion_ContentHeight = calculatedHeightDescription
+        self.lbl_requirment__ContentHeight =  calculatedHeightRequirment
+        let lat = obj.lat
+        let lon = obj.long
+        showMarkerOnMap(latitude: lat, longitude: lon, title: obj.address)
+        self.setUpHeight()
+      }
     private func setupButtonBorders() {
         self.header_raterPerhour.font = FontManager.inter(.semiBold, size: 14.0)
         self.val_Rate.font = FontManager.inter(.medium, size: 14.0)

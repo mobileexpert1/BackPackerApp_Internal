@@ -277,6 +277,22 @@ class AccommodationViewModel {
             completion(success, result, statusCode)
         }
     }
+    
+    //MARK: - Delet Accomoodation
+    func deletAccommodation<T: Codable>(
+        accommodationID:String,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.DELETE_ACCOMMODATION(accID: accommodationID)
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .delete,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 struct AccommodationResponseData: Codable {
     let _id: String

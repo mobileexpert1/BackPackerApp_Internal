@@ -219,5 +219,92 @@ class JobVM {
             completion(success, result, statusCode)
         }
     }
+    //MARK: - DeletJob
+    
+    func deleteJob<T: Codable>(
+        jobID:String,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.DELETE_JOB(jobID: jobID)
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .delete,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
+    //MARK: - Edit job empoyer
+    
+    func editJob(
+        name: String,
+        address: String,
+        lat: Double,
+        long: Double,
+        locationText: String,
+        description: String,
+        requirement: String,
+        price: String,
+        startDate: String,
+        endDate: String,
+        startTime: String,
+        endTime: String,
+        selectedBackpackerJSONString: String,
+        image: Data?,
+        jobID: String,
+        completion: @escaping (Bool, String?, Int?) -> Void
+    ) {
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, "Authorization token is missing.", nil)
+      return
+  }
+       
+        let url = ApiConstants.API.EDITJOB(jobId:jobID )
+
+        let params: Parameters = [
+            "name": name,
+            "address": address,
+            "lat": lat,
+            "long": long,
+            "locationText": locationText,
+            "description": description,
+            "requirements": requirement,
+            "price": price,
+            "startDate": startDate,
+            "endDate": endDate,
+            "startTime": startTime,
+            "endTime": endTime,
+            "requests": selectedBackpackerJSONString
+        ]
+
+        let headers = ServiceManager.sharedInstance.getHeaders()
+
+        ServiceManager.sharedInstance.requestMultipartAPI(
+            url,
+            image: image,
+            method: .put,
+            parameters: params,
+            headers: headers
+        ) { (result: ApiResult<ApiResponseModel<HangoutResponseData>, APIError>) in
+            switch result {
+            case .success(let data, let statusCode):
+                print("Upload success")
+                completion(true, data?.message ?? "Job added successfully", statusCode)
+
+            case .failure(let error, let statusCode):
+                print("Upload failed:", error.localizedDescription)
+                completion(false, error.localizedDescription, statusCode)
+            }
+        }
+    }
 }
 

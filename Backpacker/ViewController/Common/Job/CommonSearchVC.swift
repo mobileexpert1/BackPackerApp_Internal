@@ -37,6 +37,7 @@ class CommonSearchVC: UIViewController {
     var searchDebounceTimer: Timer?
     var lastSearchedText: String = ""
     var lastContentOffset: CGFloat = 0
+    var isComeFromEdit : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
       
@@ -129,7 +130,7 @@ extension CommonSearchVC: UITableViewDelegate, UITableViewDataSource {
         cell.lblTitle.textColor = .black
            // ✅ Check if the item is selected
         
-           let isSelected = selectedData.contains { $0.mobileNumber == data.mobileNumber }
+        let isSelected = selectedData.contains { $0.id == data.id }
            cell.imgCheckBox.image = isSelected ? UIImage(named: "Checkbox2") : UIImage(named: "Checkbox")
 
            return cell
@@ -138,7 +139,7 @@ extension CommonSearchVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedItem = searchData[indexPath.row]
 
-            if let index = selectedData.firstIndex(where: { $0.mobileNumber == selectedItem.mobileNumber }) {
+        if let index = selectedData.firstIndex(where: { $0.id == selectedItem.id }) {
                 // Already selected → remove
                 selectedData.remove(at: index)
             } else {

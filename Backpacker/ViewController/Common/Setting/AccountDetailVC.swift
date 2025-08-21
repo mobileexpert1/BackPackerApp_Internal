@@ -40,10 +40,7 @@ class AccountDetailVC: UIViewController {
         "Business Visa",
         "Student Visa",
         "Work Visa",
-        "Transit Visa",
         "Spouse/Partner Visa",
-        "Diplomatic Visa",
-        "Refugee Visa",
         "Permanent Residency",
         "Investor Visa"
     ]

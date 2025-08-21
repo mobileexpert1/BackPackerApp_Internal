@@ -98,10 +98,29 @@ class AddNewJobVC: UIViewController {
     var selectedBackPackerList: [BackpackerIdWrapper] = []
     var selectedBackPackerJSONString: String?
 
+    @IBOutlet weak var btn_Mic: UIButton!
     //Edit
-    
+    var jobID : String?
     var isComeFromEdit : Bool = false
+    var editName : String?
+    var editHeadAddress : String?
+    var editdescription : String?
+    var editrequirment : String?
+    var editrate : String?
+    var editDate : String?
+    var editEndDate : String?
+    var editStartTime : String?
+    var editEndTime : String?
+    var editLocation : String?
+    var removedImages : String?
+    var editImagess : String?
+    var editImageData: UIImage?
+    var editLat : Double?
+    var editLongitude : Double?
+    var editBackPackersList : [JobRequest]?
     
+    var selectedStatDate : Date?
+    var selectedEndDate : Date?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -109,13 +128,118 @@ class AddNewJobVC: UIViewController {
         self.setupSpeechCallbacks()
         setupTimePicker()
         self.UpdateLocationTxtColor()
+        self.setUpEditData()
+        self.btn_Mic.tag = 0
+        self.btn_Mic.isHidden = true
         // Do any additional setup after loading the view.
     }
     
+    @IBAction func action_MicCommon(_ sender: UIButton) {
+        if btn_Mic.tag == 0{
+            btn_Mic.tag = 1
+        }else{
+            btn_Mic.tag = 0
+        }
+        self.setTxtFieldFocus()
+    }
+    
+    
+    private func setTxtFieldFocus(){
+        if btn_Mic.tag == 1 {
+            speechManager.startRecording()
+            if txtFldName.text?.isEmpty ?? true {
+                txtFldName.becomeFirstResponder()
+            }
+           else if txtFldAddress.text?.isEmpty ?? true {
+                txtFldAddress.becomeFirstResponder()
+            }
+            else if txtVw_Description.text?.isEmpty ?? true {
+                txtVw_Description.becomeFirstResponder()
+            }
+            else if txtFld_Requirment.text?.isEmpty ?? true {
+                txtFld_Requirment.becomeFirstResponder()
+            } else{
+                txtFldName.becomeFirstResponder()
+            }
+        }else{
+            speechManager.stopRecording()
+            txtFldName.resignFirstResponder()
+            txtVw_Description.resignFirstResponder()
+            txtFld_Requirment.resignFirstResponder()
+            txtFldAddress.resignFirstResponder()
+        }
+        }
+    
+    private func setUpEditData(){
+        if isComeFromEdit == true{
+            self.txtFldName.text = editName
+            self.txtFldAddress.text = editHeadAddress
+            self.txtVw_Description.text = editdescription
+            self.txtFld_Requirment.text = editrequirment
+            if let rate = editrate{
+                self.txtFld_Rate.text = "$\(rate)"
+            }
+            if let date = editDate {
+                if editEndDate != editDate, let end = editEndDate {
+                    self.txtFdDate.text = formatDate(date) + " - " + formatDate(end)
+                } else {
+                    self.txtFdDate.text = formatDate(date)  // just single date
+                }
+            }
+
+            self.txtFld_StartTime.text = editStartTime
+            self.txtFd_EndTine.text = editEndTime
+            self.lbl_Location.text = editLocation
+            self.latitude = editLat ?? 0.0
+            self.longitude = editLongitude ?? 0.0
+            if let backpackers = editBackPackersList {
+                let names = backpackers.map { $0.backpackerId.name }
+                self.txtFld_Backpacker.text = names.joined(separator: ", ")
+            }
+
+            if let image = self.editImageData {
+                self.main_ImgVw.image = image
+                self.placeHolderImg.isHidden = true
+                self.lbl_UploadImage.isHidden = true
+                self.setUpImagePlacehoder()
+            }
+            let formatter = ISO8601DateFormatter()
+            formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+            if let editDate = editDate,
+               let strtdate = formatter.date(from: editDate) {
+                self.selectedStatDate = strtdate
+                self.startDate = dateToString(strtdate)
+            }
+
+            if let editEndDate = editEndDate,
+               let endDate = formatter.date(from: editEndDate) {
+                self.selectedEndDate = endDate
+                self.endDate = dateToString(endDate)
+            }
+           
+        }
+    }
+    func formatDate(_ dateString: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        
+        if let date = formatter.date(from: dateString) {
+            let outputFormatter = DateFormatter()
+            outputFormatter.dateFormat = "dd/MM/yyyy"
+            return outputFormatter.string(from: date)
+        } else {
+            return "Invalid Date"
+        }
+    }
     @IBAction func action_SetLoctaion(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
             settingVC.delegate = self
+            if isComeFromEdit == true {
+                settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
+            }
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
             print("❌ Could not instantiate SettingVC")
@@ -126,13 +250,37 @@ class AddNewJobVC: UIViewController {
     
     
     @IBAction func action_Remove(_ sender: Any) {
-        self.main_ImgVw.image = nil
-        self.main_ImgVw.image = UIImage(named: "BgUploadImage")
-        self.setUpImagePlacehoder()
+        if isComeFromEdit == true{
+            self.removedImages = self.editImagess
+            self.main_ImgVw.image = nil
+            self.main_ImgVw.image = UIImage(named: "BgUploadImage")
+            self.setUpImagePlacehoder()
+        }else{
+            self.main_ImgVw.image = nil
+            self.main_ImgVw.image = UIImage(named: "BgUploadImage")
+            self.setUpImagePlacehoder()
+            
+        }
+       
     }
     @IBAction func action_AssignBackpacker(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
         if let sarchVC = storyboard.instantiateViewController(withIdentifier: "CommonSearchVC") as? CommonSearchVC {
+            if isComeFromEdit, let editList = editBackPackersList {
+                for back in editList {
+                    let obj = Backpacker(
+                        id: back.backpackerId.id,   // adjust: confirm if `bac` is actually the ID
+                        name:  "", // use JobRequest’s real property
+                        email:  "",
+                        countryCode:  "",
+                        countryName:  "",
+                        mobileNumber: "",
+                        jobsCount:  0,
+                        rating: 0
+                    )
+                    self.selectedBackpackerData.append(obj)
+                }
+            }
             sarchVC.selectedData = self.selectedBackpackerData
             sarchVC.delegate = self
             self.navigationController?.pushViewController(sarchVC, animated: true)
@@ -153,10 +301,21 @@ class AddNewJobVC: UIViewController {
         mediaPicker = MediaPickerManager(presentingVC: self)
         mediaPicker?.showMediaOptions(isFromNewAccommodation: false) { image in
             print("Selected image: \(image)")
-            self.main_ImgVw.image = image
-            self.placeHolderImg.isHidden = true
-            self.lbl_UploadImage.isHidden = true
-            self.setUpImagePlacehoder()
+            
+            if self.isComeFromEdit == true{
+                self.removedImages = self.editImagess
+                self.main_ImgVw.image = image
+                self.placeHolderImg.isHidden = true
+                self.lbl_UploadImage.isHidden = true
+                self.setUpImagePlacehoder()
+            }else{
+                self.main_ImgVw.image = image
+                self.placeHolderImg.isHidden = true
+                self.lbl_UploadImage.isHidden = true
+                self.setUpImagePlacehoder()
+            }
+            
+           
         }
         
     }
@@ -165,7 +324,19 @@ class AddNewJobVC: UIViewController {
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
         if let calendarVC = storyboard.instantiateViewController(withIdentifier: "CommonCalendarPopUpVC") as? CommonCalendarPopUpVC {
             let selectedDateVal = convertStringToDate(txtFdDate.text ?? "")
-            calendarVC.selectedDate = selectedDateVal
+            calendarVC.isComeFromEdit = self.isComeFromEdit
+            if isComeFromEdit == true{
+                if selectedStatDate != selectedEndDate && selectedEndDate != nil {
+                    calendarVC.startDate = selectedStatDate
+                    calendarVC.endDate = selectedEndDate
+                    calendarVC.selectedDate = nil
+                }else{
+                    calendarVC.selectedDate = selectedDateVal
+                }
+            }else{
+                calendarVC.selectedDate = selectedDateVal
+            }
+           
             calendarVC.delegate = self
             calendarVC.modalPresentationStyle = .overCurrentContext
             calendarVC.modalTransitionStyle = .crossDissolve
@@ -192,24 +363,45 @@ class AddNewJobVC: UIViewController {
         let trimmedPrice = txtFld_Rate.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let imageData = self.main_ImgVw.image?.jpegData(compressionQuality: 0.8)
         let requiremt = self.txtFld_Requirment.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let startDAte = self.startDate.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        let endDate = self.endDate.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let startDate = convertDateIfNeeded(self.startDate.trimmingCharacters(in: .whitespacesAndNewlines))
+        let endDate   = convertDateIfNeeded(self.endDate.trimmingCharacters(in: .whitespacesAndNewlines))
+        
+        
         let startTime = self.txtFld_StartTime.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let endTime = self.txtFd_EndTine.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         
-        self.latitude = 30.63580679180547
-        self.longitude = 76.72132560810132
         
-        let isValid = validateHangoutFields(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDAte, endDate: endDate, startTime: startTime, endTime: endTime, request: ["iOs","iOS2"], image: imageData, latitude: self.latitude, longitude: self.longitude, on: self)
+        let isValid = validateHangoutFields(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDate, endDate: endDate, startTime: startTime, endTime: endTime, request: ["iOs","iOS2"], image: imageData, latitude: self.latitude, longitude: self.longitude, on: self)
         
         if isValid {
-            self.AddNewJob(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDAte, endDate: endDate, startTime: startTime, endTime: endTime, request: [], image: imageData, latitude:  self.latitude, longitude: self.longitude)
+            if isComeFromEdit == true {
+                self.EditJob(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDate, endDate: endDate, startTime: startTime, endTime: endTime, image: imageData, latitude:  self.latitude, longitude: self.longitude,jobId: self.jobID ?? "")
+            }else{
+                self.AddNewJob(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDate, endDate: endDate, startTime: startTime, endTime: endTime, request: [], image: imageData, latitude:  self.latitude, longitude: self.longitude)
+            }
+           
         }else{
             AlertManager.showAlert(on: self, title: "Missing Field", message: "Please check all fields")
         }
     }
     
- 
+    func convertDateIfNeeded(_ input: String) -> String {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "dd/MM/yyyy"   // expected input format
+        inputFormatter.locale = Locale(identifier: "en_US_POSIX") // stable parsing
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "yyyy-MM-dd"//"dd-MM-yyyy"  // desired output
+        
+        if let date = inputFormatter.date(from: input) {
+            // ✅ valid "dd/MM/yyyy", so convert
+            return outputFormatter.string(from: date)
+        } else {
+            // ❌ not matching format, return original
+            return input
+        }
+    }
+
     
     @IBAction func action_name_mic(_ sender: UIButton) {
        // handleMicTap(for: sender, textField: txtFldName, textView: nil)
@@ -446,7 +638,29 @@ extension AddNewJobVC {
         txtFd_EndTine.inputView = timePicker
         txtFld_StartTime.inputAccessoryView = toolbar
         txtFd_EndTine.inputAccessoryView = toolbar
-    }
+        txtFld_StartTime.addTarget(self, action: #selector(startTimeEditingBegan), for: .editingDidBegin)
+         txtFd_EndTine.addTarget(self, action: #selector(endTimeEditingBegan), for: .editingDidBegin)
+     }
+
+     @objc private func startTimeEditingBegan() {
+         if let text = txtFld_StartTime.text, !text.isEmpty {
+             let formatter = DateFormatter()
+             formatter.dateFormat = "HH:mm"  // match your stored format
+             if let date = formatter.date(from: text) {
+                 timePicker.date = date
+             }
+         }
+     }
+
+     @objc private func endTimeEditingBegan() {
+         if let text = txtFd_EndTine.text, !text.isEmpty {
+             let formatter = DateFormatter()
+             formatter.dateFormat = "HH:mm"
+             if let date = formatter.date(from: text) {
+                 timePicker.date = date
+             }
+         }
+     }
 
     @objc func doneTapped() {
         let formatter = DateFormatter()
@@ -722,7 +936,7 @@ extension AddNewJobVC: CommonSearchDelegate {
         }
         else if backpacker.count > 1 {
             self.txtFld_Backpacker.text = backpacker.map {
-                $0.name.isEmpty ? $0.mobileNumber : $0.name
+                $0.name.isEmpty ? $0.id : $0.name
             }.joined(separator: ", ")
         }
         else {
@@ -750,6 +964,8 @@ extension AddNewJobVC: CommonCalendarPopUpVCDelegate {
         self.startDate = dateToStringhyphen(date)
         self.endDate = dateToStringhyphen(date)
         self.txtFdDate.text = dateselected
+        self.selectedEndDate = nil
+        self.selectedStatDate = nil
         // Handle single date
     }
     
@@ -760,6 +976,8 @@ extension AddNewJobVC: CommonCalendarPopUpVCDelegate {
         self.startDate = dateToStringhyphen(startDate)
             self.endDate = dateToStringhyphen(endDate)
         self.txtFdDate.text = combineDate
+        self.selectedEndDate = startDate
+        self.selectedStatDate = endDate
     }
     func dateToString(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
@@ -845,11 +1063,21 @@ extension AddNewJobVC {
             return false
         }
         
-        if self.main_ImgVw.image == UIImage(named: "BgUploadImage") || image == nil {
-            AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please upload a valid image.")
-            return false
+        if isComeFromEdit == true{
+            if self.main_ImgVw.image == UIImage(named: "BgUploadImage") || image == nil && editImagess?.isEmpty == true {
+                AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please upload a valid image.")
+                return false
+            }
+            
+        }else{
+            if self.main_ImgVw.image == UIImage(named: "BgUploadImage") || image == nil {
+                AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please upload a valid image.")
+                return false
+            }
+            
         }
         
+       
         if latitude == 0.0 || longitude == 0.0 {
             AlertManager.showAlert(on: viewController, title: "Invalid Location", message: "Please select a valid location on map.")
             return false
@@ -926,29 +1154,111 @@ extension AddNewJobVC {
         }
         
     }
-    
+    func EditJob(
+        name: String,
+        address: String,
+        locationText: String,
+        description: String,
+        requirment: String,
+        price: String,
+        strtDate: String,
+        endDate: String,
+        startTime: String,
+        endTime: String,
+        image: Data?,
+        latitude: Double,
+        longitude: Double,
+        jobId:String
+    ) {
+        let image = self.main_ImgVw.image?.jpegData(compressionQuality: 0.8)
+        LoaderManager.shared.show()
+        let priceWithoutSymbol = price
+            .replacingOccurrences(of: "$", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        viewModel.editJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: priceWithoutSymbol, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, selectedBackpackerJSONString: selectedBackPackerJSONString ?? "", image: image, jobID: jobId) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Job Added."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.EditJob(name: name, address: address, locationText: locationText, description: description, requirment: requirment, price: price, strtDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, image: image, latitude:  self.latitude, longitude: self.longitude,jobId: self.jobID ?? "")
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+        }
+        
+    }
 }
 extension AddNewJobVC {
     private func setupSpeechCallbacks() {
         speechManager.onResult = { [weak self] text in
                 DispatchQueue.main.async {
-                    if self?.btn_name_Mic.tag == 1 {
+//                    if self?.btn_name_Mic.tag == 1 {
+//                        self?.txtFldName.text = text
+//                      
+//                    }
+//                    
+//                    if self?.btn_adress_mic.tag == 1 {
+//                        self?.txtFldAddress.text = text
+//                       
+//                        
+//                    }
+//                    
+//                    if self?.btn_requirmentMic.tag == 1 {
+//                        self?.txtFld_Requirment.text = text
+//                    }
+//                    if self?.btn_descritpion_mic.tag == 1 {
+//                        self?.txtVw_Description.text = text
+//                    }
+                    
+                    if self?.txtFldName.isFirstResponder == true {
+                        print("Name field is focused")
                         self?.txtFldName.text = text
-                      
-                    }
-                    
-                    if self?.btn_adress_mic.tag == 1 {
+                    } else if self?.txtFldAddress.isFirstResponder == true {
+                        print("Address field is focused")
                         self?.txtFldAddress.text = text
-                       
-                        
-                    }
-                    
-                    if self?.btn_requirmentMic.tag == 1 {
-                        self?.txtFld_Requirment.text = text
-                    }
-                    if self?.btn_descritpion_mic.tag == 1 {
+                    } else if self?.txtVw_Description.isFirstResponder == true {
+                        print("Description field is focused")
                         self?.txtVw_Description.text = text
+                    } else if self?.txtFld_Requirment.isFirstResponder == true {
+                        print("Requirement field is focused")
+                        self?.txtFld_Requirment.text = text
+                    } else {
+                        print("No field is focused")
                     }
+
+                    
                 }
             }
 
