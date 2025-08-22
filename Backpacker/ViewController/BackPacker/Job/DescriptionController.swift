@@ -113,7 +113,7 @@ class DescriptionController: UIViewController {
         self.lbl_Description_Value.text = obj.description
         self.lbl_RequirmentValue.text = obj.requirements
         print("Scroll Content height", self.contentView.frame.height)
-        self.lbl_MapLocation_Value.text  = obj.address
+        self.lbl_MapLocation_Value.text  = obj.locationText
         let font = FontManager.inter(.medium, size: 13.0)
         let labelWidth = view.frame.width - 40 // e.g. 16 padding on each side
         let calculatedHeightDescription = obj.description.heightForLabel(font: font, width: labelWidth)
@@ -165,24 +165,33 @@ class DescriptionController: UIViewController {
         
     }
     @IBAction func action_OpenMAp(_ sender: Any) {
-        let latitude = self.objJobDetail?.lat ?? 0.0
-        let longitude = self.objJobDetail?.long ?? 0.0
-        openMapAtCoordinates(latitude: latitude, longitude: longitude)
-    }
-    func openMapAtCoordinates(latitude: CLLocationDegrees, longitude: CLLocationDegrees) {
-        let coordinates = CLLocationCoordinate2DMake(latitude, longitude)
-        let regionDistance: CLLocationDistance = 1000
-        let regionSpan = MKCoordinateRegion(center: coordinates, latitudinalMeters: regionDistance, longitudinalMeters: regionDistance)
-        let options = [
-            MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
-            MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span)
-        ]
         
-        let placemark = MKPlacemark(coordinate: coordinates, addressDictionary: nil)
-        let mapItem = MKMapItem(placemark: placemark)
-        mapItem.name = "Selected Location"
-        mapItem.openInMaps(launchOptions: options)
+#if BackpackerHire
+        if let lat = self.EmpobjJobDetail?.lat,
+           let long = self.EmpobjJobDetail?.long {
+            openJobLocation(lat: lat, long: long)
+        }
+        
+        #else
+        
+        if let lat = self.objJobDetail?.lat,
+           let long = self.objJobDetail?.long {
+            openJobLocation(lat: lat, long: long)
+        }
+#endif
+       
     }
+    func openJobLocation(lat: Double, long: Double, title: String = "Job Location") {
+        let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+        let placemark = MKPlacemark(coordinate: coordinate)
+        let mapItem = MKMapItem(placemark: placemark)
+        mapItem.name = title
+        mapItem.openInMaps(launchOptions: [
+            MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: coordinate),
+            MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
+        ])
+    }
+
     func setUpUI(obj: JobDetail){
         if let formatted = obj.startDate.formattedISODate() {
             self.lbl_Val_StartDate.text = formatted

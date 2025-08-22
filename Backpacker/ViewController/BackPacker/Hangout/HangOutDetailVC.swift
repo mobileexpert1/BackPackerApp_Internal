@@ -183,6 +183,20 @@ class HangOutDetailVC: UIViewController {
     }
    
     @IBAction func action_VwOnMap(_ sender: Any) {
+        if let lat = self.hangoutDetailObj?.hangout.lat,
+           let long = self.hangoutDetailObj?.hangout.long {
+            
+            // Create a URL for Apple Maps
+
+                let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+                let placemark = MKPlacemark(coordinate: coordinate)
+                let mapItem = MKMapItem(placemark: placemark)
+                mapItem.name = "Hangout Location" // 👉 Custom title on the pin
+                mapItem.openInMaps(launchOptions: [
+                    MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: coordinate),
+                    MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
+                ])
+        }
     }
     
     @IBAction func action_Back(_ sender: Any) {

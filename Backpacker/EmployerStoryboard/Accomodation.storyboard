@@ -1105,6 +1105,9 @@
                                                 <state key="normal" title="View on map">
                                                     <color key="titleColor" name="blackColor"/>
                                                 </state>
+                                                <connections>
+                                                    <action selector="action_VwOnmPA:" destination="yU2-Gq-pgo" eventType="touchUpInside" id="WCG-AX-7BK"/>
+                                                </connections>
                                             </button>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="location" translatesAutoresizingMaskIntoConstraints="NO" id="72B-Yl-HyD">
                                                 <rect key="frame" x="20" y="579" width="12" height="12"/>
@@ -1361,7 +1364,7 @@
         <image name="Close" width="19" height="21"/>
         <image name="Delete" width="25" height="25"/>
         <image name="currentLoc" width="20" height="20"/>
-        <image name="edit" width="13.333333015441895" height="13.333333015441895"/>
+        <image name="edit" width="24" height="24"/>
         <image name="filter" width="28" height="28"/>
         <image name="location" width="8" height="11.666666984558105"/>
         <image name="mic" width="24" height="24"/>
