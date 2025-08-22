@@ -245,7 +245,7 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
             let accomodation = accommodationList[indexPath.item]
             cell.lbl_Title.text = accomodation.name
             cell.lblAmount.isHidden = false
-            cell.lblAmount.text = "$\(accomodation.price)"
+            cell.lblAmount.text = "From $\(accomodation.price) per adult"  //From $40 per adult
             cell.lbl_review.isHidden = true
             cell.cosmosVw.isHidden = true
             

@@ -13,8 +13,10 @@ import MapKit
 #endif
 
 import SDWebImage
+import SKPhotoBrowser
 class HangOutDetailVC: UIViewController {
 
+    @IBOutlet weak var lbl_MainHeader: UILabel!
     @IBOutlet weak var btn_delete: UIButton!
     @IBOutlet weak var btn_Edit: UIButton!
     @IBOutlet weak var Bg_Vw_image_Collection: UIView!
@@ -86,6 +88,7 @@ class HangOutDetailVC: UIViewController {
         
     }
     private func setUpUI(){
+        self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.title_Location.font = FontManager.inter(.semiBold, size: 14.0)
         self.lbl_Address.font = FontManager.inter(.regular, size: 12.0)
         self.lbl_restaurantName.font = FontManager.inter(.semiBold, size: 16.0)
@@ -226,10 +229,34 @@ extension HangOutDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,
         } else {
             cell.img_Vw.image = UIImage(named: "restaurantImg")
         }
-        
+        cell.img_Vw.isUserInteractionEnabled = true
+        cell.img_Vw.tag = indexPath.item
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:)))
+        cell.img_Vw.addGestureRecognizer(tap)
         return cell
     }
+    @objc func imageTapped(_ sender: UITapGestureRecognizer) {
+        guard let tappedImageView = sender.view as? UIImageView else { return }
+        let startIndex = tappedImageView.tag
 
+        var photos: [SKPhotoProtocol] = []
+
+        if let imgArr =  hangoutDetailObj?.hangout.image {
+            for img in imgArr {
+                let baseURL = ApiConstants.API.API_IMAGEURL
+                let imageURLString = img.hasPrefix("http") ? img : baseURL + img
+
+                let photo = SKPhoto.photoWithImageURL(imageURLString)
+                photo.shouldCachePhotoURLImage = true
+                photos.append(photo)
+            }
+        }
+
+        let browser = SKPhotoBrowser(photos: photos, initialPageIndex: startIndex)
+        browser.modalPresentationStyle = .fullScreen
+        present(browser, animated: true, completion: nil)
+    }
     // Optional: Set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         

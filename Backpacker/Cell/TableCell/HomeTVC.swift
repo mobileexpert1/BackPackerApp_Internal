@@ -233,7 +233,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         // cell.titleLabel.text = item
                         cell.lbl_Title.text = empCurrentJobslist?[indexPath.item].name ?? "No Data"
                         if let amnt = empCurrentJobslist?[indexPath.item].price {
-                            cell.lblAmount.text = "$\(amnt)"
+                            cell.lblAmount.text = "$\(amnt) per day"
                         }
                         cell.lbl_SubTitle.text = empCurrentJobslist?[indexPath.item].description ?? "No Data"
                         let baseURL1 = ApiConstants.API.API_IMAGEURL
@@ -282,7 +282,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         // cell.titleLabel.text = item
                         cell.lbl_Title.text = empNewjobList?[indexPath.item].name ?? "No Data"
                         if let amnt = empNewjobList?[indexPath.item].price {
-                            cell.lblAmount.text = "$\(amnt)"
+                            cell.lblAmount.text = "$\(amnt) per day"
                         }
                         cell.lbl_SubTitle.text = empNewjobList?[indexPath.item].description ?? "No Data"
                         let baseURL1 = ApiConstants.API.API_IMAGEURL
@@ -330,7 +330,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         // cell.titleLabel.text = item
                         cell.lbl_Title.text = empPostedjobList?[indexPath.item].name ?? "No Data"
                         if let amnt = empPostedjobList?[indexPath.item].price {
-                            cell.lblAmount.text = "$\(amnt)"
+                            cell.lblAmount.text = "$\(amnt) per day"
                         }
                         cell.lbl_SubTitle.text = empPostedjobList?[indexPath.item].description ?? "No Data"
                         let baseURL1 = ApiConstants.API.API_IMAGEURL
@@ -438,7 +438,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             cell.lbl_Title.text = obj.name
                             cell.lbl_SubTitle.text = obj.address ?? obj.description
                             if let price = obj.price {
-                                cell.lblAmount.text = "$\(price)"
+                                cell.lblAmount.text = "$\(price) per day"
                             }
                             if let firstIMage = obj.image{
                                 let baseURL1 = ApiConstants.API.API_IMAGEURL
@@ -585,7 +585,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             cell.lbl_Title.text = obj.name
                             cell.lbl_SubTitle.text = obj.address ?? obj.description
                             if let price = obj.price {
-                                cell.lblAmount.text = "$\(price)"
+                                cell.lblAmount.text = "$\(price) per day"
                             }
                             if let firstIMage = obj.image{
                                 let baseURL1 = ApiConstants.API.API_IMAGEURL
@@ -647,7 +647,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 if let accommodation = accomodationList?[indexPath.item] {
                     
                     cell.lbl_Title.text = accommodation.name
-                    cell.lblAmount.text = "$\(accommodation.price)"
+                    cell.lblAmount.text = "From $\(accommodation.price) per adult" //From $40 per adult
                     cell.lblAmount.isHidden = false
                     cell.lblRating.isHidden = true
                     cell.lbl_review.isHidden = true
@@ -740,7 +740,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         // cell.titleLabel.text = item
                         cell.lbl_Title.text = currentJobslist?[indexPath.item].name ?? "No Data"
                         if let amnt = currentJobslist?[indexPath.item].price {
-                            cell.lblAmount.text = "$\(amnt)"
+                            cell.lblAmount.text = "$\(amnt) per day"//per day
                         }
                         cell.lbl_SubTitle.text = currentJobslist?[indexPath.item].description ?? "No Data"
                         if declineJob.image.hasPrefix("http") {
@@ -779,7 +779,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         // cell.titleLabel.text = item
                         cell.lbl_Title.text = newjobList?[indexPath.item].name ?? "No Data"
                         if let amnt = newjobList?[indexPath.item].price {
-                            cell.lblAmount.text = "$\(amnt)"
+                            cell.lblAmount.text = "$\(amnt) per day"
                         }
                         cell.lbl_SubTitle.text = newjobList?[indexPath.item].description ?? "No Data"
                         if new.image.hasPrefix("http") {
@@ -815,7 +815,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         // cell.titleLabel.text = item
                         cell.lbl_Title.text = declinedjobList?[indexPath.item].name ?? "No Data"
                         if let amnt = declinedjobList?[indexPath.item].price {
-                            cell.lblAmount.text = "$\(amnt)"
+                            cell.lblAmount.text = "$\(amnt) per day"
                         }
                         cell.lbl_SubTitle.text = declinedjobList?[indexPath.item].description ?? "No Data"
                         let imageURLString = declineJob.image.hasPrefix("http") ? declineJob.image : "\(ApiConstants.API.API_IMAGEURL)\(declineJob.image)"
@@ -851,7 +851,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 // cell.titleLabel.text = item
                 cell.lbl_Title.text = jobList?[indexPath.item].name ?? "No Data"
                 if let amnt = jobList?[indexPath.item].price {
-                    cell.lblAmount.text = "$\(amnt)"
+                    cell.lblAmount.text = "$\(amnt) per day"
                 }
                 cell.lbl_SubTitle.text = jobList?[indexPath.item].description ?? "No Data"
                 if let jobImage = jobList?[indexPath.item] {

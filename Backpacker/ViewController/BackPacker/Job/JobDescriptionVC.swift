@@ -147,6 +147,8 @@ class JobDescriptionVC: UIViewController {
 
         
     }
+    
+    
     private func setUPBtns(){
         self.btn_Description.tag = 1
         self.btn_Employer.tag = 0
@@ -313,6 +315,11 @@ class JobDescriptionVC: UIViewController {
           
 #else
             descVC.objJobDetail = self.jobDetailObj
+            if let obj = self.jobDetailObj{
+                descVC.refreshDatabp(obj: obj)
+                self.setupBtnAppearanceStatus(obj: obj)
+            }
+            
 #endif
            
         }
@@ -329,36 +336,42 @@ class JobDescriptionVC: UIViewController {
     @IBAction func action_JobAccept(_ sender: Any) {
         
 #if Backapacker
-        AlertManager.showConfirmationAlert(on: self,
-                                           title: "",
-                                           message: "Are you sure you want to accept the job?",
-                                           confirmAction: {
-            if let id = self.JobId{
-                self.acceptRejectJob(status: "accepted")
-            }else{
-                AlertManager.showAlert(on: self, title: "Missing", message: "Job Id Is Missing")
-            }
-           
-            
-        })
+        if jobDetailObj?.jobAcceptStatus == 1 {
+            AlertManager.showConfirmationAlert(on: self,
+                                               title: "",
+                                               message: "Are you sure you want to accept the job?",
+                                               confirmAction: {
+                if let id = self.JobId{
+                    self.acceptRejectJob(status: "accepted")
+                }else{
+                    AlertManager.showAlert(on: self, title: "Missing", message: "Job Id Is Missing")
+                }
+               
+                
+            })
+        }
+      
        
 #endif
     }
     @IBAction func action_Decline(_ sender: Any) {
         
 #if Backapacker
-        AlertManager.showConfirmationAlert(on: self,
-                                           title: "",
-                                           message: "Are you sure you want to reject the job?",
-                                           confirmAction: {
-            if let id = self.JobId{
-                self.acceptRejectJob(status: "rejected")
-            }else{
-                AlertManager.showAlert(on: self, title: "Missing", message: "Job Id Is Missing")
-            }
-           
-            
-        })
+        if jobDetailObj?.jobAcceptStatus == 1 {
+            AlertManager.showConfirmationAlert(on: self,
+                                               title: "",
+                                               message: "Are you sure you want to reject the job?",
+                                               confirmAction: {
+                if let id = self.JobId{
+                    self.acceptRejectJob(status: "rejected")
+                }else{
+                    AlertManager.showAlert(on: self, title: "Missing", message: "Job Id Is Missing")
+                }
+               
+                
+            })
+        }
+    
       
 #endif
     }
@@ -730,35 +743,38 @@ extension JobDescriptionVC {
             img_Profile.image = UIImage(named: "Profile")
         }
         
-        if obj.jobAcceptStatus == 1 {
-            self.btn_Accept.isHidden = false
-            self.btn_Accept.isUserInteractionEnabled = true
-            self.btn_Decline.isHidden = false
-            self.btn_Decline.isUserInteractionEnabled = true
-            applyGradientButtonStyle(to: btn_Accept)
-        } else if obj.jobAcceptStatus == 2 {
-            self.btn_Accept.isHidden = false
-            self.btn_Accept.setTitle("Accepted", for: .normal)
-            self.btn_Accept.isUserInteractionEnabled = false
-            applyGradientButtonStyle(to: btn_Accept)
-            self.btn_Decline.isHidden = true
-            self.btn_Decline.isUserInteractionEnabled = false
-        }else if obj.jobAcceptStatus == 3 {
-            self.btn_Accept.isHidden = false
-            self.btn_Accept.isUserInteractionEnabled = false
-            self.btn_Accept.setTitle("Declined", for: .normal)
-            applyGradientButtonStyle(to: btn_Accept)
-            self.btn_Decline.isHidden = true
-            self.btn_Decline.isUserInteractionEnabled = false
-        }else{
-            self.btn_Accept.isHidden = true
-            self.btn_Accept.isUserInteractionEnabled = false
-            
-            self.btn_Decline.isHidden = true
-            self.btn_Decline.isUserInteractionEnabled = false
-        }
-        
-        
+        self.setupBtnAppearanceStatus(obj: obj)
+    }
+    
+   private func setupBtnAppearanceStatus(obj:JobDetail){
+       if obj.jobAcceptStatus == 1 {
+           self.btn_Accept.isHidden = false
+           self.btn_Accept.isUserInteractionEnabled = true
+           self.btn_Decline.isHidden = false
+           self.btn_Decline.isUserInteractionEnabled = true
+           applyGradientButtonStyle(to: btn_Accept)
+       } else if obj.jobAcceptStatus == 2 {
+           self.btn_Accept.isHidden = false
+           self.btn_Accept.setTitle("Accepted", for: .normal)
+           self.btn_Accept.isUserInteractionEnabled = false
+           applyGradientButtonStyle(to: btn_Accept)
+           self.btn_Decline.isHidden = true
+           self.btn_Decline.isUserInteractionEnabled = false
+       }else if obj.jobAcceptStatus == 3 {
+           self.btn_Accept.isHidden = false
+           self.btn_Accept.isUserInteractionEnabled = false
+           self.btn_Accept.setTitle("Declined", for: .normal)
+           applyGradientButtonStyle(to: btn_Accept)
+           self.btn_Decline.isHidden = true
+           self.btn_Decline.isUserInteractionEnabled = false
+       }else{
+           self.btn_Accept.isHidden = true
+           self.btn_Accept.isUserInteractionEnabled = false
+           
+           self.btn_Decline.isHidden = true
+           self.btn_Decline.isUserInteractionEnabled = false
+       }
+       
     }
     func setUpValuesEmployer(obj : EmployerJobDetail){
         DispatchQueue.main.async {

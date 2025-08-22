@@ -15,15 +15,15 @@ struct ApiConstants {
         static let DEBUG_MODE_ON = true
         private static let BASE_URL : String = {
             if DEBUG_MODE_ON {
-                return "http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
+                return "https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
             }
             else {
-                return "http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
+                return "https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
             }
         }()
         
         private static let API_URL = BASE_URL + "/customer"
-         static let API_IMAGEURL = BASE_URL + "/assets/"
+         static let API_IMAGEURL = BASE_URL + "assets/"
         private static let VERSION = API_URL  + ""
         static let LOGIN_USER = BASE_URL + "api/auth/login"
         static let OTP_SEND = BASE_URL + "api/auth/verifyOtp"

@@ -875,6 +875,7 @@
                         <outlet property="lbl_UploadImg" destination="i6J-Ol-ryS" id="jYh-gD-OnB"/>
                         <outlet property="lbl_description" destination="sZZ-Ms-SuJ" id="RYy-Oa-cNQ"/>
                         <outlet property="mainBgVw" destination="AIP-xE-9N1" id="uRh-3e-4Lx"/>
+                        <outlet property="main_ScrollVw" destination="qk1-h8-3bU" id="vRT-35-h06"/>
                         <outlet property="placeholderImg" destination="EqG-G1-cQp" id="rvp-j6-TGp"/>
                         <outlet property="scroolHeight" destination="PbC-qf-OXe" id="9zi-tj-OqP"/>
                         <outlet property="tblVw" destination="bV1-HP-AY8" id="ytE-4V-Ga8"/>

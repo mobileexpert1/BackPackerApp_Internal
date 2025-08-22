@@ -8,12 +8,15 @@
 import UIKit
 import CoreData
 import UserNotifications
+import FirebaseMessaging
+import Firebase
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        self.configureGoogleInfoPlist()
         // Override point for customization after application launch.
         requestNotificationPermission()    //com.Backpacker
         // Register for remote notifications
@@ -23,6 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
            LocationManager.shared.requestLocationPermission()
            LocationManager.shared.startUpdatingLocation()
+        Messaging.messaging().delegate = self
         application.registerForRemoteNotifications()
         return true
     }
@@ -40,6 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
+      
     private func requestNotificationPermission() {
            let center = UNUserNotificationCenter.current()
            center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
@@ -86,7 +91,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 import UserNotifications
 
-extension AppDelegate: UNUserNotificationCenterDelegate {
+extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     
     // Show notifications even when the app is in the foreground
     func userNotificationCenter(_ center: UNUserNotificationCenter,
@@ -109,17 +114,39 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         NotificationManager.shared.handleNotification(userInfo: userInfo)
         completionHandler()
     }
+    func application(_ application: UIApplication,
+                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Messaging.messaging().apnsToken = deviceToken
+    }
+
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        print("📲 FCM Token: \(fcmToken ?? "")")
+#if BackpackerHire
+        UserDefaultsManager.shared.employerfcmToken = fcmToken
+        #else
+        UserDefaultsManager.shared.fcmToken = fcmToken
+#endif
+        
+
+    }
     
-    // Called when device token is received
-      func application(_ application: UIApplication,
-                       didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-          let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
-          let token = tokenParts.joined()
-          print("✅ Device Token: \(token)")
-          UserDefaultsManager.shared.fcmToken = "hfhfh6576hgf675"
-          // Save or send to server
-          UserDefaults.standard.set(token, forKey: "device_token")
-      }
+    func configureGoogleInfoPlist() {
+        var plistName = "GoogleService-Info"
+
+        #if BackpackerHire
+        plistName = "GoogleService-Info-Hire"
+        #else
+        plistName = "GoogleService-Info"
+        #endif
+
+        guard let filePath = Bundle.main.path(forResource: plistName, ofType: "plist"),
+              let options = FirebaseOptions(contentsOfFile: filePath) else {
+            fatalError("Couldn't load Firebase config file: \(plistName).plist")
+        }
+
+        FirebaseApp.configure(options: options)
+    }
+
 
 }
 

@@ -11,6 +11,7 @@ import CoreLocation
 
 class AddNewAccomodationVC: UIViewController {
     
+    @IBOutlet weak var main_ScrollVw: UIScrollView!
     @IBOutlet weak var scroolHeight: NSLayoutConstraint!
     @IBOutlet weak var lbl_MainHeader: UILabel!
     
@@ -115,6 +116,21 @@ class AddNewAccomodationVC: UIViewController {
         self.imageCollectionView.dataSource = self
         self.setupSpeechCallbacks()
         self.setupEditData()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
     func setupEditData(){
         if isComeFromEdit == true{
@@ -909,6 +925,25 @@ extension AddNewAccomodationVC {
     
     
 }
+extension AddNewAccomodationVC{
+    @objc func keyboardWillShow(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+
+        let keyboardHeight = keyboardFrame.height
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
+
+        main_ScrollVw.contentInset = contentInsets
+        main_ScrollVw.scrollIndicatorInsets = contentInsets
+    }
+
+    @objc func keyboardWillHide(_ notification: Notification) {
+        let contentInsets = UIEdgeInsets.zero
+        main_ScrollVw.contentInset = contentInsets
+        main_ScrollVw.scrollIndicatorInsets = contentInsets
+    }
+}
+
 struct EditedImage {
     let name: String   // string (filename or url)
     let image: UIImage // uiimage

@@ -173,6 +173,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hangout Detail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i05-K2-TXM">
+                                <rect key="frame" x="140" y="69" width="113.33333333333331" height="20.333333333333329"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" name="blackColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4pt-aR-2h0">
                                 <rect key="frame" x="10" y="59" width="40" height="40"/>
                                 <constraints>
@@ -412,6 +418,8 @@
                             <constraint firstItem="vIG-ty-nOB" firstAttribute="leading" secondItem="Wac-nw-ceW" secondAttribute="leading" id="Oar-nE-4vo"/>
                             <constraint firstItem="4pt-aR-2h0" firstAttribute="leading" secondItem="Wac-nw-ceW" secondAttribute="leading" constant="10" id="XKb-nF-ED7"/>
                             <constraint firstItem="vIG-ty-nOB" firstAttribute="top" secondItem="4pt-aR-2h0" secondAttribute="bottom" constant="8" id="e0N-vh-3Bq"/>
+                            <constraint firstItem="i05-K2-TXM" firstAttribute="centerY" secondItem="4pt-aR-2h0" secondAttribute="centerY" id="kb3-Zw-DdJ"/>
+                            <constraint firstItem="i05-K2-TXM" firstAttribute="centerX" secondItem="Wac-nw-ceW" secondAttribute="centerX" id="ldX-gB-iOa"/>
                             <constraint firstItem="Wac-nw-ceW" firstAttribute="trailing" secondItem="mWU-G5-SBa" secondAttribute="trailing" constant="20" id="nbo-su-N0e"/>
                         </constraints>
                     </view>
@@ -423,6 +431,7 @@
                         <outlet property="img_CollectionVw" destination="PpA-ym-b3t" id="Y7n-9W-wYn"/>
                         <outlet property="lbl_AboutDescription" destination="Z4s-wp-tHg" id="j9j-rn-LTn"/>
                         <outlet property="lbl_Address" destination="TCk-4e-6EQ" id="o79-1G-NiL"/>
+                        <outlet property="lbl_MainHeader" destination="i05-K2-TXM" id="UIl-P1-Zq2"/>
                         <outlet property="lbl_Rating" destination="uFR-6M-cHN" id="0S5-Pa-bce"/>
                         <outlet property="lbl_restaurantName" destination="dEV-sh-O0r" id="Qn3-Ut-xd0"/>
                         <outlet property="lbl_review" destination="G5A-Qq-Mq2" id="lv7-d1-Pwa"/>
@@ -888,6 +897,7 @@
                         <outlet property="lbl_MainHeader" destination="Xwr-XG-NEf" id="8zN-2K-3RV"/>
                         <outlet property="lbl_PlaceHodler" destination="mwI-2W-ViC" id="inK-qI-kqE"/>
                         <outlet property="lbl_Val_Location" destination="A9b-jA-zM7" id="NgW-pn-8b0"/>
+                        <outlet property="main_ScrollVw" destination="W7q-rr-y90" id="N6u-1l-3Cy"/>
                         <outlet property="txtFldName" destination="o6s-6x-061" id="r9Y-wz-loK"/>
                         <outlet property="txtFld_Address" destination="MFs-vB-tl6" id="ucg-gY-xJn"/>
                         <outlet property="txtVw_Description" destination="oFO-nw-SG7" id="v6v-yp-cvk"/>

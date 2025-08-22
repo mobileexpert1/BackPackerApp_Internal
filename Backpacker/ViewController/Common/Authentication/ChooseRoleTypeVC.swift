@@ -28,6 +28,7 @@ class ChooseRoleTypeVC: UIViewController {
     var viewModel = LogInVM()
     @IBOutlet weak var back_Btn: UIButton!
     var isBackButtonHidden : Bool = false
+    var selectedRoleType  : String?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUi()
@@ -94,6 +95,7 @@ class ChooseRoleTypeVC: UIViewController {
         self.BgVwEmp.layer.borderWidth = 1.0
         
         saveRoleType(empRoleType)
+        self.selectedRoleType = empRoleType
     }
     
     @IBAction func action_Hangout(_ sender: Any) {
@@ -113,6 +115,7 @@ class ChooseRoleTypeVC: UIViewController {
         self.BgVwEmp.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwEmp.layer.borderWidth = 1.0
         saveRoleType(hangOutRoleType)
+        self.selectedRoleType = hangOutRoleType
     }
     
     @IBAction func action_Accomodation(_ sender: Any) {
@@ -132,7 +135,7 @@ class ChooseRoleTypeVC: UIViewController {
         self.BgVwEmp.layer.borderWidth = 1.0
         
         saveRoleType(accomodationRoleType)
-        
+        self.selectedRoleType = accomodationRoleType
     }
     
     private func saveRoleType(_ type: String) {
@@ -143,7 +146,17 @@ class ChooseRoleTypeVC: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     @IBAction func action_Save(_ sender: Any) {
-        ChooseRoleTypeApiCall()
+        if selectedRoleType?.isEmpty ?? true {
+            AlertManager.showAlert(
+                on: self,
+                title: "Select Role",
+                message: "Please choose a role before continuing."
+            )
+        } else {
+            ChooseRoleTypeApiCall()
+        }
+
+       
     }
     
     

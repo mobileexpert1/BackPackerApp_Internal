@@ -345,7 +345,7 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                 }
                 let item = jobslist[indexPath.item]
                 cell.lbl_Title.text = item.name
-                cell.lblAmount.text = "$\(item.price)"
+                cell.lblAmount.text = "$\(item.price) per day"
                 cell.lbl_SubTitle.text = item.description
                 
                 if item.image.hasPrefix("http") {

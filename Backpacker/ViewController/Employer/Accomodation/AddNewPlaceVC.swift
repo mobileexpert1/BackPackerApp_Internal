@@ -9,6 +9,7 @@ import UIKit
 import CoreLocation
 class AddNewPlaceVC: UIViewController {
     
+    @IBOutlet weak var main_ScrollVw: UIScrollView!
     @IBOutlet weak var lbl_MainHeader: UILabel!
     
     @IBOutlet weak var lbl_PlaceHodler: UILabel!
@@ -74,7 +75,21 @@ class AddNewPlaceVC: UIViewController {
         self.setupSpeechCallbacks()
         self.setupEditData()
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
     func SetUpUI(){
         
         Vw_Name.layer.cornerRadius = 10.0
@@ -703,4 +718,22 @@ extension AddNewPlaceVC {
         
     }
     
+}
+extension AddNewPlaceVC{
+    @objc func keyboardWillShow(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+
+        let keyboardHeight = keyboardFrame.height
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
+
+        main_ScrollVw.contentInset = contentInsets
+        main_ScrollVw.scrollIndicatorInsets = contentInsets
+    }
+
+    @objc func keyboardWillHide(_ notification: Notification) {
+        let contentInsets = UIEdgeInsets.zero
+        main_ScrollVw.contentInset = contentInsets
+        main_ScrollVw.scrollIndicatorInsets = contentInsets
+    }
 }

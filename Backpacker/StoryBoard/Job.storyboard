@@ -1823,12 +1823,18 @@
                                                         <rect key="frame" x="2" y="25.333333333333314" width="349" height="150"/>
                                                         <subviews>
                                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Pvt-2S-MPL">
-                                                                <rect key="frame" x="10" y="8" width="299" height="134"/>
+                                                                <rect key="frame" x="5" y="8" width="304" height="134"/>
                                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                                 <color key="textColor" name="blackColor"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                                             </textView>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="shF-kt-nJd">
+                                                                <rect key="frame" x="10" y="14.999999999999998" width="87.333333333333329" height="20.333333333333329"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                <color key="textColor" name="subTitleColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
                                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WZI-oM-5Ml">
                                                                 <rect key="frame" x="309" y="110" width="40" height="40"/>
                                                                 <constraints>
@@ -1850,8 +1856,10 @@
                                                             <constraint firstAttribute="height" constant="150" id="A5V-af-Loy"/>
                                                             <constraint firstItem="Pvt-2S-MPL" firstAttribute="top" secondItem="3kA-hu-53Q" secondAttribute="top" constant="8" id="DIF-To-Pej"/>
                                                             <constraint firstAttribute="bottom" secondItem="WZI-oM-5Ml" secondAttribute="bottom" id="INU-uz-dsU"/>
+                                                            <constraint firstItem="shF-kt-nJd" firstAttribute="top" secondItem="3kA-hu-53Q" secondAttribute="top" constant="15" id="Ldt-XU-cch"/>
+                                                            <constraint firstItem="shF-kt-nJd" firstAttribute="leading" secondItem="3kA-hu-53Q" secondAttribute="leading" constant="10" id="Mzx-Ke-pM6"/>
                                                             <constraint firstAttribute="bottom" secondItem="Pvt-2S-MPL" secondAttribute="bottom" constant="8" id="cxE-Mi-sud"/>
-                                                            <constraint firstItem="Pvt-2S-MPL" firstAttribute="leading" secondItem="3kA-hu-53Q" secondAttribute="leading" constant="10" id="yhq-uI-Poh"/>
+                                                            <constraint firstItem="Pvt-2S-MPL" firstAttribute="leading" secondItem="3kA-hu-53Q" secondAttribute="leading" constant="5" id="yhq-uI-Poh"/>
                                                         </constraints>
                                                     </view>
                                                 </subviews>
@@ -2548,7 +2556,9 @@
                         <outlet property="heder_Date" destination="O3Y-Pl-nPD" id="RLx-ev-yjV"/>
                         <outlet property="lbl_Location" destination="eIQ-4f-cDH" id="WRj-jd-qfV"/>
                         <outlet property="lbl_UploadImage" destination="mhE-w0-8i9" id="jR2-fg-ksN"/>
+                        <outlet property="lbl_placeholder_description" destination="shF-kt-nJd" id="ccG-lY-qa4"/>
                         <outlet property="main_ImgVw" destination="mR3-dO-9G3" id="kcK-ZA-lfO"/>
+                        <outlet property="main_ScrollVw" destination="pED-8M-tLq" id="kIo-L2-cDw"/>
                         <outlet property="placeHolderImg" destination="Qeh-5i-y05" id="f3p-Hs-ImA"/>
                         <outlet property="tblHeight" destination="E7K-Zq-xhU" id="I87-Xp-6cy"/>
                         <outlet property="tblVw" destination="hub-fC-feH" id="u4r-BS-gVa"/>

@@ -8,6 +8,8 @@
 import UIKit
 import Cosmos
 import MapKit
+import SKPhotoBrowser
+
 class AccomodationDetailVC: UIViewController {
     @IBOutlet weak var lbl_MainHeader: UILabel!
     @IBOutlet weak var facilityCollectionVw: UICollectionView!
@@ -60,6 +62,9 @@ class AccomodationDetailVC: UIViewController {
     @IBOutlet weak var mainScrollVw: UIScrollView!
     var accomodationID : String?
     let refreshControl = UIRefreshControl()
+    var localImages: [UIImage] = []   // your UIImage array
+    var remoteImages: [String] = []   // your URL array
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -250,6 +255,12 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
             } else {
                 cell.img_Vw.image = UIImage(named: "aCCOMODATION")
             }
+            cell.img_Vw.isUserInteractionEnabled = true
+            cell.img_Vw.tag = indexPath.item
+
+            let tap = UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:)))
+            cell.img_Vw.addGestureRecognizer(tap)
+
             return cell
         }else{
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FacilityCVC", for: indexPath) as? FacilityCVC else {
@@ -264,7 +275,29 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
         }
      
     }
-    
+    @objc func imageTapped(_ sender: UITapGestureRecognizer) {
+        guard let tappedImageView = sender.view as? UIImageView else { return }
+        let startIndex = tappedImageView.tag
+
+        var photos: [SKPhotoProtocol] = []
+
+        if let imgArr = accomodationDetailObj?.accommodation.image {
+            for img in imgArr {
+                let baseURL = ApiConstants.API.API_IMAGEURL
+                let imageURLString = img.hasPrefix("http") ? img : baseURL + img
+
+                let photo = SKPhoto.photoWithImageURL(imageURLString)
+                photo.shouldCachePhotoURLImage = true
+                photos.append(photo)
+            }
+        }
+
+        let browser = SKPhotoBrowser(photos: photos, initialPageIndex: startIndex)
+        browser.modalPresentationStyle = .fullScreen
+        present(browser, animated: true, completion: nil)
+    }
+
+
     // Optional: Set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         

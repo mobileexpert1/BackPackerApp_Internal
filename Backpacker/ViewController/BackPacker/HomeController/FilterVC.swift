@@ -20,7 +20,7 @@ class FilterVC: UIViewController {
     @IBOutlet weak var TblVw: UITableView!
     @IBOutlet weak var btn_Submit: UIButton!
     @IBOutlet weak var slider: UISlider!
-    let header = ["Filter","Sort by"]
+    let header = ["Facilities","Sort by"]
     let filterArrya = ["Free WiFi","Swimming Pool","Parking","Elevator","Fitness Center","24-hours Open"]
     
 

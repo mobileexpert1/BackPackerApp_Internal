@@ -13,7 +13,10 @@ abstract_target 'BackpackerPods' do
   pod 'FSCalendar', :modular_headers => true
   pod 'SDWebImage', :modular_headers => true
   pod 'SkeletonView', :modular_headers => true
-
+  pod 'SKPhotoBrowser', :modular_headers => true
+  pod 'Firebase/Core', :modular_headers => true
+  pod 'Firebase/Messaging', :modular_headers => true
+  
   target 'Backpacker'
   target 'BackpackerHire'
 end

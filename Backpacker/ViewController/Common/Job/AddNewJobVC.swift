@@ -10,6 +10,7 @@ import CoreLocation
 class AddNewJobVC: UIViewController {
     
     //Outlets
+    @IBOutlet weak var main_ScrollVw: UIScrollView!
     @IBOutlet weak var Main_Header: UILabel!
     
     @IBOutlet weak var header_Name: UILabel!
@@ -98,6 +99,7 @@ class AddNewJobVC: UIViewController {
     var selectedBackPackerList: [BackpackerIdWrapper] = []
     var selectedBackPackerJSONString: String?
 
+    @IBOutlet weak var lbl_placeholder_description: UILabel!
     @IBOutlet weak var btn_Mic: UIButton!
     //Edit
     var jobID : String?
@@ -131,9 +133,26 @@ class AddNewJobVC: UIViewController {
         self.setUpEditData()
         self.btn_Mic.tag = 0
         self.btn_Mic.isHidden = true
+        self.lbl_placeholder_description.font = FontManager.inter(.regular, size: 14.0)
         // Do any additional setup after loading the view.
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(_:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(_:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+    }
+
+
     @IBAction func action_MicCommon(_ sender: UIButton) {
         if btn_Mic.tag == 0{
             btn_Mic.tag = 1
@@ -596,7 +615,9 @@ extension AddNewJobVC : UITextFieldDelegate,UITextViewDelegate{
 
         return true // allow editing
     }
-
+    func textViewDidChange(_ textView: UITextView) {
+        lbl_placeholder_description.isHidden = !textView.text.isEmpty
+       }
 }
 extension AddNewJobVC : SetLocationDelegate{
     func didSelectLocation(locationName: String, fullAddress: String, coordinate: CLLocationCoordinate2D) {
@@ -1318,6 +1339,26 @@ extension AddNewJobVC {
 
 
 }
+
+extension AddNewJobVC{
+    @objc func keyboardWillShow(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+
+        let keyboardHeight = keyboardFrame.height
+        let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
+
+        main_ScrollVw.contentInset = contentInsets
+        main_ScrollVw.scrollIndicatorInsets = contentInsets
+    }
+
+    @objc func keyboardWillHide(_ notification: Notification) {
+        let contentInsets = UIEdgeInsets.zero
+        main_ScrollVw.contentInset = contentInsets
+        main_ScrollVw.scrollIndicatorInsets = contentInsets
+    }
+}
 struct BackpackerIdWrapper: Codable {
     let backpackerId: String
 }
+
