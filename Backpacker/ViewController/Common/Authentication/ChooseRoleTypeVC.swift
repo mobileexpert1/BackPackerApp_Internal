@@ -150,7 +150,7 @@ class ChooseRoleTypeVC: UIViewController {
             AlertManager.showAlert(
                 on: self,
                 title: "Select Role",
-                message: "Please choose a role before continuing."
+                message: "Please select role"
             )
         } else {
             ChooseRoleTypeApiCall()

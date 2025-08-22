@@ -502,10 +502,8 @@ extension  EmployerHomeVC: SkeletonTableViewDataSource {
     private func showNoData(isShow : Bool = false){
         if isShow == true{
             self.lblnodataFound.isHidden = false
-            self.tblVw.isHidden = true
         }else{
             self.lblnodataFound.isHidden = true
-            self.tblVw.isHidden = false
         }
     }
     private func navigateToDescriptionVC(){

@@ -42,6 +42,8 @@ class AccomodationDetailVC: UIViewController {
     
     @IBOutlet weak var img_Collection_Vw: UICollectionView!
     
+    @IBOutlet weak var lbl_ValPrice: UILabel!
+    @IBOutlet weak var lbl_header_Price: UILabel!
     @IBOutlet weak var page_Controller: UIPageControl!
     let facilities: [Facility] = [
         Facility(image: "pool", title: "Swimming Pool"),
@@ -68,6 +70,12 @@ class AccomodationDetailVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+
+        self.setUpUI()
+        self.setupPullToRefresh()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 #if BackpackerHire
         self.btn_edit.isHidden = false
         self.getDetailOfAccomodationEmployer()
@@ -75,8 +83,6 @@ class AccomodationDetailVC: UIViewController {
         self.btn_edit.isHidden = true
         self.getDetailOfAccomodation()
 #endif
-        self.setUpUI()
-        self.setupPullToRefresh()
     }
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
@@ -103,8 +109,9 @@ class AccomodationDetailVC: UIViewController {
         
     }
     private func setUpUI(){
-        
-        self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
+        self.lbl_header_Price.font = FontManager.inter(.semiBold, size: 14.0)
+        self.lbl_ValPrice.font = FontManager.inter(.regular, size: 11.0)
+        self.lbl_MainHeader.font =  FontManager.inter(.medium, size: 16.0)
         self.lbl_HotelName.font = FontManager.inter(.semiBold, size: 16.0)
         self.lbl_Review.font = FontManager.inter(.regular, size: 10.0)
         self.lbl_ReviewCount.font = FontManager.inter(.regular, size: 10.0)
@@ -592,6 +599,7 @@ extension AccomodationDetailVC {
             self.lbl_Addrees.text = obj.accommodation.address
             self.lbl_AboutDescription.text = obj.accommodation.description
             self.lbl_HotelName.text = obj.accommodation.name
+            self.lbl_ValPrice.text = "$\(obj.accommodation.price)"
                 if obj.accommodation.image.count == 1 {
                 self.page_Controller.numberOfPages = 0
                 self.page_Controller.currentPage = 0

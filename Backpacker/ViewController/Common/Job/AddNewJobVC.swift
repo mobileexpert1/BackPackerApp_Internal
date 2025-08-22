@@ -135,6 +135,7 @@ class AddNewJobVC: UIViewController {
         self.btn_Mic.isHidden = true
         self.lbl_placeholder_description.font = FontManager.inter(.regular, size: 14.0)
         // Do any additional setup after loading the view.
+       
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -212,9 +213,33 @@ class AddNewJobVC: UIViewController {
             self.latitude = editLat ?? 0.0
             self.longitude = editLongitude ?? 0.0
             if let backpackers = editBackPackersList {
-                let names = backpackers.map { $0.backpackerId.name }
+                let names = backpackers.map { backpacker in
+                    let name = backpacker.backpackerId.name
+                    if !name.isEmpty {
+                        return name
+                    } else {
+                        return backpacker.backpackerId.id ?? "-"
+                    }
+                }
                 self.txtFld_Backpacker.text = names.joined(separator: ", ")
             }
+           if let editList = editBackPackersList {
+                for back in editList {
+                    let obj = Backpacker(
+                        id: back.backpackerId.id,   // adjust: confirm if `bac` is actually the ID
+                        name:   back.backpackerId.name, // use JobRequest’s real property
+                        email:   back.backpackerId.email,
+                        countryCode:  "",
+                        countryName:  "",
+                        mobileNumber: "",
+                        jobsCount:  0,
+                        rating: 0
+                    )
+                    self.selectedBackpackerData.append(obj)
+                }
+            }
+        
+
 
             if let image = self.editImageData {
                 self.main_ImgVw.image = image
@@ -285,21 +310,21 @@ class AddNewJobVC: UIViewController {
     @IBAction func action_AssignBackpacker(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
         if let sarchVC = storyboard.instantiateViewController(withIdentifier: "CommonSearchVC") as? CommonSearchVC {
-            if isComeFromEdit, let editList = editBackPackersList {
-                for back in editList {
-                    let obj = Backpacker(
-                        id: back.backpackerId.id,   // adjust: confirm if `bac` is actually the ID
-                        name:  "", // use JobRequest’s real property
-                        email:  "",
-                        countryCode:  "",
-                        countryName:  "",
-                        mobileNumber: "",
-                        jobsCount:  0,
-                        rating: 0
-                    )
-                    self.selectedBackpackerData.append(obj)
-                }
-            }
+//            if isComeFromEdit, let editList = editBackPackersList {
+//                for back in editList {
+//                    let obj = Backpacker(
+//                        id: back.backpackerId.id,   // adjust: confirm if `bac` is actually the ID
+//                        name:  "", // use JobRequest’s real property
+//                        email:  "",
+//                        countryCode:  "",
+//                        countryName:  "",
+//                        mobileNumber: "",
+//                        jobsCount:  0,
+//                        rating: 0
+//                    )
+//                    self.selectedBackpackerData.append(obj)
+//                }
+//            }
             sarchVC.selectedData = self.selectedBackpackerData
             sarchVC.delegate = self
             self.navigationController?.pushViewController(sarchVC, animated: true)
@@ -528,6 +553,9 @@ class AddNewJobVC: UIViewController {
             vc.modalPresentationStyle = .overFullScreen
             self.present(vc, animated: true, completion: nil)
         }
+    }
+    @IBAction func action_Cancle(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
     }
 }
 
@@ -800,6 +828,14 @@ extension AddNewJobVC {
         self.Btn_Cancle.titleLabel?.font = FontManager.inter(.medium, size: 16)
         self.ManageTableHeight()
         self.setUpTxtFlds()
+        if isComeFromEdit == true{
+            self.Main_Header.text = "Edit Job"
+            self.lbl_placeholder_description.isHidden = true
+            self.btn_Save.setTitle("Update", for: .normal)
+        }else{
+            self.Main_Header.text = "Add new job"
+            self.btn_Save.setTitle("Save", for: .normal)
+        }
     }
     private func setUpTxtFlds(){
         self.txtFld_Backpacker.isUserInteractionEnabled = false
@@ -952,7 +988,7 @@ extension AddNewJobVC: CommonSearchDelegate {
         if backpacker.count == 1 {
             let nameOrPhone = backpacker.first?.name.isEmpty == false
                 ? backpacker.first?.name
-            : backpacker.first?.mobileNumber
+            : backpacker.first?.id
             self.txtFld_Backpacker.text = nameOrPhone
         }
         else if backpacker.count > 1 {

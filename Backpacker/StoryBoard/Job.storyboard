@@ -2419,6 +2419,9 @@
                                                                 <integer key="value" value="10"/>
                                                             </userDefinedRuntimeAttribute>
                                                         </userDefinedRuntimeAttributes>
+                                                        <connections>
+                                                            <action selector="action_Cancle:" destination="e56-7q-F13" eventType="touchUpInside" id="8F9-mz-m3A"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                                 <constraints>

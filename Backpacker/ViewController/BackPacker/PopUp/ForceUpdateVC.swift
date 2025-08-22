@@ -47,7 +47,7 @@ class ForceUpdateVC: UIViewController {
  
     @IBAction func action_Continue(_ sender: Any) {
         let isNameValid = name_Vw.validateNotEmpty(errorMessage: "Please enter your name")
-        let isEmailValid = email_Vw.validateNotEmpty(errorMessage: "Please enter your email")
+        let isEmailValid = email_Vw.validateEmail(errorMessage: "Please enter your email")
         // Visa type validation
        
         if isNameValid && isEmailValid{

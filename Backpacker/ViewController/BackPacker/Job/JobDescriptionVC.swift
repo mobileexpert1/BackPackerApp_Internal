@@ -209,7 +209,7 @@ class JobDescriptionVC: UIViewController {
       
 #if BackpackerHire
         AlertManager.showConfirmationAlert(on: self,
-                                           title: "Delete JOb",
+                                           title: "Delete Job",
                                            message: "Are you sure you want to delete the job?",
                                            confirmAction: {
             if let id = self.JobId{

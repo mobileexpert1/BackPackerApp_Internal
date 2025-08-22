@@ -30,7 +30,11 @@ class WalkThoroughVC: UIViewController {
         WalkthroughItem(title: Constants.Walkthrough.screen4Title, subTitle: Constants.Walkthrough.screen4SubTitle,
                         image: UIImage(named: Constants.Walkthrough.screen4Image)!),
         WalkthroughItem(title: Constants.Walkthrough.screen5Title, subTitle: Constants.Walkthrough.screen5SubTitle,
-                        image: UIImage(named: Constants.Walkthrough.screen5Image)!)
+                        image: UIImage(named: Constants.Walkthrough.screen5Image)!),
+        WalkthroughItem(title: Constants.Walkthrough.screen6Title, subTitle: Constants.Walkthrough.screen6SubTitle,
+                        image: UIImage(named: Constants.Walkthrough.screen6Image)!),
+        WalkthroughItem(title: Constants.Walkthrough.screen7Title, subTitle: Constants.Walkthrough.screen7SubTitle,
+                        image: UIImage(named: Constants.Walkthrough.screen7Image)!)
     ]
     
 #else
@@ -45,7 +49,11 @@ class WalkThoroughVC: UIViewController {
                         image: UIImage(named: Constants.Walkthrough.screen3Image)!),
         
         WalkthroughItem(title: Constants.Walkthrough.screen4Title, subTitle: Constants.Walkthrough.screen4SubTitle,
-                        image: UIImage(named: Constants.Walkthrough.screen4Image)!)
+                        image: UIImage(named: Constants.Walkthrough.screen4Image)!),
+        WalkthroughItem(title: Constants.Walkthrough.screen5Title, subTitle: Constants.Walkthrough.screen5SubTitle,
+                        image: UIImage(named: Constants.Walkthrough.screen5Image)!),
+        WalkthroughItem(title: Constants.Walkthrough.screen6Title, subTitle: Constants.Walkthrough.screen6SubTitle,
+                        image: UIImage(named: Constants.Walkthrough.screen6Image)!)
     ]
 #endif
     
@@ -156,7 +164,7 @@ class WalkThoroughVC: UIViewController {
     
     private func checkVisibiltyForNextBytton(){
         if pageController.currentPage == 0{
-            self.btn_Skip.isHidden = true
+            self.btn_Skip.isHidden = false
             self.btn_Skip.isUserInteractionEnabled = false
         }else{
             self.btn_Skip.isHidden = false
