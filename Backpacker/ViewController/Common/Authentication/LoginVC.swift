@@ -163,17 +163,21 @@ extension LoginVC {
     private func loginApiCall(){
         LoaderManager.shared.show()
         var role = String()
+        var token = String()
 #if BackpackerHire
         role = "2"
+        token = UserDefaultsManager.shared.employerfcmToken ??  ""
 #else
         role = "1"
+        token = UserDefaultsManager.shared.fcmToken ?? ""
 #endif
+        
         let loginRequest = LoginRequest(
             roleType: role,
             mobileNumber: self.txtFld_PhoneNumber.text!,
             countryCode: picker_Vw.selectedCountry.phoneCode,
             countryName: picker_Vw.selectedCountry.name,
-            fcmToken: UserDefaultsManager.shared.fcmToken ?? ""
+            fcmToken: token
         )
         viewModel.loginUser(loginRequest: loginRequest) { success, response, statusCode in
             if let statusCode = statusCode {

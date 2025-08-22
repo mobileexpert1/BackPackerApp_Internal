@@ -28,32 +28,6 @@ class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
                createTab(fromStoryboard: "HangOut", identifier: "HangOutVC", title: "HangOut", image: "hangout"),
                createTab(fromStoryboard: "Setting", identifier: "SettingVC", title: "Settings", image: "Setting")
            ]
-//           switch role {
-//           case "2": // Employer
-//               viewControllers = [
-//                   createTab(fromStoryboard: "Home", identifier: "BackPackerHomeVC", title: "Home", image: "Home"),
-//                   createTab(fromStoryboard: "Accomodation", identifier: "EmployerAccomodationVC", title: "Accommodation", image: "Accommodation"),
-//                   createTab(fromStoryboard: "Job", identifier: "MainJobController", title: "Jobs", image: "Job Seeker"),
-//                   createTab(fromStoryboard: "HangOut", identifier: "HangOutVC", title: "HangOut", image: "hangout"),
-//                   createTab(fromStoryboard: "Setting", identifier: "SettingVC", title: "Settings", image: "Setting")
-//               ]
-//           case "3": // Accommodation
-//               viewControllers = [
-//                createTab(fromStoryboard: "Home", identifier: "BackPackerHomeVC", title: "Home", image: "Home"),
-//                createTab(fromStoryboard: "Accomodation", identifier: "EmployerAccomodationVC", title: "Accommodation", image: "Accommodation"),
-//                createTab(fromStoryboard: "Setting", identifier: "SettingVC", title: "Settings", image: "Setting")
-//               ]
-//           case "4": // Hangout
-//               viewControllers = [
-//                createTab(fromStoryboard: "Home", identifier: "BackPackerHomeVC", title: "Home", image: "Home"),
-//                   createTab(fromStoryboard: "HangOut", identifier: "HangOutVC", title: "HangOut", image: "hangout"),
-//                   createTab(fromStoryboard: "Setting", identifier: "SettingVC", title: "Settings", image: "Setting")
-//               ]
-//           default:
-//               print("No valid role found.")
-//           }
-
-
            self.viewControllers = viewControllers
        }
 

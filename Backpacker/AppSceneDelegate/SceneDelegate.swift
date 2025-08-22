@@ -115,9 +115,13 @@ extension SceneDelegate {
 #if BackpackerHire
         UserDefaultsManager.shared.employerbearerToken = nil
         UserDefaultsManager.shared.employerrefreshToken = nil
+        UserDefaultsManager.shared.userId = nil
+        
 #else
         UserDefaultsManager.shared.bearerToken = nil
         UserDefaultsManager.shared.refreshToken = nil
+        
+        UserDefaultsManager.shared.employeruserId = nil
 #endif
        
         window.rootViewController = vc

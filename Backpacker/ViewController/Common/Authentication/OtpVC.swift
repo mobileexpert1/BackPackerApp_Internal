@@ -202,13 +202,18 @@ extension OtpVC {
         LoaderManager.shared.show()
         lbl_Error.isHidden = true
         
-        let fcmToken = UserDefaultsManager.shared.fcmToken
+        var fcmToken = String()
+#if BackpackerHire
+        fcmToken = UserDefaultsManager.shared.employerfcmToken ??  ""
+#else
+        fcmToken = UserDefaultsManager.shared.fcmToken ?? ""
+#endif
         let deviceInfo = getDeviceInfo()
         
         let req = OtpRequest(
             userId: self.userId,
             otp: self.getOTP(),
-            fcmToken: fcmToken ?? "dfsdf",
+            fcmToken:fcmToken,
             appVersion: deviceInfo.appVersion,
             osType: deviceInfo.osType,
             osVersion: deviceInfo.osVersion,

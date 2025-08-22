@@ -27,6 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
            LocationManager.shared.requestLocationPermission()
            LocationManager.shared.startUpdatingLocation()
         Messaging.messaging().delegate = self
+        // Setup notifications
+            let center = UNUserNotificationCenter.current()
+            center.delegate = self
         application.registerForRemoteNotifications()
         return true
     }
@@ -101,64 +104,69 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
         // Show as banner and play sound
         completionHandler([.banner, .sound])
     }
-
+    
     // Handle taps on notifications
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
-        
         let userInfo = response.notification.request.content.userInfo
-        print("🔔 Notification tapped with info: \(userInfo)")
+        print("USer Info",userInfo)
+        if let jobId = userInfo["jobId"] as? String,
+           let appType = userInfo["appType"] as? String,
+           let notificationType = userInfo["notificationType"] as? String {
+            
+            print("📌 jobId: \(jobId), appType: \(appType), notificationType: \(notificationType)")
+            
+            // 👉 Navigate based on notificationType
+           handleNotification(jobId: jobId, appType: appType)
+        }
         
-        // Handle navigation or deep linking here if needed
-        NotificationManager.shared.handleNotification(userInfo: userInfo)
         completionHandler()
     }
-    func application(_ application: UIApplication,
-                     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        Messaging.messaging().apnsToken = deviceToken
-    }
-
-    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        print("📲 FCM Token: \(fcmToken ?? "")")
-#if BackpackerHire
-        UserDefaultsManager.shared.employerfcmToken = fcmToken
-        #else
-        UserDefaultsManager.shared.fcmToken = fcmToken
-#endif
+        func application(_ application: UIApplication,
+                         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+            Messaging.messaging().apnsToken = deviceToken
+        }
         
-
+        func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+            print("📲 FCM Token: \(fcmToken ?? "")")
+#if BackpackerHire
+            UserDefaultsManager.shared.employerfcmToken = fcmToken
+#else
+            UserDefaultsManager.shared.fcmToken = fcmToken
+#endif
+            
+            
+        }
+        
+        func configureGoogleInfoPlist() {
+            var plistName = "GoogleService-Info"
+            
+#if BackpackerHire
+            plistName = "GoogleService-Info-Hire"
+#else
+            plistName = "GoogleService-Info"
+#endif
+            
+            guard let filePath = Bundle.main.path(forResource: plistName, ofType: "plist"),
+                  let options = FirebaseOptions(contentsOfFile: filePath) else {
+                fatalError("Couldn't load Firebase config file: \(plistName).plist")
+            }
+            
+            FirebaseApp.configure(options: options)
+        }
+        
+        
     }
+
     
-    func configureGoogleInfoPlist() {
-        var plistName = "GoogleService-Info"
-
-        #if BackpackerHire
-        plistName = "GoogleService-Info-Hire"
-        #else
-        plistName = "GoogleService-Info"
-        #endif
-
-        guard let filePath = Bundle.main.path(forResource: plistName, ofType: "plist"),
-              let options = FirebaseOptions(contentsOfFile: filePath) else {
-            fatalError("Couldn't load Firebase config file: \(plistName).plist")
+    extension UIApplication {
+        static func setRootViewController(_ vc: UIViewController, animated: Bool = true) {
+            guard let window = UIApplication.shared.windows.first else {
+                return
+            }
+            
+            window.rootViewController = vc
+            window.makeKeyAndVisible()
         }
-
-        FirebaseApp.configure(options: options)
     }
-
-
-}
-
-import UIKit
-
-extension UIApplication {
-    static func setRootViewController(_ vc: UIViewController, animated: Bool = true) {
-        guard let window = UIApplication.shared.windows.first else {
-            return
-        }
-
-        window.rootViewController = vc
-        window.makeKeyAndVisible()
-    }
-}
