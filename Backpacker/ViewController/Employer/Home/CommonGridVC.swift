@@ -47,18 +47,17 @@ class CommonGridVC: UIViewController {
         // Register the collection view cell
         self.setupPullToRefresh()
         self.setUpUI()
-#if BackpackerHire
-        self.EmploerGetListOfAll()
-#else
-        self.getListOfAll()
-#endif
-        
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         isComeFromPullTorefresh = false
+#if BackpackerHire
+        self.EmploerGetListOfAll()
+#else
+        self.getListOfAll()
+#endif
         
     }
     func setUpUI(){

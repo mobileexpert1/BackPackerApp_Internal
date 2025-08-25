@@ -369,7 +369,7 @@ class AddNewJobVC: UIViewController {
         if let calendarVC = storyboard.instantiateViewController(withIdentifier: "CommonCalendarPopUpVC") as? CommonCalendarPopUpVC {
             let selectedDateVal = convertStringToDate(txtFdDate.text ?? "")
             calendarVC.isComeFromEdit = self.isComeFromEdit
-            if isComeFromEdit == true{
+//            if isComeFromEdit == true{
                 if selectedStatDate != selectedEndDate && selectedEndDate != nil {
                     calendarVC.startDate = selectedStatDate
                     calendarVC.endDate = selectedEndDate
@@ -377,9 +377,9 @@ class AddNewJobVC: UIViewController {
                 }else{
                     calendarVC.selectedDate = selectedDateVal
                 }
-            }else{
-                calendarVC.selectedDate = selectedDateVal
-            }
+//            }else{
+//                calendarVC.selectedDate = selectedDateVal
+//            }
            
             calendarVC.delegate = self
             calendarVC.modalPresentationStyle = .overCurrentContext

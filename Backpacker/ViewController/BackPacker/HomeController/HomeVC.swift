@@ -42,6 +42,7 @@ class HomeVC: UIViewController {
     var jobId = String()
     private var JobData: JobListResponse?
     private var EmployerJobData: EmployerJobsResponse?
+    var isComeFromNotification : Bool = false
     var activeSections: [SectionTypeList] {
         var sections: [SectionTypeList] = []
 #if BackpackerHire
@@ -107,7 +108,18 @@ class HomeVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
+        
+        self.refreshData()
+      
+    }
+    func refreshData(){
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            if  appDelegate.isComeFromNotification == true && self.jobId.isEmpty == false {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
+                    self.navigateToDescriptionVC(animation: false)
+                }
+            }
+        }
     }
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
@@ -461,12 +473,12 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         print("Button tapped in section \(section)")
     }
     
-    private func navigateToDescriptionVC(){
+    private func navigateToDescriptionVC(animation: Bool = true){
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
            if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
                jobDescriptionVC.JobId = self.jobId
                // Optional: pass selected job title
-               self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+               self.navigationController?.pushViewController(jobDescriptionVC, animated: animation)
            }
     }
     

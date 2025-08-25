@@ -24,7 +24,7 @@ class MainTabBarEmpController: UITabBarController,UITabBarControllerDelegate {
         setupTabsForUserRole()
     }
     
-    private func setupTabsForUserRole() {
+     func setupTabsForUserRole() {
         let role = UserDefaults.standard.string(forKey: "UserRoleType")
         
         var viewControllers: [UIViewController] = []

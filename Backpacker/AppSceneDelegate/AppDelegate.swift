@@ -12,9 +12,11 @@ import FirebaseMessaging
 import Firebase
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
-
+    var viewModel = LogInVM()
+    var isComeFromNotification: Bool = false
+    var pendingNotificationJobId: String?
+    var pendingAppType: String?
+        
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         self.configureGoogleInfoPlist()
         // Override point for customization after application launch.
@@ -31,6 +33,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let center = UNUserNotificationCenter.current()
             center.delegate = self
         application.registerForRemoteNotifications()
+        if let remoteNotification = launchOptions?[.remoteNotification] as? [AnyHashable: Any] {
+                  if let jobId = remoteNotification["jobId"] as? String,
+                     let appType = remoteNotification["appType"] as? String {
+                      isComeFromNotification = true
+                      pendingNotificationJobId = jobId
+                      pendingAppType = appType
+                      print("📩 Stored cold-launch notification: \(jobId) \(appType)")
+                  }
+              }
         return true
     }
 
@@ -47,49 +58,48 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
-      
+    // MARK: - Core Data Stack
+       lazy var persistentContainer: NSPersistentContainer = {
+           let container = NSPersistentContainer(name: "BackPackersModel") //  Replace with your actual .xcdatamodeld file name
+           container.loadPersistentStores { (storeDescription, error) in
+               if let error = error as NSError? {
+                   fatalError(" Unresolved error \(error), \(error.userInfo)")
+               }
+           }
+           return container
+       }()
+    
+     
+
+         // MARK: - Core Data Save Context
+         func saveContext() {
+             let context = persistentContainer.viewContext
+             if context.hasChanges {
+                 do {
+                     try context.save()
+                 } catch {
+                     let nserror = error as NSError
+                     fatalError(" Save error \(nserror), \(nserror.userInfo)")
+                 }
+             }
+         }
     private func requestNotificationPermission() {
            let center = UNUserNotificationCenter.current()
            center.requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
                if let error = error {
-                   print("❌ Notification permission error: \(error)")
+                   print(" Notification permission error: \(error)")
                } else if granted {
-                   print("✅ Notification permission granted")
+                   print("Notification permission granted")
                    DispatchQueue.main.async {
                        UIApplication.shared.registerForRemoteNotifications()
                    }
                } else {
-                   print("❌ Notification permission denied")
+                   print("Notification permission denied")
                }
            }
         
        }
  
-  
-    // MARK: - Core Data Stack
-       lazy var persistentContainer: NSPersistentContainer = {
-           let container = NSPersistentContainer(name: "BackPackersModel") // ⚠️ Replace with your actual .xcdatamodeld file name
-           container.loadPersistentStores { (storeDescription, error) in
-               if let error = error as NSError? {
-                   fatalError("❌ Unresolved error \(error), \(error.userInfo)")
-               }
-           }
-           return container
-       }()
-
-       // MARK: - Core Data Save Context
-       func saveContext() {
-           let context = persistentContainer.viewContext
-           if context.hasChanges {
-               do {
-                   try context.save()
-               } catch {
-                   let nserror = error as NSError
-                   fatalError("❌ Save error \(nserror), \(nserror.userInfo)")
-               }
-           }
-       }
-
 }
 
 import UserNotifications
@@ -106,23 +116,22 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     }
     
     // Handle taps on notifications
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                didReceive response: UNNotificationResponse,
-                                withCompletionHandler completionHandler: @escaping () -> Void) {
-        let userInfo = response.notification.request.content.userInfo
-        print("USer Info",userInfo)
-        if let jobId = userInfo["jobId"] as? String,
-           let appType = userInfo["appType"] as? String,
-           let notificationType = userInfo["notificationType"] as? String {
-            
-            print("📌 jobId: \(jobId), appType: \(appType), notificationType: \(notificationType)")
-            
-            // 👉 Navigate based on notificationType
-           handleNotification(jobId: jobId, appType: appType)
-        }
-        
-        completionHandler()
-    }
+    // MARK: - UNUserNotificationCenterDelegate
+      func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                  didReceive response: UNNotificationResponse,
+                                  withCompletionHandler completionHandler: @escaping () -> Void) {
+          let userInfo = response.notification.request.content.userInfo
+          print("📩 Notification tapped: \(userInfo)")
+          
+          if let jobId = userInfo["jobId"] as? String,
+             let appType = userInfo["appType"] as? String {
+              isComeFromNotification = true
+              pendingNotificationJobId = jobId
+              pendingAppType = appType
+          }
+          
+          completionHandler()
+      }
         func application(_ application: UIApplication,
                          didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
             Messaging.messaging().apnsToken = deviceToken
@@ -169,4 +178,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
             window.rootViewController = vc
             window.makeKeyAndVisible()
         }
+        
+    
+    
     }

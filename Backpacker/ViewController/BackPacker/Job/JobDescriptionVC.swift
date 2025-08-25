@@ -74,10 +74,36 @@ class JobDescriptionVC: UIViewController {
         self.lbl_Description.isHidden = true
         self.lblEmployer.isHidden = true
         self.getEmployeeDetailOfJob()
-       
+        
 #endif
     }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            if   appDelegate.isComeFromNotification == true {
+                appDelegate.isComeFromNotification = false
+            }
+            
+        }
+    }
     
+    func refreshData(){
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            if   appDelegate.isComeFromNotification == true {
+#if BackpackerHire
+                self.segmentHeight.constant = 0.0
+                self.lbl_Description.isHidden = true
+                self.lblEmployer.isHidden = true
+                self.getEmployeeDetailOfJob()
+                
+#else
+                self.getDetailOfJob()
+                self.segmentHeight.constant = 50.0
+                
+#endif
+            }
+        }
+    }
     private func handleEditBtnAppearance(){
 #if BackpackerHire
         self.btn_edit.isHidden = true

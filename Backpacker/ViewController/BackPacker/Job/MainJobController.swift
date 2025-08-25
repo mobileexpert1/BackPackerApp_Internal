@@ -16,25 +16,26 @@ class MainJobController: UIViewController {
     @IBOutlet weak var collVw: UICollectionView!
 #if BackpackerHire
     let colArray = ["Job Post","Backpackers","Calendar"]
- 
-        let designationsJobs : [JobsDesignation] = [
-            JobsDesignation(Name: "Software Engineer", star: "5 Star",distance: "10 Km"),
-            JobsDesignation(Name: "UI/UX Designer", star: "2 Star",distance: "2 Km"),
-            JobsDesignation(Name: "Product Manager", star: "3 Star",distance: "5 Km"),
-            JobsDesignation(Name: "Data Analyst", star: "4 Star",distance: "10 Km"),
-            JobsDesignation(Name: "Mobile Developer", star: "5 Star",distance: "15 Km"),
-            JobsDesignation(Name: "QA Tester", star: "3 Star",distance: "10 Km"),
-            JobsDesignation(Name: "DevOps Engineer", star: "1 Star",distance: "25 Km"),
-            JobsDesignation(Name: "Project Coordinator", star: "22 Star",distance: "10 Km"),
-            JobsDesignation(Name: "Backend Developer", star: "4 Star",distance: "20 Km"),
-            JobsDesignation(Name: "Technical Lead", star: "4 Star",distance: "10 Km"),
-        ]
+    
+    let designationsJobs : [JobsDesignation] = [
+        JobsDesignation(Name: "Software Engineer", star: "5 Star",distance: "10 Km"),
+        JobsDesignation(Name: "UI/UX Designer", star: "2 Star",distance: "2 Km"),
+        JobsDesignation(Name: "Product Manager", star: "3 Star",distance: "5 Km"),
+        JobsDesignation(Name: "Data Analyst", star: "4 Star",distance: "10 Km"),
+        JobsDesignation(Name: "Mobile Developer", star: "5 Star",distance: "15 Km"),
+        JobsDesignation(Name: "QA Tester", star: "3 Star",distance: "10 Km"),
+        JobsDesignation(Name: "DevOps Engineer", star: "1 Star",distance: "25 Km"),
+        JobsDesignation(Name: "Project Coordinator", star: "22 Star",distance: "10 Km"),
+        JobsDesignation(Name: "Backend Developer", star: "4 Star",distance: "20 Km"),
+        JobsDesignation(Name: "Technical Lead", star: "4 Star",distance: "10 Km"),
+    ]
 #else
     let colArray = ["Jobs","Employer","Backpackers","Calendar","History"]
 #endif
-  
-    var selectedIndex =  0
     
+    var selectedIndex =  0
+    var JobId = String()
+    var isComeFromNotification : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
 #if Backapacker
@@ -57,14 +58,22 @@ class MainJobController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         collVw.reloadData()
-          // Select and trigger index 0 after reload
+        // Select and trigger index 0 after reload
         DispatchQueue.main.async { [self] in
-              let defaultIndexPath = IndexPath(item: selectedIndex, section: 0)
-              self.collVw.selectItem(at: defaultIndexPath, animated: false, scrollPosition: [])
-              self.collectionView(self.collVw, didSelectItemAt: defaultIndexPath)
-          }
+            let defaultIndexPath = IndexPath(item: selectedIndex, section: 0)
+            self.collVw.selectItem(at: defaultIndexPath, animated: false, scrollPosition: [])
+            self.collectionView(self.collVw, didSelectItemAt: defaultIndexPath)
+        }
     }
-    
+    func refreshData(){
+        self.selectedIndex =   AppState.shared.selectedJobIndex
+        collVw.reloadData()
+        DispatchQueue.main.async { [self] in
+            let defaultIndexPath = IndexPath(item: selectedIndex, section: 0)
+            self.collVw.selectItem(at: defaultIndexPath, animated: false, scrollPosition: [])
+            self.collectionView(self.collVw, didSelectItemAt: defaultIndexPath)
+        }
+    }
     @IBAction func action_AddJob(_ sender: Any) {
         
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
@@ -133,8 +142,16 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
             // Pass data based on controller type
                 switch newVC {
                 case let homeVC as HomeVC:
-                    break
                     
+                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                        if  appDelegate.isComeFromNotification == true  {
+                            homeVC.isComeFromNotification = true
+                            homeVC.jobId = self.JobId
+                        }
+                        
+                    }else{
+                        break
+                    }
                 case let listVC as EmployerBackPackerListVC:
                     listVC.iscomeFromEmployer = false
                 default:
@@ -172,7 +189,15 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
             // Pass data based on controller type
                 switch newVC {
                 case let homeVC as HomeVC:
-                    break
+                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                        if  appDelegate.isComeFromNotification == true  {
+                            homeVC.isComeFromNotification = true
+                            homeVC.jobId = self.JobId
+                        }
+                        
+                    }else{
+                        break
+                    }
 
                 case let listVC as EmployerBackPackerListVC:
                     if selectedIndex == 1 {

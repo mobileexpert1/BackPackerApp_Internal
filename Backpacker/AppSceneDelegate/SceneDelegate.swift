@@ -80,10 +80,30 @@ let accessToken = UserDefaultsManager.shared.bearerToken
         window?.rootViewController = rootVC
         window?.makeKeyAndVisible()
     }
-    func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-    }
+    // SceneDelegate.swift
+    // MARK: - Scene Lifecycle
+       func sceneDidBecomeActive(_ scene: UIScene) {
+           guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+           
+           if appDelegate.isComeFromNotification,
+              let jobId = appDelegate.pendingNotificationJobId,
+              let appType = appDelegate.pendingAppType {
+               
+               print("⚡ Scene active with pending notification: \(jobId) \(appType)")
+               
+               // ✅ Small delay so rootVC is stable
+               DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                   appDelegate.handleNotification(jobId: jobId, appType: appType)
+               }
+               
+               // Reset
+               appDelegate.isComeFromNotification = false
+               appDelegate.pendingNotificationJobId = nil
+               appDelegate.pendingAppType = nil
+           }
+       }
+
+
 
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
@@ -100,7 +120,20 @@ let accessToken = UserDefaultsManager.shared.bearerToken
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
-
+    // MARK: - Notification Handling (iOS 13+ cold start)
+       private func handleNotificationFromResponse(_ response: UNNotificationResponse) {
+           let userInfo = response.notification.request.content.userInfo
+           if let jobId = userInfo["jobId"] as? String,
+              let appType = userInfo["appType"] as? String {
+               
+               print("📩 Cold launch via SceneDelegate: \(jobId) \(appType)")
+               
+               DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                   (UIApplication.shared.delegate as? AppDelegate)?
+                       .handleNotification(jobId: jobId, appType: appType)
+               }
+           }
+       }
 
 }
 
