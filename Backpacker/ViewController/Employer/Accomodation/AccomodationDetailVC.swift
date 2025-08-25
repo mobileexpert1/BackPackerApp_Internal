@@ -81,6 +81,7 @@ class AccomodationDetailVC: UIViewController {
         self.getDetailOfAccomodationEmployer()
         #else
         self.btn_edit.isHidden = true
+        self.btn_delete.isHidden = true
         self.getDetailOfAccomodation()
 #endif
     }
@@ -265,19 +266,19 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
 
                 cell.img_Vw.sd_setImage(
                     with: URL(string: imageURLString),
-                    placeholderImage: UIImage(named: "aCCOMODATION")
+                    placeholderImage: UIImage(named: "img_Placehodler")
                 ) { image, error, _, _ in
                     if image == nil { // If first attempt fails
                         let fallbackURL = img.hasPrefix("http") ? img : baseURL2 + img
                         cell.img_Vw.sd_setImage(
                             with: URL(string: fallbackURL),
-                            placeholderImage: UIImage(named: "aCCOMODATION")
+                            placeholderImage: UIImage(named: "img_Placehodler")
                         )
                     }
                 }
 
             } else {
-                cell.img_Vw.image = UIImage(named: "aCCOMODATION")
+                cell.img_Vw.image = UIImage(named: "img_Placehodler")
             }
             cell.img_Vw.isUserInteractionEnabled = true
             cell.img_Vw.tag = indexPath.item

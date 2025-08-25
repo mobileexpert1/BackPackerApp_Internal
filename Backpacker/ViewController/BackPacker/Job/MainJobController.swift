@@ -9,6 +9,7 @@ import UIKit
 
 class MainJobController: UIViewController {
     
+    @IBOutlet weak var lbl_noDataFound: UILabel!
     @IBOutlet weak var title_Header: UILabel!
     
     @IBOutlet weak var BtnAddJob: UIButton!
@@ -38,6 +39,8 @@ class MainJobController: UIViewController {
     var isComeFromNotification : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.lbl_noDataFound.isHidden = true
+        self.lbl_noDataFound.font = FontManager.inter(.medium, size: 16.0)
 #if Backapacker
         self.BtnAddJob.isHidden = true
         self.BtnAddJob.isUserInteractionEnabled = false

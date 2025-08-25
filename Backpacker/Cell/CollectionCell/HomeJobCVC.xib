@@ -22,7 +22,7 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qld-KF-ifF">
                         <rect key="frame" x="2" y="2" width="385" height="221"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Profile" translatesAutoresizingMaskIntoConstraints="NO" id="Zr8-BQ-8XX">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img_Placehodler" translatesAutoresizingMaskIntoConstraints="NO" id="Zr8-BQ-8XX">
                                 <rect key="frame" x="10" y="10" width="45" height="45"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="45" id="Qbg-Bp-aeb"/>
@@ -190,8 +190,8 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="Profile" width="46" height="46"/>
         <image name="fav" width="19.666666030883789" height="17"/>
+        <image name="img_Placehodler" width="341.33334350585938" height="341.33334350585938"/>
         <namedColor name="blackColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

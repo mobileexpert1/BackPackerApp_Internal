@@ -248,13 +248,13 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         
                         cell.imgVw.sd_setImage(
                             with: URL(string: imageURLString),
-                            placeholderImage: UIImage(named: "Profile")
+                            placeholderImage: UIImage(named: "img_Placehodler")
                         ) { image, _, _, _ in
                             if image == nil, let imagePath = declineJob.image, !imagePath.isEmpty {
                                 let fallbackURL = imagePath.hasPrefix("http") ? imagePath : baseURL2 + imagePath
                                 cell.imgVw.sd_setImage(
                                     with: URL(string: fallbackURL),
-                                    placeholderImage: UIImage(named: "Profile")
+                                    placeholderImage: UIImage(named: "img_Placehodler")
                                 )
                             }
                         }
@@ -297,13 +297,13 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         
                         cell.imgVw.sd_setImage(
                             with: URL(string: imageURLString),
-                            placeholderImage: UIImage(named: "Profile")
+                            placeholderImage: UIImage(named: "img_Placehodler")
                         ) { image, _, _, _ in
                             if image == nil, let imagePath = new.image, !imagePath.isEmpty {
                                 let fallbackURL = imagePath.hasPrefix("http") ? imagePath : baseURL2 + imagePath
                                 cell.imgVw.sd_setImage(
                                     with: URL(string: fallbackURL),
-                                    placeholderImage: UIImage(named: "Profile")
+                                    placeholderImage: UIImage(named: "img_Placehodler")
                                 )
                             }
                         }
@@ -345,13 +345,13 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         
                         cell.imgVw.sd_setImage(
                             with: URL(string: imageURLString),
-                            placeholderImage: UIImage(named: "Profile")
+                            placeholderImage: UIImage(named: "img_Placehodler")
                         ) { image, _, _, _ in
                             if image == nil, let imagePath = declineJob.image, !imagePath.isEmpty {
                                 let fallbackURL = imagePath.hasPrefix("http") ? imagePath : baseURL2 + imagePath
                                 cell.imgVw.sd_setImage(
                                     with: URL(string: fallbackURL),
-                                    placeholderImage: UIImage(named: "Profile")
+                                    placeholderImage: UIImage(named: "img_Placehodler")
                                 )
                             }
                         }
@@ -448,19 +448,19 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
 
                                 cell.imgVw.sd_setImage(
                                     with: URL(string: imageURLString),
-                                    placeholderImage: UIImage(named: "profile")
+                                    placeholderImage: UIImage(named: "img_Placehodler")
                                 ) { image, _, _, _ in
                                     if image == nil {
                                         let fallbackURL = firstIMage.hasPrefix("http") ? firstIMage : baseURL2 + firstIMage
                                         cell.imgVw.sd_setImage(
                                             with: URL(string: fallbackURL),
-                                            placeholderImage: UIImage(named: "profile")
+                                            placeholderImage: UIImage(named: "img_Placehodler")
                                         )
                                     }
                                 }
 
                             }else{
-                                cell.imgVw.image = UIImage(named: "profile")
+                                cell.imgVw.image = UIImage(named: "img_Placehodler")
                             }
                             let strtTime = obj.startTime
                             let endTime = obj.endTime
@@ -499,19 +499,19 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                 
                                 cell.imgVw.sd_setImage(
                                     with: URL(string: imageURLString),
-                                    placeholderImage: UIImage(named: "aCCOMODATION")
+                                    placeholderImage: UIImage(named: "img_Placehodler")
                                 ) { image, _, _, _ in
                                     if image == nil {
                                         let fallbackURL = firstIMage.hasPrefix("http") ? firstIMage : baseURL2 + firstIMage
                                         cell.imgVw.sd_setImage(
                                             with: URL(string: fallbackURL),
-                                            placeholderImage: UIImage(named: "aCCOMODATION")
+                                            placeholderImage: UIImage(named: "img_Placehodler")
                                         )
                                     }
                                 }
                                 
                             }else{
-                                cell.imgVw.image = UIImage(named: "aCCOMODATION")
+                                cell.imgVw.image = UIImage(named: "img_Placehodler")
                             }
                             cell.onItemTapped = { [weak self] item in
                                 
@@ -537,19 +537,19 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                 
                                 cell.imgVw.sd_setImage(
                                     with: URL(string: imageURLString),
-                                    placeholderImage: UIImage(named: "restaurantImg")
+                                    placeholderImage: UIImage(named: "img_Placehodler")
                                 ) { image, _, _, _ in
                                     if image == nil {
                                         let fallbackURL = firstIMage.hasPrefix("http") ? firstIMage : baseURL2 + firstIMage
                                         cell.imgVw.sd_setImage(
                                             with: URL(string: fallbackURL),
-                                            placeholderImage: UIImage(named: "restaurantImg")
+                                            placeholderImage: UIImage(named: "img_Placehodler")
                                         )
                                     }
                                 }
                                 
                             }else{
-                                cell.imgVw.image = UIImage(named: "restaurantImg")
+                                cell.imgVw.image = UIImage(named: "img_Placehodler")
                             }
                         }
                         cell.onItemTapped = { [weak self] item in
@@ -595,19 +595,19 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                 
                                 cell.imgVw.sd_setImage(
                                     with: URL(string: imageURLString),
-                                    placeholderImage: UIImage(named: "profile")
+                                    placeholderImage: UIImage(named: "img_Placehodler")
                                 ) { image, _, _, _ in
                                     if image == nil {
                                         let fallbackURL = firstIMage.hasPrefix("http") ? firstIMage : baseURL2 + firstIMage
                                         cell.imgVw.sd_setImage(
                                             with: URL(string: fallbackURL),
-                                            placeholderImage: UIImage(named: "profile")
+                                            placeholderImage: UIImage(named: "img_Placehodler")
                                         )
                                     }
                                 }
                                 
                             }else{
-                                cell.imgVw.image = UIImage(named: "profile")
+                                cell.imgVw.image = UIImage(named: "img_Placehodler")
                             }
                             let strtTime = obj.startTime
                             let endTime = obj.endTime
@@ -661,19 +661,19 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         
                         cell.imgVw.sd_setImage(
                             with: URL(string: imageURLString),
-                            placeholderImage: UIImage(named: "aCCOMODATION")
+                            placeholderImage: UIImage(named: "img_Placehodler")
                         ) { image, _, _, _ in
                             if image == nil {
                                 let fallbackURL = firstIMage.hasPrefix("http") ? firstIMage : baseURL2 + firstIMage
                                 cell.imgVw.sd_setImage(
                                     with: URL(string: fallbackURL),
-                                    placeholderImage: UIImage(named: "aCCOMODATION")
+                                    placeholderImage: UIImage(named: "img_Placehodler")
                                 )
                             }
                         }
                         
                     }else{
-                        cell.imgVw.image = UIImage(named: "aCCOMODATION")
+                        cell.imgVw.image = UIImage(named: "img_Placehodler")
                     }
                     cell.onItemTapped = { [weak self]  index in
                         self?.onAddAccommodation?(indexPath.item)
@@ -699,11 +699,11 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         
                         cell.imgVw.sd_setImage(
                             with: URL(string: imageURLString),
-                            placeholderImage: UIImage(named: "restaurantImg")
+                            placeholderImage: UIImage(named: "img_Placehodler")
                         )
                         
                     }else{
-                        cell.imgVw.image = UIImage(named: "restaurantImg")
+                        cell.imgVw.image = UIImage(named: "img_Placehodler")
                     }
                     cell.onItemTapped = { [weak self]  index in
                         self?.onHangOut?(indexPath.item)
@@ -752,9 +752,9 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             let port3000 = "\(ApiConstants.API.API_IMAGEURL)\(declineJob.image)"
                             let port3001 = "\(ApiConstants.API.API_IMAGEURL)\(declineJob.image)"
                             
-                            cell.imgVw.sd_setImage(with: URL(string: port3000), placeholderImage: UIImage(named: "Profile")) { image, _, _, _ in
+                            cell.imgVw.sd_setImage(with: URL(string: port3000), placeholderImage: UIImage(named: "img_Placehodler")) { image, _, _, _ in
                                 if image == nil {
-                                    cell.imgVw.sd_setImage(with: URL(string: port3001), placeholderImage: UIImage(named: "Profile"))
+                                    cell.imgVw.sd_setImage(with: URL(string: port3001), placeholderImage: UIImage(named: "img_Placehodler"))
                                 }
                             }
                         }
@@ -783,14 +783,14 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         }
                         cell.lbl_SubTitle.text = newjobList?[indexPath.item].description ?? "No Data"
                         if new.image.hasPrefix("http") {
-                            cell.imgVw.sd_setImage(with: URL(string: new.image), placeholderImage: UIImage(named: "Profile"))
+                            cell.imgVw.sd_setImage(with: URL(string: new.image), placeholderImage: UIImage(named: "img_Placehodler"))
                         } else {
                             let url3000 = "\(ApiConstants.API.API_IMAGEURL)\(new.image)"
                             let url3001 = "\(ApiConstants.API.API_IMAGEURL)\(new.image)"
                             
-                            cell.imgVw.sd_setImage(with: URL(string: url3000), placeholderImage: UIImage(named: "Profile")) { img, _, _, _ in
+                            cell.imgVw.sd_setImage(with: URL(string: url3000), placeholderImage: UIImage(named: "img_Placehodler")) { img, _, _, _ in
                                 if img == nil {
-                                    cell.imgVw.sd_setImage(with: URL(string: url3001), placeholderImage: UIImage(named: "Profile"))
+                                    cell.imgVw.sd_setImage(with: URL(string: url3001), placeholderImage: UIImage(named: "img_Placehodler"))
                                 }
                             }
                         }
@@ -819,7 +819,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         }
                         cell.lbl_SubTitle.text = declinedjobList?[indexPath.item].description ?? "No Data"
                         let imageURLString = declineJob.image.hasPrefix("http") ? declineJob.image : "\(ApiConstants.API.API_IMAGEURL)\(declineJob.image)"
-                        cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "Profile"))
+                        cell.imgVw.sd_setImage(with: URL(string: imageURLString), placeholderImage: UIImage(named: "img_Placehodler"))
                         let strtTime = declinedjobList?[indexPath.item].startTime
                         let endTime = declinedjobList?[indexPath.item].endTime
                         let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
@@ -861,7 +861,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     if jobImage.image.hasPrefix("http") {
                         cell.imgVw.sd_setImage(
                             with: URL(string: jobImage.image),
-                            placeholderImage: UIImage(named: "Profile")
+                            placeholderImage: UIImage(named: "img_Placehodler")
                         )
                     } else {
                         let url3000 = URL(string: base3000 + jobImage.image)
@@ -869,12 +869,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         
                         cell.imgVw.sd_setImage(
                             with: url3000,
-                            placeholderImage: UIImage(named: "Profile")
+                            placeholderImage: UIImage(named: "img_Placehodler")
                         ) { image, error, _, _ in
                             if image == nil { // failed to load from 3000, try 3001
                                 cell.imgVw.sd_setImage(
                                     with: url3001,
-                                    placeholderImage: UIImage(named: "Profile")
+                                    placeholderImage: UIImage(named: "img_Placehodler")
                                 )
                             }
                         }

@@ -8,7 +8,7 @@
 import UIKit
 import SkeletonView
 class EmployerHomeVC: UIViewController {
-
+    
     @IBOutlet weak var lblnodataFound: UILabel!
     @IBOutlet weak var header_Imahe: UIImageView!
     @IBOutlet weak var mainHeaderVwHeight: NSLayoutConstraint!
@@ -43,18 +43,13 @@ class EmployerHomeVC: UIViewController {
         return sections
     }
     
-    
-    
-    
-    
-    
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lblnodataFound.isHidden = true
+        self.lblnodataFound.font = FontManager.inter(.medium, size: 16.0)
         if roleType == "2" {
             sectionTitles = ["", "Jobs"]
+            self.lblnodataFound.text = "No Jobs Found"
         }else if roleType == "3" {
             sectionTitles = ["", "Accomodations"]
         }else{
@@ -68,7 +63,7 @@ class EmployerHomeVC: UIViewController {
 #endif
         
         tblVw.register(UINib(nibName: "HomeHeaderView", bundle: nil),
-                            forHeaderFooterViewReuseIdentifier: "HomeHeaderView")
+                       forHeaderFooterViewReuseIdentifier: "HomeHeaderView")
         let nib4 = UINib(nibName: "SkeltonTVC", bundle: nil)
         self.tblVw.register(nib4, forCellReuseIdentifier: "SkeltonTVC")
         
@@ -85,7 +80,7 @@ class EmployerHomeVC: UIViewController {
         self.lbl_MainHeader.font  =  FontManager.inter(.bold, size: 14.0)
         self.lbl_NotificationCount.font = FontManager.inter(.medium, size: 8.0)
         self.setupPullToRefresh()
-
+        
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -113,12 +108,12 @@ class EmployerHomeVC: UIViewController {
     }
     private func setupPullToRefresh() {
         refreshControl = UIRefreshControl()
-           refreshControl?.attributedTitle = NSAttributedString(string: "Refresh")
-           refreshControl?.tintColor = .gray
-           refreshControl?.addTarget(self, action: #selector(refreshTableData), for: .valueChanged)
+        refreshControl?.attributedTitle = NSAttributedString(string: "Refresh")
+        refreshControl?.tintColor = .gray
+        refreshControl?.addTarget(self, action: #selector(refreshTableData), for: .valueChanged)
         tblVw.refreshControl = refreshControl
     }
-
+    
     @objc private func refreshTableData() {
         // Call your API
 #if BackpackerHire
@@ -130,7 +125,7 @@ class EmployerHomeVC: UIViewController {
         }
 #endif
     }
-   
+    
 }
 
 extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
@@ -138,7 +133,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         if isLoading == true {
             return 4
         }else{
-//            return sectionTitles.count
+            //            return sectionTitles.count
             let count = activeSections.count
             if count == 0{
                 return 0
@@ -191,8 +186,8 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                 return cell
                 
             }
-        
-
+            
+            
         }else{
             let sectionType = activeSections[indexPath.section]
             
@@ -200,40 +195,40 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
             case .banner:
                 if roleType == "2"{
                     
-              //      if indexPath.section == 0  {
-                        guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
-                            return UITableViewCell()
-                        }
-                        cell.isComeForHireDetailPage = false
-                //        let sectionItems = itemsPerSection[indexPath.section]
-                        cell.configure(with: sectionTitles,section: indexPath.section)
-                        // Handle final callback here
-                            cell.onAddAccommodation = { [weak self] val  in
-                                self?.moveToAddAccomodationVC()
-                            }
-                        
-                        cell.onTapAcceptJob = { index in
-                            print("Tapped index total: \(index)")
-                      //      self.HandleNavigationforAcceptDelinedJob(in: index)
-                        }
-                        cell.totalJobCount = homeData?.totalJobs ?? 0
-                        cell.declinedJobCount = homeData?.declinedJobs ?? 0
-                        cell.acceptedJobCount = homeData?.acceptedJobs ?? 0
+                    //      if indexPath.section == 0  {
+                    guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
+                        return UITableViewCell()
+                    }
+                    cell.isComeForHireDetailPage = false
+                    //        let sectionItems = itemsPerSection[indexPath.section]
+                    cell.configure(with: sectionTitles,section: indexPath.section)
+                    // Handle final callback here
+                    cell.onAddAccommodation = { [weak self] val  in
+                        self?.moveToAddAccomodationVC()
+                    }
+                    
+                    cell.onTapAcceptJob = { index in
+                        print("Tapped index total: \(index)")
+                        //      self.HandleNavigationforAcceptDelinedJob(in: index)
+                    }
+                    cell.totalJobCount = homeData?.totalJobs ?? 0
+                    cell.declinedJobCount = homeData?.declinedJobs ?? 0
+                    cell.acceptedJobCount = homeData?.acceptedJobs ?? 0
                     cell.activeSections = activeSections
-                        return cell
-                   
+                    return cell
+                    
                 }else{
                     if indexPath.section == 0 || indexPath.section == 1 {
                         guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
                             return UITableViewCell()
                         }
                         cell.isComeForHireDetailPage = false
-                //        let sectionItems = itemsPerSection[indexPath.section]
+                        //        let sectionItems = itemsPerSection[indexPath.section]
                         cell.configure(with: sectionTitles,section: indexPath.section)
                         // Handle final callback here
-                            cell.onAddAccommodation = { [weak self] val  in
-                                self?.moveToAddAccomodationVC()
-                            }
+                        cell.onAddAccommodation = { [weak self] val  in
+                            self?.moveToAddAccomodationVC()
+                        }
                         
                         cell.onTapAcceptJob = { index in
                             print("Tapped index total: \(index)")
@@ -245,8 +240,8 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                         guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmployerJobTVC", for: indexPath) as? EmployerJobTVC else {
                             return UITableViewCell()
                         }
-                //        let sectionItems = itemsPerSection[indexPath.section]
-                       // cell.configure(with: sectionTitles,section: indexPath.section)
+                        //        let sectionItems = itemsPerSection[indexPath.section]
+                        // cell.configure(with: sectionTitles,section: indexPath.section)
                         return cell
                     }
                 }
@@ -258,13 +253,13 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                 }
                 if role == "2"{
                     cell.isComeForHireDetailPage = false
-            //        let sectionItems = itemsPerSection[indexPath.section]
+                    //        let sectionItems = itemsPerSection[indexPath.section]
                     cell.employerJobList = self.homeData?.jobslist
                     cell.configure(with: sectionTitles,section: indexPath.section)
                     // Handle final callback here
-                        cell.onAddAccommodation = { [weak self] val  in
-                            self?.moveToAddAccomodationVC()
-                        }
+                    cell.onAddAccommodation = { [weak self] val  in
+                        self?.moveToAddAccomodationVC()
+                    }
                     
                     cell.onTapAcceptJob = { index in
                         print("Tapped index total: \(index)")
@@ -280,12 +275,12 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                     cell.activeSections = activeSections
                 }else{
                     cell.isComeForHireDetailPage = false
-            //        let sectionItems = itemsPerSection[indexPath.section]
+                    //        let sectionItems = itemsPerSection[indexPath.section]
                     cell.configure(with: sectionTitles,section: indexPath.section)
                     // Handle final callback here
-                        cell.onAddAccommodation = { [weak self] val  in
-                            self?.moveToAddAccomodationVC()
-                        }
+                    cell.onAddAccommodation = { [weak self] val  in
+                        self?.moveToAddAccomodationVC()
+                    }
                     
                     cell.onTapAcceptJob = { index in
                         print("Tapped index total: \(index)")
@@ -293,7 +288,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                     }
                     cell.activeSections = activeSections
                 }
-               
+                
                 return cell
                 
                 
@@ -310,8 +305,8 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         return UITableViewCell()
         
         
-       
-       
+        
+        
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -325,7 +320,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
 #if BackpackerHire
         
         if roleType == "2"{
-           
+            
             header.headerButton.isHidden = true
             header.headerButton.isUserInteractionEnabled = false
         }
@@ -349,7 +344,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         }else{
             return 0
         }
-       
+        
         
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -364,7 +359,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         }else{
             return 160
         }
-      
+        
     }
     private func moveToAddAccomodationVC() {
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
@@ -418,14 +413,12 @@ extension EmployerHomeVC{
                     case .ok, .created:
                         if success == true {
                             if data != nil {
-                                
                                 self.homeData = data
-                                
-                                    self.isLoading = false
-                            }else{
+                                self.isLoading = false
+                            }
+                            if self.homeData?.jobslist?.count ?? 0 <= 0{
                                 self.showNoData(isShow: true)
                             }
-                           
                             if self.homeData?.name?.isEmpty == true && self.homeData?.email?.isEmpty == true{
                                 self.showForceUpdatePopUp()
                             }
@@ -437,7 +430,7 @@ extension EmployerHomeVC{
                             }
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
-                        self.refreshControl?.endRefreshing()
+                            self.refreshControl?.endRefreshing()
                             self.tblVw.setContentOffset(.zero, animated: true)
                             LoaderManager.shared.hide()
                         }
@@ -476,20 +469,20 @@ extension EmployerHomeVC{
 }
 extension  EmployerHomeVC: SkeletonTableViewDataSource {
     func numSections(in collectionSkeletonView: UITableView) -> Int {
-           return 2 // Or your actual section count
-       }
-
-       func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
-           return 5
-       }
-
-       func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
-           if indexPath.section == 2 {
-               return "SkeltonCollectionTVC"
-           } else {
-               return "SkeltonTVC"
-           }
-       }
+        return 2 // Or your actual section count
+    }
+    
+    func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
+        if indexPath.section == 2 {
+            return "SkeltonCollectionTVC"
+        } else {
+            return "SkeltonTVC"
+        }
+    }
     
     
     func showForceUpdatePopUp(){

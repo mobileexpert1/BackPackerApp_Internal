@@ -145,7 +145,7 @@
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Data Found" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uvg-F5-jA8">
-                                <rect key="frame" x="139.66666666666666" y="428" width="114" height="21"/>
+                                <rect key="frame" x="139.66666666666666" y="515.66666666666663" width="114" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
@@ -160,7 +160,7 @@
                             <constraint firstItem="z7M-H9-C1b" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="ST9-gV-RV9"/>
                             <constraint firstItem="z7M-H9-C1b" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="VCp-Mx-bvU"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="H0W-tR-GLC" secondAttribute="bottom" id="YBf-ao-66K"/>
-                            <constraint firstItem="uvg-F5-jA8" firstAttribute="centerY" secondItem="vDu-zF-Fre" secondAttribute="centerY" id="gzP-x6-oy0"/>
+                            <constraint firstItem="uvg-F5-jA8" firstAttribute="centerY" secondItem="vDu-zF-Fre" secondAttribute="centerY" multiplier="1.2" id="gzP-x6-oy0"/>
                             <constraint firstItem="H0W-tR-GLC" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="hEX-Ch-9Fk"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="H0W-tR-GLC" secondAttribute="trailing" id="qa3-gb-JLs"/>
                         </constraints>
@@ -342,7 +342,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemPinkColor">
-            <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

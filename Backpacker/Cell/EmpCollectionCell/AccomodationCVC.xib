@@ -25,7 +25,7 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ocE-du-ygS">
                                 <rect key="frame" x="4" y="2" width="277" height="175"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="aCCOMODATION" translatesAutoresizingMaskIntoConstraints="NO" id="xSd-dj-o5T">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="img_Placehodler" translatesAutoresizingMaskIntoConstraints="NO" id="xSd-dj-o5T">
                                         <rect key="frame" x="0.0" y="0.0" width="277" height="175"/>
                                         <userDefinedRuntimeAttributes>
                                             <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -209,7 +209,7 @@
     </objects>
     <resources>
         <image name="Heart" width="25" height="25"/>
-        <image name="aCCOMODATION" width="179" height="179"/>
+        <image name="img_Placehodler" width="341.33334350585938" height="341.33334350585938"/>
         <namedColor name="blackColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

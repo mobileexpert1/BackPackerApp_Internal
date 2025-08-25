@@ -91,13 +91,13 @@ extension AdvertiesmentTVC: UICollectionViewDelegate, UICollectionViewDataSource
             ApiConstants.API.API_IMAGEURL
             cell.imageVw.sd_setImage(
                 with: URL(string: imageURLString),
-                placeholderImage: UIImage(named: "placeholder")
+                placeholderImage: UIImage(named: "img_Placehodler")
             ) { image, _, _, _ in
                 if image == nil { // First attempt failed
                     let fallbackURL = ad.image.hasPrefix("http") ? ad.image : baseURL2 + ad.image
                     cell.imageVw.sd_setImage(
                         with: URL(string: fallbackURL),
-                        placeholderImage: UIImage(named: "placeholder")
+                        placeholderImage: UIImage(named: "img_Placehodler")
                     )
                 }
             }

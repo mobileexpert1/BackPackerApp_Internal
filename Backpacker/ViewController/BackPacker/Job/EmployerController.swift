@@ -30,7 +30,7 @@ class EmployerController: UIViewController {
         
     }
     override func viewWillAppear(_ animated: Bool) {
-        self.setupUI()
+      //  self.setupUI()
     }
     
     private func setUpFonts(){
@@ -54,21 +54,17 @@ class EmployerController: UIViewController {
     func setupUI(){
         if let empObj = objJobDetail?.employerId {
             // Name
-            lbl_Name_Value.text = (empObj.name.isEmpty == false) ? empObj.name : "-"
+            lbl_Name_Value.text = (empObj.name.isEmpty == false) ? empObj.name : ""
             
             // Completed Jobs
             lbl_CompletedJobsValue.text = "\(objJobDetail?.completedJobsCount ?? 0)"
             
             // Address
-            lbl_Address_Value.text = (empObj.state.isEmpty == false) ? empObj.state : "-"
+            lbl_Address_Value.text = (empObj.state.isEmpty == false) ? empObj.state : ""
             
-            // Latitude & Longitude
-            if   empObj.lat != 0 &&  empObj.long != 0 {
                 showMarkerOnMap(latitude: empObj.lat, longitude: empObj.long)
-            } else {
-                // No marker if coordinates are missing or zero
-                mapViw.removeAnnotations(mapViw.annotations)
-            }
+           
+
         }
     }
     
@@ -94,57 +90,56 @@ extension EmployerController: MKMapViewDelegate {
         if annotation is MKUserLocation {
             return nil
         }
-
+        
         let identifier = "custom_marker"
         var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier)
-
+        
         if annotationView == nil {
             annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: identifier)
             annotationView?.canShowCallout = true
-
+            
             // Set your custom image
             annotationView?.image = UIImage(named: "custom_marker") // Make sure image exists in Assets
-
+            
             // Optional: Adjust the anchor point so the bottom of the marker is the coordinate
             annotationView?.centerOffset = CGPoint(x: 0, y: -annotationView!.frame.size.height / 2)
-
-        } else {
+            
             annotationView?.annotation = annotation
         }
-
+        
         return annotationView
     }
-
+    
     func showMarkerOnMap(latitude: CLLocationDegrees,
                          longitude: CLLocationDegrees,
                          title: String = "Location",
                          subtitle: String? = nil) {
-
+        
         // Remove previous markers (except user location)
         let nonUserAnnotations = mapViw.annotations.filter { !($0 is MKUserLocation) }
         mapViw.removeAnnotations(nonUserAnnotations)
-
+        
         // Create annotation
         let annotation = MKPointAnnotation()
         annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         annotation.title = title
         annotation.subtitle = subtitle
-
+        
         // Add to map
         mapViw.addAnnotation(annotation)
-
+        
         // Zoom in
         let region = MKCoordinateRegion(center: annotation.coordinate,
-                                        latitudinalMeters: 1000,
-                                        longitudinalMeters: 1000)
+                                        latitudinalMeters: 5000,
+                                        longitudinalMeters: 5000)
         mapViw.setRegion(region, animated: true)
     }
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let title = view.annotation?.title ?? nil {
             print("Marker selected: \(title)")
-//            self.description_Scroll.layoutIfNeeded()
-//            self.view.layoutIfNeeded()
-//            setUpHeight()
+            //            self.description_Scroll.layoutIfNeeded()
+            //            self.view.layoutIfNeeded()
+            //            setUpHeight()
         }
     }
 

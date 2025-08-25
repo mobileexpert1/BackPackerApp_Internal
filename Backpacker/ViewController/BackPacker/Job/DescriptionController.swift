@@ -306,8 +306,8 @@ extension DescriptionController: MKMapViewDelegate {
         
         // Zoom in
         let region = MKCoordinateRegion(center: annotation.coordinate,
-                                        latitudinalMeters: 1000,
-                                        longitudinalMeters: 1000)
+                                        latitudinalMeters: 5000,
+                                        longitudinalMeters: 5000)
         mapVw.setRegion(region, animated: true)
     }
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {

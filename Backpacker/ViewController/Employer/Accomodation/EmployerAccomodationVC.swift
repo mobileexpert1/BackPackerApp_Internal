@@ -259,15 +259,15 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
                     let url3000 = URL(string: "\(ApiConstants.API.API_IMAGEURL)\(firstIMage)")
                     let url3001 = URL(string: "\(ApiConstants.API.API_IMAGEURL)\(firstIMage)")
 
-                    cell.imgVw.sd_setImage(with: url3000, placeholderImage: UIImage(named: "aCCOMODATION")) { image, _, _, _ in
+                    cell.imgVw.sd_setImage(with: url3000, placeholderImage: UIImage(named: "img_Placehodler")) { image, _, _, _ in
                         if image == nil {
-                            cell.imgVw.sd_setImage(with: url3001, placeholderImage: UIImage(named: "aCCOMODATION"))
+                            cell.imgVw.sd_setImage(with: url3001, placeholderImage: UIImage(named: "img_Placehodler"))
                         }
                     }
                 }
 
             }else{
-                cell.imgVw.image = UIImage(named: "aCCOMODATION")
+                cell.imgVw.image = UIImage(named: "img_Placehodler")
             }
             cell.onItemTapped = { [weak self] val in
                 let id = self?.accommodationList[indexPath.item].id

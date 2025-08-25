@@ -206,7 +206,11 @@ class JobDescriptionVC: UIViewController {
         }
         self.setBtnTitle()
         self.showChild(firstVC)
-        self.handleBotmBtnAppearance()
+  //      self.handleBotmBtnAppearance()
+        if let obj = self.jobDetailObj {
+            self.setupBtnAppearanceStatus(obj: obj)
+        }
+       
     }
     @IBAction func action_BtnEmployer(_ sender: Any) {
         
@@ -351,6 +355,7 @@ class JobDescriptionVC: UIViewController {
         }
         if let empVC = newVC as? EmployerController {
             empVC.objJobDetail = self.jobDetailObj
+            empVC.setupUI()
         }
     }
     
@@ -754,19 +759,19 @@ extension JobDescriptionVC {
 
             img_Profile.sd_setImage(
                 with: URL(string: imageURLString),
-                placeholderImage: UIImage(named: "Profile")
+                placeholderImage: UIImage(named: "img_Placehodler")
             ) { image, error, _, _ in
                 if image == nil { // If first attempt fails
                     let fallbackURL = imageStr.hasPrefix("http") ? imageStr : baseURL2 + imageStr
                     self.img_Profile.sd_setImage(
                         with: URL(string: fallbackURL),
-                        placeholderImage: UIImage(named: "Profile")
+                        placeholderImage: UIImage(named: "img_Placehodler")
                     )
                 }
             }
 
         } else {
-            img_Profile.image = UIImage(named: "Profile")
+            img_Profile.image = UIImage(named: "img_Placehodler")
         }
         
         self.setupBtnAppearanceStatus(obj: obj)
@@ -787,12 +792,13 @@ extension JobDescriptionVC {
            self.btn_Decline.isHidden = true
            self.btn_Decline.isUserInteractionEnabled = false
        }else if obj.jobAcceptStatus == 3 {
-           self.btn_Accept.isHidden = false
+           self.btn_Decline.isHidden = false
            self.btn_Accept.isUserInteractionEnabled = false
-           self.btn_Accept.setTitle("Declined", for: .normal)
-           applyGradientButtonStyle(to: btn_Accept)
-           self.btn_Decline.isHidden = true
-           self.btn_Decline.isUserInteractionEnabled = false
+           self.btn_Decline.setTitle("Rejected", for: .normal)
+           self.btn_Decline.backgroundColor = UIColor(hex: "#F4F4F4")
+           self.btn_Decline.setTitleColor(.black, for: .normal)
+           self.btn_Accept.isHidden = true
+           self.btn_Accept.isUserInteractionEnabled = false
        }else{
            self.btn_Accept.isHidden = true
            self.btn_Accept.isUserInteractionEnabled = false
@@ -817,19 +823,19 @@ extension JobDescriptionVC {
 
                 self.img_Profile.sd_setImage(
                     with: URL(string: imageURLString),
-                    placeholderImage: UIImage(named: "Profile")
+                    placeholderImage: UIImage(named: "img_Placehodler")
                 ) { image, error, _, _ in
                     if image == nil { // If first attempt fails
                         let fallbackURL = imageStr.hasPrefix("http") ? imageStr : baseURL2 + imageStr
                         self.img_Profile.sd_setImage(
                             with: URL(string: fallbackURL),
-                            placeholderImage: UIImage(named: "Profile")
+                            placeholderImage: UIImage(named: "img_Placehodler")
                         )
                     }
                 }
 
             } else {
-                self.img_Profile.image = UIImage(named: "Profile")
+                self.img_Profile.image = UIImage(named: "img_Placehodler")
             }
             self.btn_Accept.isHidden = true
             self.btn_Accept.isUserInteractionEnabled = false

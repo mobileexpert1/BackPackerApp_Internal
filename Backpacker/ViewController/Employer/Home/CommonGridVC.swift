@@ -356,9 +356,9 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                     let url3000 = URL(string: "\(ApiConstants.API.API_IMAGEURL)\(item.image)")
                     let url3001 = URL(string: "\(ApiConstants.API.API_IMAGEURL)\(item.image)")
 
-                    cell.imgVw.sd_setImage(with: url3000, placeholderImage: UIImage(named: "Profile")) { image, _, _, _ in
+                    cell.imgVw.sd_setImage(with: url3000, placeholderImage: UIImage(named: "img_Placehodler")) { image, _, _, _ in
                         if image == nil {
-                            cell.imgVw.sd_setImage(with: url3001, placeholderImage: UIImage(named: "Profile"))
+                            cell.imgVw.sd_setImage(with: url3001, placeholderImage: UIImage(named: "img_Placehodler"))
                         }
                     }
                 }

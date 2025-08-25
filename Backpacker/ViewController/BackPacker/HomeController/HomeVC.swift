@@ -627,8 +627,8 @@ extension HomeVC {
                             self.home_TblVw.setContentOffset(.zero, animated: true)
                             LoaderManager.shared.hide()
                         }
-                        if self.EmployerJobData?.data?.currentJobslist?.count == 0 &&  self.EmployerJobData?.data?.postedJobList?.count == 0 &&
-                            self.EmployerJobData?.data?.upcomingJobList?.count == 0 {
+                        if self.EmployerJobData?.data?.currentJobslist?.count == 0 || self.EmployerJobData?.data?.currentJobslist?.count == nil &&  self.EmployerJobData?.data?.postedJobList?.count == 0 || self.EmployerJobData?.data?.postedJobList?.count == nil &&
+                            self.EmployerJobData?.data?.upcomingJobList?.count == 0 || self.EmployerJobData?.data?.upcomingJobList?.count == nil {
                             self.lbl_noJobs.isHidden = false
                         }else{
                             self.lbl_noJobs.isHidden = true
@@ -691,6 +691,7 @@ extension HomeVC {
             }
     }
     
+  
 #endif
 }
 extension  HomeVC: SkeletonTableViewDataSource {
