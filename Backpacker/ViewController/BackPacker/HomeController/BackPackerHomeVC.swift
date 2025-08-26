@@ -146,6 +146,7 @@ class BackPackerHomeVC: UIViewController {
             LoaderManager.shared.show()
             self.HomeApiCall()
         }
+        self.handleNotificationBadgeVw()
 #endif
         
         
@@ -172,6 +173,7 @@ class BackPackerHomeVC: UIViewController {
            
         }
 #endif
+        
     }
     func showTopView(isShow : Bool = false,title : String = "Employer"){
         if isShow == true{
@@ -712,12 +714,14 @@ extension BackPackerHomeVC {
                                 self.homeTblVw.setContentOffset(.zero, animated: true)
                                 self.homeTblVw.reloadData()
                             }
+                            
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                             self.refreshControl?.endRefreshing()
                             self.homeTblVw.setContentOffset(.zero, animated: true)
                             LoaderManager.shared.hide()
                         }
+                        self.handleNotificationBadgeVw()
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     case .unauthorized :
@@ -942,5 +946,19 @@ extension BackPackerHomeVC {
                 print("- Could not instantiate AddNewAccomodationVC")
             }
         }
+    }
+    
+    private func handleNotificationBadgeVw(){
+#if Backapacker
+        if   self.homeData?.notificationCount ?? 0 <= 0 {
+            self.notifictionCountBgVw.isHidden = true
+            self.lbl_NotificationCount.isHidden = true
+        }else{
+            self.notifictionCountBgVw.isHidden = false
+            self.lbl_NotificationCount.isHidden = false
+             let count = self.homeData?.notificationCount ?? 0
+            self.lbl_NotificationCount.text = "\(count)"
+        }
+#endif
     }
 }

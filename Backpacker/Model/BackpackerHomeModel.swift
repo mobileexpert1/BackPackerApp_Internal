@@ -14,6 +14,7 @@ struct BackpackerHomeResponseModel: Codable {
     let banners: [BannerItem]
     let name : String
     let email : String
+    let notificationCount : Int
 }
 struct JobItem: Codable {
     let id: String
