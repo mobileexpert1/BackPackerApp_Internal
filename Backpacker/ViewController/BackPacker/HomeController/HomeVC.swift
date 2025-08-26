@@ -167,8 +167,7 @@ class HomeVC: UIViewController {
         self.navigationController?.pushViewController(settingVC, animated: true)
     } else {
         print("- Could not instantiate SettingVC")
-    }
-    
+    } 
 }
 }
 

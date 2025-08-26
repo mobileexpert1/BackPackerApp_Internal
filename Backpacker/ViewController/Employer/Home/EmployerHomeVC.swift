@@ -80,7 +80,7 @@ class EmployerHomeVC: UIViewController {
         self.lbl_MainHeader.font  =  FontManager.inter(.bold, size: 14.0)
         self.lbl_NotificationCount.font = FontManager.inter(.medium, size: 8.0)
         self.setupPullToRefresh()
-        
+        self.handleNotificationBadgeVw()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -114,6 +114,16 @@ class EmployerHomeVC: UIViewController {
         tblVw.refreshControl = refreshControl
     }
     
+    @IBAction func action_Notification(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "NotificationVC") as? NotificationVC {
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("- Could not instantiate SettingVC")
+        }
+        
+        
+    }
     @objc private func refreshTableData() {
         // Call your API
 #if BackpackerHire
@@ -428,6 +438,7 @@ extension EmployerHomeVC{
                                 self.tblVw.setContentOffset(.zero, animated: true)
                                 self.tblVw.reloadData()
                             }
+                            self.handleNotificationBadgeVw()
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                             self.refreshControl?.endRefreshing()
@@ -506,6 +517,18 @@ extension  EmployerHomeVC: SkeletonTableViewDataSource {
                 jobDescriptionVC.JobId = self.jobID
                 // Optional: pass selected job title
                 self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+            }
+        }
+    }
+    private func handleNotificationBadgeVw(){
+        if self.homeData?.notificationCount ?? 0 <= 0 {
+            self.notificatiobBadgeVw.isHidden = true
+            self.lbl_NotificationCount.isHidden = true
+        }else{
+            self.notificatiobBadgeVw.isHidden = false
+            self.lbl_NotificationCount.isHidden = false
+            if let count = self.homeData?.notificationCount  {
+                self.lbl_NotificationCount.text = "\(count)"
             }
         }
     }

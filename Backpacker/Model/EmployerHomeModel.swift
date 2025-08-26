@@ -22,6 +22,7 @@ struct EmployerHomeData: Codable {
     let totalJobs: Int?
     let acceptedJobs: Int?
     let declinedJobs: Int?
+    let notificationCount : Int?
 }
 
 // MARK: - Job

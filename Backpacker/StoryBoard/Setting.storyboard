@@ -832,6 +832,12 @@ nec turpis facilisis hendrerit</string>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <inset key="scrollIndicatorInsets" minX="0.0" minY="5" maxX="0.0" maxY="5"/>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Data Found" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BWD-9P-Nzl">
+                                <rect key="frame" x="139.66666666666666" y="428" width="114" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" name="blackColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="oxK-ab-ODN"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -842,13 +848,16 @@ nec turpis facilisis hendrerit</string>
                             <constraint firstItem="sTz-Yd-3f9" firstAttribute="leading" secondItem="oxK-ab-ODN" secondAttribute="leading" constant="10" id="G4h-h3-rL4"/>
                             <constraint firstItem="sTz-Yd-3f9" firstAttribute="top" secondItem="oxK-ab-ODN" secondAttribute="top" id="IAJ-V2-uzL"/>
                             <constraint firstItem="uEa-0b-dFh" firstAttribute="top" secondItem="Vbo-XZ-3ew" secondAttribute="bottom" constant="20" id="L6t-ay-CK1"/>
+                            <constraint firstItem="BWD-9P-Nzl" firstAttribute="centerX" secondItem="oxK-ab-ODN" secondAttribute="centerX" id="RDx-I4-4cl"/>
                             <constraint firstItem="Vbo-XZ-3ew" firstAttribute="centerY" secondItem="sTz-Yd-3f9" secondAttribute="centerY" id="kaT-V2-EZs"/>
                             <constraint firstItem="oxK-ab-ODN" firstAttribute="trailing" secondItem="Vbo-XZ-3ew" secondAttribute="trailing" id="oVq-pR-3GW"/>
+                            <constraint firstItem="BWD-9P-Nzl" firstAttribute="centerY" secondItem="oxK-ab-ODN" secondAttribute="centerY" id="sZe-Sm-tfq"/>
                             <constraint firstItem="uEa-0b-dFh" firstAttribute="leading" secondItem="oxK-ab-ODN" secondAttribute="leading" constant="20" id="uVi-zX-Llh"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="lblMainHeader" destination="Vbo-XZ-3ew" id="SHP-VT-cR0"/>
+                        <outlet property="lbl_nodatafound" destination="BWD-9P-Nzl" id="96n-xr-JFe"/>
                         <outlet property="tblVw" destination="uEa-0b-dFh" id="zWl-qa-EVM"/>
                     </connections>
                 </viewController>
@@ -1909,7 +1918,7 @@ nec turpis facilisis hendrerit</string>
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
