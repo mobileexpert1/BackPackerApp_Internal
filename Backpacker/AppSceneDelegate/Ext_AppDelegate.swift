@@ -19,7 +19,7 @@ extension AppDelegate {
          if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
             let window = scene.windows.first {
              
-             // ✅ Check bearer token
+             // -Check bearer token
              if UserDefaultsManager.shared.bearerToken?.isEmpty ?? true {
                  // Token is empty → show LoginVC as root
                  let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
@@ -188,12 +188,12 @@ extension AppDelegate {
                                 }
                             }
                     } else {
-                        print("❌ API responded but failed: \(result?.message ?? "Unknown error")")
+                        print("- API responded but failed: \(result?.message ?? "Unknown error")")
                         self.navigateToSecondTabWithoutJob()
                     }
                     
                 case .badRequest, .methodNotAllowed, .internalServerError, .unknown:
-                    print("❌ API error: \(result?.message ?? "Something went wrong")")
+                    print("- API error: \(result?.message ?? "Something went wrong")")
                     self.navigateToSecondTabWithoutJob()
                     
                 case .unauthorized:

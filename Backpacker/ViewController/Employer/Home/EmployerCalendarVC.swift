@@ -253,7 +253,7 @@ extension EmployerCalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalenda
             self.showEventEditUI(with: selectedDateWithTime)
         /*
          guard let fullDate = CalendarEventManager.combine(date: selectedDate ?? Date(), hour: 10, minute: 15) else {
-               print("❌ Failed to combine date and time.")
+               print("- Failed to combine date and time.")
                return
            }
 

@@ -195,7 +195,7 @@ class CalendarVC: UIViewController {
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetAvailibilityVC") as? SetAvailibilityVC {
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
-            print("❌ Could not instantiate SettingVC")
+            print("- Could not instantiate SettingVC")
         }
     }
 }
@@ -292,7 +292,7 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
             self.showEventEditUI(with: selectedDateWithTime)
         /*
          guard let fullDate = CalendarEventManager.combine(date: selectedDate ?? Date(), hour: 10, minute: 15) else {
-               print("❌ Failed to combine date and time.")
+               print("- Failed to combine date and time.")
                return
            }
 

@@ -40,11 +40,11 @@ class WalkThoroughVC: UIViewController {
 #else
     
     private let walkthroughItems: [WalkthroughItem] = [
-        WalkthroughItem(title: Constants.Walkthrough.screen2Title, subTitle: Constants.Walkthrough.screen2SubTitle,
-                        image: UIImage(named: Constants.Walkthrough.screen2Image)!),
+        
         WalkthroughItem(title: Constants.Walkthrough.screen1Title, subTitle: Constants.Walkthrough.screen1SubTitle,
                         image: UIImage(named: Constants.Walkthrough.screen1Image)!),
-        
+        WalkthroughItem(title: Constants.Walkthrough.screen2Title, subTitle: Constants.Walkthrough.screen2SubTitle,
+                        image: UIImage(named: Constants.Walkthrough.screen2Image)!),
         WalkthroughItem(title: Constants.Walkthrough.screen3Title, subTitle: Constants.Walkthrough.screen3SubTitle,
                         image: UIImage(named: Constants.Walkthrough.screen3Image)!),
         

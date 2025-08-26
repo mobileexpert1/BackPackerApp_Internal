@@ -166,7 +166,7 @@ class EmployerAccomodationVC: UIViewController {
         if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewAccomodationVC") as? AddNewAccomodationVC {
             self.navigationController?.pushViewController(accVC, animated: true)
         } else {
-            print("❌ Could not instantiate AddNewAccomodationVC")
+            print("- Could not instantiate AddNewAccomodationVC")
         }
     }
     @IBAction func action_Sort(_ sender: Any) {
@@ -353,7 +353,7 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
                 accVC.accomodationID = id
                 self.navigationController?.pushViewController(accVC, animated: true)
             } else {
-                print("❌ Could not instantiate AddNewAccomodationVC")
+                print("- Could not instantiate AddNewAccomodationVC")
             }
         }
     }
@@ -414,7 +414,7 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
                 accVC.accomodationID = id
                 self.navigationController?.pushViewController(accVC, animated: true)
             } else {
-                print("❌ Could not instantiate AddNewAccomodationVC")
+                print("- Could not instantiate AddNewAccomodationVC")
             }
         }
     }

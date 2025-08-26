@@ -228,7 +228,7 @@ class AccomodationDetailVC: UIViewController {
                 
             }
         } else {
-            print("❌ Could not instantiate AddNewAccomodationVC")
+            print("- Could not instantiate AddNewAccomodationVC")
         }
         
     }

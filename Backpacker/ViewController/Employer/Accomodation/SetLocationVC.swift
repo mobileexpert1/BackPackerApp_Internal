@@ -167,6 +167,6 @@ extension SetLocationVC: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("❌ Failed to get location: \(error.localizedDescription)")
+        print("- Failed to get location: \(error.localizedDescription)")
     }
 }

@@ -15,7 +15,7 @@ protocol LocationManagerDelegate: AnyObject {
 
 class LocationManager: NSObject, CLLocationManagerDelegate {
 
-    static let shared = LocationManager() // ✅ Singleton
+    static let shared = LocationManager() // -Singleton
 
     private let locationManager = CLLocationManager()
     weak var delegate: LocationManagerDelegate?
@@ -49,10 +49,10 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         switch status {
         case .authorizedWhenInUse, .authorizedAlways:
-            print("✅ Location access granted")
+            print("-Location access granted")
             locationManager.startUpdatingLocation()
         case .denied, .restricted:
-            print("❌ Location access denied/restricted")
+            print("- Location access denied/restricted")
             self.requestLocationPermission()
         case .notDetermined:
             print("🔄 Location permission not yet determined")

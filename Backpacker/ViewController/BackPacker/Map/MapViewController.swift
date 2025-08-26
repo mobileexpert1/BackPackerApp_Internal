@@ -98,7 +98,7 @@ extension MapViewController : LocationManagerDelegate{
         
         switch status {
         case .authorizedAlways, .authorizedWhenInUse:
-            // ✅ Permission granted — start location updates
+            // -Permission granted — start location updates
             LocationManager.shared.startUpdatingLocation()
             
         case .notDetermined:
@@ -106,7 +106,7 @@ extension MapViewController : LocationManagerDelegate{
             LocationManager.shared.requestLocationPermission()
             
         case .denied, .restricted:
-            // ❌ Denied or restricted — prompt to open Settings
+            // - Denied or restricted — prompt to open Settings
             presentSettingsAlert()
             
         @unknown default:
@@ -144,7 +144,7 @@ extension MapViewController : LocationManagerDelegate{
      }
 
      func didFailWithError(_ error: Error) {
-         print("❌ Location error: \(error.localizedDescription)")
+         print("- Location error: \(error.localizedDescription)")
      }
 }
 extension MapViewController: MKMapViewDelegate {

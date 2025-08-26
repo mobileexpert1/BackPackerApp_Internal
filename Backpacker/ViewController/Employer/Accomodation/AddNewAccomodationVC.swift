@@ -287,7 +287,7 @@ class AddNewAccomodationVC: UIViewController {
             }
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
-            print("❌ Could not instantiate SettingVC")
+            print("- Could not instantiate SettingVC")
         }
     }
     

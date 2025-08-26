@@ -133,7 +133,7 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
         let region = picker_Vw.selectedCountry.code
         let  isValid   = ValidationManager.isValidPhoneNumber(phoneNumber, regionCode: region)
         if isValid {
-            print("✅ Valid number")
+            print("-Valid number")
             self.lbl_Error.isHidden = true
             self.lbl_Error.text = ""
             return true
@@ -144,7 +144,7 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
         }
     }
     
-    // ✅ Real-time validation on text change
+    // -Real-time validation on text change
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
             _ = self.validatePhoneNumber()
@@ -152,7 +152,7 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
         return true
     }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder() // ✅ Dismiss keyboard
+        textField.resignFirstResponder() // -Dismiss keyboard
         return true
     }
 }
@@ -185,7 +185,7 @@ extension LoginVC {
                 LoaderManager.shared.hide()
                 switch httpStatus {
                 case .ok, .created:
-                    print("✅ Success:", httpStatus.description)
+                    print("-Success:", httpStatus.description)
                     DispatchQueue.main.async {
                         if success, let userId = response?.data?.userId {
 #if BackpackerHire

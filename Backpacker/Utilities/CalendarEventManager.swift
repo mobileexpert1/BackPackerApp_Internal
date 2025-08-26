@@ -19,7 +19,7 @@ class CalendarEventManager {
     func requestAccess(completion: @escaping (Bool) -> Void) {
         eventStore.requestAccess(to: .event) { granted, error in
             if let error = error {
-                print("❌ Calendar access error: \(error.localizedDescription)")
+                print("- Calendar access error: \(error.localizedDescription)")
                 completion(false)
             } else {
                 completion(granted)
@@ -45,10 +45,10 @@ class CalendarEventManager {
 
         do {
             try eventStore.save(event, span: .thisEvent)
-            print("✅ Event added to calendar.")
+            print("-Event added to calendar.")
             completion?(true, nil)
         } catch {
-            print("❌ Failed to save event: \(error.localizedDescription)")
+            print("- Failed to save event: \(error.localizedDescription)")
             completion?(false, error)
         }
     }

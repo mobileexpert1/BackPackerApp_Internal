@@ -211,7 +211,7 @@ class BackPackerHomeVC: UIViewController {
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
-            print("❌ Could not instantiate SettingVC")
+            print("- Could not instantiate SettingVC")
         }
         
     }
@@ -220,7 +220,7 @@ class BackPackerHomeVC: UIViewController {
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "NotificationVC") as? NotificationVC {
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
-            print("❌ Could not instantiate SettingVC")
+            print("- Could not instantiate SettingVC")
         }
         
     }
@@ -420,7 +420,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         let sectionType = activeSections[section]
         switch sectionType {
         case .banner:
-            return nil // ✅ Don’t return header view for banner
+            return nil // -Don’t return header view for banner
         default:
             break
         }
@@ -561,7 +561,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewAccomodationVC") as? AddNewAccomodationVC {
             self.navigationController?.pushViewController(accVC, animated: true)
         } else {
-            print("❌ Could not instantiate AddNewAccomodationVC")
+            print("- Could not instantiate AddNewAccomodationVC")
         }
     }
     
@@ -629,7 +629,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                     accVC.accomodationID = id
                     self.navigationController?.pushViewController(accVC, animated: true)
                 } else {
-                    print("❌ Could not instantiate AddNewAccomodationVC")
+                    print("- Could not instantiate AddNewAccomodationVC")
                 }
             }else{
                 let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
@@ -637,7 +637,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                     accVC.hangoutID = id
                     self.navigationController?.pushViewController(accVC, animated: true)
                 } else {
-                    print("❌ Could not instantiate AddNewAccomodationVC")
+                    print("- Could not instantiate AddNewAccomodationVC")
                 }
             }
             
@@ -656,7 +656,7 @@ extension BackPackerHomeVC : UITextFieldDelegate {
 }
 extension BackPackerHomeVC : LocationManagerDelegate {
     func didFailWithError(_ error: Error) {
-            print("❌ Failed to get location: \(error.localizedDescription)")
+            print("- Failed to get location: \(error.localizedDescription)")
         }
     
     func didUpdateLocation(_ location: CLLocation) {
@@ -939,7 +939,7 @@ extension BackPackerHomeVC {
                 accVC.accomodationID = id
                 self.navigationController?.pushViewController(accVC, animated: true)
             } else {
-                print("❌ Could not instantiate AddNewAccomodationVC")
+                print("- Could not instantiate AddNewAccomodationVC")
             }
         }
     }

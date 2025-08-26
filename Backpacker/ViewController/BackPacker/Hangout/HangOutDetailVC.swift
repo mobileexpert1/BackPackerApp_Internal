@@ -49,6 +49,15 @@ class HangOutDetailVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
+
+        
+        self.setUpCollectionVw()
+        self.setupPullToRefresh()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 #if BackpackerHire
         
         self.getEmployerDetailOfHangout()
@@ -59,11 +68,8 @@ class HangOutDetailVC: UIViewController {
         self.btn_delete.isHidden = true
         
 #endif
-        
-        self.setUpCollectionVw()
-        self.setupPullToRefresh()
-        
     }
+    
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
         refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)

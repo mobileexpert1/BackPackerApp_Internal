@@ -47,7 +47,7 @@ class HistoryVC: UIViewController {
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SettingVC") as? SettingVC {
                self.navigationController?.pushViewController(settingVC, animated: true)
            } else {
-               print("❌ Could not instantiate SettingVC")
+               print("- Could not instantiate SettingVC")
            }
     }
 }

@@ -383,7 +383,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetAvailibilityVC") as? SetAvailibilityVC {
                 self.navigationController?.pushViewController(settingVC, animated: true)
             } else {
-                print("❌ Could not instantiate SettingVC")
+                print("- Could not instantiate SettingVC")
             }
         case 2:
             if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {

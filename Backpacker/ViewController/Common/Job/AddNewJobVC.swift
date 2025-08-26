@@ -286,7 +286,7 @@ class AddNewJobVC: UIViewController {
             }
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
-            print("❌ Could not instantiate SettingVC")
+            print("- Could not instantiate SettingVC")
         }
         
         
@@ -329,7 +329,7 @@ class AddNewJobVC: UIViewController {
             sarchVC.delegate = self
             self.navigationController?.pushViewController(sarchVC, animated: true)
         } else {
-            print("❌ Could not instantiate SettingVC")
+            print("- Could not instantiate SettingVC")
         }
     }
     
@@ -438,10 +438,10 @@ class AddNewJobVC: UIViewController {
         outputFormatter.dateFormat = "yyyy-MM-dd"//"dd-MM-yyyy"  // desired output
         
         if let date = inputFormatter.date(from: input) {
-            // ✅ valid "dd/MM/yyyy", so convert
+            // -valid "dd/MM/yyyy", so convert
             return outputFormatter.string(from: date)
         } else {
-            // ❌ not matching format, return original
+            // - not matching format, return original
             return input
         }
     }
@@ -1007,7 +1007,7 @@ extension AddNewJobVC: CommonSearchDelegate {
             let jsonString = String(data: jsonData, encoding: .utf8)
             return jsonString
         } catch {
-            print("❌ Failed to encode backpacker list:", error)
+            print("- Failed to encode backpacker list:", error)
             return nil
         }
     }

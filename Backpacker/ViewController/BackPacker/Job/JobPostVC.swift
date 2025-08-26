@@ -188,7 +188,7 @@ class JobPostVC: UIViewController {
             self.Vw_RatingHeight.constant = 0
             self.Vw_RatingDistance.isHidden = true
         }
-        // ✅ Force layout update
+        // -Force layout update
            UIView.animate(withDuration: 0.2) {
                self.Vw_RatingDistance.layoutIfNeeded()
            }
@@ -221,7 +221,7 @@ class JobPostVC: UIViewController {
 
         // Add new child
         addChild(newVC)
-        newVC.view.frame = description_ContainerVW.bounds // ✅ Corrected line
+        newVC.view.frame = description_ContainerVW.bounds // -Corrected line
         newVC.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         description_ContainerVW.addSubview(newVC.view)
         newVC.didMove(toParent: self)
@@ -241,7 +241,7 @@ class JobPostVC: UIViewController {
            if let settingVC = storyboard.instantiateViewController(withIdentifier: "SettingVC") as? SettingVC {
                self.navigationController?.pushViewController(settingVC, animated: true)
            } else {
-               print("❌ Could not instantiate SettingVC")
+               print("- Could not instantiate SettingVC")
            }
     }
     

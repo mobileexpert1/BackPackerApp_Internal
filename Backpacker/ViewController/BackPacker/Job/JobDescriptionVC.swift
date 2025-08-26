@@ -108,6 +108,34 @@ class JobDescriptionVC: UIViewController {
 #if BackpackerHire
         self.btn_edit.isHidden = true
         if jobDetailEmployerObj?.jobAcceptStatus == 1 {
+            self.btn_edit.isHidden = false
+            self.btn_delete.isHidden = false
+            /*
+             if let startDateString = jobDetailEmployerObj?.startDate {
+                 
+                 let formatter = DateFormatter()
+                 formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ"
+                 formatter.locale = Locale(identifier: "en_US_POSIX")
+                 
+                 if let startDate = formatter.date(from: startDateString) {
+                     let today = Date()
+                     
+                     if startDate > today {
+                         // -Start date is greater than current date
+                         // Show Edit button here
+                         self.btn_edit.isHidden = false
+                         self.btn_delete.isHidden = false
+                         print("Show Edit button")
+                     } else {
+                         // - Start date is today or past
+                         self.btn_edit.isHidden = true
+                         self.btn_delete.isHidden = true
+                         print("Hide Edit button")
+                     }
+                 }
+             }
+             */
+        }else{
             if let startDateString = jobDetailEmployerObj?.startDate {
                 
                 let formatter = DateFormatter()
@@ -118,13 +146,12 @@ class JobDescriptionVC: UIViewController {
                     let today = Date()
                     
                     if startDate > today {
-                        // ✅ Start date is greater than current date
                         // Show Edit button here
                         self.btn_edit.isHidden = false
                         self.btn_delete.isHidden = false
                         print("Show Edit button")
                     } else {
-                        // ❌ Start date is today or past
+                        // - Start date is today or past
                         self.btn_edit.isHidden = true
                         self.btn_delete.isHidden = true
                         print("Hide Edit button")
@@ -296,7 +323,7 @@ class JobDescriptionVC: UIViewController {
                 }
             }
         } else {
-            print("❌ Could not instantiate AddNewAccomodationVC")
+            print("- Could not instantiate AddNewAccomodationVC")
         }
         
         
@@ -328,7 +355,7 @@ class JobDescriptionVC: UIViewController {
         
         // Add new child
         addChild(newVC)
-        newVC.view.frame = description_ContainerVW.bounds // ✅ Corrected line
+        newVC.view.frame = description_ContainerVW.bounds // -Corrected line
         newVC.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         description_ContainerVW.addSubview(newVC.view)
         newVC.didMove(toParent: self)

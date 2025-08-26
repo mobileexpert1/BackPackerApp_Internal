@@ -53,7 +53,7 @@ class CommonCalendarPopUpVC: UIViewController {
         dropdownHelper?.onOptionSelected = { [weak self] selectedYear in
             guard let self = self else { return }
             
-            print("✅ Selected year:", selectedYear)
+            print("-Selected year:", selectedYear)
             self.lbl_year.text = selectedYear
             
             // 1. Deselect all selected dates
@@ -69,7 +69,7 @@ class CommonCalendarPopUpVC: UIViewController {
                 if let targetDate = Calendar.current.date(from: components) {
                     self.calendarView.setCurrentPage(targetDate, animated: true)
                     
-                    // ✅ Select Jan 1st
+                    // -Select Jan 1st
                     self.calendarView.select(targetDate)
                     self.startDate = targetDate
                     self.selectedDate = targetDate
@@ -293,7 +293,7 @@ extension CommonCalendarPopUpVC: FSCalendarDelegate, FSCalendarDataSource,FSCale
             selectedDate = date
             calendar.select(date)
             calendar.today = nil
-            print("✅ Single date selected: \(dateToString(date))")
+            print("-Single date selected: \(dateToString(date))")
             
         } else if let start = startDate, endDate == nil {
             if date == start {
@@ -308,7 +308,7 @@ extension CommonCalendarPopUpVC: FSCalendarDelegate, FSCalendarDataSource,FSCale
                 endDate = date
                 selectedDate = nil
                 
-                // ✅ Clear old selections before applying range
+                // -Clear old selections before applying range
                 calendar.selectedDates.forEach { calendar.deselect($0) }
                 
                 var current = start < date ? start : date

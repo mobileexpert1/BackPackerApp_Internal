@@ -153,7 +153,7 @@ extension OtpVC : UITextFieldDelegate{
                 }
             }
             
-            // ✅ Call continuous validation after change
+            // -Call continuous validation after change
             let val =  checkIfAllFieldsFilled()
             if val == true{
                 DispatchQueue.main.async{ [self] in
@@ -184,7 +184,7 @@ extension OtpVC : UITextFieldDelegate{
         
         if isAllFilled {
             let otp = otpTextFields.compactMap { $0.text }.joined()
-            print("✅ All OTP fields filled. OTP: \(otp)")
+            print("-All OTP fields filled. OTP: \(otp)")
             
             return true
             // Optionally call a submit method here

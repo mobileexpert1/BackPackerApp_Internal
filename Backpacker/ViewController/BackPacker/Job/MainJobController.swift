@@ -83,7 +83,7 @@ class MainJobController: UIViewController {
         if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewJobVC") as? AddNewJobVC {
             self.navigationController?.pushViewController(accVC, animated: true)
         } else {
-            print("❌ Could not instantiate AddNewAccomodationVC")
+            print("- Could not instantiate AddNewAccomodationVC")
         }
         
         

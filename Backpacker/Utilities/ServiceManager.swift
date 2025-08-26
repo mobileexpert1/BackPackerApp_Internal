@@ -336,12 +336,12 @@ extension ServiceManager {
         requestUploadAPI(url, videoData: videoData, method: method, parameters: parameters, httpBody: nil) { (result: ApiResult<T?, APIError>) in
             switch result {
             case .success(let data, let statusCode):
-                print("✅ Upload success. Status code: \(statusCode)")
+                print("-Upload success. Status code: \(statusCode)")
                 completion(true, data ?? nil, statusCode)
 
 
             case .failure(let error, let statusCode):
-                print("❌ Upload failed. Error: \(error.customDescription), Status code: \(statusCode ?? -1)")
+                print("- Upload failed. Error: \(error.customDescription), Status code: \(statusCode ?? -1)")
                 completion(false, nil, statusCode)
             }
         }
@@ -370,7 +370,7 @@ extension ServiceManager {
                 case .success(let wrappedResult, let statusCode):
                     continuation.resume(returning: (true, wrappedResult ?? nil, statusCode))
                 case .failure(let error, let statusCode):
-                    print("❌ \(error.customDescription)")
+                    print("- \(error.customDescription)")
                     continuation.resume(returning: (false, nil, statusCode))
                 }
             }
@@ -400,11 +400,11 @@ extension ServiceManager {
         ) { (result: ApiResult<T?, APIError>) in
             switch result {
             case .success(let data, let statusCode):
-                print("✅ API Success – Status Code: \(statusCode), Data: \(String(describing: data))")
+                print("-API Success – Status Code: \(statusCode), Data: \(String(describing: data))")
                 completion(true, data ?? nil, statusCode)
 
             case .failure(let error, let statusCode):
-                print("❌ API Failure – \(error.customDescription), Status Code: \(statusCode ?? -1)")
+                print("- API Failure – \(error.customDescription), Status Code: \(statusCode ?? -1)")
                 completion(true, nil, statusCode)
             }
         }
@@ -814,7 +814,7 @@ extension ServiceManager {
 
                 switch response.result {
                 case .success(let data):
-                    print("✅ Raw Response:\n", String(data: data, encoding: .utf8) ?? "nil")
+                    print("-Raw Response:\n", String(data: data, encoding: .utf8) ?? "nil")
 
                     switch statusCode {
                     case 200...299:
@@ -822,7 +822,7 @@ extension ServiceManager {
                             let decoded = try JSONDecoder().decode(T.self, from: data)
                             completion(.success(decoded, statusCode: statusCode))
                         } catch {
-                            print("❌ Decoding Error:", error.localizedDescription)
+                            print("- Decoding Error:", error.localizedDescription)
                             completion(.failure(.jsonDecodingFailure, statusCode: statusCode))
                         }
                     case 400:
@@ -830,7 +830,7 @@ extension ServiceManager {
                             let decoded = try JSONDecoder().decode(T.self, from: data)
                             completion(.success(decoded, statusCode: statusCode))
                         } catch {
-                            print("❌ Decoding Error (400):", error.localizedDescription)
+                            print("- Decoding Error (400):", error.localizedDescription)
                             completion(.failure(.jsonDecodingFailure, statusCode: statusCode))
                         }
                     case 401:
@@ -868,7 +868,7 @@ extension ServiceManager {
                     }
 
                 case .failure(let error):
-                    print("❌ Request Error:", error.localizedDescription)
+                    print("- Request Error:", error.localizedDescription)
                     completion(.failure(.requestFailed(description: error.localizedDescription),statusCode: statusCode))
                 }
             }
@@ -925,18 +925,18 @@ extension ServiceManager {
 
                  switch response.result {
                  case .success(let data):
-                     print("✅ Raw Response:\n", String(data: data, encoding: .utf8) ?? "nil")
+                     print("-Raw Response:\n", String(data: data, encoding: .utf8) ?? "nil")
 
                      do {
                          let decoded = try JSONDecoder().decode(T.self, from: data)
                          completion(.success(decoded))
                      } catch {
-                         print("❌ Decoding Error:", error.localizedDescription)
+                         print("- Decoding Error:", error.localizedDescription)
                          completion(.failure(.jsonDecodingFailure))
                      }
 
                  case .failure(let error):
-                     print("❌ Request Error:", error.localizedDescription)
+                     print("- Request Error:", error.localizedDescription)
                      completion(.failure(.requestFailed(description: error.localizedDescription)))
                  }
              }
@@ -983,7 +983,7 @@ extension ServiceManager {
                 return
             }
 
-            // ✅ On success
+            // -On success
             if let data = response1.data, response["data"] != nil {
                 self.parseResponseData(data: data, statusCode: statusCode,completion: completion)
             } else {

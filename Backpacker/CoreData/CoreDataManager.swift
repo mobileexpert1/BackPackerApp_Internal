@@ -40,7 +40,7 @@ class CoreDataManager {
 //        do {
 //            return try context.fetch(request).first
 //        } catch {
-//            print("❌ Fetch error: \(error)")
+//            print("- Fetch error: \(error)")
 //            return nil
 //        }
 //    }
@@ -51,7 +51,7 @@ class CoreDataManager {
 //        do {
 //            return try context.fetch(request)
 //        } catch {
-//            print("❌ Fetch error: \(error)")
+//            print("- Fetch error: \(error)")
 //            return []
 //        }
 //    }
@@ -70,7 +70,7 @@ class CoreDataManager {
 //                saveContext()
 //            }
 //        } catch {
-//            print("❌ Update error: \(error)")
+//            print("- Update error: \(error)")
 //        }
 //    }
 //
@@ -86,7 +86,7 @@ class CoreDataManager {
 //            }
 //            saveContext()
 //        } catch {
-//            print("❌ Delete error: \(error)")
+//            print("- Delete error: \(error)")
 //        }
 //    }
 //
@@ -95,7 +95,7 @@ class CoreDataManager {
 //        do {
 //            try context.save()
 //        } catch {
-//            print("❌ Save error: \(error)")
+//            print("- Save error: \(error)")
 //        }
 //    }
 }

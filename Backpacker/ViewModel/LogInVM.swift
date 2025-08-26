@@ -25,7 +25,7 @@ class LogInVM {
     ) {
         UserStore.shared.sendOTP(params: otpRequest.asDictionary) { (success, result: OtpResponse?, statusCode: Int?) in
             if success {
-                print("✅ Response Otp:", result as Any)
+                print("-Response Otp:", result as Any)
                 if let val = result {
 #if BackpackerHire
                     UserDefaultsManager.shared.employerbearerToken = val.data?.accessToken
@@ -38,7 +38,7 @@ class LogInVM {
                 }
                 completion(true, result, statusCode)
             } else {
-                print("❌ Otp failed")
+                print("- Otp failed")
                 completion(true, result, statusCode)
             }
         }
@@ -50,10 +50,10 @@ class LogInVM {
     ) {
         UserStore.shared.resendOTP(params: otpRequest.asDictionary) { (success, result: LoginResponse?, statusCode: Int?) in
             if success {
-                print("✅ Response Otp:", result as Any)
+                print("-Response Otp:", result as Any)
                 completion(true, result, statusCode)
             } else {
-                print("❌ Otp failed")
+                print("- Otp failed")
                 completion(true, result, statusCode)
             }
         }
@@ -77,7 +77,7 @@ class LogInVM {
                 }
                 completion(true, result, statusCode)
             } else {
-                print("❌ Refresh token failed")
+                print("- Refresh token failed")
                 completion(true, result, statusCode)
             }
         }
@@ -107,7 +107,7 @@ class LogInVM {
                 
                 completion(true, result, statusCode)
             } else {
-                print("❌ Refresh token failed")
+                print("- Refresh token failed")
                 completion(true, result, statusCode)
             }
         }

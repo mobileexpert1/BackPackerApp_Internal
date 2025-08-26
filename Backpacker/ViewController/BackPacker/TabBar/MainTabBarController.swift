@@ -53,7 +53,7 @@ class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
         guard tabBarWidth > 0, tabBarHeight > 0,
               tabBarWidth.isFinite, tabBarHeight.isFinite,
               itemCount > 0 else {
-            print("❌ Invalid tabBar layout: width = \(tabBarWidth), height = \(tabBarHeight)")
+            print("- Invalid tabBar layout: width = \(tabBarWidth), height = \(tabBarHeight)")
             return
         }
 

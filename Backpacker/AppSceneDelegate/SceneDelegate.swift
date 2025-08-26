@@ -91,7 +91,7 @@ let accessToken = UserDefaultsManager.shared.bearerToken
                
                print("⚡ Scene active with pending notification: \(jobId) \(appType)")
                
-               // ✅ Small delay so rootVC is stable
+               // -Small delay so rootVC is stable
                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                    appDelegate.handleNotification(jobId: jobId, appType: appType)
                }

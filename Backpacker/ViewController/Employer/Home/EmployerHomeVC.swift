@@ -366,7 +366,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewAccomodationVC") as? AddNewAccomodationVC {
             self.navigationController?.pushViewController(accVC, animated: true)
         } else {
-            print("❌ Could not instantiate AddNewAccomodationVC")
+            print("- Could not instantiate AddNewAccomodationVC")
         }
     }
     private func handleHeaderButtonTap(in section: Int) {
@@ -387,7 +387,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
             }
             self.navigationController?.pushViewController(accVC, animated: true)
         } else {
-            print("❌ Could not instantiate AddNewAccomodationVC")
+            print("- Could not instantiate AddNewAccomodationVC")
         }
     }
 }

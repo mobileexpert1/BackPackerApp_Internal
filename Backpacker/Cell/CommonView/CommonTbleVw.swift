@@ -75,9 +75,9 @@ class CommonTbleVw: UIView, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: - UITableViewDelegate
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("✅ Selected row at index: \(indexPath.row), Value: \(dataArray[indexPath.row])")
+        print("-Selected row at index: \(indexPath.row), Value: \(dataArray[indexPath.row])")
         let selectedValue = dataArray[indexPath.row]
-        print("✅ Selected row at index: \(indexPath.row), Value: \(selectedValue)")
+        print("-Selected row at index: \(indexPath.row), Value: \(selectedValue)")
         onItemSelected?(selectedValue)
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

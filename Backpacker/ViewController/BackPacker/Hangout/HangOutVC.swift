@@ -258,7 +258,7 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
                 accVC.hangoutID = id
                 self.navigationController?.pushViewController(accVC, animated: true)
             } else {
-                print("❌ Could not instantiate AddNewAccomodationVC")
+                print("- Could not instantiate AddNewAccomodationVC")
             }
         }
     }

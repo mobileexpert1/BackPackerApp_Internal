@@ -18,7 +18,7 @@ struct ValidationManager {
             let parsedNumber = try phoneNumberKit.parse(trimmedNumber, withRegion: regionCode, ignoreType: false)
             return phoneNumberKit.isValidPhoneNumber(trimmedNumber, withRegion: regionCode)
         } catch {
-            print("❌ PhoneNumber parsing failed: \(error.localizedDescription)")
+            print("- PhoneNumber parsing failed: \(error.localizedDescription)")
             return false
         }
     }

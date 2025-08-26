@@ -18,7 +18,7 @@ class SpeechToTextManager: NSObject {
     
     var onResult: ((String) -> Void)?
     var onError: ((Error) -> Void)?
-    // ✅ Speaking state
+    // -Speaking state
       private(set) var isSpeaking: Bool = false {
           didSet {
               onSpeakingChanged?(isSpeaking)

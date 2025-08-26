@@ -53,7 +53,7 @@ class CommonTxtFldLblVw: UIView , UITextFieldDelegate{
             addSubview(contentView)
         }
         setUpfontUI()
-        txtFld.delegate = self  // ✅ Set delegate here
+        txtFld.delegate = self  // -Set delegate here
             txtFld.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged) // 🔍 Live change detection
     }
     @objc private func textFieldDidChange(_ textField: UITextField) {

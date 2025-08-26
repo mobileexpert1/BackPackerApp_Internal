@@ -149,7 +149,7 @@ class HomeVC: UIViewController {
     if let settingVC = storyboard.instantiateViewController(withIdentifier: "NotificationVC") as? NotificationVC {
         self.navigationController?.pushViewController(settingVC, animated: true)
     } else {
-        print("❌ Could not instantiate SettingVC")
+        print("- Could not instantiate SettingVC")
     }
 }
 @IBAction func action_Settings(_ sender: Any) {
@@ -157,7 +157,7 @@ class HomeVC: UIViewController {
     if let settingVC = storyboard.instantiateViewController(withIdentifier: "SettingVC") as? SettingVC {
         self.navigationController?.pushViewController(settingVC, animated: true)
     } else {
-        print("❌ Could not instantiate SettingVC")
+        print("- Could not instantiate SettingVC")
     }
 }
 
@@ -166,7 +166,7 @@ class HomeVC: UIViewController {
     if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
         self.navigationController?.pushViewController(settingVC, animated: true)
     } else {
-        print("❌ Could not instantiate SettingVC")
+        print("- Could not instantiate SettingVC")
     }
     
 }
@@ -627,8 +627,9 @@ extension HomeVC {
                             self.home_TblVw.setContentOffset(.zero, animated: true)
                             LoaderManager.shared.hide()
                         }
-                        if self.EmployerJobData?.data?.currentJobslist?.count == 0 || self.EmployerJobData?.data?.currentJobslist?.count == nil &&  self.EmployerJobData?.data?.postedJobList?.count == 0 || self.EmployerJobData?.data?.postedJobList?.count == nil &&
-                            self.EmployerJobData?.data?.upcomingJobList?.count == 0 || self.EmployerJobData?.data?.upcomingJobList?.count == nil {
+                        if ((self.EmployerJobData?.data?.currentJobslist?.isEmpty ?? true) &&
+                            (self.EmployerJobData?.data?.postedJobList?.isEmpty ?? true) &&
+                            (self.EmployerJobData?.data?.upcomingJobList?.isEmpty ?? true)) {
                             self.lbl_noJobs.isHidden = false
                         }else{
                             self.lbl_noJobs.isHidden = true
