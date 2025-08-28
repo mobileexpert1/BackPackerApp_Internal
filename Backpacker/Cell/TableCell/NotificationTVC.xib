@@ -6,6 +6,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -21,8 +22,21 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5ac-55-Adu">
                         <rect key="frame" x="2" y="5" width="346" height="70"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CF6-kO-t40">
+                                <rect key="frame" x="10" y="17.666666666666668" width="6" height="6"/>
+                                <color key="backgroundColor" systemColor="systemGreenColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="6" id="4So-d5-iut"/>
+                                    <constraint firstAttribute="height" constant="6" id="rBG-gG-QKw"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <integer key="value" value="3"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="P5B-9N-CdC">
-                                <rect key="frame" x="10" y="10" width="326" height="21"/>
+                                <rect key="frame" x="24" y="10" width="312" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
@@ -43,9 +57,11 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="CF6-kO-t40" firstAttribute="centerY" secondItem="P5B-9N-CdC" secondAttribute="centerY" id="3q0-nO-cbW"/>
                             <constraint firstAttribute="trailing" secondItem="P5B-9N-CdC" secondAttribute="trailing" constant="10" id="4YB-cO-1oz"/>
-                            <constraint firstItem="P5B-9N-CdC" firstAttribute="leading" secondItem="5ac-55-Adu" secondAttribute="leading" constant="10" id="ASj-s4-ce3"/>
                             <constraint firstItem="OLE-C8-6uv" firstAttribute="leading" secondItem="5ac-55-Adu" secondAttribute="leading" constant="10" id="Bq5-kO-TwS"/>
+                            <constraint firstItem="P5B-9N-CdC" firstAttribute="leading" secondItem="CF6-kO-t40" secondAttribute="trailing" constant="8" id="JFB-rV-aF4"/>
+                            <constraint firstItem="CF6-kO-t40" firstAttribute="leading" secondItem="OLE-C8-6uv" secondAttribute="leading" id="L7E-Gz-b9S"/>
                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="OLE-C8-6uv" secondAttribute="bottom" constant="10" id="Vbi-sV-rEf"/>
                             <constraint firstAttribute="trailing" secondItem="OLE-C8-6uv" secondAttribute="trailing" constant="30" id="Yti-LN-4vC"/>
                             <constraint firstItem="OLE-C8-6uv" firstAttribute="top" secondItem="P5B-9N-CdC" secondAttribute="bottom" constant="8" id="cXm-ip-2gA"/>
@@ -69,6 +85,7 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="highLight_Vw" destination="CF6-kO-t40" id="ibU-Ly-5MP"/>
                 <outlet property="lblSubTitle" destination="OLE-C8-6uv" id="viB-vW-A1l"/>
                 <outlet property="lbl_title" destination="P5B-9N-CdC" id="HTu-ab-dit"/>
                 <outlet property="mainVw" destination="5ac-55-Adu" id="jla-jg-gcb"/>
@@ -84,5 +101,8 @@
         <namedColor name="subTitleColor">
             <color red="0.47450980392156861" green="0.47450980392156861" blue="0.47450980392156861" alpha="0.69999998807907104" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="systemGreenColor">
+            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
     </resources>
 </document>

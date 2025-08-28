@@ -9,6 +9,7 @@ import UIKit
 
 class NotificationTVC: UITableViewCell {
 
+    @IBOutlet weak var highLight_Vw: UIView!
     @IBOutlet weak var mainVw: UIView!
     @IBOutlet weak var lblSubTitle: UILabel!
     @IBOutlet weak var lbl_title: UILabel!

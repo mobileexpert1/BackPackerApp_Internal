@@ -42,6 +42,9 @@ class JobDescriptionVC: UIViewController {
     var isLoading: Bool = true // true while loading, false once data is ready
     var jobDetailObj : JobDetail?
     var jobDetailEmployerObj : EmployerJobDetail?
+    var isNotComeFromNotificationVw : Bool = true
+    var viewModelNotification = NotificationViewModel()
+    var notificationId : String?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.btn_edit.isHidden = true
@@ -67,14 +70,38 @@ class JobDescriptionVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 #if Backapacker
-        self.getDetailOfJob()
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            if   appDelegate.isComeFromNotification == true {
+                if let jobid = self.notificationId {
+                    self.MarkNotificationRead(id: jobid)
+                }else{
+                    self.getDetailOfJob()
+                }
+            }else{
+                self.getDetailOfJob()
+            }
+            
+        }
+      
         self.segmentHeight.constant = 50.0
+        
 #else
         self.segmentHeight.constant = 0.0
         self.lbl_Description.isHidden = true
         self.lblEmployer.isHidden = true
-        self.getEmployeeDetailOfJob()
-        
+       
+        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+            if   appDelegate.isComeFromNotification == true {
+                if let jobid = self.notificationId {
+                    self.MarkNotificationRead(id: jobid)
+                }else{
+                    self.getEmployeeDetailOfJob()
+                }
+            }else{
+                self.getEmployeeDetailOfJob()
+            }
+            
+        }
 #endif
     }
     override func viewWillDisappear(_ animated: Bool) {
@@ -94,15 +121,70 @@ class JobDescriptionVC: UIViewController {
                 self.segmentHeight.constant = 0.0
                 self.lbl_Description.isHidden = true
                 self.lblEmployer.isHidden = true
-                self.getEmployeeDetailOfJob()
-                
+                if let jobid = self.JobId {
+                    self.MarkNotificationRead(id: jobid)
+                }
 #else
-                self.getDetailOfJob()
+                if let jobid = self.JobId {
+                    self.MarkNotificationRead(id: jobid)
+                }
+                    //    self.getDetailOfJob()
                 self.segmentHeight.constant = 50.0
                 
 #endif
             }
         }
+    }
+    private func setupPullToRefresh() {
+        refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
+        refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
+        refreshControl.addTarget(self, action: #selector(refreshCollectionData), for: .valueChanged)
+        self.mainScrollVw.refreshControl = refreshControl
+    }
+    
+    @objc private func refreshCollectionData() {
+        // Reset pagination and loading flags
+
+        // Fetch data
+        LoaderManager.shared.show()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+#if BackpackerHire
+            if self.isNotComeFromNotificationVw == true{
+                self.getEmployeeDetailOfJob()
+            }else{
+                if let jobid = self.notificationId {
+                    self.MarkNotificationRead(id: jobid)
+                }else{
+                    self.getEmployeeDetailOfJob()
+                }
+               
+            }
+#else
+            if self.isNotComeFromNotificationVw == true{
+                self.getDetailOfJob()
+            }else{
+                if let jobid = self.notificationId {
+                    self.MarkNotificationRead(id: jobid)
+                }else{
+                    self.getDetailOfJob()
+                }
+               
+            }
+            self.btn_Description.tag = 1
+            self.btn_Employer.tag = 0
+            if self.btn_Description.tag == 1 {
+                self.vW_Description.backgroundColor  = UIColor(named: "themeColor")
+                self.lbl_Description.textColor = .white
+                self.lblEmployer.textColor =  .black
+                self.vW_Employer.backgroundColor = .clear
+            }
+            self.setBtnTitle()
+            self.handleBotmBtnAppearance()
+#endif
+           
+        }
+
+        
     }
     private func handleEditBtnAppearance(){
 #if BackpackerHire
@@ -166,40 +248,7 @@ class JobDescriptionVC: UIViewController {
         #endif
 
     }
-    private func setupPullToRefresh() {
-        refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
-        refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
-        refreshControl.addTarget(self, action: #selector(refreshCollectionData), for: .valueChanged)
-        self.mainScrollVw.refreshControl = refreshControl
-    }
-    
-    @objc private func refreshCollectionData() {
-        // Reset pagination and loading flags
-
-        // Fetch data
-        LoaderManager.shared.show()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-            
-#if BackpackerHire
-            self.getEmployeeDetailOfJob()
-#else
-            self.getDetailOfJob()
-            self.btn_Description.tag = 1
-            self.btn_Employer.tag = 0
-            if self.btn_Description.tag == 1 {
-                self.vW_Description.backgroundColor  = UIColor(named: "themeColor")
-                self.lbl_Description.textColor = .white
-                self.lblEmployer.textColor =  .black
-                self.vW_Employer.backgroundColor = .clear
-            }
-            self.setBtnTitle()
-            self.handleBotmBtnAppearance()
-#endif
-           
-        }
-
-        
-    }
+  
     
     
     private func setUPBtns(){
@@ -233,7 +282,6 @@ class JobDescriptionVC: UIViewController {
         }
         self.setBtnTitle()
         self.showChild(firstVC)
-  //      self.handleBotmBtnAppearance()
         if let obj = self.jobDetailObj {
             self.setupBtnAppearanceStatus(obj: obj)
         }
@@ -299,7 +347,6 @@ class JobDescriptionVC: UIViewController {
             let strtTime = self.jobDetailEmployerObj?.startTime ?? ""
             let endTime = self.jobDetailEmployerObj?.endTime ?? ""
             let req  = self.jobDetailEmployerObj?.requests
-        //    let assgnBckPkr = self.jobDetailObj.
             if let imageUrls = self.jobDetailEmployerObj?.image {
                 ImageLoader.loadImages(from: [imageUrls]) { images in
                     // here you get your [UIImage]
@@ -771,6 +818,73 @@ extension JobDescriptionVC {
         }
     }
 #endif
+    
+    private func MarkNotificationRead(id:String){
+            LoaderManager.shared.show()
+        viewModelNotification.BackpackerNotificationRead(id: id){ [weak self] (success: Bool, result: NotificationResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+#if Backapacker
+                            self.getDetailOfJob()
+                            
+                            #else
+                            self.getEmployeeDetailOfJob()
+                            
+#endif
+                            
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                         
+                        }
+                   
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                     
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.MarkNotificationRead(id: id)
+                            } else {
+                                LoaderManager.shared.hide()
+                                self.refreshControl.endRefreshing()
+                                NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
+                                
+                            }
+                        }
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                  
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                       
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                      
+                    }
+                }
+            }
+        }
+    }
+    
     func setUpValues(obj : JobDetail){
         
         self.lblTitle.text = obj.name

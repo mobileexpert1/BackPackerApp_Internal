@@ -12,19 +12,6 @@ class NotificationVC: UIViewController {
     @IBOutlet weak var lbl_nodatafound: UILabel!
     @IBOutlet weak var tblVw: UITableView!
     @IBOutlet weak var lblMainHeader: UILabel!
-    let notifications: [NotificationItem] = [
-        NotificationItem(header: "Trip Reminder", subheader: "Your trip to Bali starts tomorrow. Don’t forget to pack!"),
-        NotificationItem(header: "New Message", subheader: "Alex sent you a message about your upcoming trip."),
-        NotificationItem(header: "Booking Confirmed", subheader: "Your stay at Mountain View Hostel has been confirmed."),
-        NotificationItem(header: "Price Drop Alert", subheader: "Flights to Tokyo are 15% cheaper this week."),
-        NotificationItem(header: "Trip Completed", subheader: "You’ve completed your trip to Paris. How was it? Leave a review!"),
-        NotificationItem(header: "Itinerary Updated", subheader: "Your itinerary for Thailand has been updated. Check the details."),
-        NotificationItem(header: "Travel Tip", subheader: "Don’t forget to carry a power adapter when visiting the UK."),
-        NotificationItem(header: "Check-in Reminder", subheader: "Online check-in for your flight to Lisbon is now open."),
-        NotificationItem(header: "Weather Alert", subheader: "Heavy rain forecasted in Chiang Mai tomorrow. Plan accordingly."),
-        NotificationItem(header: "Travel Badge Unlocked", subheader: "You earned the “Explorer” badge for visiting 5 new countries.")
-    ]
-
     var viewModel = NotificationViewModel()
     let viewModelAuth = LogInVM()
     let refreshControl = UIRefreshControl()
@@ -79,6 +66,11 @@ extension NotificationVC: UITableViewDelegate, UITableViewDataSource {
         let item = searchData[indexPath.row]
         cell.lbl_title.text = item.title
         cell.lblSubTitle.text = item.message
+        if item.readStatus == true {
+            cell.highLight_Vw.backgroundColor = UIColor(hex: "#00A925")
+        }else{
+            cell.highLight_Vw.backgroundColor = UIColor.red
+        }
         return cell
     }
 
@@ -90,9 +82,9 @@ extension NotificationVC: UITableViewDelegate, UITableViewDataSource {
         let item = searchData[indexPath.row]
          let id = item.id
         self.jobId = item.redirectId
-    self.MarkNotificationRead(id: id)
-        
-        
+        let status = item.readStatus ?? false
+    //  self.MarkNotificationRead(id: id)
+        self.navigateToDescriptionVC(status: status,notificationId: id)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -316,7 +308,7 @@ extension NotificationVC{
                     switch httpStatus {
                     case .ok, .created:
                         if success == true {
-                            self.navigateToDescriptionVC()
+                            //self.navigateToDescriptionVC()
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                          
@@ -358,10 +350,16 @@ extension NotificationVC{
         }
     }
     
-    private func navigateToDescriptionVC(){
+    private func navigateToDescriptionVC(status : Bool = false,notificationId : String){
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
            if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
                jobDescriptionVC.JobId = self.jobId
+               
+               if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                   appDelegate.isComeFromNotification = true
+               }
+               jobDescriptionVC.isNotComeFromNotificationVw = status
+               jobDescriptionVC.notificationId = notificationId
                // Optional: pass selected job title
                self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
            }
