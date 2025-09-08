@@ -15,6 +15,8 @@ class SetAvailibilityVC: UIViewController {
     @IBOutlet weak var BgVwWuickSetup: UIView!
     @IBOutlet weak var lbl_Main_Header: UILabel!
     var isQuickSetupTapped : Bool = false
+    var totalHours = 8
+    var josnBody : AvailabilityRequest?
     let weekDays = [
             ("Sun", "Sunday"),
             ("Mon", "Monday"),
@@ -24,7 +26,9 @@ class SetAvailibilityVC: UIViewController {
             ("Fri", "Friday"),
             ("Sat", "Saturday")
         ]
-    var SlotsList = [DaySlot]()
+    var SlotsListMain = [DayAvailability]()
+    let viewModel = SetAvailabilityViewModel()
+    let viewModelAuth = LogInVM()
     override func viewDidLoad() {
         super.viewDidLoad()
         UserDefaults.standard.set(false, forKey: "setupQuickAction")
@@ -35,14 +39,11 @@ class SetAvailibilityVC: UIViewController {
         
     }
     func setSlotDayData(){
-        SlotsList.append(DaySlot(day: "Sunday", shortDay: "Sun", timeSlots: []))
-        SlotsList.append(DaySlot(day: "Monday", shortDay: "Mon", timeSlots: []))
-        SlotsList.append(DaySlot(day: "Tuesday", shortDay: "Tue", timeSlots: []))
-        SlotsList.append(DaySlot(day: "Wednesday", shortDay: "Wed", timeSlots: []))
-        SlotsList.append(DaySlot(day: "Thursday", shortDay: "Thu", timeSlots: []))
-        SlotsList.append(DaySlot(day: "Friday", shortDay: "Fri", timeSlots: []))
-        SlotsList.append(DaySlot(day: "Saturday", shortDay: "Sat", timeSlots: []))
-        
+        let weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+
+        for day in weekDays {
+            SlotsListMain.append(DayAvailability(day: day, enabled: true, slots: []))
+        }
     }
 
     @IBAction func action_Back(_ sender: Any) {
@@ -53,15 +54,31 @@ class SetAvailibilityVC: UIViewController {
     @IBAction func action_QuickSetUp(_ sender: Any) {
       
             UserDefaults.standard.set(true, forKey: "setupQuickAction")
-            SlotsList.removeAll()
-            SlotsList.append(DaySlot(day: "Sunday", shortDay: "Sun", timeSlots: []))
-            SlotsList.append(DaySlot(day: "Monday", shortDay: "Mon", timeSlots: [TimesSlot(startTime: "9:00 AM", endTime: "5:00 PM")]))
-            SlotsList.append(DaySlot(day: "Tuesday", shortDay: "Tue", timeSlots: [TimesSlot(startTime: "9:00 AM", endTime: "5:00 PM")]))
-            SlotsList.append(DaySlot(day: "Wednesday", shortDay: "Wed", timeSlots: [TimesSlot(startTime: "9:00 AM", endTime: "5:00 PM")]))
-            SlotsList.append(DaySlot(day: "Thursday", shortDay: "Thu", timeSlots: [TimesSlot(startTime: "9:00 AM", endTime: "5:00 PM")]))
-            SlotsList.append(DaySlot(day: "Friday", shortDay: "Fri", timeSlots: [TimesSlot(startTime: "9:00 AM", endTime: "5:00 PM")]))
-            SlotsList.append(DaySlot(day: "Saturday", shortDay: "Sat", timeSlots: []))
-        
+        SlotsListMain.removeAll()
+        let weekDays: [String] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+        SlotsListMain.append(
+            DayAvailability(
+                day: "Sunday",
+                enabled: true,
+                slots: []
+            )
+        )
+        for day in weekDays {
+            SlotsListMain.append(
+                DayAvailability(
+                    day: day,
+                    enabled: true,
+                    slots: [Slot(start: "9:00 AM", end: "5:00 PM", enabled: true)]
+                )
+            )
+        }
+        SlotsListMain.append(
+            DayAvailability(
+                day: "Saturday",
+                enabled: true,
+                slots: []
+            )
+        )
         self.tableView.reloadData()
         
     }
@@ -69,8 +86,9 @@ class SetAvailibilityVC: UIViewController {
     
     @IBAction func action_setAvailibility(_ sender: Any) {
      
-        print("Slot List Data",SlotsList)
-        self.navigationController?.popViewController(animated: true)
+        print("Slot List Data",SlotsListMain)
+        self.setAvailabilityapiCall()
+        //self.navigationController?.popViewController(animated: true)
     }
     
     
@@ -96,7 +114,7 @@ extension SetAvailibilityVC: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return SlotsList.count 
+        return SlotsListMain.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -115,10 +133,10 @@ extension SetAvailibilityVC: UITableViewDelegate, UITableViewDataSource {
 //            cell.setSlotsOnlyNineToFive(isQuickSetUp: false)
         }
         let isOn =  cell.btn_Switch.isOn
-        cell.lbl_ShortDay.text = SlotsList[indexPath.row].shortDay
-        cell.lbl_Day.text = SlotsList[indexPath.row].day
+        cell.lbl_ShortDay.text = SlotsListMain[indexPath.row].day
+        cell.lbl_Day.text = SlotsListMain[indexPath.row].day
         cell.lbl_AvailibityStatus.text = isOn ? "Available" : "Unavailable"
-        cell.SlotsList = SlotsList[indexPath.row]
+        cell.SlotsList = SlotsListMain[indexPath.row]
         // Handle toggle
            cell.onToggle = { isOn in
                cell.lbl_AvailibityStatus.text = isOn ? "Available" : "Unavailable"
@@ -136,32 +154,91 @@ extension SetAvailibilityVC: UITableViewDelegate, UITableViewDataSource {
                 self.tableView.endUpdates()
             }
         }
-        cell.onSlotChanged = { [weak self] in
+        
+        cell.onSlotChanged = { index in
+            print("Slot at index \(index) was deleted")
+            // Handle any additional logic
+            self.SlotsListMain[indexPath.row].slots.remove(at: index)
+            print("List After delete", self.SlotsListMain)
             UIView.animate(withDuration: 0.3) {
-                self?.tableView.beginUpdates()
-                self?.tableView.endUpdates()
+                self.tableView.beginUpdates()
+                self.tableView.endUpdates()
             }
-          
         }
-
         
         cell.onSlotValueAdded = { [weak self] newSlot in
             guard let self = self else { return }
 
             // Find the index of the matching day
-            if let index = self.SlotsList.firstIndex(where: {
-                $0.day == newSlot.day && $0.shortDay == newSlot.shortDay
+            if let index = self.SlotsListMain.firstIndex(where: {
+                $0.day == newSlot.day
             }) {
                 // Replace the old slot times with the new ones
-                self.SlotsList[index].timeSlots = newSlot.timeSlots
+                self.SlotsListMain[index].slots = newSlot.slots
             } else {
                 // If not found, add new day slot
-                self.SlotsList.append(newSlot)
+                self.SlotsListMain.append(newSlot)
             }
 
-            print("Updated Slot List:", self.SlotsList)
+            print("Updated Slot List:", self.SlotsListMain)
         }
+        cell.parentViewController = self
         return cell
     }
+    
+}
+
+
+extension SetAvailibilityVC {
+    
+    
+    func setAvailabilityapiCall(){
+        LoaderManager.shared.show()
+        let req = AvailabilityRequest(overallAvailability: true, days: self.SlotsListMain)
+        viewModel.setAvailability(request: req) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Availability updated successfully"){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.setAvailabilityapiCall()
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+               }
+    }
+   
+    
     
 }

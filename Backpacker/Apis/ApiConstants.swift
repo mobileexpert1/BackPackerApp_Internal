@@ -12,9 +12,9 @@ struct ApiConstants {
         static let DEBUG_MODE_ON = true
         private static let BASE_URL: String = {
             if DEBUG_MODE_ON {
-                return "https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"  //////"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
+                return "http://192.168.11.4:3003/"//https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"  //////"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
             } else {
-                return "https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"  //"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
+                return "http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"  //"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
             }
         }()
 
@@ -384,6 +384,67 @@ struct ApiConstants {
           
             return url
         }
+        
+        static let CREATE_AVAILABILITY_FOR_BACKAPACKER = BASE_URL + "api/backpackers/availability"
+        static let GET_BACKAPACKER_AVAILABILITY = BASE_URL + "api/backpackers/availability"
+        
+        //MARK: - Favouare
+        static let FAVOURATE_JOBS  = BASE_URL + "api/favorite/job"
+        static let FAVOURATE_ACCOMODATION  = BASE_URL + "api/favorite/accommodation"
+        static let FAVOURATE_HANGOUT  = BASE_URL + "api/favorite/hangout"
+        
+        static func getFAVOURATE_ACCOMODATION_URL(
+            page: Int,
+            perPage: Int,
+            search: String? = nil
+        ) -> String {
+            var url =
+                "\(BASE_URL)api/favorite/accommodation?page=\(page)&perPage=\(perPage)"
+            if let searchText = search?.trimmingCharacters(
+                in: .whitespacesAndNewlines), !searchText.isEmpty
+            {
+                let encodedSearch =
+                    searchText.addingPercentEncoding(
+                        withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&search=\(encodedSearch)"
+            }
+            return url
+        }
+        static func getFAVOURATE_HANGOUT_URL(
+            page: Int,
+            perPage: Int,
+            search: String? = nil
+        ) -> String {
+            var url =
+                "\(BASE_URL)api/favorite/hangout?page=\(page)&perPage=\(perPage)"
+            if let searchText = search?.trimmingCharacters(
+                in: .whitespacesAndNewlines), !searchText.isEmpty
+            {
+                let encodedSearch =
+                    searchText.addingPercentEncoding(
+                        withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&search=\(encodedSearch)"
+            }
+            return url
+        }
+        static func getFAVOURATE_JOBS_URL(
+            page: Int,
+            perPage: Int,
+            search: String? = nil
+        ) -> String {
+            var url =
+                "\(BASE_URL)api/favorite/job?page=\(page)&perPage=\(perPage)"
+            if let searchText = search?.trimmingCharacters(
+                in: .whitespacesAndNewlines), !searchText.isEmpty
+            {
+                let encodedSearch =
+                    searchText.addingPercentEncoding(
+                        withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&search=\(encodedSearch)"
+            }
+            return url
+        }
+        static  let UPDATE_OVERALL_AVAILABILITY =  "\(BASE_URL)api/backpackers/availability"
     }
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"

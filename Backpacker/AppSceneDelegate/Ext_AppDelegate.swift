@@ -12,7 +12,7 @@ extension AppDelegate {
 
 
     
-    func handleNotification(jobId: String, appType: String) {
+    func handleNotification(jobId: String, appType: String,notificationId : String) {
 #if Backapacker
         guard !jobId.isEmpty else { return }
          
@@ -59,6 +59,7 @@ extension AppDelegate {
                              let storyboard = UIStoryboard(name: "Job", bundle: nil)
                              let detailVC = storyboard.instantiateViewController(withIdentifier: "MainJobController") as! MainJobController
                              detailVC.JobId = jobId
+                             
                              if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                                  appDelegate.isComeFromNotification = true
                              }
@@ -116,6 +117,7 @@ extension AppDelegate {
                                         appDelegate.isComeFromNotification = true
                                     }
                                     topVC.JobId = jobId
+                                    topVC.notificationId = notificationId
                                     topVC.refreshData()
                                 } else {
                                     //  Otherwise reset stack to MainJobController

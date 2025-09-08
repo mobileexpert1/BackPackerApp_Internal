@@ -127,3 +127,40 @@ struct ApiResponseModel<T: Codable>: Codable {
     let errors: [String]?
 }
 struct EmptyData: Codable {}
+
+
+//MARK: - Fav Hangout
+
+struct FavHangoutResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: FavHangoutData?
+    let errors: [String]
+}
+
+struct FavHangoutData: Codable {
+    let hangoutList: [FavHangout]  
+    let page: Int
+    let perPage: Int
+    let totalPages: Int
+    let total: Int
+}
+
+struct FavHangout: Codable {
+    let id: String
+    let name: String
+    let lat: Double
+    let long: Double
+    let locationText: String
+    let description: String
+    let image: [String]
+    let favoriteStatus: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case name, lat, long, locationText, description, image, favoriteStatus
+    }
+}
+
+
+

@@ -34,32 +34,35 @@
                                         </userDefinedRuntimeAttributes>
                                     </imageView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AWf-EH-8NT">
-                                        <rect key="frame" x="242" y="10" width="25" height="25"/>
+                                        <rect key="frame" x="247" y="10" width="20" height="20"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Heart" translatesAutoresizingMaskIntoConstraints="NO" id="Til-re-tjw">
-                                                <rect key="frame" x="2.6666666666666572" y="2.6666666666666661" width="20" height="20"/>
+                                                <rect key="frame" x="2.6666666666666572" y="2.6666666666666661" width="15" height="14.999999999999998"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="20" id="gXW-Ed-gaE"/>
-                                                    <constraint firstAttribute="width" constant="20" id="oJv-7Z-I02"/>
+                                                    <constraint firstAttribute="height" constant="15" id="gXW-Ed-gaE"/>
+                                                    <constraint firstAttribute="width" constant="15" id="oJv-7Z-I02"/>
                                                 </constraints>
                                             </imageView>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p54-RL-GFJ">
-                                                <rect key="frame" x="0.0" y="0.0" width="25" height="25"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="25" id="HfH-UW-OL9"/>
-                                                    <constraint firstAttribute="height" constant="25" id="j54-Kh-Hxk"/>
+                                                    <constraint firstAttribute="width" constant="20" id="HfH-UW-OL9"/>
+                                                    <constraint firstAttribute="height" constant="20" id="j54-Kh-Hxk"/>
                                                 </constraints>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <connections>
+                                                    <action selector="action_Heat:" destination="gTV-IL-0wX" eventType="touchUpInside" id="gsi-bU-LVe"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
                                             <constraint firstItem="p54-RL-GFJ" firstAttribute="leading" secondItem="AWf-EH-8NT" secondAttribute="leading" id="3x1-EJ-W3R"/>
-                                            <constraint firstAttribute="height" constant="25" id="Gx7-DP-l8t"/>
+                                            <constraint firstAttribute="height" constant="20" id="Gx7-DP-l8t"/>
                                             <constraint firstItem="Til-re-tjw" firstAttribute="centerX" secondItem="AWf-EH-8NT" secondAttribute="centerX" id="bc4-cK-2Al"/>
                                             <constraint firstAttribute="trailing" secondItem="p54-RL-GFJ" secondAttribute="trailing" id="cc8-3c-CAj"/>
                                             <constraint firstItem="Til-re-tjw" firstAttribute="centerY" secondItem="AWf-EH-8NT" secondAttribute="centerY" id="dsm-G8-5U0"/>
-                                            <constraint firstAttribute="width" constant="25" id="mNq-B9-3RB"/>
+                                            <constraint firstAttribute="width" constant="20" id="mNq-B9-3RB"/>
                                             <constraint firstItem="p54-RL-GFJ" firstAttribute="centerY" secondItem="AWf-EH-8NT" secondAttribute="centerY" id="v7f-3y-0GK"/>
                                             <constraint firstItem="p54-RL-GFJ" firstAttribute="centerX" secondItem="AWf-EH-8NT" secondAttribute="centerX" id="xsd-Oh-Xig"/>
                                         </constraints>
@@ -208,7 +211,7 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="Heart" width="25" height="25"/>
+        <image name="Heart" width="16.666666030883789" height="16.666666030883789"/>
         <image name="img_Placehodler" width="341.33334350585938" height="341.33334350585938"/>
         <namedColor name="blackColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

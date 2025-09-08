@@ -87,13 +87,13 @@ let accessToken = UserDefaultsManager.shared.bearerToken
            
            if appDelegate.isComeFromNotification,
               let jobId = appDelegate.pendingNotificationJobId,
-              let appType = appDelegate.pendingAppType {
+              let appType = appDelegate.pendingAppType , let notificationID = appDelegate.pendingNotificationId{
                
                print("⚡ Scene active with pending notification: \(jobId) \(appType)")
                
                // -Small delay so rootVC is stable
                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                   appDelegate.handleNotification(jobId: jobId, appType: appType)
+                   appDelegate.handleNotification(jobId: jobId, appType: appType, notificationId: notificationID)
                }
                
                // Reset
@@ -124,13 +124,13 @@ let accessToken = UserDefaultsManager.shared.bearerToken
        private func handleNotificationFromResponse(_ response: UNNotificationResponse) {
            let userInfo = response.notification.request.content.userInfo
            if let jobId = userInfo["jobId"] as? String,
-              let appType = userInfo["appType"] as? String {
+              let appType = userInfo["appType"] as? String, let notificationIS = userInfo["notificationId"] as? String  {
                
                print("📩 Cold launch via SceneDelegate: \(jobId) \(appType)")
                
                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                    (UIApplication.shared.delegate as? AppDelegate)?
-                       .handleNotification(jobId: jobId, appType: appType)
+                       .handleNotification(jobId: jobId, appType: appType, notificationId: notificationIS)
                }
            }
        }

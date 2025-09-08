@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CommonBottomView" customModule="Backpacker" customModuleProvider="target">
+            <connections>
+                <outlet property="lbl_value" destination="clN-K7-ewC" id="eBc-iM-LvI"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="819" height="86"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TMi-T8-7FE">
+                    <rect key="frame" x="0.0" y="0.66666666666666652" width="819" height="1"/>
+                    <color key="backgroundColor" red="0.82745098039215681" green="0.8784313725490196" blue="0.90980392156862744" alpha="1" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="Anh-zU-yxf"/>
+                    </constraints>
+                </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="clN-K7-ewC">
+                    <rect key="frame" x="10" y="3.6666666666666643" width="799" height="82.333333333333343"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="TMi-T8-7FE" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="0.5" id="5tb-Iv-vgE"/>
+                <constraint firstAttribute="trailing" secondItem="TMi-T8-7FE" secondAttribute="trailing" id="8Ly-et-FjC"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="clN-K7-ewC" secondAttribute="trailing" constant="10" id="Bme-tb-uEB"/>
+                <constraint firstItem="clN-K7-ewC" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="10" id="Kxe-Dr-DSu"/>
+                <constraint firstItem="clN-K7-ewC" firstAttribute="top" secondItem="TMi-T8-7FE" secondAttribute="bottom" constant="2" id="d8m-LI-0Ph"/>
+                <constraint firstAttribute="bottom" secondItem="clN-K7-ewC" secondAttribute="bottom" id="gHH-g2-69x"/>
+                <constraint firstItem="TMi-T8-7FE" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="gZU-V2-wa3"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="422.13740458015263" y="-280.98591549295776"/>
+        </view>
+    </objects>
+</document>

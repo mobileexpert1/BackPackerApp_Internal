@@ -400,6 +400,13 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                     self?.navigateToDescriptionVC()
 
                 }
+                cell.onFavTap = { [weak self] val in
+                        guard let self = self else { return }
+                        print("Cell tapped at index----------: \(indexPath.item)")
+                        // Navigate or perform any action
+//                    let id = self?.jobslist[indexPath.item].id
+//                    self?.jobId = id ?? ""
+                    }
                 // Optionally configure cell
                 return cell
             }

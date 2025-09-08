@@ -79,4 +79,37 @@ struct AccommodationDetail: Codable {
     }
 }
 
-//MARK: -
+//MARK: - Favourate Accomodation Model
+
+
+struct FavAccommodationResponse: Codable {
+    let success: Bool
+       let message: String
+       let data: FavAccommodationData
+       let errors: [String]
+}
+
+struct FavAccommodationData: Codable {
+        let accommodations: [FavAccommodation]  // ← Change here
+       let page: Int
+       let perPage: Int
+       let totalPages: Int
+       let total: Int
+}
+
+struct FavAccommodation: Codable {
+    let id: String
+       let name: String
+       let lat: Double
+       let long: Double
+       let locationText: String
+       let description: String
+       let image: [String]
+       let favoriteStatus: Int
+
+       enum CodingKeys: String, CodingKey {
+           case id = "_id"
+           case name, lat, long, locationText, description, image, favoriteStatus
+       }
+}
+

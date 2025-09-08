@@ -293,6 +293,75 @@ class AccommodationViewModel {
             completion(success, result, statusCode)
         }
     }
+    
+    // MARK: - BackPacker: List of All Accommodation
+    func getFavAccommodationList<T: Codable>(
+        page: Int,
+        perPage: Int,
+        search: String? = nil,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getFAVOURATE_ACCOMODATION_URL(
+            page: page,
+            perPage: perPage,
+            search: search
+        )
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
+    
+    // MARK: - BackPacker: List of All Hangout
+    func getFavHangoutList<T: Codable>(
+        page: Int,
+        perPage: Int,
+        search: String? = nil,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getFAVOURATE_HANGOUT_URL(
+            page: page,
+            perPage: perPage,
+            search: search
+        )
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
+    
+    // MARK: - BackPacker: List of All Jobs
+    func getFavJObsList<T: Codable>(
+        page: Int,
+        perPage: Int,
+        search: String? = nil,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getFAVOURATE_JOBS_URL(
+            page: page,
+            perPage: perPage,
+            search: search
+        )
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 struct AccommodationResponseData: Codable {
     let _id: String

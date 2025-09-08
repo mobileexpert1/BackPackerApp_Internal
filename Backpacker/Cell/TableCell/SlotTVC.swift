@@ -28,7 +28,8 @@ class SlotTVC: UITableViewCell {
           return formatter
       }()
     var onTimeChanged: ((_ startTime: String, _ endTime: String) -> Void)?
-
+    var parentController : UIViewController?
+    var SlotsList : DayAvailability?
     override func awakeFromNib() {
            super.awakeFromNib()
            setUpUI()
@@ -36,14 +37,76 @@ class SlotTVC: UITableViewCell {
        }
     
     @objc private func startTimeChanged(_ sender: UIDatePicker) {
-        txtFld_StartTime.text = timeFormatter.string(from: sender.date)
+        let newStart = sender.date
+        
+        // If end time already chosen, validate
+        if let endText = txtFld_EndTime.text,
+           let endDate = timeFormatter.date(from: endText) {
+            
+            if Calendar.current.compare(newStart, to: endDate, toGranularity: .minute) == .orderedSame {
+                txtFld_StartTime.text = ""
+                showValidationAlert(message: "Start time and End time cannot be the same.")
+                return
+            }
+            
+            if newStart > endDate {
+                txtFld_StartTime.text = ""
+                showValidationAlert(message: "Start time must be earlier than End time.")
+                return
+            }
+        }
+        
+        txtFld_StartTime.text = timeFormatter.string(from: newStart)
         onTimeChanged?(txtFld_StartTime.text ?? "", txtFld_EndTime.text ?? "")
     }
 
     @objc private func endTimeChanged(_ sender: UIDatePicker) {
+        // ✅ Ensure Start Time exists
+        guard let startText = txtFld_StartTime.text, !startText.isEmpty,
+              let startRaw = timeFormatter.date(from: startText) else {
+            txtFld_EndTime.text = ""
+            showValidationAlert(message: "Please choose Start Time first.")
+            return
+        }
+        
+        let calendar = Calendar.current
+        
+        // Extract hour/minute only
+        let startComponents = calendar.dateComponents([.hour, .minute], from: startRaw)
+        let endComponents = calendar.dateComponents([.hour, .minute], from: sender.date)
+        
+        // Normalize both to "today"
+        let today = Date()
+        guard let startDate = calendar.date(bySettingHour: startComponents.hour ?? 0,
+                                            minute: startComponents.minute ?? 0,
+                                            second: 0, of: today),
+              let endDate = calendar.date(bySettingHour: endComponents.hour ?? 0,
+                                          minute: endComponents.minute ?? 0,
+                                          second: 0, of: today) else {
+            return
+        }
+        
+        // 1️⃣ Same time
+        if calendar.isDate(startDate, equalTo: endDate, toGranularity: .minute) {
+            txtFld_EndTime.text = ""
+            showValidationAlert(message: "Start time and End time cannot be the same.")
+            return
+        }
+        
+        // 2️⃣ End must be later
+        if endDate < startDate {
+            txtFld_EndTime.text = ""
+            showValidationAlert(message: "End time must be later than Start time.")
+            return
+        }
+        
+        // ✅ Valid case
         txtFld_EndTime.text = timeFormatter.string(from: sender.date)
         onTimeChanged?(txtFld_StartTime.text ?? "", txtFld_EndTime.text ?? "")
     }
+
+
+
 
        @objc private func doneButtonTapped() {
            txtFld_StartTime.resignFirstResponder()
@@ -55,7 +118,15 @@ class SlotTVC: UITableViewCell {
     }
    
 
-   
+    private func showValidationAlert(message: String) {
+        guard let vc = parentController else { return }  // make sure parent exists
+        let alert = UIAlertController(title: "Invalid Time",
+                                      message: message,
+                                      preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        vc.present(alert, animated: true)
+    }
+
 }
 
 

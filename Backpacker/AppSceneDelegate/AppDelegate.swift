@@ -15,6 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var viewModel = LogInVM()
     var isComeFromNotification: Bool = false
     var pendingNotificationJobId: String?
+    var pendingNotificationId: String?
     var pendingAppType: String?
         
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -121,12 +122,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
                                   didReceive response: UNNotificationResponse,
                                   withCompletionHandler completionHandler: @escaping () -> Void) {
           let userInfo = response.notification.request.content.userInfo
-          print("📩 Notification tapped: \(userInfo)")
-          
+          print(" Notification tapped: \(userInfo)")
           if let jobId = userInfo["jobId"] as? String,
-             let appType = userInfo["appType"] as? String {
+             let appType = userInfo["appType"] as? String, let notificationID = userInfo["notificationId"] as? String {
               isComeFromNotification = true
               pendingNotificationJobId = jobId
+              pendingNotificationId = notificationID
               pendingAppType = appType
           }
           
@@ -138,7 +139,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
         }
         
         func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-            print("📲 FCM Token: \(fcmToken ?? "")")
+            print(" FCM Token: \(fcmToken ?? "")")
 #if BackpackerHire
             UserDefaultsManager.shared.employerfcmToken = fcmToken
 #else

@@ -17,7 +17,7 @@ class HangOutVC: UIViewController {
     @IBOutlet weak var lbl_MainHeader: UILabel!
     @IBOutlet weak var collectIOnVw: UICollectionView!
     @IBOutlet weak var btn_cleartxtFld: UIButton!
-    
+    private let viewModelJOb = JobVM()
     var filteredDesignations: [String] = []
     let viewModel = HangoutViewModel()
     let viewModelAuth = LogInVM()
@@ -240,6 +240,20 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
                     let id = self?.hangOutList[indexPath.item].id
                     self?.moveToDetail(id: id ?? "")
                     
+                }
+                cell.onHeartTapped = { [weak self] val in
+                    if let id = self?.hangOutList[indexPath.item].id {
+#if Backapacker
+                        self?.MakeJobHangOutFav(id: id)
+                        #endif
+                        
+                    }
+                    
+                }
+                if hangOut.favoriteStatus == 1 {
+                    cell.imgHeart.image = UIImage(named: "red_heart")
+                }else{
+                    cell.imgHeart.image = UIImage(named: "Heart")
                 }
                 return cell
             }else{
@@ -516,6 +530,52 @@ extension HangOutVC{
         }
         
     }
+    func MakeJobHangOutFav(id:String){
+        LoaderManager.shared.show()
+        viewModelJOb.MakeHangoutFAVOURATE(id: id) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Job added to favorites"){
+                            self.listOfAllBackPackerHangOuts()
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.MakeJobHangOutFav(id: id)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+               }
+    }
+    
     
 #endif
     
@@ -716,4 +776,6 @@ extension HangOutVC : UITextFieldDelegate{
         textField.resignFirstResponder()
         return true
     }
+    
+    
 }

@@ -33,7 +33,7 @@ class EmployerAccomodationVC: UIViewController {
         "Four Seasons Hotel Sydney"
     ]
     @IBOutlet weak var btn_cleartxtFld: UIButton!
-    
+    private let viewModelJOb = JobVM()
     var filteredDesignations: [String] = []
     let viewModel = AccommodationViewModel()
     let viewModelAuth = LogInVM()
@@ -269,9 +269,21 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
             }else{
                 cell.imgVw.image = UIImage(named: "img_Placehodler")
             }
+            if accomodation.favoriteStatus == 1 {
+                cell.imgHeart.image = UIImage(named: "red_heart")
+            }else{
+                cell.imgHeart.image = UIImage(named: "Heart")
+            }
             cell.onItemTapped = { [weak self] val in
                 let id = self?.accommodationList[indexPath.item].id
                 self?.moveToDetail(id: id ?? "")
+                
+            }
+            cell.onHeartTapped = { [weak self] val in
+                if let id = self?.accommodationList[indexPath.item].id{
+                    self?.MakeJobAccomodationFav(id: id)
+                }
+               
                 
             }
             return cell
@@ -724,6 +736,53 @@ extension EmployerAccomodationVC {
             }
         }
         
+    }
+    
+    
+    func MakeJobAccomodationFav(id: String){
+        LoaderManager.shared.show()
+        viewModelJOb.MakeAccomodationFAVOURATE(id: id) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Job added to favorites"){
+                            self.listOfAllAccommodation()
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.MakeJobAccomodationFav(id: id)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+               }
     }
 }
 

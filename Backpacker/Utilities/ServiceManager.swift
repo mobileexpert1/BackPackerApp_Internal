@@ -442,7 +442,38 @@ extension ServiceManager {
             }
         }
     }
+    func requestValidatedApiCreateAvailabilty<T: Codable>(
+        _ url: URLConvertible,
+        method: HTTPMethod = .post,
+        parameters: Parameters? = nil,
+        httpBody: String? = nil,
+        headers: [String: String]? = nil,
+        showLoader: Bool = true,
+        contentType: ContentType = .json,
+        completion: @escaping (ApiResult<ApiResponseModel<T>, APIError>) -> Void
+    ) {
+        requestAPI(
+            url,
+            method: method,
+            parameters: parameters,
+            httpBody: httpBody,
+            headers: headers,
+            showLoader: showLoader,
+            contentType: contentType
+        ) { (result: ApiResult<ApiResponseModel<T>?, APIError>) in
+            switch result {
+            case .success(let responseModel, let statusCode):
+                if let model = responseModel {
+                    completion(.success(model, statusCode: statusCode))
+                }else{
+                    
+                }
 
+            case .failure(let error, let statusCode):
+                completion(.failure(error, statusCode: statusCode))
+            }
+        }
+    }
     private func requestUploadAPI<T:Codable>(_ url: URLConvertible,videoData:Data? = nil,method:HTTPMethod, parameters: Parameters? = nil,httpBody:String? = nil,headers:[String:String]? = nil, completion: @escaping (ApiResult<T,APIError>) -> Void) {
         print("URL: ",url)
        // //MBProgressHUD.showAdded(to: UIA     pplication.appWindow, animated: true)

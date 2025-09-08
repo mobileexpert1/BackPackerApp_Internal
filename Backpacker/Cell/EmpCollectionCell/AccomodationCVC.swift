@@ -25,17 +25,25 @@ class AccomodationCVC: UICollectionViewCell {
     @IBOutlet weak var btnTapeed: UIButton!
     
     
-    var onHeartTapped: (() -> Void)?
+    var onHeartTapped: ((Int) -> Void)?
     var onItemTapped: ((Int) -> Void)?
     var item : Int?
     override func awakeFromNib() {
         super.awakeFromNib()
         setupFonts()
+#if BackpackerHire
+        self.btn_Heart.isHidden = true
+        self.heartVw.isHidden = true
+        self.imgHeart.isHidden = true
+        #else
+        self.btn_Heart.isHidden = false
+        self.heartVw.isHidden = false
+        self.imgHeart.isHidden = false
+#endif
     }
     @IBAction func action_Tap(_ sender: Any) {
         onItemTapped?(item ?? 0)
     }
-    
     private func setupFonts() {
         btn_Heart.tag = 0
         // Customize fonts according to your design system
@@ -54,7 +62,10 @@ class AccomodationCVC: UICollectionViewCell {
         lblAmount.text = "From $,\(amount) per adult"
     }
     @objc private func heartTapped() {
-        onHeartTapped?()
+        onHeartTapped?(item ?? 0)
     }
     
+    @IBAction func action_Heat(_ sender: Any) {
+        onHeartTapped?(item ?? 0)
+    }
 }

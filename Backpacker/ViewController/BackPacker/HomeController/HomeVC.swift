@@ -43,6 +43,7 @@ class HomeVC: UIViewController {
     private var JobData: JobListResponse?
     private var EmployerJobData: EmployerJobsResponse?
     var isComeFromNotification : Bool = false
+    private let viewModelJOb = JobVM()
     var activeSections: [SectionTypeList] {
         var sections: [SectionTypeList] = []
 #if BackpackerHire
@@ -256,6 +257,16 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
                     }
                    
                     }
+                cell.onFavTap = { [weak self] val in
+                        guard let self = self else { return }
+                        print("Cell tapped at index----------: \(indexPath.item)")
+                        // Navigate or perform any action
+                    if let id = JobData?.data.currentJobslist[val].id {
+                        print("Cell tapped at index: \(id)")
+                        self.jobId = id
+                        self.MakeJobFavorate()
+                    }
+                    }
                 
 #endif
                 
@@ -298,6 +309,16 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
                         print("Cell tapped at index: \(id)")
                         self.jobId = id
                         self.navigateToDescriptionVC()
+                    }
+                    }
+                cell.onFavTap = { [weak self] val in
+                        guard let self = self else { return }
+                        print("Cell tapped at index----------: \(indexPath.item)")
+                        // Navigate or perform any action
+                    if let id = JobData?.data.newJobslist[val].id {
+                        print("Cell tapped at index: \(id)")
+                        self.jobId = id
+                        self.MakeJobFavorate()
                     }
                     }
                 cell.newjobList = JobData?.data.newJobslist
@@ -345,6 +366,16 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
                         print("Cell tapped at index: \(id)")
                         self.jobId = id
                         self.navigateToDescriptionVC()
+                    }
+                    }
+                cell.onFavTap = { [weak self] val in
+                        guard let self = self else { return }
+                        print("Cell tapped at index----------: \(indexPath.item)")
+                        // Navigate or perform any action
+                    if let id = JobData?.data.declinedJobslist[val].id {
+                        print("Cell tapped at index: \(id)")
+                        self.jobId = id
+                        self.MakeJobFavorate()
                     }
                     }
                 cell.declinedjobList = JobData?.data.declinedJobslist
@@ -476,6 +507,10 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
            if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
                jobDescriptionVC.JobId = self.jobId
+               if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                   jobDescriptionVC.notificationId = appDelegate.pendingNotificationId
+               }
+               
                // Optional: pass selected job title
                self.navigationController?.pushViewController(jobDescriptionVC, animated: animation)
            }
@@ -708,7 +743,55 @@ extension  HomeVC: SkeletonTableViewDataSource {
           
        }
 }
-
+extension HomeVC {
+#if Backapacker
+    func MakeJobFavorate(){
+        LoaderManager.shared.show()
+        viewModelJOb.MakeJOBFAVOURATE(id: self.jobId) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Job added to favorites"){
+                            self.getListOfAll()
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.MakeJobFavorate()
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+               }
+    }
+    #endif
+}
 enum SectionTypeList {
     case currentJob
     case upcomingJob

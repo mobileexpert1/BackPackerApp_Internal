@@ -16,6 +16,7 @@ class HomeTVC: UITableViewCell {
     var onHangOut: ((Int) -> Void)?
     var isComeFromJob : Bool = false
     var onTap: ((Int) -> Void)?
+    var onFavTap: ((Int) -> Void)?
     var onTapAcceptJob: ((Int) -> Void)?
     // var isComeForHireDetailPage : Bool = false
     let role = UserDefaults.standard.string(forKey: "UserRoleType")
@@ -206,9 +207,16 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 // Navigate or perform any action
                 self.onTap?(indexPath.item)
             }
+            cell.onFavTap = { [weak self]  index in
+                guard let self = self else { return }
+                print("Cell Fav tapped at index: \(indexPath.item)")
+                // Navigate or perform any action
+                self.onFavTap?(indexPath.item)
+            }
             // Assign item to your label/image inside the cell
             // cell.titleLabel.text = item
             cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: isComeForHireDetailPage)
+            
             return cell
         }else{
             if isComeFromJobListSeeAll == true {
@@ -228,6 +236,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             print("Cell tapped at index: \(indexPath.item)")
                             // Navigate or perform any action
                             self.onTap?(indexPath.item)
+                        }
+                        cell.onFavTap = { [weak self]  index in
+                            guard let self = self else { return }
+                            print("Cell Fav tapped at index: \(indexPath.item)")
+                            // Navigate or perform any action
+                            self.onFavTap?(indexPath.item)
                         }
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
@@ -259,7 +273,11 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             }
                         }
                         
-                        
+                        if empCurrentJobslist?[indexPath.item].favoriteStatus == 1 {
+                            cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
+                        }else{
+                            cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
+                        }
                         cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
                         let strtTime = empCurrentJobslist?[indexPath.item].startTime
                         let endTime = empCurrentJobslist?[indexPath.item].endTime
@@ -277,6 +295,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             print("Cell tapped at index: \(indexPath.item)")
                             // Navigate or perform any action
                             self.onTap?(indexPath.item)
+                        }
+                        cell.onFavTap = { [weak self]  index in
+                            guard let self = self else { return }
+                            print("Cell Fav tapped at index: \(indexPath.item)")
+                            // Navigate or perform any action
+                            self.onFavTap?(indexPath.item)
                         }
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
@@ -307,7 +331,11 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                 )
                             }
                         }
-                        
+                        if empNewjobList?[indexPath.item].favoriteStatus == 1 {
+                            cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
+                        }else{
+                            cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
+                        }
                         
                         let strtTime = empNewjobList?[indexPath.item].startTime
                         let endTime = empNewjobList?[indexPath.item].endTime
@@ -325,6 +353,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             // Navigate or perform any action
                             
                             self.onTap?(indexPath.item)
+                        }
+                        cell.onFavTap = { [weak self]  index in
+                            guard let self = self else { return }
+                            print("Cell Fav tapped at index: \(indexPath.item)")
+                            // Navigate or perform any action
+                            self.onFavTap?(indexPath.item)
                         }
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
@@ -354,6 +388,11 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                     placeholderImage: UIImage(named: "img_Placehodler")
                                 )
                             }
+                        }
+                        if empPostedjobList?[indexPath.item].favoriteStatus == 1 {
+                            cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
+                        }else{
+                            cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
                         }
                         
                         
@@ -428,7 +467,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
 
                             self.onTap?(indexPath.item)
                           }
-
+                        cell.onFavTap = { [weak self]  index in
+                            guard let self = self else { return }
+                            print("Cell Fav tapped at index: \(indexPath.item)")
+                            // Navigate or perform any action
+                            self.onFavTap?(indexPath.item)
+                        }
 
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
@@ -466,6 +510,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             let endTime = obj.endTime
                             let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
                             cell.lbl_duration.text = "Duration \(duration1)"
+                            if obj.favoriteStatus == 1 {
+                                cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
+                            }else{
+                                cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
+                            }
+                            
                         }
 
                         cell.setUpApeeranceOflbl_Amunt(isShow: true)
@@ -576,7 +626,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             self.onTap?(indexPath.item)
                         }
                         
-                        
+                        cell.onFavTap = { [weak self]  index in
+                            guard let self = self else { return }
+                            print("Cell Fav tapped at index: \(indexPath.item)")
+                            // Navigate or perform any action
+                            self.onFavTap?(indexPath.item)
+                        }
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
                         cell.setUpUI(iscomeFromAccept: true,isComeForHiredetailpagee: isComeForHireDetailPage)
@@ -613,8 +668,13 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             let endTime = obj.endTime
                             let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
                             cell.lbl_duration.text = "Duration \(duration1)"
+                            if obj.favoriteStatus == 1 {
+                                cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
+                            }else{
+                                cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
+                            }
                         }
-                        
+                       
                         cell.setUpApeeranceOflbl_Amunt(isShow: true)
                         return cell
                     }
@@ -678,6 +738,14 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     cell.onItemTapped = { [weak self]  index in
                         self?.onAddAccommodation?(indexPath.item)
                     }
+                    cell.onHeartTapped = { [weak self]  index in
+                        self?.onFavTap?(indexPath.item)
+                    }
+                    if accommodation.favoriteStatus == 1 {
+                        cell.imgHeart.image = UIImage(named: "red_heart")
+                    }else{
+                        cell.imgHeart.image = UIImage(named: "Heart")
+                    }
                 }
                 
             case .hangouts:
@@ -708,6 +776,14 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     cell.onItemTapped = { [weak self]  index in
                         self?.onHangOut?(indexPath.item)
                     }
+                    cell.onHeartTapped = { [weak self]  index in
+                        self?.onFavTap?(indexPath.item)
+                    }
+                    if hangout.favoriteStatus == 1 {
+                        cell.imgHeart.image = UIImage(named: "red_heart")
+                    }else{
+                        cell.imgHeart.image = UIImage(named: "Heart")
+                    }
                 }
                 
             default:
@@ -736,6 +812,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             // Navigate or perform any action
                             self.onTap?(indexPath.item)
                         }
+                        cell.onFavTap = { [weak self]  index in
+                            guard let self = self else { return }
+                            print("Cell Fav tapped at index: \(indexPath.item)")
+                            // Navigate or perform any action
+                            self.onFavTap?(indexPath.item)
+                        }
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
                         cell.lbl_Title.text = currentJobslist?[indexPath.item].name ?? "No Data"
@@ -757,6 +839,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                     cell.imgVw.sd_setImage(with: URL(string: port3001), placeholderImage: UIImage(named: "img_Placehodler"))
                                 }
                             }
+                           
+                            if currentJobslist?[indexPath.item].favoriteStatus == 1 {
+                                cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
+                            }else{
+                                cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
+                            }
                         }
                         
                         cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
@@ -774,6 +862,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             print("Cell tapped at index: \(indexPath.item)")
                             // Navigate or perform any action
                             self.onTap?(indexPath.item)
+                        }
+                        cell.onFavTap = { [weak self]  index in
+                            guard let self = self else { return }
+                            print("Cell Fav tapped at index: \(indexPath.item)")
+                            // Navigate or perform any action
+                            self.onFavTap?(indexPath.item)
                         }
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
@@ -800,6 +894,11 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
                         cell.lbl_duration.text = "Duration \(duration1)"
                         cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
+                        if newjobList?[indexPath.item].favoriteStatus == 1 {
+                            cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
+                        }else{
+                            cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
+                        }
                     }
                     
                 case .declinedJobs:
@@ -810,6 +909,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             // Navigate or perform any action
                             
                             self.onTap?(indexPath.item)
+                        }
+                        cell.onFavTap = { [weak self]  index in
+                            guard let self = self else { return }
+                            print("Cell Fav tapped at index: \(indexPath.item)")
+                            // Navigate or perform any action
+                            self.onFavTap?(indexPath.item)
                         }
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
@@ -825,6 +930,11 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
                         cell.lbl_duration.text = "Duration \(duration1)"
                         cell.setUpUI(iscomeFromAccept: true,isComeForHiredetailpagee: true)
+                        if declinedjobList?[indexPath.item].favoriteStatus == 1 {
+                            cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
+                        }else{
+                            cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
+                        }
                     }
                     
                 default:
@@ -846,6 +956,12 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     // Navigate or perform any action
                     self.onTap?(indexPath.item)
                     //  self.onTap?(<#Int#>)
+                }
+                cell.onFavTap = { [weak self]  index in
+                    guard let self = self else { return }
+                    print("Cell Fav tapped at index: \(indexPath.item)")
+                    // Navigate or perform any action
+                    self.onFavTap?(indexPath.item)
                 }
                 // Assign item to your label/image inside the cell
                 // cell.titleLabel.text = item
@@ -886,6 +1002,11 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
                 cell.lbl_duration.text = "Duration \(duration1)"
                 cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
+                if jobList?[indexPath.item].favoriteStatus == 1 {
+                    cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
+                }else{
+                    cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
+                }
                 return cell
             }
             

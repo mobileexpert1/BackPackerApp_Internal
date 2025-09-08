@@ -31,7 +31,7 @@ class SettingVC: UIViewController {
         MenuItem(iconName: "Profile1", title: "Profile"),
         MenuItem(iconName: "Calendar1", title: "Availability"),
         MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
-        MenuItem(iconName: "Heart", title: "Favorite Jobs"),
+        MenuItem(iconName: "Heart", title: "Favorite"),
         MenuItem(iconName: "Error", title: "Report Issue"),
         MenuItem(iconName: "User Shield", title: "Privacy Policy"),
         MenuItem(iconName: "Delete", title: "Delete Account"),

@@ -42,6 +42,9 @@
                                 </constraints>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="plain" image="fav"/>
+                                <connections>
+                                    <action selector="action_JobFav:" destination="gTV-IL-0wX" eventType="touchUpInside" id="HrY-N2-cPw"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="owy-HV-hnn">
                                 <rect key="frame" x="10" y="65" width="375" height="21"/>
@@ -95,7 +98,7 @@
                                 </userDefinedRuntimeAttributes>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="abj-Hr-hOi">
-                                <rect key="frame" x="5" y="5" width="330" height="211"/>
+                                <rect key="frame" x="5" y="5" width="320" height="211"/>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="262-se-x47">
@@ -140,7 +143,7 @@
                             <constraint firstItem="owy-HV-hnn" firstAttribute="trailing" secondItem="DK7-qF-Vao" secondAttribute="trailing" id="3yK-nQ-o0P"/>
                             <constraint firstItem="BXQ-TX-KRE" firstAttribute="leading" secondItem="owy-HV-hnn" secondAttribute="leading" id="7Io-Rc-M2X"/>
                             <constraint firstItem="BXQ-TX-KRE" firstAttribute="top" relation="greaterThanOrEqual" secondItem="wm1-v4-ehL" secondAttribute="bottom" constant="10" id="9Bk-KJ-13h"/>
-                            <constraint firstItem="DK7-qF-Vao" firstAttribute="leading" secondItem="abj-Hr-hOi" secondAttribute="trailing" constant="10" id="ASB-Dr-AH8"/>
+                            <constraint firstItem="DK7-qF-Vao" firstAttribute="leading" secondItem="abj-Hr-hOi" secondAttribute="trailing" constant="20" id="ASB-Dr-AH8"/>
                             <constraint firstItem="262-se-x47" firstAttribute="top" secondItem="BXQ-TX-KRE" secondAttribute="bottom" constant="4" id="AVB-D6-bt8"/>
                             <constraint firstItem="wm1-v4-ehL" firstAttribute="top" secondItem="bTD-uT-6Dc" secondAttribute="bottom" constant="4" id="HXM-H9-fEp"/>
                             <constraint firstItem="abj-Hr-hOi" firstAttribute="top" secondItem="qld-KF-ifF" secondAttribute="top" constant="5" id="O9x-Im-KzN"/>

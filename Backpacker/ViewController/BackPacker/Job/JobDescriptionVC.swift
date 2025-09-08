@@ -92,8 +92,8 @@ class JobDescriptionVC: UIViewController {
        
         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
             if   appDelegate.isComeFromNotification == true {
-                if let jobid = self.notificationId {
-                    self.MarkNotificationRead(id: jobid)
+                if let notificationid = self.notificationId {
+                    self.MarkNotificationRead(id: notificationid)
                 }else{
                     self.getEmployeeDetailOfJob()
                 }
@@ -112,6 +112,8 @@ class JobDescriptionVC: UIViewController {
             }
             
         }
+        
+    
     }
     
     func refreshData(){

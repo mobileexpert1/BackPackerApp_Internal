@@ -328,5 +328,160 @@ class JobVM {
             }
         }
     }
+    
+    //MARK: - FAVOURATE
+
+
+    func MakeJOBFAVOURATE(
+        id: String,
+        completion: @escaping (Bool, String?, Int?) -> Void
+    ) {
+        #if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+        #else
+        let bearerToken = UserDefaultsManager.shared.bearerToken
+        #endif
+
+        guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+            print("⚠️ No bearer token found.")
+            completion(false, nil, nil)
+            return
+        }
+
+        let url = ApiConstants.API.FAVOURATE_JOBS
+
+        //  Create request body
+        let request = FavouriteJobRequest(jobId: id)
+
+        let jsonBody: String
+        do {
+            let data = try JSONEncoder().encode(request)
+            jsonBody = String(data: data, encoding: .utf8) ?? "{}"
+        } catch {
+            print("⚠️ Failed to encode request: \(error)")
+            completion(false, nil, nil)
+            return
+        }
+
+        print("Request JSON:", jsonBody)
+        // Example output: {"jobId":"60c72b2f5f1b2c001c8d4567"}
+
+        //  Call your generic request
+        ServiceManager.sharedInstance.requestValidatedApiCreateAvailabilty(
+            url,
+            method: .post,
+            parameters: nil,
+            httpBody: jsonBody,
+            headers: ServiceManager.sharedInstance.getHeaders()
+        ) { (result: ApiResult<ApiResponseModel<EmptyData>, APIError>) in
+            switch result {
+            case .success(let response, let statusCode):
+                completion(response?.success ?? true, response?.message ?? "Something went wrong", statusCode)
+            case .failure(let error, let statusCode):
+                completion(false, error.customDescription, statusCode)
+            }
+        }
+    }
+    func MakeAccomodationFAVOURATE(
+        id: String,
+        completion: @escaping (Bool, String?, Int?) -> Void
+    ) {
+        #if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+        #else
+        let bearerToken = UserDefaultsManager.shared.bearerToken
+        #endif
+
+        guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+            print("⚠️ No bearer token found.")
+            completion(false, nil, nil)
+            return
+        }
+
+        let url = ApiConstants.API.FAVOURATE_ACCOMODATION
+
+        //  Create request body
+        let request = FavouriteAccomodationRequest(accommodationId: id)
+
+        let jsonBody: String
+        do {
+            let data = try JSONEncoder().encode(request)
+            jsonBody = String(data: data, encoding: .utf8) ?? "{}"
+        } catch {
+            print("⚠️ Failed to encode request: \(error)")
+            completion(false, nil, nil)
+            return
+        }
+
+        print("Request JSON:", jsonBody)
+        // Example output: {"jobId":"60c72b2f5f1b2c001c8d4567"}
+
+        //  Call your generic request
+        ServiceManager.sharedInstance.requestValidatedApiCreateAvailabilty(
+            url,
+            method: .post,
+            parameters: nil,
+            httpBody: jsonBody,
+            headers: ServiceManager.sharedInstance.getHeaders()
+        ) { (result: ApiResult<ApiResponseModel<EmptyData>, APIError>) in
+            switch result {
+            case .success(let response, let statusCode):
+                completion(response?.success ?? true, response?.message ?? "Something went wrong", statusCode)
+            case .failure(let error, let statusCode):
+                completion(false, error.customDescription, statusCode)
+            }
+        }
+    }
+    
+    func MakeHangoutFAVOURATE(
+        id: String,
+        completion: @escaping (Bool, String?, Int?) -> Void
+    ) {
+        #if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+        #else
+        let bearerToken = UserDefaultsManager.shared.bearerToken
+        #endif
+
+        guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+            print("⚠️ No bearer token found.")
+            completion(false, nil, nil)
+            return
+        }
+
+        let url = ApiConstants.API.FAVOURATE_HANGOUT
+
+        //  Create request body
+        let request = FavouriteHangoutbRequest(hangoutId: id)
+
+        let jsonBody: String
+        do {
+            let data = try JSONEncoder().encode(request)
+            jsonBody = String(data: data, encoding: .utf8) ?? "{}"
+        } catch {
+            print("⚠️ Failed to encode request: \(error)")
+            completion(false, nil, nil)
+            return
+        }
+
+        print("Request JSON:", jsonBody)
+        // Example output: {"jobId":"60c72b2f5f1b2c001c8d4567"}
+
+        //  Call your generic request
+        ServiceManager.sharedInstance.requestValidatedApiCreateAvailabilty(
+            url,
+            method: .post,
+            parameters: nil,
+            httpBody: jsonBody,
+            headers: ServiceManager.sharedInstance.getHeaders()
+        ) { (result: ApiResult<ApiResponseModel<EmptyData>, APIError>) in
+            switch result {
+            case .success(let response, let statusCode):
+                completion(response?.success ?? true, response?.message ?? "Something went wrong", statusCode)
+            case .failure(let error, let statusCode):
+                completion(false, error.customDescription, statusCode)
+            }
+        }
+    }
 }
 

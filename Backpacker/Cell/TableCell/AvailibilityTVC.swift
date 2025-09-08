@@ -32,10 +32,13 @@ class AvailibilityTVC: UITableViewCell {
     var onTapAnother: ((Bool) -> Void)?  // Callback to controller
     var slots: [Int] = []              // Active slot numbers
     
-    var onSlotChanged: (() -> Void)? // Notify VC when slot added/deleted
-    var onSlotValueAdded: ((DaySlot) -> Void)? // Notify VC when slot added/deleted
-    var SlotsList : DaySlot?
+    var onSlotChanged: ((_ index: Int) -> Void)? // Pass the slot index
+
+    var onSlotValueAdded: ((DayAvailability) -> Void)? // Notify VC when slot added/deleted
+    var SlotsList : DayAvailability?
     var isQuickSetupIsOn : Bool = false
+    var totalHour = 8
+    var parentViewController : UIViewController?
     override func awakeFromNib() {
         super.awakeFromNib()
         self.setUpUi()
@@ -77,27 +80,20 @@ class AvailibilityTVC: UITableViewCell {
         if isQuickActionSetup == false{
             if btn_Switch.isOn == false {
                 self.onSlotValueAdded?(
-                    DaySlot(
-                        day: self.SlotsList?.day ?? "",
-                        shortDay: self.SlotsList?.shortDay ?? "",
-                        timeSlots: []
-                    )
+                    DayAvailability(day: self.SlotsList?.day ?? "", enabled: false, slots: [])
+                   
                 )
-                self.SlotsList?.timeSlots.removeAll()
+                self.SlotsList?.slots.removeAll()
                 self.SetUpToggleAction()
             }else{
-                self.SlotsList?.timeSlots.removeAll()
+                self.SlotsList?.slots.removeAll()
                 SetUpToggleAction()
             }
            
         }else{
             UserDefaults.standard.set(false, forKey: "setupQuickAction")
             self.onSlotValueAdded?(
-                DaySlot(
-                    day: self.SlotsList?.day ?? "",
-                    shortDay: self.SlotsList?.shortDay ?? "",
-                    timeSlots: []
-                )
+                DayAvailability(day: self.SlotsList?.day ?? "", enabled: false, slots: [])
             )
             self.SetUpToggleAction()
         }
@@ -131,6 +127,20 @@ class AvailibilityTVC: UITableViewCell {
     }
     @IBAction func action_AddAnotherSlot(_ sender: Any) {
         // Show the "AnotherSlot" view
+        // Check current hours used
+           let currentHours = calculateTotalHours()
+           
+           if currentHours >= totalHour {
+               // Already reached 8 hr limit → show alert
+               if let vc = self.parentViewController {
+                   let alert = UIAlertController(title: "Limit Reached",
+                                                 message: "You cannot add more slots as total exceeds \(totalHour) hours.",
+                                                 preferredStyle: .alert)
+                   alert.addAction(UIAlertAction(title: "OK", style: .default))
+                   vc.present(alert, animated: true)
+               }
+               return
+           }
            BgVw_AnotherSlot.isHidden = false
            VwAnotherSlot_Height.constant = 45// Or your desired height
 
@@ -143,14 +153,17 @@ class AvailibilityTVC: UITableViewCell {
 
            // Show the time table
          Bg_Vw_Table.isHidden = false
-        guard let count = self.SlotsList?.timeSlots.count, count < 3 else { return }
+        guard let count = self.SlotsList?.slots.count, count < 3 else { return }
 
         // Append an empty slot
-        self.SlotsList?.timeSlots.append(TimesSlot(startTime: "", endTime: ""))
-
+        self.SlotsList?.slots.append(Slot(start: "", end: "", enabled: false))
+        self.onSlotValueAdded?(
+            DayAvailability(day: self.SlotsList?.day ?? "", enabled: true, slots:  self.SlotsList?.slots ?? [])
+           
+        )
          // table_VW.reloadData()
           
-        if  self.SlotsList?.timeSlots.count == 3 {
+        if  self.SlotsList?.slots.count == 3 {
             self.VwAnotherSlot_Height.constant = 0.0
             BgVw_AnotherSlot.isHidden = true
         }else{
@@ -192,7 +205,7 @@ extension AvailibilityTVC {
 extension AvailibilityTVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.SlotsList?.timeSlots.count ?? 0
+        return self.SlotsList?.slots.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -201,26 +214,25 @@ extension AvailibilityTVC: UITableViewDelegate, UITableViewDataSource {
             }
 
             let row = indexPath.row + 1
+        cell.parentController = self.parentViewController
         cell.lbl_timeSlot.text = "Time Slot \(row)"
         cell.onTimeChanged = { [weak self] start, end in
             guard let self = self else { return }
             guard var slotsList = self.SlotsList else { return }
             
             // Update the correct index, not append
-            if row < slotsList.timeSlots.count {
-                self.SlotsList?.timeSlots[row].startTime = start
-                self.SlotsList?.timeSlots[row].endTime = end
-            } else {
-                let timeSlot = TimesSlot(startTime: start, endTime: end)
-                self.SlotsList?.timeSlots.append(timeSlot)
-            }
+        //    if row < slotsList.timeSlots.count {
+                self.SlotsList?.slots[indexPath.row].start = start
+                self.SlotsList?.slots[indexPath.row].end = end
+              self.SlotsList?.slots[indexPath.row].enabled = true
+//            } else {
+//                let timeSlot = Slot(start: start, end: end, enabled: true)
+//                self.SlotsList?.timeSlots.append(timeSlot)
+//            }
             
             self.onSlotValueAdded?(
-                DaySlot(
-                    day: self.SlotsList?.day ?? "",
-                    shortDay: self.SlotsList?.shortDay ?? "",
-                    timeSlots: self.SlotsList?.timeSlots ?? []
-                )
+               
+                DayAvailability(day: self.SlotsList?.day ?? "", enabled: true, slots: self.SlotsList?.slots ?? [])
             )
         }
 
@@ -228,8 +240,8 @@ extension AvailibilityTVC: UITableViewDelegate, UITableViewDataSource {
             // Use captured index
             cell.onDelete = { [weak self] in
                 guard let self = self else { return }
-                self.SlotsList?.timeSlots.remove(at: row - 1)
-                if self.SlotsList?.timeSlots.count == 3 {
+                self.SlotsList?.slots.remove(at: row - 1)
+                if self.SlotsList?.slots.count == 3 {
                     self.VwAnotherSlot_Height.constant = 0.0
                     BgVw_AnotherSlot.isHidden = true
                 }else{
@@ -239,24 +251,32 @@ extension AvailibilityTVC: UITableViewDelegate, UITableViewDataSource {
                 table_VW.reloadData()
                 self.height_Table.constant = tableView.contentSize.height
                 self.Ve_TableHeight.constant = tableView.contentSize.height + 10
-                self.onSlotChanged?()
+                self.onSlotChanged?(indexPath.row)
                 
             }
 
             return cell
     }
+    func calculateTotalHours() -> Int {
+        guard let timeSlots = self.SlotsList?.slots else { return 0 }
+        
+        var total = 0
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "h:mm a"
+        dateFormatter.amSymbol = "AM"
+        dateFormatter.pmSymbol = "PM"
+        
+        for slot in timeSlots {
+            if let startDate = dateFormatter.date(from: slot.start),
+               let endDate = dateFormatter.date(from: slot.end) {
+                let diff = Calendar.current.dateComponents([.hour], from: startDate, to: endDate).hour ?? 0
+                total += max(diff, 0) // avoid negatives
+            }
+        }
+        
+        return total
+    }
+
 
 }
 
-struct TimesSlot {
-    var startTime : String
-    var endTime : String
-}
-
-struct DaySlot {
-    
-    var day : String
-    var shortDay : String
-    var timeSlots : [TimesSlot]
-    
-}

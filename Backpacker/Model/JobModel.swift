@@ -75,8 +75,6 @@ struct Job: Codable {
 //MARK: - Employer Job List See All
 
 
-import Foundation
-
 // MARK: - Root Response
 struct EmployerJobsResponse: Codable {
     let success: Bool
@@ -93,3 +91,40 @@ struct JobData: Codable {
 }
 
 
+
+// MARK: - Favourate Job Reques
+struct FavouriteJobRequest: Codable {
+    let jobId: String
+}
+struct FavouriteHangoutbRequest: Codable {
+    let hangoutId: String
+}
+struct FavouriteAccomodationRequest: Codable {
+    let accommodationId: String
+}
+//MARK: - Favourate Job
+struct FavoriteJobResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: FavoriteJobData?
+    let errors: [String]
+}
+
+struct FavoriteJobData: Codable {
+    let jobs: [FavoriteJob]
+    let page: Int
+    let perPage: Int
+    let totalPages: Int
+    let total: Int
+}
+struct FavoriteJob: Codable {
+    let id: String
+    let description: String
+    let image: String
+    let favoriteStatus: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case description, image, favoriteStatus
+    }
+}

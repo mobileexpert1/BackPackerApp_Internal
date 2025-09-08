@@ -827,7 +827,7 @@ nec turpis facilisis hendrerit</string>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="uEa-0b-dFh">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="uEa-0b-dFh">
                                 <rect key="frame" x="20" y="109.33333333333331" width="353" height="708.66666666666674"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <inset key="scrollIndicatorInsets" minX="0.0" minY="5" maxX="0.0" maxY="5"/>
@@ -1862,6 +1862,12 @@ nec turpis facilisis hendrerit</string>
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="W15-PQ-Fqe">
+                                <rect key="frame" x="175.66666666666666" y="428" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="OkS-dh-sdY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -1869,6 +1875,8 @@ nec turpis facilisis hendrerit</string>
                             <constraint firstItem="OkS-dh-sdY" firstAttribute="bottom" secondItem="KVG-P0-Y8C" secondAttribute="bottom" constant="20" id="1yK-xm-lSg"/>
                             <constraint firstAttribute="trailing" secondItem="thr-Bh-a46" secondAttribute="trailing" constant="20" id="34Z-MQ-4LH"/>
                             <constraint firstItem="SOG-tB-FHq" firstAttribute="top" secondItem="t0q-Kc-svr" secondAttribute="bottom" id="9Ae-mL-kl6"/>
+                            <constraint firstItem="W15-PQ-Fqe" firstAttribute="centerX" secondItem="OkS-dh-sdY" secondAttribute="centerX" id="D4q-Hp-BjU"/>
+                            <constraint firstItem="W15-PQ-Fqe" firstAttribute="centerY" secondItem="OkS-dh-sdY" secondAttribute="centerY" id="DJ5-92-VGW"/>
                             <constraint firstItem="thr-Bh-a46" firstAttribute="leading" secondItem="OkS-dh-sdY" secondAttribute="leading" constant="15" id="Spq-h9-NPc"/>
                             <constraint firstItem="OkS-dh-sdY" firstAttribute="trailing" secondItem="KVG-P0-Y8C" secondAttribute="trailing" constant="10" id="eSf-Og-jql"/>
                             <constraint firstItem="KVG-P0-Y8C" firstAttribute="top" secondItem="SOG-tB-FHq" secondAttribute="bottom" constant="5" id="ggS-BW-zNj"/>
@@ -1885,6 +1893,7 @@ nec turpis facilisis hendrerit</string>
                         <outlet property="headerCollView" destination="SOG-tB-FHq" id="UEC-sL-1UJ"/>
                         <outlet property="height_headerCollection" destination="h8i-Z2-baA" id="Uuw-Bu-FHK"/>
                         <outlet property="lbl_MainHeader" destination="thr-Bh-a46" id="PtK-AP-iY9"/>
+                        <outlet property="lbl_No_AccomdodationFound" destination="W15-PQ-Fqe" id="vQl-kP-09D"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yY9-wS-c1K" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -27,6 +27,7 @@ class HomeJobCVC: UICollectionViewCell {
     @IBOutlet weak var statusVw: UIView!
     @IBOutlet weak var lbl_jobStatus: UILabel!
     var onTap: ((Int) -> Void)?
+    var onFavTap: ((Int) -> Void)?
     var isComeFormAccpetedJobs : Bool = false
     var isComeForHiredetailpage : Bool = false
     var indexPath : Int = 0
@@ -35,7 +36,11 @@ class HomeJobCVC: UICollectionViewCell {
            setupUI()
         tap_Button.addTarget(self, action: #selector(tapButtonTapped), for: .touchUpInside)
         
-     
+#if BackpackerHire
+        self.btn_fav.isHidden = true
+        #else
+        self.btn_fav.isHidden = false
+#endif
        }
     
     func SetUpHeight(isHeightShow : Bool = false){
@@ -109,5 +114,10 @@ class HomeJobCVC: UICollectionViewCell {
        }
     @objc private func tapButtonTapped() {
         onTap?(indexPath)
+    }
+    
+    
+    @IBAction func action_JobFav(_ sender: Any) {
+        onFavTap?(indexPath)
     }
 }
