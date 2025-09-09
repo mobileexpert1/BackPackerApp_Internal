@@ -9,10 +9,12 @@ import UIKit
 import FSCalendar
 
 class EmployerCalendarVC: UIViewController {
-
+    
     @IBOutlet weak var tblVw: UITableView!
     @IBOutlet weak var Vw_Month: UIView!
     
+    @IBOutlet weak var mainScrollVw: UIScrollView!
+    @IBOutlet weak var lbl_No_Backpacker: UILabel!
     @IBOutlet weak var haderSelectDate: UILabel!
     @IBOutlet weak var lbl_SelectedYear: UILabel!
     @IBOutlet weak var header_selctMonth: UILabel!
@@ -30,34 +32,108 @@ class EmployerCalendarVC: UIViewController {
     var monthsArray: [Date] = []
     @IBOutlet weak var tbl_Heught: NSLayoutConstraint!
     private var yearPicker: UIPickerView!
-        private var years: [Int] = []
+    private var years: [Int] = []
+    let viewModel = SetAvailabilityViewModel()
+    let viewModelAuth = LogInVM()
+    var selectedDateForApi : String?
+    var availableBackpaker : [AvailableBackpacker]?
+    
+    var totalJobs = Int()
+    var isLoading : Bool = true
+    let refreshControl = UIRefreshControl()
+    var lastContentOffset: CGFloat = 0
+    var page = 1
+    let perPage = 1
+    var totalBackpackers = Int()
+    var isLoadingMoreData = false
+    var isAllDataLoaded = false
+    var isComeFromPullTorefresh : Bool = false
+    var scrollFooterLoader: UIActivityIndicatorView?
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        mainScrollVw.delegate = self
+        self.lbl_No_Backpacker.font = FontManager.inter(.medium, size: 12)
+        self.lbl_No_Backpacker.isHidden = true
         if selectedDate == nil {
             selectedDate = Date()
             calendarVw.select(selectedDate)
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            let formattedDate = dateFormatter.string(from: selectedDate!)
+            
+            print("Formatted selectedDate: \(formattedDate)")  // Example: "2025-09-08"
+            
+            self.selectedDateForApi = formattedDate
+            self.getBackpackerList()
         }
+        
+        
+        
+        
         Vw_Month.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
         // Do any additional setup after loading the view.
         self.registerCell()
         self.setUpFonts()
         self.setUpCalendar()
         let currentYear = Calendar.current.component(.year, from: Date())
-                years = Array(currentYear...2035)
+        years = Array(currentYear...2035)
         self.tblVw.delegate = self
         self.tblVw.dataSource = self
         tblVw.isScrollEnabled = false
-        tblVw.reloadData()
-
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
-            self.tbl_Heught.constant = 1 * 92 //10 is number of item of backpacker list and 92 is row height
-            self.scroll_Height.constant = (self.scroll_Height.constant ) + self.tbl_Heught.constant
+        
+        
+        self.manageHeight()
+        self.lbl_SelectedYear.isHidden = true
+        
+        self.setupPullToRefresh()
+        tblVw.reloadData()
+    }
+    private func setupPullToRefresh() {
+        refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
+        refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
+        refreshControl.addTarget(self, action: #selector(refreshCollectionData), for: .valueChanged)
+        self.mainScrollVw.refreshControl = refreshControl
+    }
+    private func manageHeight() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            let tableHeight = CGFloat((self.availableBackpaker?.count ?? 1) * 92)  // 92 = row height
+            self.tbl_Heught.constant = tableHeight
+            
+            // Instead of adding, assign the correct scroll height
+            let baseScrollHeight: CGFloat = 750  // Or whatever your fixed starting scroll height is
+            self.scroll_Height.constant = baseScrollHeight + tableHeight
+            
             self.view.layoutIfNeeded()
         }
-        self.lbl_SelectedYear.isHidden = true
-      
     }
+    
+    @objc private func refreshCollectionData() {
+        // Reset pagination and loading flags
+        
+        self.page = 1
+        self.isAllDataLoaded = false
+        self.isLoadingMoreData = false
+        self.isLoading = true
+        
+        // Start refreshing UI
+        
+        isComeFromPullTorefresh = true
+        // Fetch data
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+#if Backapacker
+            
+#else
+            self.getBackpackerList()
+#endif
+            
+        }
+        
+    }
+    
     
     private func setUpFonts(){
         self.header_backpackers.font = FontManager.inter(.medium, size: 14.0)
@@ -128,16 +204,16 @@ class EmployerCalendarVC: UIViewController {
     @IBAction func action_previous(_ sender: Any) {
         
         if selectedMonthIndex > 0 {
-                selectedMonthIndex -= 1
-                scrollToSelectedMonth()
-            }
+            selectedMonthIndex -= 1
+            scrollToSelectedMonth()
+        }
     }
     
     @IBAction func action_next(_ sender: Any) {
         if selectedMonthIndex < monthsArray.count - 1 {
-               selectedMonthIndex += 1
-               scrollToSelectedMonth()
-           }
+            selectedMonthIndex += 1
+            scrollToSelectedMonth()
+        }
         
         
     }
@@ -146,15 +222,15 @@ class EmployerCalendarVC: UIViewController {
     func scrollToSelectedMonth() {
         let indexPath = IndexPath(item: selectedMonthIndex, section: 0)
         collVw.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-
+        
         let selectedMonthDate = monthsArray[selectedMonthIndex]
         calendarVw.setCurrentPage(selectedMonthDate, animated: true)
-
+        
         collVw.reloadData()
     }
     @IBAction func action_SelectYear(_ sender: Any) {
         
-      //  self.ShowYearPicker()
+        //  self.ShowYearPicker()
     }
 }
 
@@ -164,29 +240,29 @@ extension EmployerCalendarVC : UICollectionViewDelegate,UICollectionViewDataSour
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return monthsArray.count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CalendarMonthCell", for: indexPath) as? CalendarMonthCell else {
-                return UICollectionViewCell()
-            }
-
-            let monthDate = monthsArray[indexPath.row]
-            let formatter = DateFormatter()
-            formatter.dateFormat = "MMM" // Short name like Jan, Feb
-          let month = formatter.string(from: monthDate)
-            // Highlight selected
-            let isSelected = indexPath.row == selectedMonthIndex
+            return UICollectionViewCell()
+        }
+        
+        let monthDate = monthsArray[indexPath.row]
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM" // Short name like Jan, Feb
+        let month = formatter.string(from: monthDate)
+        // Highlight selected
+        let isSelected = indexPath.row == selectedMonthIndex
         cell.configure(month: month, isSelected: isSelected)
-            return cell
+        return cell
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedMonthIndex = indexPath.row
         collectionView.reloadData()
-
+        
         let selectedDate = monthsArray[indexPath.row]
         calendarVw.setCurrentPage(selectedDate, animated: true)
     }
-
+    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -195,22 +271,22 @@ extension EmployerCalendarVC : UICollectionViewDelegate,UICollectionViewDataSour
         let width = collectionView.frame.width
         return CGSize(width: width / 3.75, height: height)
     }
-
-
+    
+    
 }
 extension EmployerCalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegateAppearance {
     func minimumDate(for calendar: FSCalendar) -> Date {
-            return Calendar.current.date(from: DateComponents(year: 2015, month: 1, day: 1))!
-        }
-
-        func maximumDate(for calendar: FSCalendar) -> Date {
-            return Calendar.current.date(from: DateComponents(year: 2035, month: 12, day: 31))!
-        }
-   
+        return Calendar.current.date(from: DateComponents(year: 2015, month: 1, day: 1))!
+    }
+    
+    func maximumDate(for calendar: FSCalendar) -> Date {
+        return Calendar.current.date(from: DateComponents(year: 2035, month: 12, day: 31))!
+    }
+    
     // FSCalendarDataSource method
     
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at position: FSCalendarMonthPosition) {
-            cell.isHidden = false
+        cell.isHidden = false
     }
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
         let currentMonth = calendar.currentPage
@@ -227,12 +303,12 @@ extension EmployerCalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalenda
             return UIColor(hex: "#C9C9C9") // Other months
         }
     }
-   
+    
     func calendar(_ calendar: FSCalendar, shouldSelect date: Date, at position: FSCalendarMonthPosition) -> Bool {
         return position == .current
     }
-
-
+    
+    
     
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
@@ -240,41 +316,24 @@ extension EmployerCalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalenda
         if let previous = selectedDate {
             calendar.deselect(previous)
         }
-
+        
         // Update to new selected date
         selectedDate = date
         calendar.today = nil
-
+        
         print("User selected: \(dateToString(date))")
-    //    self.lbl_Value_Date.text = dateToString(date)
-
+        //    self.lbl_Value_Date.text = dateToString(date)
+        
         // Combine date and time (10:15 AM as example)
         let selectedDateWithTime = CalendarEventManager.combine(date: date, hour: 9, minute: 0)!
-            self.showEventEditUI(with: selectedDateWithTime)
-        /*
-         guard let fullDate = CalendarEventManager.combine(date: selectedDate ?? Date(), hour: 10, minute: 15) else {
-               print("- Failed to combine date and time.")
-               return
-           }
-
-           // Request calendar access before saving
-           CalendarEventManager.shared.requestAccess { granted in
-               DispatchQueue.main.async {
-                   if granted {
-                       // Save to calendar
-                       CalendarEventManager.shared.addEvent(
-                           title: "My Task",
-                           startDate: fullDate,
-                           durationMinutes: 90,
-                           notes: "Task created from FSCalendar"
-                       )
-                   } else {
-                       // Show default iOS calendar permission prompt
-                       self.promptCalendarAccess()
-                   }
-               }
-           }
-         */
+        // self.showEventEditUI(with: selectedDateWithTime)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let formattedDate = dateFormatter.string(from: selectedDate!)
+        
+        print("Formatted selectedDate: \(formattedDate)")  // Example: "2025-09-08"
+        
+        self.getBackpackerList()
     }
     func promptCalendarAccess() {
         let alert = UIAlertController(
@@ -290,31 +349,31 @@ extension EmployerCalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalenda
         }))
         UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true)
     }
-
-
+    
+    
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
         let visibleMonth = calendar.currentPage
-           let components = Calendar.current.dateComponents([.year, .month], from: visibleMonth)
-
-           if let index = monthsArray.firstIndex(where: {
-               let comp = Calendar.current.dateComponents([.year, .month], from: $0)
-               return comp.year == components.year && comp.month == components.month
-           }) {
-               selectedMonthIndex = index
-
-               // Scroll to selected item in collection view
-               collVw.scrollToItem(at: IndexPath(item: index, section: 0), at: .centeredHorizontally, animated: true)
-               collVw.reloadData()
-           }
-
-           calendarVw.reloadData()
+        let components = Calendar.current.dateComponents([.year, .month], from: visibleMonth)
+        
+        if let index = monthsArray.firstIndex(where: {
+            let comp = Calendar.current.dateComponents([.year, .month], from: $0)
+            return comp.year == components.year && comp.month == components.month
+        }) {
+            selectedMonthIndex = index
+            
+            // Scroll to selected item in collection view
+            collVw.scrollToItem(at: IndexPath(item: index, section: 0), at: .centeredHorizontally, animated: true)
+            collVw.reloadData()
+        }
+        
+        calendarVw.reloadData()
     }
     func dateToString(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat =  "dd-MM-yyyy"
         return dateFormatter.string(from: date)
     }
-   
+    
 }
 
 
@@ -334,7 +393,7 @@ extension EmployerCalendarVC: EKEventEditViewDelegate {
                 event.startDate = date
                 event.endDate = Calendar.current.date(byAdding: .minute, value: durationMinutes, to: date)
                 event.calendar = eventStore.defaultCalendarForNewEvents
-
+                
                 DispatchQueue.main.async {
                     let eventController = EKEventEditViewController()
                     eventController.eventStore = eventStore
@@ -349,7 +408,7 @@ extension EmployerCalendarVC: EKEventEditViewDelegate {
             }
         }
     }
-
+    
     // MARK: - EKEventEditViewDelegate
     public func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
         controller.dismiss(animated: true)
@@ -366,123 +425,356 @@ extension EmployerCalendarVC: EKEventEditViewDelegate {
 
 extension EmployerCalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
     // MARK: - PickerView Delegate & DataSource
-
-       func numberOfComponents(in pickerView: UIPickerView) -> Int {
-           return 1
-       }
-
-       func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-           return years.count
-       }
-
-       func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-           return "\(years[row])"
-       }
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return years.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return "\(years[row])"
+    }
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
         return 30 // each row 50 points tall
     }
-
+    
     @objc func didSelectYear() {
-          let selectedRow = yearPicker.selectedRow(inComponent: 0)
-          let selectedYear = years[selectedRow]
-      //  self.lbl_Year.text = "\(selectedYear)"
-          dismiss(animated: true)
-      }
+        let selectedRow = yearPicker.selectedRow(inComponent: 0)
+        let selectedYear = years[selectedRow]
+        //  self.lbl_Year.text = "\(selectedYear)"
+        dismiss(animated: true)
+    }
     func getAllMonths(from startYear: Int, to endYear: Int) -> [Date] {
         var months: [Date] = []
         let calendar = Calendar.current
-
+        
         for year in startYear...endYear {
             for month in 1...12 {
                 var components = DateComponents()
                 components.year = year
                 components.month = month
                 components.day = 1
-
+                
                 if let date = calendar.date(from: components) {
                     months.append(date)
                 }
             }
         }
-
+        
         return months
     }
     func ShowYearPicker() {
-           // 1. Picker and Toolbar
-           yearPicker = UIPickerView()
-           yearPicker.delegate = self
-           yearPicker.dataSource = self
-           yearPicker.backgroundColor = .systemBackground
-           yearPicker.translatesAutoresizingMaskIntoConstraints = false
-
-           let toolbar = UIToolbar()
-           toolbar.translatesAutoresizingMaskIntoConstraints = false
-           toolbar.setItems([
-               UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-               UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(didSelectYear))
-           ], animated: false)
-           toolbar.backgroundColor = .systemBackground
-
-           // 2. Picker container view
-           let pickerContainer = UIView()
-           pickerContainer.backgroundColor = .systemBackground
-           pickerContainer.translatesAutoresizingMaskIntoConstraints = false
-
-           pickerContainer.addSubview(toolbar)
-           pickerContainer.addSubview(yearPicker)
-
-           NSLayoutConstraint.activate([
-               toolbar.topAnchor.constraint(equalTo: pickerContainer.topAnchor),
-               toolbar.leadingAnchor.constraint(equalTo: pickerContainer.leadingAnchor),
-               toolbar.trailingAnchor.constraint(equalTo: pickerContainer.trailingAnchor),
-               toolbar.heightAnchor.constraint(equalToConstant: 50),
-
-               yearPicker.topAnchor.constraint(equalTo: toolbar.bottomAnchor),
-               yearPicker.leadingAnchor.constraint(equalTo: pickerContainer.leadingAnchor),
-               yearPicker.trailingAnchor.constraint(equalTo: pickerContainer.trailingAnchor),
-               yearPicker.bottomAnchor.constraint(equalTo: pickerContainer.bottomAnchor),
-               yearPicker.heightAnchor.constraint(equalToConstant: 200)
-           ])
-
-           // 3. Dimmed background VC
-           let dimmedVC = UIViewController()
-           dimmedVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-           dimmedVC.modalPresentationStyle = .overFullScreen
-
-           // 4. Add picker container to dimmedVC
-           dimmedVC.view.addSubview(pickerContainer)
-           NSLayoutConstraint.activate([
-               pickerContainer.leadingAnchor.constraint(equalTo: dimmedVC.view.leadingAnchor),
-               pickerContainer.trailingAnchor.constraint(equalTo: dimmedVC.view.trailingAnchor),
-               pickerContainer.bottomAnchor.constraint(equalTo: dimmedVC.view.bottomAnchor)
-           ])
-
-           // 5. Present
-           self.present(dimmedVC, animated: true)
-       }
-
+        // 1. Picker and Toolbar
+        yearPicker = UIPickerView()
+        yearPicker.delegate = self
+        yearPicker.dataSource = self
+        yearPicker.backgroundColor = .systemBackground
+        yearPicker.translatesAutoresizingMaskIntoConstraints = false
+        
+        let toolbar = UIToolbar()
+        toolbar.translatesAutoresizingMaskIntoConstraints = false
+        toolbar.setItems([
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+            UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(didSelectYear))
+        ], animated: false)
+        toolbar.backgroundColor = .systemBackground
+        
+        // 2. Picker container view
+        let pickerContainer = UIView()
+        pickerContainer.backgroundColor = .systemBackground
+        pickerContainer.translatesAutoresizingMaskIntoConstraints = false
+        
+        pickerContainer.addSubview(toolbar)
+        pickerContainer.addSubview(yearPicker)
+        
+        NSLayoutConstraint.activate([
+            toolbar.topAnchor.constraint(equalTo: pickerContainer.topAnchor),
+            toolbar.leadingAnchor.constraint(equalTo: pickerContainer.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: pickerContainer.trailingAnchor),
+            toolbar.heightAnchor.constraint(equalToConstant: 50),
+            
+            yearPicker.topAnchor.constraint(equalTo: toolbar.bottomAnchor),
+            yearPicker.leadingAnchor.constraint(equalTo: pickerContainer.leadingAnchor),
+            yearPicker.trailingAnchor.constraint(equalTo: pickerContainer.trailingAnchor),
+            yearPicker.bottomAnchor.constraint(equalTo: pickerContainer.bottomAnchor),
+            yearPicker.heightAnchor.constraint(equalToConstant: 200)
+        ])
+        
+        // 3. Dimmed background VC
+        let dimmedVC = UIViewController()
+        dimmedVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        dimmedVC.modalPresentationStyle = .overFullScreen
+        
+        // 4. Add picker container to dimmedVC
+        dimmedVC.view.addSubview(pickerContainer)
+        NSLayoutConstraint.activate([
+            pickerContainer.leadingAnchor.constraint(equalTo: dimmedVC.view.leadingAnchor),
+            pickerContainer.trailingAnchor.constraint(equalTo: dimmedVC.view.trailingAnchor),
+            pickerContainer.bottomAnchor.constraint(equalTo: dimmedVC.view.bottomAnchor)
+        ])
+        
+        // 5. Present
+        self.present(dimmedVC, animated: true)
+    }
+    
 }
 
 
 
 extension EmployerCalendarVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1 // or your dataArray.count
+        return self.availableBackpaker?.count ?? 0 // or your dataArray.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "CommonEmpListTVC", for: indexPath) as? CommonEmpListTVC else {
             return UITableViewCell()
         }
+        if let val = self.availableBackpaker?[indexPath.row] {
+            let firstLetter1 = getFirstLetter(of: val.name)
+            cell.lbl_FrstLetter.text = firstLetter1
+            cell.lbl_Name.text = val.name
+            cell.lbl_CompletedJobs.text = "Job Completed:- \(val.completedJobsCount)"
+            cell.cosmosVw.rating = val.averageRating
+        }
+        
         cell.setupConstraint(iscomeFormEmloyeeee: false)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-       
+        
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 92
+    }
+    func getFirstLetter(of name: String) -> String {
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmedName.first.map { String($0).uppercased() } ?? ""
+    }
+    
+    func createTableFooterView() -> UIView {
+        let footerView = UIView(frame: CGRect(x: 0, y: 0, width: mainScrollVw.frame.width, height: 60))
+        
+        let spinner = UIActivityIndicatorView(style: .medium)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        spinner.startAnimating()
+        
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Loading more backpackers..."
+        label.font = FontManager.inter(.medium, size: 12.0)
+        label.textColor = .gray
+        
+        footerView.addSubview(spinner)
+        footerView.addSubview(label)
+        
+        NSLayoutConstraint.activate([
+            // Spinner centered horizontally at the top
+            spinner.centerXAnchor.constraint(equalTo: footerView.centerXAnchor),
+            spinner.topAnchor.constraint(equalTo: footerView.topAnchor, constant: 8),
+            
+            // Label below spinner
+            label.topAnchor.constraint(equalTo: spinner.bottomAnchor, constant: 8),
+            label.centerXAnchor.constraint(equalTo: footerView.centerXAnchor),
+            
+            // Footer bottom anchor tied to label
+            label.bottomAnchor.constraint(equalTo: footerView.bottomAnchor, constant: -8)
+        ])
+        
+        
+        return footerView
+    }
+    
+    func removeTableFooterView() {
+        tblVw.tableFooterView = nil
+    }
+}
+extension EmployerCalendarVC: UIScrollViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        // Skip if pulling down from top
+        if scrollView == mainScrollVw{
+            if scrollView.contentOffset.y < 0 {
+                return
+            }
+            
+            // Detect scroll direction
+            
+            
+            let isScrollingDown = scrollView.contentOffset.y > lastContentOffset
+            lastContentOffset = scrollView.contentOffset.y
+            
+            // Only proceed if scrolling down
+            guard isScrollingDown else { return }
+            
+            let offsetY = scrollView.contentOffset.y
+            let contentHeight = scrollView.contentSize.height
+            let frameHeight = scrollView.frame.size.height
+            
+            // Check if near bottom
+            if offsetY > contentHeight - frameHeight - 100 {
+                
+                if !isComeFromPullTorefresh {
+                    if isComeFromPullTorefresh == false{
+                        if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
+                            isLoadingMoreData = true
+                            page += 1
+                            addScrollFooterLoader()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5 ){
+#if BackpackerHire
+                                self.getBackpackerList()
+#endif
+                            }
+                            
+                        }
+                    }
+                }
+            }
+            
+        }
+    }
+    func addScrollFooterLoader() {
+        if scrollFooterLoader == nil {
+            scrollFooterLoader = UIActivityIndicatorView(style: .medium)
+            scrollFooterLoader?.translatesAutoresizingMaskIntoConstraints = false
+            scrollFooterLoader?.startAnimating()
+            mainScrollVw.addSubview(scrollFooterLoader!)
+            
+            NSLayoutConstraint.activate([
+                scrollFooterLoader!.centerXAnchor.constraint(equalTo: mainScrollVw.centerXAnchor),
+                scrollFooterLoader!.topAnchor.constraint(equalTo: tblVw.bottomAnchor, constant: 10),
+                scrollFooterLoader!.heightAnchor.constraint(equalToConstant: 44)
+            ])
+        } else {
+            scrollFooterLoader?.startAnimating()
+        }
+        
+        // Update scroll content size if needed
+        mainScrollVw.layoutIfNeeded()
+    }
+    func removeScrollFooterLoader() {
+        scrollFooterLoader?.stopAnimating()
+        scrollFooterLoader?.removeFromSuperview()
+        scrollFooterLoader = nil
+    }
+    
+}
+extension EmployerCalendarVC   {
+    
+    
+    private func getBackpackerList(){
+        LoaderManager.shared.show()
+        viewModel.getBackpackerAvailabilityEmployer(dateStr: self.selectedDateForApi ?? "", perPage: perPage, page: page) { [weak self] (success: Bool, result: AvailableBackpackerListResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            //                            if let availability = result {   //  already decoded object
+                            //                                print("Availability assigned:", availability)
+                            //                                self.availableBackpaker = availability.data.backpackers
+                            //                                self.tblVw.reloadData()
+                            //                            } else {
+                            //                                AlertManager.showAlert(on: self, title: "Success", message: "No availability data found.")
+                            //                            }
+                            if success, let list = result?.data.backpackers {
+                                if self.page == 1 {
+                                    if list.isEmpty {
+                                        self.lbl_No_Backpacker.isHidden = false
+                                        self.availableBackpaker?.removeAll()
+                                        self.availableBackpaker = list
+                                    } else {
+                                        
+                                        self.isLoading = false
+                                        self.availableBackpaker = list
+                                    }
+                                } else {
+                                    
+                                    self.isLoading = false
+                                    self.availableBackpaker?.append(contentsOf: list)
+                                }
+                                self.totalJobs = result?.data.total ?? 0
+                                // Pagination end check
+                                self.isAllDataLoaded = list.count < self.perPage
+                                if self.isAllDataLoaded == true {
+                                    self.removeTableFooterView()
+                                }
+                                self.isComeFromPullTorefresh = false
+                                self.isLoadingMoreData = false
+                                
+                                self.tblVw.reloadData()
+                                self.refreshControl.endRefreshing()
+                            }
+                            
+                            self.manageHeight()
+                            
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            LoaderManager.shared.hide()
+                        }
+                        
+                        if self.availableBackpaker?.count ?? 0 <= 0{
+                            self.lbl_No_Backpacker.isHidden = false
+                        }else{
+                            self.lbl_No_Backpacker.isHidden = true
+                        }
+                        self.refreshControl.endRefreshing()
+                        self.removeScrollFooterLoader()
+                    case .badRequest:
+                        self.refreshControl.endRefreshing()
+                        self.removeScrollFooterLoader()
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getBackpackerList()
+                            } else {
+                                self.refreshControl.endRefreshing()
+                                LoaderManager.shared.hide()
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                            }
+                        }
+                        
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.removeScrollFooterLoader()
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.removeScrollFooterLoader()
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.removeScrollFooterLoader()
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        
+                    }
+                }
+            }
+        }
     }
 }

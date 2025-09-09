@@ -483,5 +483,27 @@ class JobVM {
             }
         }
     }
+    
+    
+    //MARK: - BP HIstory job list
+    
+    
+    func getCompletedJob<T: Codable>(
+        page: Int,
+        perPage: Int,
+        search:String,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getBACKPACKER_JOBHISTORYURL(page: page, perPage: perPage, search: search)
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 

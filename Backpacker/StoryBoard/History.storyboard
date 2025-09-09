@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Y6W-OH-hqX">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -22,7 +23,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Ith-Qs-sBr">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Ith-Qs-sBr">
                                 <rect key="frame" x="13" y="94.333333333333314" width="367" height="713.66666666666674"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="cIO-UO-0vo">
@@ -33,14 +34,22 @@
                                 </collectionViewFlowLayout>
                                 <cells/>
                             </collectionView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qfZ-tu-eoh">
+                                <rect key="frame" x="175.66666666666666" y="428" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.75118998344370858" colorSpace="custom" customColorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="kFq-9K-a7L" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="20" id="1B2-9f-2wZ"/>
+                            <constraint firstItem="qfZ-tu-eoh" firstAttribute="centerY" secondItem="vDu-zF-Fre" secondAttribute="centerY" id="FRW-1p-OLX"/>
                             <constraint firstItem="Ith-Qs-sBr" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" constant="13" id="Ip8-cU-YUl"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="Ith-Qs-sBr" secondAttribute="trailing" constant="13" id="JNG-Yu-6se"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="Ith-Qs-sBr" secondAttribute="bottom" constant="10" id="Oek-ss-G8L"/>
+                            <constraint firstItem="qfZ-tu-eoh" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="f3n-1J-cSD"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="kFq-9K-a7L" secondAttribute="trailing" constant="20" id="kt1-uf-5vt"/>
                             <constraint firstItem="kFq-9K-a7L" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="mdg-Qg-l7F"/>
                             <constraint firstItem="Ith-Qs-sBr" firstAttribute="top" secondItem="kFq-9K-a7L" secondAttribute="bottom" constant="15" id="vXY-OO-qfA"/>
@@ -48,6 +57,7 @@
                     </view>
                     <connections>
                         <outlet property="historyCV" destination="Ith-Qs-sBr" id="chi-bR-JFU"/>
+                        <outlet property="lbl_No_AccomdodationFound" destination="qfZ-tu-eoh" id="Tye-4h-HW5"/>
                         <outlet property="lbl_SubHeader" destination="kFq-9K-a7L" id="rNH-nN-O8r"/>
                     </connections>
                 </viewController>

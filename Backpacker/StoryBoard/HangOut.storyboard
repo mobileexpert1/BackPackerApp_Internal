@@ -168,7 +168,7 @@
         <!--Hang Out DetailVC-->
         <scene sceneID="YPY-57-OAR">
             <objects>
-                <viewController storyboardIdentifier="HangOutDetailVC" id="ygx-Eq-TLD" customClass="HangOutDetailVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="HangOutDetailVC" hidesBottomBarWhenPushed="YES" id="ygx-Eq-TLD" customClass="HangOutDetailVC" customModule="Backpacker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="WdU-8n-M7I">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -914,7 +914,7 @@
         <image name="Close" width="19" height="21"/>
         <image name="Delete" width="25" height="25"/>
         <image name="currentLoc" width="20" height="20"/>
-        <image name="edit" width="13.333333015441895" height="13.333333015441895"/>
+        <image name="edit" width="24" height="24"/>
         <image name="filter" width="28" height="28"/>
         <image name="mic" width="24" height="24"/>
         <image name="search" width="14" height="14"/>

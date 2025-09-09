@@ -78,6 +78,8 @@ class SetAvailabilityViewModel {
             completion(success, result, statusCode)
         }
     }
+    
+    // MARK: - BackPacker: Set OverAll Availibilty
     func setOverAllAvaiabilty(
         request : OverAllAvailabilityRequest,
         completion: @escaping (Bool, String?, Int?) -> Void
@@ -124,6 +126,27 @@ class SetAvailabilityViewModel {
                    completion(false, error.customDescription, statusCode)
                }
            }
+    }
+    
+    //MARK: - Get Employer calendaer backpacker list
+    
+    // MARK: - BackPacker: User Availabilty
+    func getBackpackerAvailabilityEmployer<T: Codable>(
+        dateStr:String,
+        perPage:Int,
+        page:Int,
+        
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getBACKPACKER_EmployerCalendar(page: page, perPage: perPage, dateStr: dateStr)
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
     }
 }
 

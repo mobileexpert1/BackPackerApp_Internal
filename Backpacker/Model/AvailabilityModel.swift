@@ -120,3 +120,28 @@ struct GetAvailabiltySlot: Codable {
     }
 }
 
+//MARK: - Employer callnedar Backpacker list
+
+struct AvailableBackpackerListResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: AvailableBackpackerListData
+    let errors: [String]
+}
+struct AvailableBackpackerListData: Codable {
+    let backpackers: [AvailableBackpacker]
+    let total: Int
+    let page: Int
+    let perPage: Int
+    let totalPages: Int
+}
+struct AvailableBackpacker: Codable {
+    let userId: String
+    let name: String
+    let completedJobsCount: Int
+    let averageRating: Double
+    let lat: Double
+    let long: Double
+    let area: String
+    let state: String
+}

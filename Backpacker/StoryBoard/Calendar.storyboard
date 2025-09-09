@@ -698,11 +698,18 @@
                                                             <constraint firstAttribute="height" constant="80" id="r6H-Vn-Mx9"/>
                                                         </constraints>
                                                     </tableView>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Backpacker found" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wMA-TO-zZm">
+                                                        <rect key="frame" x="125" y="630" width="164" height="21"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        <nil key="textColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
                                                 </subviews>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstItem="VlX-Ip-9VM" firstAttribute="top" secondItem="uCV-yD-Spl" secondAttribute="top" constant="10" id="0ZT-gw-FjO"/>
                                                     <constraint firstItem="Hu5-R6-o6Q" firstAttribute="leading" secondItem="uCV-yD-Spl" secondAttribute="leading" constant="15" id="8ce-O0-owy"/>
+                                                    <constraint firstItem="wMA-TO-zZm" firstAttribute="centerY" secondItem="Jfo-eU-mb7" secondAttribute="centerY" id="BOP-Is-Akb"/>
                                                     <constraint firstItem="Hu5-R6-o6Q" firstAttribute="top" secondItem="Ezm-KJ-DEv" secondAttribute="bottom" constant="15" id="EfP-M4-NVn"/>
                                                     <constraint firstItem="Ezm-KJ-DEv" firstAttribute="leading" secondItem="VlX-Ip-9VM" secondAttribute="leading" id="I8I-3q-7u1"/>
                                                     <constraint firstItem="Ezm-KJ-DEv" firstAttribute="top" secondItem="kTE-XR-KOP" secondAttribute="bottom" constant="15" id="Kmf-08-XWQ"/>
@@ -712,6 +719,7 @@
                                                     <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="Jfo-eU-mb7" secondAttribute="bottom" constant="19.5" id="YpA-6G-3kc"/>
                                                     <constraint firstAttribute="height" constant="700" id="bxy-Ct-DwW"/>
                                                     <constraint firstItem="kTE-XR-KOP" firstAttribute="top" secondItem="VlX-Ip-9VM" secondAttribute="bottom" constant="15" id="cyb-di-gXM"/>
+                                                    <constraint firstItem="wMA-TO-zZm" firstAttribute="centerX" secondItem="Jfo-eU-mb7" secondAttribute="centerX" id="dl9-fQ-ghA"/>
                                                     <constraint firstAttribute="trailing" secondItem="Hu5-R6-o6Q" secondAttribute="trailing" constant="15" id="eJo-s8-zpf"/>
                                                     <constraint firstItem="Jfo-eU-mb7" firstAttribute="top" secondItem="Hu5-R6-o6Q" secondAttribute="bottom" constant="10" id="emE-sg-xmU"/>
                                                     <constraint firstAttribute="trailing" secondItem="Jfo-eU-mb7" secondAttribute="trailing" constant="10" id="jZU-VT-CQA"/>
@@ -757,7 +765,9 @@
                         <outlet property="haderSelectDate" destination="kTE-XR-KOP" id="JTn-Cf-CEr"/>
                         <outlet property="header_backpackers" destination="Hu5-R6-o6Q" id="mmV-OV-LMH"/>
                         <outlet property="header_selctMonth" destination="zNj-LU-Wih" id="IgE-k7-Y5c"/>
+                        <outlet property="lbl_No_Backpacker" destination="wMA-TO-zZm" id="BKK-jc-pr9"/>
                         <outlet property="lbl_SelectedYear" destination="TgZ-9f-NR3" id="vzc-yY-YDF"/>
+                        <outlet property="mainScrollVw" destination="G4e-M8-4cQ" id="rto-Kv-zhB"/>
                         <outlet property="scroll_Height" destination="bxy-Ct-DwW" id="8Fw-ou-Kev"/>
                         <outlet property="tblVw" destination="Jfo-eU-mb7" id="L4n-wP-JhX"/>
                         <outlet property="tbl_Heught" destination="r6H-Vn-Mx9" id="98c-9j-fi1"/>
@@ -773,7 +783,7 @@
         <image name="backward2" width="10.333333015441895" height="17.333333969116211"/>
         <image name="drpDown" width="29" height="20"/>
         <image name="forward2" width="22" height="22"/>
-        <image name="time" width="21.666666030883789" height="21.333333969116211"/>
+        <image name="time" width="12.666666984558105" height="12.666666984558105"/>
         <namedColor name="blackColor">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

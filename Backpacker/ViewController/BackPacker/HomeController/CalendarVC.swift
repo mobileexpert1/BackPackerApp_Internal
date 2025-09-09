@@ -56,6 +56,12 @@ class CalendarVC: UIViewController {
         if selectedDate == nil {
             selectedDate = Date()
             calendarVw.select(selectedDate)
+            let dateFormatter = DateFormatter()
+               dateFormatter.dateFormat = "EEEE" // Full weekday name: "Sunday", "Monday"
+               
+               let dayName = dateFormatter.string(from: selectedDate!)
+               print("Selected day name: \(dayName)")
+            self.selectedDay = dayName
             self.getUserAvailabilityApiCall()
         }
         bgVwMonth.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
@@ -422,9 +428,39 @@ extension CalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
         let selectedRow = yearPicker.selectedRow(inComponent: 0)
         let selectedYear = years[selectedRow]
         self.lbl_Year.text = "\(selectedYear)"
+        monthsArray = getAllMonths(for: selectedYear)
+          monthCollectionVw.reloadData()
+          
+          // Scroll to current month if current year selected
+          let currentYear = Calendar.current.component(.year, from: Date())
+          let currentMonthIndex = (selectedYear == currentYear)
+              ? Calendar.current.component(.month, from: Date()) - 1
+              : 0
+
+          selectedMonthIndex = currentMonthIndex
+          DispatchQueue.main.async {
+            //  self.monthCollectionVw.scrollToItem(at: IndexPath(item: currentMonthIndex, section: 0), at: .centeredHorizontally, animated: false)
+              self.scrollToSelectedMonth()
+          }
         dismiss(animated: true)
     }
-    
+    private func getAllMonths(for year: Int) -> [Date] {
+        var months = [Date]()
+        let calendar = Calendar.current
+        
+        for month in 1...12 {
+            var components = DateComponents()
+            components.year = year
+            components.month = month
+            components.day = 1
+            
+            if let date = calendar.date(from: components) {
+                months.append(date)
+            }
+        }
+        return months
+    }
+
     func ShowYearPicker() {
         // 1. Picker and Toolbar
         yearPicker = UIPickerView()

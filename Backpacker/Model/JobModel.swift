@@ -128,3 +128,33 @@ struct FavoriteJob: Codable {
         case description, image, favoriteStatus
     }
 }
+
+//MARK: - History of comleted jobs
+
+struct CompletedJobsResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: CompletedJobsData
+    let errors: [String]
+}
+
+struct CompletedJobsData: Codable {
+    let completedJobsList: [CompletedJob]
+    let page: Int
+      let perPage: Int
+      let totalPages: Int
+      let total: Int
+}
+struct CompletedJob: Codable {
+    let _id: String
+    let name: String
+    let address: String
+    let description: String
+    let image: String
+    let startDate: String   
+    let endDate: String
+    let startTime: String
+    let endTime: String
+    let price: Int
+    let favoriteStatus: Int
+}

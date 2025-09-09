@@ -151,6 +151,8 @@ extension EmployerBackPackerListVC : UITableViewDelegate,UITableViewDataSource{
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
         if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "EmployerDetailVC") as? EmployerDetailVC {
             jobDescriptionVC.isComeFrom = iscomeFromEmployer
+            jobDescriptionVC.name = searchData[indexPath.row].name
+            jobDescriptionVC.totalJobs = "\(searchData[indexPath.row].jobsCount)"
             // Optional: pass selected job title
             self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
         }
