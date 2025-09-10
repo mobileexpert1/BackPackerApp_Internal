@@ -515,7 +515,7 @@ extension HangOutVC{
                             self.collectIOnVw.setContentOffset(.zero, animated: true)
                             self.isComeFromPullTorefresh = false
                            
-                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                                 self.navigationController?.popViewController(animated: true)
                             }
                         case .methodNotAllowed:
@@ -566,7 +566,7 @@ extension HangOutVC{
                     NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                 case .unknown:
                     LoaderManager.shared.hide()
-                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
                 case .methodNotAllowed:
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 case .internalServerError:
@@ -697,7 +697,7 @@ extension HangOutVC{
                             self.collectIOnVw.setContentOffset(.zero, animated: true)
                             self.isComeFromPullTorefresh = false
                            
-                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                                 self.navigationController?.popViewController(animated: true)
                             }
                         case .methodNotAllowed:

@@ -74,8 +74,10 @@ class EmployerDetailVC: UIViewController {
     
     func handleAppearanceForBackacker(isComeFromEmployer:Bool = false){
         if  isComeFromEmployer {
-            self.VwHeight.constant = 110.0
-            self.lbl_SecdaryMainLbl.isHidden = false
+//            self.VwHeight.constant = 110.0
+//            self.lbl_SecdaryMainLbl.isHidden = false
+            self.VwHeight.constant = 0.0
+            self.lbl_SecdaryMainLbl.isHidden = true
             self.lbl_MainHeader.text = "Employer Detail"
            
         }else{

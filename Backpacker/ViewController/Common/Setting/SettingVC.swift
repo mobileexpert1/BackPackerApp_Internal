@@ -19,7 +19,7 @@ class SettingVC: UIViewController {
         MenuItem(iconName: "user-setting 1", title: "Subscription Plan"),
         MenuItem(iconName: "Terms and Conditions", title: "History"),
         MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
-        MenuItem(iconName: "Heart", title: "Favorite Jobs"),
+     //   MenuItem(iconName: "Heart", title: "Favorite Jobs"),
         MenuItem(iconName: "Error", title: "Report Issue"),
         MenuItem(iconName: "User Shield", title: "Privacy Policy"),
         MenuItem(iconName: "Delete", title: "Delete Account"),
@@ -48,7 +48,7 @@ class SettingVC: UIViewController {
         if role == "4"{
             menuItems = [
                 MenuItem(iconName: "Profile1", title: "Profile"),
-                MenuItem(iconName: "Heart", title: "Favorite Hangout"),
+            //    MenuItem(iconName: "Heart", title: "Favorite Hangout"),
                 MenuItem(iconName: "Heart", title: "Switch Account"),
                 MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
                 MenuItem(iconName: "Error", title: "Report Issue"),
@@ -59,7 +59,7 @@ class SettingVC: UIViewController {
         }else if role == "3"{
             menuItems = [
                 MenuItem(iconName: "Profile1", title: "Profile"),
-                MenuItem(iconName: "Heart", title: "Favorite Accomodations"),
+            //    MenuItem(iconName: "Heart", title: "Favorite Accomodations"),
                 MenuItem(iconName: "Heart", title: "Switch Account"),
                 MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
                 MenuItem(iconName: "Error", title: "Report Issue"),
@@ -72,7 +72,7 @@ class SettingVC: UIViewController {
                 MenuItem(iconName: "Profile1", title: "Profile"),
                 MenuItem(iconName: "user-setting 1", title: "Subscription Plan"),
                 MenuItem(iconName: "Terms and Conditions", title: "History"),
-                MenuItem(iconName: "Heart", title: "Favorite Jobs"),
+             //   MenuItem(iconName: "Heart", title: "Favorite Jobs"),
                 MenuItem(iconName: "Heart", title: "Switch Account"),
                 MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
                 MenuItem(iconName: "Error", title: "Report Issue"),
@@ -148,37 +148,37 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                 if let vc = storyboard.instantiateViewController(withIdentifier: "AccountDetailVC") as? AccountDetailVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
-            case 1:
+           // case 1:
                 
-                if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
-                    vc.isComeFromAcceptDeclineJobs = false
-                    
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-            case 2:
+//                if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
+//                    vc.isComeFromAcceptDeclineJobs = false
+//                    
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+            case 1:
                 let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
                 if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
                     vc.isBackButtonHidden = false
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
                 
-            case 3:
+            case 2:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
                     vc.isComeFromPrivacy = false
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
-            case 4:
+            case 3:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 5:
+            case 4:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
                     vc.isComeFromPrivacy = true
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 6:
+            case 5:
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Delete Account",
                                                    message: "Are you sure you want to delete the account?",
@@ -190,7 +190,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                     }
                     
                 })
-            case 7:
+            case 6:
                  
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Logout",
@@ -216,37 +216,37 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                 if let vc = storyboard.instantiateViewController(withIdentifier: "AccountDetailVC") as? AccountDetailVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
-            case 1:
-                
-                if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
-                    vc.isComeFromAcceptDeclineJobs = false
-                    
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-            case 2 :
+//            case 1:
+//                
+//                if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
+//                    vc.isComeFromAcceptDeclineJobs = false
+//                    
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+            case 1 :
                 let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
                 if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
                     vc.isBackButtonHidden = false
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
                 
-            case 3:
+            case 2:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
                     vc.isComeFromPrivacy = false
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
-            case 4:
+            case 3:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 5:
+            case 4:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
                     vc.isComeFromPrivacy = true
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 6:
+            case 5:
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Delete Account",
                                                    message: "Are you sure you want to delete the account?",
@@ -258,7 +258,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                     }
                     
                 })
-            case 7:
+            case 6:
                  
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Logout",
@@ -299,36 +299,36 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                 if let vc = storyboard.instantiateViewController(withIdentifier: "HistoryContainerVC") as? HistoryContainerVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
-            case 3:
-                if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
-                    vc.isComeFromAcceptDeclineJobs = false
-                    
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-            case 4 :
+//            case 3:
+//                if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
+//                    vc.isComeFromAcceptDeclineJobs = false
+//                    
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+            case 3 :
                 let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
                 if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
                     vc.isBackButtonHidden = false
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
                 
-            case 5:
+            case 4:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
                     vc.isComeFromPrivacy = false
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
-            case 6:
+            case 5:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 7:
+            case 6:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
                     vc.isComeFromPrivacy = true
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 8:
+            case 7:
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Delete Account",
                                                    message: "Are you sure you want to delete the account?",
@@ -340,7 +340,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                     }
                     
                 })
-            case 9:
+            case 8:
                  
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Logout",

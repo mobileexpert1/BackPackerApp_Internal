@@ -43,7 +43,7 @@ class EmployerCalendarVC: UIViewController {
     let refreshControl = UIRefreshControl()
     var lastContentOffset: CGFloat = 0
     var page = 1
-    let perPage = 1
+    let perPage = 10
     var totalBackpackers = Int()
     var isLoadingMoreData = false
     var isAllDataLoaded = false
@@ -685,13 +685,6 @@ extension EmployerCalendarVC   {
                     switch httpStatus {
                     case .ok, .created:
                         if success == true {
-                            //                            if let availability = result {   //  already decoded object
-                            //                                print("Availability assigned:", availability)
-                            //                                self.availableBackpaker = availability.data.backpackers
-                            //                                self.tblVw.reloadData()
-                            //                            } else {
-                            //                                AlertManager.showAlert(on: self, title: "Success", message: "No availability data found.")
-                            //                            }
                             if success, let list = result?.data.backpackers {
                                 if self.page == 1 {
                                     if list.isEmpty {
@@ -758,7 +751,7 @@ extension EmployerCalendarVC   {
                     case .unknown:
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
-                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                             self.navigationController?.popViewController(animated: true)
                         }
                     case .methodNotAllowed:

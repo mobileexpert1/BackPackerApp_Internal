@@ -64,17 +64,26 @@
                                 <rect key="frame" x="10" y="59" width="373" height="739"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OlD-Na-6S7">
+                                <rect key="frame" x="175" y="415" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="VN2-oe-A71"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="VN2-oe-A71" firstAttribute="trailing" secondItem="4GM-MJ-Snd" secondAttribute="trailing" constant="10" id="0ip-xa-ly7"/>
+                            <constraint firstItem="OlD-Na-6S7" firstAttribute="centerX" secondItem="VN2-oe-A71" secondAttribute="centerX" id="4GQ-UE-PCB"/>
                             <constraint firstItem="4GM-MJ-Snd" firstAttribute="leading" secondItem="VN2-oe-A71" secondAttribute="leading" constant="10" id="84Y-BT-fee"/>
+                            <constraint firstItem="OlD-Na-6S7" firstAttribute="centerY" secondItem="VN2-oe-A71" secondAttribute="centerY" id="PZ9-Sx-7GJ"/>
                             <constraint firstItem="4GM-MJ-Snd" firstAttribute="top" secondItem="VN2-oe-A71" secondAttribute="top" id="dhy-yN-8IS"/>
                             <constraint firstItem="VN2-oe-A71" firstAttribute="bottom" secondItem="4GM-MJ-Snd" secondAttribute="bottom" constant="20" id="hii-Z7-QB9"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="lbl_NoDataFound" destination="OlD-Na-6S7" id="HcB-Ks-fWC"/>
                         <outlet property="tblVw" destination="4GM-MJ-Snd" id="azs-Fv-DfP"/>
                     </connections>
                 </viewController>
@@ -527,25 +536,21 @@ the payment </string>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" editable="NO" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E4F-RX-qYV">
                                 <rect key="frame" x="20" y="115" width="353" height="693"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.Lorem ipsum dolor sit amet, consectetur
- adipiscing elit. Nullam ac ante mollis 
-quam tristique convallis. Sed bibendum
- lorem in sapien ultrices, non fermentum
- metus vestibulum. Integer vel magna 
-nec turpis facilisis hendreritLorem ipsum dolor sit amet, consectetur
- adipiscing elit. Nullam ac ante mollis 
-quam tristique convallis. Sed bibendum
- lorem in sapien ultrices, non fermentum
- metus vestibulum. Integer vel magna 
-nec turpis facilisis hendrerit</string>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ceg-2z-0PT">
+                                <rect key="frame" x="175.66666666666666" y="451" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="iMa-L5-Evi"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="Ceg-2z-0PT" firstAttribute="centerY" secondItem="E4F-RX-qYV" secondAttribute="centerY" id="4ec-Ed-BZZ"/>
                             <constraint firstItem="iMa-L5-Evi" firstAttribute="trailing" secondItem="jt0-Ig-Cli" secondAttribute="trailing" constant="20" id="7LZ-UE-dlV"/>
                             <constraint firstItem="E4F-RX-qYV" firstAttribute="top" secondItem="jt0-Ig-Cli" secondAttribute="bottom" constant="15" id="8go-ea-wjJ"/>
                             <constraint firstItem="jt0-Ig-Cli" firstAttribute="top" secondItem="iMa-L5-Evi" secondAttribute="top" constant="20" id="Dcq-hp-ZN0"/>
@@ -553,6 +558,7 @@ nec turpis facilisis hendrerit</string>
                             <constraint firstItem="jt0-Ig-Cli" firstAttribute="leading" secondItem="iMa-L5-Evi" secondAttribute="leading" constant="20" id="RK3-XS-qod"/>
                             <constraint firstItem="iMa-L5-Evi" firstAttribute="trailing" secondItem="E4F-RX-qYV" secondAttribute="trailing" constant="20" id="cWR-9A-gtm"/>
                             <constraint firstItem="C3D-Af-PMy" firstAttribute="centerY" secondItem="jt0-Ig-Cli" secondAttribute="centerY" id="dcE-ab-Gtz"/>
+                            <constraint firstItem="Ceg-2z-0PT" firstAttribute="centerX" secondItem="E4F-RX-qYV" secondAttribute="centerX" id="e2R-ir-WKT"/>
                             <constraint firstItem="E4F-RX-qYV" firstAttribute="leading" secondItem="iMa-L5-Evi" secondAttribute="leading" constant="20" id="lGh-3I-Atp"/>
                             <constraint firstItem="C3D-Af-PMy" firstAttribute="leading" secondItem="iMa-L5-Evi" secondAttribute="leading" constant="10" id="q1Y-d5-RWN"/>
                         </constraints>
@@ -560,6 +566,7 @@ nec turpis facilisis hendrerit</string>
                     <navigationItem key="navigationItem" id="z04-lR-DSz"/>
                     <connections>
                         <outlet property="lbl_Header" destination="jt0-Ig-Cli" id="DtS-5c-7jz"/>
+                        <outlet property="lbl_nodatFound" destination="Ceg-2z-0PT" id="ybW-kD-yMm"/>
                         <outlet property="txt_Vw" destination="E4F-RX-qYV" id="bUp-4y-xNU"/>
                     </connections>
                 </viewController>

@@ -372,7 +372,7 @@ extension HangOutDetailVC {
                         case .unknown:
                             LoaderManager.shared.hide()
                             self.refreshControl.endRefreshing()
-                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                                 self.navigationController?.popViewController(animated: true)
                             }
                         case .methodNotAllowed:
@@ -450,7 +450,7 @@ extension HangOutDetailVC {
                         case .unknown:
                             LoaderManager.shared.hide()
                             self.refreshControl.endRefreshing()
-                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                                 self.navigationController?.popViewController(animated: true)
                             }
                         case .methodNotAllowed:
@@ -536,7 +536,7 @@ extension HangOutDetailVC {
                         case .unknown:
                             LoaderManager.shared.hide()
                             self.refreshControl.endRefreshing()
-                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                                 self.navigationController?.popViewController(animated: true)
                             }
                         case .methodNotAllowed:

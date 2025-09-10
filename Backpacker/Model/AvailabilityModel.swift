@@ -72,18 +72,18 @@ struct OverAllAvailabilityRequest: Codable {
 struct GetAvailabilityResponse: Codable {
     let success: Bool
     let message: String
-    let data: GetAvailabilityData
+    let data: GetAvailabilityData?
     let errors: [String]
 }
 
 struct GetAvailabilityData: Codable {
-    let id: String
-    let userId: String
-    let overallAvailability: Bool
-    let days: [GetAvailabiltyDay]
-    let createdAt: String
-    let updatedAt: String
-    let v: Int
+    let id: String?
+    let userId: String?
+    let overallAvailability: Bool?
+    let days: [GetAvailabiltyDay]?
+    let createdAt: String?
+    let updatedAt: String?
+    let v: Int?
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
@@ -95,6 +95,7 @@ struct GetAvailabilityData: Codable {
         case v = "__v"
     }
 }
+
 
 struct GetAvailabiltyDay: Codable {
     let day: String

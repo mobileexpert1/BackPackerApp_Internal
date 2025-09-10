@@ -145,13 +145,19 @@ extension EmployerBackPackerListVC : UITableViewDelegate,UITableViewDataSource{
         if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "BackPackerDetailVC") as? BackPackerDetailVC {
             //  jobDescriptionVC.isComeFrom = iscomeFromEmployer
             // Optional: pass selected job title
+            jobDescriptionVC.obj = searchData[indexPath.row]
             self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
         }
 #else
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
         if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "EmployerDetailVC") as? EmployerDetailVC {
             jobDescriptionVC.isComeFrom = iscomeFromEmployer
-            jobDescriptionVC.name = searchData[indexPath.row].name
+            if searchData[indexPath.row].name.isEmpty == false{
+                jobDescriptionVC.name = searchData[indexPath.row].name
+            }else{
+                jobDescriptionVC.name = searchData[indexPath.row].mobileNumber
+            }
+            
             jobDescriptionVC.totalJobs = "\(searchData[indexPath.row].jobsCount)"
             // Optional: pass selected job title
             self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
@@ -343,7 +349,7 @@ extension EmployerBackPackerListVC {
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
                         self.tbaleView.setContentOffset(.zero, animated: true)
-                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
                         if self.searchData.count <= 0 {
                             self.lbl_NoDataFound.isHidden = false
                         }else{

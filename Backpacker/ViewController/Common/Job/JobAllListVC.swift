@@ -303,7 +303,7 @@ extension JobAllListVC {
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
                         self.tblVw.setContentOffset(.zero, animated: true)
-                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
                     case .methodNotAllowed:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     case .internalServerError:

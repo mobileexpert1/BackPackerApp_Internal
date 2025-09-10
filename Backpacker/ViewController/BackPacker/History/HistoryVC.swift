@@ -43,14 +43,15 @@ class HistoryVC: UIViewController {
                          withReuseIdentifier: "LoaderFooterViewCVC")
         
         
+      
+        self.setupPullToRefresh()
+        self.getHistoryJobsList()
         self.historyCV.delegate = self
         self.historyCV.dataSource = self
         if let layout = historyCV.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.scrollDirection = .vertical
         }
         
-        self.setupPullToRefresh()
-        self.getHistoryJobsList()
     }
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
@@ -104,64 +105,72 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
-            return UICollectionViewCell()
-        }
-        if let declineJob = self.jobData?[indexPath.item] {
-            cell.onTap = { [weak self]  index in
-                guard let self = self else { return }
-                print("Cell tapped at index: \(indexPath.item)")
-                // Navigate or perform any action
-             
+        if isLoading == true{
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SkeltonCVC", for: indexPath) as? SkeltonCVC else {
+                return UICollectionViewCell()
             }
-            cell.onFavTap = { [weak self]  index in
-                guard let self = self else { return }
-                print("Cell Fav tapped at index: \(indexPath.item)")
-                // Navigate or perform any action
-             
+            return cell
+        }else{
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
+                return UICollectionViewCell()
             }
-            // Assign item to your label/image inside the cell
-            // cell.titleLabel.text = item
-            cell.lbl_Title.text = declineJob.name
-            let amnt = declineJob.price
-                cell.lblAmount.text = "$\(amnt) per day"//per day
-            
-            cell.lbl_SubTitle.text = declineJob.description
-            if declineJob.image.hasPrefix("http") {
-                cell.imgVw.sd_setImage(
-                    with: URL(string: declineJob.image),
-                    placeholderImage: UIImage(named: "Profile")
-                )
-            } else {
-                let port3000 = "\(ApiConstants.API.API_IMAGEURL)\(declineJob.image)"
-                let port3001 = "\(ApiConstants.API.API_IMAGEURL)\(declineJob.image)"
+            if let declineJob = self.jobData?[indexPath.item] {
+                cell.onTap = { [weak self]  index in
+                    guard let self = self else { return }
+                    print("Cell tapped at index: \(indexPath.item)")
+                    // Navigate or perform any action
+                 
+                }
+                cell.onFavTap = { [weak self]  index in
+                    guard let self = self else { return }
+                    print("Cell Fav tapped at index: \(indexPath.item)")
+                    // Navigate or perform any action
+                 
+                }
+                // Assign item to your label/image inside the cell
+                // cell.titleLabel.text = item
+                cell.lbl_Title.text = declineJob.name
+                let amnt = declineJob.price
+                    cell.lblAmount.text = "$\(amnt) per day"//per day
                 
-                cell.imgVw.sd_setImage(with: URL(string: port3000), placeholderImage: UIImage(named: "img_Placehodler")) { image, _, _, _ in
-                    if image == nil {
-                        cell.imgVw.sd_setImage(with: URL(string: port3001), placeholderImage: UIImage(named: "img_Placehodler"))
+                cell.lbl_SubTitle.text = declineJob.description
+                if declineJob.image.hasPrefix("http") {
+                    cell.imgVw.sd_setImage(
+                        with: URL(string: declineJob.image),
+                        placeholderImage: UIImage(named: "Profile")
+                    )
+                } else {
+                    let port3000 = "\(ApiConstants.API.API_IMAGEURL)\(declineJob.image)"
+                    let port3001 = "\(ApiConstants.API.API_IMAGEURL)\(declineJob.image)"
+                    
+                    cell.imgVw.sd_setImage(with: URL(string: port3000), placeholderImage: UIImage(named: "img_Placehodler")) { image, _, _, _ in
+                        if image == nil {
+                            cell.imgVw.sd_setImage(with: URL(string: port3001), placeholderImage: UIImage(named: "img_Placehodler"))
+                        }
+                    }
+                   
+                    if declineJob.favoriteStatus == 1 {
+                        cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
+                    }else{
+                        cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
                     }
                 }
-               
-                if declineJob.favoriteStatus == 1 {
-                    cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
-                }else{
-                    cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
-                }
+                
+                cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
+                let strtTime = declineJob.startTime
+                let endTime = declineJob.endTime
+                let duration1 = Date.durationString(from: strtTime , to: endTime ) // "8 hr"
+                cell.lbl_duration.text = "Duration \(duration1)"
             }
+    #if Backapacker
+            cell.setUpUI(iscomeFromAccept: false)
             
-            cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
-            let strtTime = declineJob.startTime
-            let endTime = declineJob.endTime
-            let duration1 = Date.durationString(from: strtTime , to: endTime ) // "8 hr"
-            cell.lbl_duration.text = "Duration \(duration1)"
+    #else
+            cell.setUpUI(iscomeFromAccept: true)
+    #endif
+            return cell
         }
-#if Backapacker
-        cell.setUpUI(iscomeFromAccept: false)
-        
-#else
-        cell.setUpUI(iscomeFromAccept: true)
-#endif
-        return cell
+  
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -271,12 +280,14 @@ extension HistoryVC {
     
     
     private func getHistoryJobsList(){
+        self.isLoading = true
             let trimmedSearch = ""
             LoaderManager.shared.show()
         viewModel.getCompletedJob(page: page, perPage: perPage, search: trimmedSearch)  { [weak self] (success: Bool, result: CompletedJobsResponse?, statusCode: Int?) in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     LoaderManager.shared.hide()
+                    self.isLoading = false
                     guard let statusCode = statusCode else {
                         LoaderManager.shared.hide()
                         AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
@@ -302,25 +313,27 @@ extension HistoryVC {
                                         self.jobData = newAccommodations
                                     }
                                 } else {
-                                    self.isLoading = false
+                                   
                                     self.jobData?.append(contentsOf: newAccommodations)
                                 }
                                 self.totalAccomodations = result?.data.total ?? 0
                                 // Pagination end check
                                 self.isAllDataLoaded = newAccommodations.count < self.perPage
                                 
-                              
+                                self.isLoading = false
                                 self.isComeFromPullTorefresh = false
                                 self.isLoadingMoreData = false
                                 self.historyCV.reloadData()
                                 self.refreshControl.endRefreshing()
                             } else {
+                                self.isLoading = false
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                                 self.refreshControl.endRefreshing()
                                 self.historyCV.setContentOffset(.zero, animated: true)
                                 LoaderManager.shared.hide()
                             }
                         case .badRequest:
+                            self.isLoading = false
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         case .unauthorized :
                             self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
@@ -336,17 +349,21 @@ extension HistoryVC {
                             }
                         case .unauthorizedToken:
                             LoaderManager.shared.hide()
+                            self.isLoading = false
                             self.refreshControl.endRefreshing()
                             self.historyCV.setContentOffset(.zero, animated: true)
                             NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                         case .unknown:
+                            self.isLoading = false
                             LoaderManager.shared.hide()
                             self.refreshControl.endRefreshing()
                             self.historyCV.setContentOffset(.zero, animated: true)
-                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
                         case .methodNotAllowed:
+                            self.isLoading = false
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         case .internalServerError:
+                            self.isLoading = false
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         }
                     }

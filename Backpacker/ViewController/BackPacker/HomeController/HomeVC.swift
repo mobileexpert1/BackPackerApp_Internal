@@ -599,7 +599,7 @@ extension HomeVC {
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
                         self.home_TblVw.setContentOffset(.zero, animated: true)
-                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
                         if self.JobData?.data.currentJobslist.count == 0 &&  self.JobData?.data.declinedJobslist.count == 0 &&
                             self.JobData?.data.newJobslist.count == 0 {
                             self.lbl_noJobs.isHidden = false
@@ -697,7 +697,7 @@ extension HomeVC {
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
                         self.home_TblVw.setContentOffset(.zero, animated: true)
-                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
                         if self.EmployerJobData?.data?.currentJobslist?.count == 0 &&  self.EmployerJobData?.data?.postedJobList?.count == 0 &&
                             self.EmployerJobData?.data?.upcomingJobList?.count == 0 {
                             self.lbl_noJobs.isHidden = false
@@ -781,7 +781,7 @@ extension HomeVC {
                     NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                 case .unknown:
                     LoaderManager.shared.hide()
-                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
                 case .methodNotAllowed:
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 case .internalServerError:

@@ -30,12 +30,39 @@ class SlotTVC: UITableViewCell {
     var onTimeChanged: ((_ startTime: String, _ endTime: String) -> Void)?
     var parentController : UIViewController?
     var SlotsList : DayAvailability?
+    var slotIndexPath : Int?
+    var mainIndexPath : Int?
     override func awakeFromNib() {
            super.awakeFromNib()
            setUpUI()
            configureTimePickers()
+        
        }
     
+    func prefilledDataSetup() {
+        if let slots = self.SlotsList?.slots, slots.count > 0 {
+            let startTime24 = slots[slotIndexPath ?? 0].start
+            let endTime24 = slots[slotIndexPath ?? 0].end
+            
+            txtFld_StartTime.text = convertTo12HourFormat(time24: startTime24) ?? startTime24
+            txtFld_EndTime.text = convertTo12HourFormat(time24: endTime24) ?? endTime24
+            print("Slot cell data set")
+        }
+    }
+
+    func convertTo12HourFormat(time24: String) -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "HH:mm"
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+
+        guard let date = dateFormatter.date(from: time24) else {
+            return nil
+        }
+
+        dateFormatter.dateFormat = "hh:mm a"
+        return dateFormatter.string(from: date)
+    }
+
     @objc private func startTimeChanged(_ sender: UIDatePicker) {
         let newStart = sender.date
         

@@ -7,7 +7,7 @@
 
 import Foundation
 import Foundation
-
+import Alamofire
 class LogInVM {
     
     func loginUser(
@@ -114,5 +114,57 @@ class LogInVM {
         
         
     }
+    
+    
+  
+    func locationUpdate(
+        lat: String,
+        long: String,
+        completion: @escaping (Bool, String?, Int?) -> Void
+    ) {
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, nil,nil)
+      return
+  }
 
+        let url = ApiConstants.API.LOCATION_UPDATE
+
+        let request = LocationRequest(latitude: lat, longitude: long)
+
+        let jsonBody: String
+        do {
+            let data = try JSONEncoder().encode(request)
+            jsonBody = String(data: data, encoding: .utf8) ?? "{}"
+        } catch {
+            print("⚠️ Failed to encode request: \(error)")
+            completion(false, nil, nil)
+            return
+        }
+
+        print("Request JSON:", jsonBody)
+   let headers = ServiceManager.sharedInstance.getHeaders()
+        
+        ServiceManager.sharedInstance.requestValidatedApiCreateAvailabilty(
+            url,
+            method: .put,
+            parameters: nil,
+            httpBody: jsonBody,
+            headers: ServiceManager.sharedInstance.getHeaders()
+        ) { (result: ApiResult<ApiResponseModel<EmptyData>, APIError>) in
+            switch result {
+            case .success(let response, let statusCode):
+                completion(response?.success ?? true, response?.message ?? "Something went wrong", statusCode)
+            case .failure(let error, let statusCode):
+                completion(false, error.customDescription, statusCode)
+            }
+        }
+        
+    }
 }

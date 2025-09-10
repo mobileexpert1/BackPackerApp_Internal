@@ -17,6 +17,7 @@ class SetAvailibilityVC: UIViewController {
     var isQuickSetupTapped : Bool = false
     var totalHours = 8
     var josnBody : AvailabilityRequest?
+    var responseAvaiability : GetAvailabilityResponse?
     let weekDays = [
             ("Sun", "Sunday"),
             ("Mon", "Monday"),
@@ -26,7 +27,8 @@ class SetAvailibilityVC: UIViewController {
             ("Fri", "Friday"),
             ("Sat", "Saturday")
         ]
-    var SlotsListMain = [DayAvailability]()
+    var SlotsListMain: [DayAvailability] = []
+
     let viewModel = SetAvailabilityViewModel()
     let viewModelAuth = LogInVM()
     override func viewDidLoad() {
@@ -35,6 +37,7 @@ class SetAvailibilityVC: UIViewController {
         self.setSlotDayData()
         self.setUPUI()
         self.setUpTable()
+        self.getUserAvailabilityApiCall()
        
         
     }
@@ -128,15 +131,25 @@ extension SetAvailibilityVC: UITableViewDelegate, UITableViewDataSource {
                 cell.setSlotsOnlyNineToFive(isQuickSetUp: true)
             }
            
-        }else{
-//            cell.btn_Switch.isOn = false
-//            cell.setSlotsOnlyNineToFive(isQuickSetUp: false)
         }
-        let isOn =  cell.btn_Switch.isOn
+       
+        cell.indexPathRow = indexPath.row
+       
         cell.lbl_ShortDay.text = SlotsListMain[indexPath.row].day
         cell.lbl_Day.text = SlotsListMain[indexPath.row].day
+   //     cell.btn_Switch.isOn = SlotsListMain[indexPath.row].enabled
+        if  SlotsListMain[indexPath.row].slots.count > 0{
+            cell.btn_Switch.isOn = true
+            cell.isSlotAlreadyAdded = true
+        }else{
+            cell.btn_Switch.isOn = false
+            cell.isSlotAlreadyAdded = false
+        }
+        cell.SlotsDay = SlotsListMain[indexPath.row]
+        let isOn =  cell.btn_Switch.isOn
         cell.lbl_AvailibityStatus.text = isOn ? "Available" : "Unavailable"
-        cell.SlotsList = SlotsListMain[indexPath.row]
+      
+        
         // Handle toggle
            cell.onToggle = { isOn in
                cell.lbl_AvailibityStatus.text = isOn ? "Available" : "Unavailable"
@@ -165,7 +178,13 @@ extension SetAvailibilityVC: UITableViewDelegate, UITableViewDataSource {
                 self.tableView.endUpdates()
             }
         }
-        
+        cell.onReload = { index in
+            print("Row called on reload",index)
+            UIView.animate(withDuration: 0.3) {
+                self.tableView.beginUpdates()
+                self.tableView.endUpdates()
+            }
+        }
         cell.onSlotValueAdded = { [weak self] newSlot in
             guard let self = self else { return }
 
@@ -183,6 +202,7 @@ extension SetAvailibilityVC: UITableViewDelegate, UITableViewDataSource {
             print("Updated Slot List:", self.SlotsListMain)
         }
         cell.parentViewController = self
+        cell.setUpDataAlredyAddedSlot()
         return cell
     }
     
@@ -229,16 +249,111 @@ extension SetAvailibilityVC {
                     NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                 case .unknown:
                     LoaderManager.shared.hide()
-                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
                 case .methodNotAllowed:
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 case .internalServerError:
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 }
             }
-               }
+        }
     }
-   
     
+    func getUserAvailabilityApiCall(){
+        LoaderManager.shared.show()
+        viewModel.getUserAvailability { [weak self] (success: Bool, result: GetAvailabilityResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            if let availability = result {   //  already decoded object
+                                self.responseAvaiability = availability
+                                if let avai = self.responseAvaiability?.data?.days {
+                                    print("Availability assigned:", availability)
+                                    self.setUpFunctionalityData(data: availability)
+                                }else{
+                                    print("Availability assigned: Daya not found ", availability)
+                                }
+                                
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Success", message: "No availability data found.")
+                            }
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            LoaderManager.shared.hide()
+                        }
+                        
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getUserAvailabilityApiCall()
+                            } else {
+                                LoaderManager.shared.hide()
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                            }
+                        }
+                        
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        
+                    }
+                }
+            }
+        }
+        
+    }
     
+    func setUpFunctionalityData(data: GetAvailabilityResponse) {
+        guard let apiDays = data.data?.days else { return }
+        
+        for i in 0..<SlotsListMain.count {
+            let localDay = SlotsListMain[i].day
+            
+            if let matchingApiDay = apiDays.first(where: { $0.day.caseInsensitiveCompare(localDay) == .orderedSame }) {
+                
+                var slots: [Slot] = []
+                
+                for apiSlot in matchingApiDay.slots {
+                    // Only append if both start and end are not empty
+                    if !apiSlot.start.isEmpty && !apiSlot.end.isEmpty {
+                        let slot = Slot(start: apiSlot.start, end: apiSlot.end, enabled: apiSlot.enabled)
+                        slots.append(slot)
+                    }
+                }
+                
+                SlotsListMain[i].slots = slots
+                SlotsListMain[i].enabled = matchingApiDay.enabled
+            }
+        }
+        
+        print("Slot list main after filtering:", SlotsListMain)
+        self.tableView.reloadData()
+    }
+
+
 }

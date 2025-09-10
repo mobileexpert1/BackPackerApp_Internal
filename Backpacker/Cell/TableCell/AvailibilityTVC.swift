@@ -22,9 +22,7 @@ class AvailibilityTVC: UITableViewCell {
     @IBOutlet weak var BgVw_Day: UIView!
     
     @IBOutlet weak var VwAnotherSlot_Height: NSLayoutConstraint!
-    @IBOutlet weak var Bg_Vw_Table: UIView!
     
-    @IBOutlet weak var Ve_TableHeight: NSLayoutConstraint!
     
     @IBOutlet weak var btn_AnotherSlot: UIButton!
     @IBOutlet weak var height_Table: NSLayoutConstraint!
@@ -35,10 +33,22 @@ class AvailibilityTVC: UITableViewCell {
     var onSlotChanged: ((_ index: Int) -> Void)? // Pass the slot index
 
     var onSlotValueAdded: ((DayAvailability) -> Void)? // Notify VC when slot added/deleted
-    var SlotsList : DayAvailability?
+    var SlotsDay : DayAvailability?
     var isQuickSetupIsOn : Bool = false
     var totalHour = 8
     var parentViewController : UIViewController?
+    var indexPathRow : Int?
+    var onReload: ((_ index: Int) -> Void)? // Pass the slot index
+    var isSlotAlreadyAdded : Bool = false
+//    var SlotsDay: DayAvailability? {
+//        didSet {
+//            guard let _ = SlotsDay else { return }
+//            table_VW.reloadData()
+//            table_VW.layoutIfNeeded() // force height calculation
+//            height_Table.constant = table_VW.contentSize.height
+//        }
+//    }
+
     override func awakeFromNib() {
         super.awakeFromNib()
         self.setUpUi()
@@ -48,23 +58,51 @@ class AvailibilityTVC: UITableViewCell {
         table_VW.register(UINib(nibName: "SlotTVC", bundle: nil), forCellReuseIdentifier: "SlotTVC")
         table_VW.isScrollEnabled = false
         table_VW.separatorStyle = .none
-        btn_Switch.isOn = false
-        Bg_Vw_Table.isHidden = true
+        table_VW.rowHeight = UITableView.automaticDimension
+        table_VW.estimatedRowHeight = 120
+       // btn_Switch.isOn = false
         btn_Switch.addTarget(self, action: #selector(switchToggled), for: .valueChanged)
         self.handleTableHeight(istoogle: btn_Switch.isOn)
         self.VwAnotherSlot_Height.constant = 0.0
         self.btn_AnotherSlot.titleLabel?.font = FontManager.inter(.semiBold, size: 12.0)
         self.btn_AnotherSlot.isHidden = true
         self.btn_AnotherSlot.isUserInteractionEnabled = false
-        
+        print("SlotList",SlotsDay?.slots)
     }
-    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        // Clear old slots so reused cell won't show previous data
+        SlotsDay = nil
+        
+        // Reset UI
+        VwAnotherSlot_Height.constant = 0
+        btn_AnotherSlot.isHidden = true
+        btn_AnotherSlot.isUserInteractionEnabled = false
+        height_Table.constant = 0
+    }
+
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
         // Configure the view for the selected state
     }
-  
+    func setUpDataAlredyAddedSlot(){
+        if isSlotAlreadyAdded ==  true{
+            self.table_VW.delegate = self
+            self.table_VW.dataSource = self
+            let isOn = btn_Switch.isOn
+            BgVw_Day.backgroundColor = isOn ? UIColor(hex: "#D8EEFF") : UIColor(hex: "#EAEAEA")
+            BgVw_Day.layer.borderColor = isOn ? UIColor(hex: "#299EF5").cgColor : UIColor.clear.cgColor
+            BgVw_Day.layer.borderWidth = isOn ? 0.5 : 0.0
+            self.lbl_ShortDay.textColor = isOn ? UIColor(hex: "#299EF5"): UIColor(hex: "#B3B3B3")
+            self.lbl_ShortDay.font = isOn ? FontManager.inter(.semiBold, size: 10): FontManager.inter(.semiBold, size: 9)
+            self.VwAnotherSlot_Height.constant = isOn ? 45 : 0.0
+            self.btn_AnotherSlot.isHidden = isOn ? false : true
+            self.btn_AnotherSlot.isUserInteractionEnabled = isOn ? true : false
+          
+            handleTableHeight(istoogle: isOn ? true : false)
+        }
+    }
     
     func setSlotsOnlyNineToFive(isQuickSetUp : Bool = false){
         if isQuickSetUp == true{
@@ -74,26 +112,28 @@ class AvailibilityTVC: UITableViewCell {
             setUpBgColor()
         }
     }
+
+   
     
     @objc func switchToggled() {
         let isQuickActionSetup = UserDefaults.standard.bool(forKey: "setupQuickAction")
         if isQuickActionSetup == false{
             if btn_Switch.isOn == false {
                 self.onSlotValueAdded?(
-                    DayAvailability(day: self.SlotsList?.day ?? "", enabled: false, slots: [])
+                    DayAvailability(day: self.SlotsDay?.day ?? "", enabled: false, slots: [])
                    
                 )
-                self.SlotsList?.slots.removeAll()
+                self.SlotsDay?.slots.removeAll()
                 self.SetUpToggleAction()
             }else{
-                self.SlotsList?.slots.removeAll()
+                self.SlotsDay?.slots.removeAll()
                 SetUpToggleAction()
             }
            
         }else{
             UserDefaults.standard.set(false, forKey: "setupQuickAction")
             self.onSlotValueAdded?(
-                DayAvailability(day: self.SlotsList?.day ?? "", enabled: false, slots: [])
+                DayAvailability(day: self.SlotsDay?.day ?? "", enabled: false, slots: [])
             )
             self.SetUpToggleAction()
         }
@@ -152,18 +192,17 @@ class AvailibilityTVC: UITableViewCell {
            self.lbl_ShortDay.font = FontManager.inter(.semiBold, size: 10)
 
            // Show the time table
-         Bg_Vw_Table.isHidden = false
-        guard let count = self.SlotsList?.slots.count, count < 3 else { return }
+        guard let count = self.SlotsDay?.slots.count, count < 3 else { return }
 
         // Append an empty slot
-        self.SlotsList?.slots.append(Slot(start: "", end: "", enabled: false))
+        self.SlotsDay?.slots.append(Slot(start: "", end: "", enabled: false))
         self.onSlotValueAdded?(
-            DayAvailability(day: self.SlotsList?.day ?? "", enabled: true, slots:  self.SlotsList?.slots ?? [])
+            DayAvailability(day: self.SlotsDay?.day ?? "", enabled: true, slots:  self.SlotsDay?.slots ?? [])
            
         )
          // table_VW.reloadData()
           
-        if  self.SlotsList?.slots.count == 3 {
+        if  self.SlotsDay?.slots.count == 3 {
             self.VwAnotherSlot_Height.constant = 0.0
             BgVw_AnotherSlot.isHidden = true
         }else{
@@ -191,48 +230,42 @@ extension AvailibilityTVC {
         if istoogle {
             table_VW.reloadData()
             table_VW.layoutIfNeeded()
+            print("Layput updated")
             height_Table.constant = table_VW.contentSize.height
-            Ve_TableHeight.constant = height_Table.constant + 10
         } else {
             height_Table.constant = 0
-            Ve_TableHeight.constant = 0
         }
     }
-
+ 
     
 
 }
 extension AvailibilityTVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.SlotsList?.slots.count ?? 0
+        return self.SlotsDay?.slots.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "SlotTVC", for: indexPath) as? SlotTVC else {
                 return UITableViewCell()
             }
-
+        print("Slot Cell Called")
+        cell.SlotsList = self.SlotsDay
             let row = indexPath.row + 1
+        cell.slotIndexPath = indexPath.row
+        cell.mainIndexPath = indexPathRow
         cell.parentController = self.parentViewController
         cell.lbl_timeSlot.text = "Time Slot \(row)"
+        cell.prefilledDataSetup()
         cell.onTimeChanged = { [weak self] start, end in
             guard let self = self else { return }
-            guard var slotsList = self.SlotsList else { return }
-            
-            // Update the correct index, not append
-        //    if row < slotsList.timeSlots.count {
-                self.SlotsList?.slots[indexPath.row].start = start
-                self.SlotsList?.slots[indexPath.row].end = end
-              self.SlotsList?.slots[indexPath.row].enabled = true
-//            } else {
-//                let timeSlot = Slot(start: start, end: end, enabled: true)
-//                self.SlotsList?.timeSlots.append(timeSlot)
-//            }
-            
+            guard var slotsList = self.SlotsDay else { return }
+                self.SlotsDay?.slots[indexPath.row].start = start
+                self.SlotsDay?.slots[indexPath.row].end = end
+              self.SlotsDay?.slots[indexPath.row].enabled = true
             self.onSlotValueAdded?(
-               
-                DayAvailability(day: self.SlotsList?.day ?? "", enabled: true, slots: self.SlotsList?.slots ?? [])
+                DayAvailability(day: self.SlotsDay?.day ?? "", enabled: true, slots: self.SlotsDay?.slots ?? [])
             )
         }
 
@@ -240,8 +273,8 @@ extension AvailibilityTVC: UITableViewDelegate, UITableViewDataSource {
             // Use captured index
             cell.onDelete = { [weak self] in
                 guard let self = self else { return }
-                self.SlotsList?.slots.remove(at: row - 1)
-                if self.SlotsList?.slots.count == 3 {
+                self.SlotsDay?.slots.remove(at: row - 1)
+                if self.SlotsDay?.slots.count == 3 {
                     self.VwAnotherSlot_Height.constant = 0.0
                     BgVw_AnotherSlot.isHidden = true
                 }else{
@@ -250,7 +283,6 @@ extension AvailibilityTVC: UITableViewDelegate, UITableViewDataSource {
                 }
                 table_VW.reloadData()
                 self.height_Table.constant = tableView.contentSize.height
-                self.Ve_TableHeight.constant = tableView.contentSize.height + 10
                 self.onSlotChanged?(indexPath.row)
                 
             }
@@ -258,7 +290,7 @@ extension AvailibilityTVC: UITableViewDelegate, UITableViewDataSource {
             return cell
     }
     func calculateTotalHours() -> Int {
-        guard let timeSlots = self.SlotsList?.slots else { return 0 }
+        guard let timeSlots = self.SlotsDay?.slots else { return 0 }
         
         var total = 0
         let dateFormatter = DateFormatter()

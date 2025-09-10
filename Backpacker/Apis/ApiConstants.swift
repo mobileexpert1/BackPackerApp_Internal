@@ -12,9 +12,9 @@ struct ApiConstants {
         static let DEBUG_MODE_ON = true
         private static let BASE_URL: String = {
             if DEBUG_MODE_ON {
-                return "http://192.168.11.4:3003/"//https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"  //////"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
+                return "https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"
             } else {
-                return "http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"  //"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3000/"
+                return "https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"
             }
         }()
 
@@ -481,7 +481,32 @@ struct ApiConstants {
             
             return url
         }
-
+        static let LOCATION_UPDATE = BASE_URL + "api/location"
+        static func GET_CONTENT(for key: String) -> String {
+              // Make sure the key is URL-safe
+              guard let encodedKey = key.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
+                  return "\(BASE_URL)api/common/content/\(key)"
+              }
+              return "\(BASE_URL)api/common/content/\(encodedKey)"
+          }
+        
+        
+        static func getBACKPACKER_EmployerLIst(
+            page: Int,
+            perPage: Int
+        ) -> String {
+            let url = "\(BASE_URL)api/employer/history/backpackers?page=\(page)&perPage=\(perPage)"
+            return url
+        }
+        
+        
+        static func getEMPLOYER_COMPLETEDJOBS(
+            page: Int,
+            perPage: Int
+        ) -> String {
+            let url = "\(BASE_URL)api/employer/history/jobs?page=\(page)&perPage=\(perPage)"
+            return url
+        }
     }
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"

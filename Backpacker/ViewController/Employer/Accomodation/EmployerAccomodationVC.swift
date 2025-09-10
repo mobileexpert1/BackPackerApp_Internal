@@ -594,7 +594,7 @@ extension EmployerAccomodationVC {
                             self.refreshControl.endRefreshing()
                             self.isComeFromPullTorefresh = false
                             self.coollVw.setContentOffset(.zero, animated: true)
-                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                                 self.navigationController?.popViewController(animated: true)
                             }
                         case .methodNotAllowed:
@@ -722,7 +722,7 @@ extension EmployerAccomodationVC {
                             self.refreshControl.endRefreshing()
                             self.isComeFromPullTorefresh = false
                             self.coollVw.setContentOffset(.zero, animated: true)
-                            AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                                 self.navigationController?.popViewController(animated: true)
                             }
                         case .methodNotAllowed:
@@ -775,7 +775,7 @@ extension EmployerAccomodationVC {
                     NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                 case .unknown:
                     LoaderManager.shared.hide()
-                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
                 case .methodNotAllowed:
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 case .internalServerError:

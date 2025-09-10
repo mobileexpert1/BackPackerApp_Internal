@@ -16,12 +16,14 @@ protocol LocationManagerDelegate: AnyObject {
 class LocationManager: NSObject, CLLocationManagerDelegate {
 
     static let shared = LocationManager() // -Singleton
+    private var previousLocation: CLLocation?
+    private let distanceThreshold: CLLocationDistance = 100 // in meters
 
     private let locationManager = CLLocationManager()
     weak var delegate: LocationManagerDelegate?
     var latitude: Double?
     var longitude: Double?
-
+    let vmLongin = LogInVM()
     private override init() {
         super.init()
         locationManager.delegate = self
@@ -62,6 +64,16 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         }
     }
 
+//    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+//        guard let latest = locations.last else { return }
+//
+//        // Store the values globally
+//        latitude = latest.coordinate.latitude
+//        longitude = latest.coordinate.longitude
+//
+//        print("📍 Location updated: \(latitude!), \(longitude!)")
+//        delegate?.didUpdateLocation(latest)
+//    }
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let latest = locations.last else { return }
 
@@ -70,7 +82,23 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         longitude = latest.coordinate.longitude
 
         print("📍 Location updated: \(latitude!), \(longitude!)")
+
+        // Call delegate
         delegate?.didUpdateLocation(latest)
+
+        // Check distance threshold
+        if let previous = previousLocation {
+            let distance = latest.distance(from: previous) // meters
+            print("Distance from previous location: \(distance) meters")
+            if distance >= distanceThreshold {
+                previousLocation = latest // Update previous location
+                self.LocationUpdate()     // Call API only if moved > 100m
+            }
+        } else {
+            // First location update
+            previousLocation = latest
+            self.LocationUpdate()
+        }
     }
 
 
@@ -78,4 +106,53 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         print("⚠️ Failed to get location: \(error.localizedDescription)")
         delegate?.didFailWithError(error)
     }
+    
+    func LocationUpdate() {
+        vmLongin.locationUpdate(lat: "\(self.latitude)", long: "\(self.longitude)") { success, message, statusCode in
+            guard let statusCode = statusCode else { return }
+
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+
+                switch httpStatus {
+                case .ok, .created:
+                    if success {
+                        print("Location Update Success:", message)
+                    } else {
+                        print("Location Update Failed:", message)
+                    }
+
+                case .badRequest:
+                    print("Bad Request:", message)
+
+                case .unauthorized:
+                    // Try refreshing token
+                    self.vmLongin.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, let code = refreshStatusCode, [200, 201].contains(code) {
+                            self.LocationUpdate() // Retry after refresh
+                        } else {
+                            print("Token refresh failed")
+                            // Optionally log out user
+                        }
+                    }
+
+                case .unauthorizedToken:
+                    print("Unauthorized Token:", message)
+
+                case .methodNotAllowed:
+                    print("Method Not Allowed:", message)
+
+                case .internalServerError:
+                    print("Server Error:", message)
+
+                case .unknown:
+                    print("Unknown error:", message)
+                }
+            }
+        }
+    }
+
+    
 }

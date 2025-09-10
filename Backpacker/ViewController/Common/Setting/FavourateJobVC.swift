@@ -122,17 +122,37 @@ class FavourateJobVC: UIViewController {
             self.height_headerCollection.constant = 0
             self.headerCollView.isHidden = true
             self.lbl_MainHeader.text = "Favorite Accomodations"
+            self.getListOfFavourateAccommodation()
         } else if role == "4"{
             selectedIndexHeader = 0
             self.height_headerCollection.constant = 0
             self.headerCollView.isHidden = true
             self.lbl_MainHeader.text = "Favorite HangOut"
+            self.getListOfFavourateHangOut()
         }else if role == "2"{
             selectedIndexHeader = 1
             self.height_headerCollection.constant = 0
             self.headerCollView.isHidden = true
             self.lbl_MainHeader.text = "Favorite Jobs"
+            self.getListOfFavourateJobs()
         }
+        /*
+         private func callApis(){
+             if selectedIndexHeader == 0{
+                 self.lbl_No_AccomdodationFound.text = "No Accomodation Found"
+                 self.getListOfFavourateAccommodation()
+                
+             }else if selectedIndexHeader == 1 {
+                 self.lbl_No_AccomdodationFound.text = "No Hangout Found"
+                 self.getListOfFavourateHangOut()
+                 
+             }else{
+                 self.lbl_No_AccomdodationFound.text = "No Job Found"
+                 self.getListOfFavourateJobs()
+                
+             }
+         }
+         */
         #else
       
         self.callApis()
@@ -800,7 +820,7 @@ extension FavourateJobVC {
                                 self.refreshControl.endRefreshing()
                                 self.isComeFromPullTorefresh = false
                                 self.CoLLectIonVwMain.setContentOffset(.zero, animated: true)
-                                AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                                     self.navigationController?.popViewController(animated: true)
                                 }
                             case .methodNotAllowed:
@@ -910,7 +930,7 @@ extension FavourateJobVC {
                                 self.refreshControl.endRefreshing()
                                 self.isComeFromPullTorefresh = false
                                 self.CoLLectIonVwMain.setContentOffset(.zero, animated: true)
-                                AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                                     self.navigationController?.popViewController(animated: true)
                                 }
                             case .methodNotAllowed:
@@ -1019,7 +1039,7 @@ extension FavourateJobVC {
                                 self.refreshControl.endRefreshing()
                                 self.isComeFromPullTorefresh = false
                                 self.CoLLectIonVwMain.setContentOffset(.zero, animated: true)
-                                AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                                AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                                     self.navigationController?.popViewController(animated: true)
                                 }
                             case .methodNotAllowed:

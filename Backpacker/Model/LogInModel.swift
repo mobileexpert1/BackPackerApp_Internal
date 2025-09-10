@@ -81,3 +81,8 @@ struct BoolOrInt: Codable {
         }
     }
 }
+//MARK: - Location update request
+struct LocationRequest: Codable {
+    let latitude : String
+    let longitude : String
+}

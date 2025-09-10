@@ -31,11 +31,17 @@ struct Backpacker: Codable {
     let countryCode: String
     let countryName: String
     let mobileNumber: String
+    let state: String
+    let area: String
+    let lat: Double
+    let long: Double
     let jobsCount: Int
     let rating: Int
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
-        case name, email, countryCode, countryName, mobileNumber, jobsCount, rating
+        case name, email, countryCode, countryName, mobileNumber, state, area, lat, long, jobsCount, rating
     }
 }
+
+

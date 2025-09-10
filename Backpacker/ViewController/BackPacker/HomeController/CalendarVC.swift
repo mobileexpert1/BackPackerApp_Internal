@@ -48,6 +48,7 @@ class CalendarVC: UIViewController {
     var responseAvaiability : GetAvailabilityResponse?
     var selectedDay = String()
     var overAllAvailibilityStatus : Bool = false
+    var SlotsListMain = [DayAvailability]()
     override func viewDidLoad() {
         super.viewDidLoad()
            
@@ -214,11 +215,30 @@ class CalendarVC: UIViewController {
     @IBAction func action_SetAvailibilty(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Calendar", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetAvailibilityVC") as? SetAvailibilityVC {
+            
+           // settingVC.SlotsListMain = ManageSlots()
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
-            print("- Could not instantiate SettingVC")
+            print("- Could not instantiate SetAvailibilityVC")
         }
     }
+    
+
+    func ManageSlots() -> [DayAvailability] {
+        guard let days = self.responseAvaiability?.data?.days else { return [] }
+        
+        let result: [DayAvailability] = days.map { day in
+            let slots: [Slot] = day.slots.map { slot in
+                return Slot(start: slot.start, end: slot.end, enabled: slot.enabled)
+            }
+            return DayAvailability(day: day.day, enabled: day.enabled, slots: slots)
+        }
+        
+        return result
+    }
+
+
+
 }
 extension CalendarVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -541,8 +561,15 @@ extension CalendarVC {
                             if let availability = result {   //  already decoded object
                                 self.responseAvaiability = availability
                                 print("Availability assigned:", availability)
-                                self.overAllAvailibilityStatus = availability.data.overallAvailability
-                                self.toggle_OverAllAvailibilty.isOn = self.overAllAvailibilityStatus
+                                if let overallAvailability = availability.data?.overallAvailability {
+                                            self.overAllAvailibilityStatus = overallAvailability
+                                            self.toggle_OverAllAvailibilty.isOn = overallAvailability
+                                        } else {
+                                            // Handle the case where availability.data is nil or overallAvailability is missing
+                                            print("No availability data available")
+                                            self.overAllAvailibilityStatus = false
+                                            self.toggle_OverAllAvailibilty.isOn = false
+                                        }
                                 self.getCalculateTotalHours()
                             } else {
                                 AlertManager.showAlert(on: self, title: "Success", message: "No availability data found.")
@@ -569,7 +596,7 @@ extension CalendarVC {
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
-                        AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later."){
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                             self.navigationController?.popViewController(animated: true)
                         }
                     case .methodNotAllowed:
@@ -622,7 +649,7 @@ extension CalendarVC {
                     NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                 case .unknown:
                     LoaderManager.shared.hide()
-                    AlertManager.showAlert(on: self, title: "Server Error", message: "Something went wrong. Try again later.")
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
                 case .methodNotAllowed:
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 case .internalServerError:
@@ -639,11 +666,16 @@ extension CalendarVC {
             print("Total work for \(selectedDay): \(totalHours) hours")
             self.updateUiForAvailabilty(hour: totalHours)
             
+        }else{
+            self.lbl_HeaderAvailable.text = "Not Available"
+            self.lbl_Value_Hour.text = ""
+            self.BotomLine_avaiable.isHidden = true
+            self.mini_Vw_Avalable.backgroundColor = UIColor.red
         }
     }
 
     func totalWorkHours(for selectedDay: String, from response: GetAvailabilityResponse) -> Int {
-        guard let dayData = response.data.days.first(where: { $0.day == selectedDay }) else {
+        guard let dayData = response.data?.days?.first(where: { $0.day == selectedDay }) else {
             return 0
         }
         
@@ -676,7 +708,7 @@ extension CalendarVC {
             self.mini_Vw_Avalable.backgroundColor = UIColor(hex: "00CD18")
            
         }
-        guard let dayData = responseAvaiability?.data.days.first(where: { $0.day == selectedDay }) else {
+        guard let dayData = responseAvaiability?.data?.days?.first(where: { $0.day == selectedDay }) else {
             return
         }
 
