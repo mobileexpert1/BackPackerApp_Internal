@@ -6,73 +6,57 @@
 //
 
 import Foundation
-
+import UIKit
 enum NotificationCategory {
     case backpackerHire
     case backpacker
     case common
 }
+/*
+ JobAcceptReject = 1,
+   JobPost = 2,
+   EmployerRating = 3,
+   AccountActivation = 4,
+   PlacesToStay = 5,
+   Promotional = 6,
+   AdminChatWithEmployer = 7,
+   AdminChatWithBackpacker = 8,
+   BackpackerChatWithEmployer = 9,
+   AccountDeletion = 10,
+   BackpackerRating = 11,
+ */
 
 enum NotificationType: String {
-    
     // Employer
-    case jobPost
-    case accept
-    case decline
-    case report
-    case employerRating
-
-    // Backpacker
-    case applyPlaceToStay
-    case acceptDeclineStay
-    case acceptJob
-    case jobPosted
-    case premiumEmployerHired
-    case newJob
-    case backpackerChat
-    case backpackerDecline
-    case backpackerActivate
-    case backpackerRating
-
-    // Common
-    case commonChat
-
-    var category: NotificationCategory {
-        switch self {
-        case .jobPost, .accept, .decline, .report, .employerRating:
-            return .backpackerHire
-        case .applyPlaceToStay, .acceptDeclineStay, .acceptJob, .jobPosted,
-             .premiumEmployerHired, .newJob, .backpackerChat,
-             .backpackerDecline, .backpackerActivate, .backpackerRating:
-            return .backpacker
-        case .commonChat:
-            return .common
-        }
-    }
-
-    var description: String {
-        switch self {
-        case .jobPost: return "Job Posted"
-        case .accept: return "Job Accepted"
-        case .decline: return "Job Declined"
-        case .report: return "Reported by User"
-        case .employerRating: return "Employer Rating Received"
-
-        case .applyPlaceToStay: return "Applied for Place to Stay"
-        case .acceptDeclineStay: return "Stay Request Responded"
-        case .acceptJob: return "Job Accepted by Backpacker"
-        case .jobPosted: return "Job Posted by Employer"
-        case .premiumEmployerHired: return "Hired by Premium Employer"
-        case .newJob: return "New Job Notification"
-        case .backpackerChat: return "Chat from Employer"
-        case .backpackerDecline: return "Backpacker Declined"
-        case .backpackerActivate: return "Backpacker Activated"
-        case .backpackerRating: return "Backpacker Rating Received"
-
-        case .commonChat: return "New Chat Message"
-        }
-    }
+    case JobAcceptReject = "1"
+      case JobPost = "2"
+      case EmployerRating = "3"
+      case AccountActivation = "4"
+      case PlacesToStay = "5"
+      
+      // Backpacker
+      case Promotional = "6"
+      case AdminChatWithEmployer = "7"
+      case AdminChatWithBackpacker = "8"
+      case BackpackerChatWithEmployer = "9"
+      case AccountDeletion = "10"
+      case BackpackerRating = "11"
+      
+      // Categories for grouping
+      var category: NotificationCategory {
+          switch self {
+          case .JobAcceptReject, .EmployerRating:
+              return .backpackerHire
+          case .JobPost, .AccountActivation, .PlacesToStay, .Promotional, .AccountDeletion, .BackpackerRating:
+              return .backpacker
+          case .AdminChatWithEmployer, .AdminChatWithBackpacker, .BackpackerChatWithEmployer:
+              return .common
+          }
+      }
 }
+
+
+
 
 struct AppNotification {
     let type: NotificationType
@@ -88,21 +72,23 @@ class NotificationManager {
 
     func handleNotification(userInfo: [AnyHashable: Any]) {
         guard
-            let typeRaw = userInfo["type"] as? String,
+            let typeRaw = userInfo["notificationType"] as? String,
             let type = NotificationType(rawValue: typeRaw)
         else {
-            print("⚠️ Unknown notification type: \(userInfo["type"] ?? "nil")")
+            print("⚠️ Unknown notification type: \(userInfo["notificationType"] ?? "nil")")
             return
         }
 
-        let title = userInfo["title"] as? String ?? type.description
+        let title = userInfo["title"] as? String ?? "Test"
         let body = userInfo["body"] as? String ?? "You have a new notification"
         let data = userInfo["data"] as? [String: Any] ?? [:]
 
         let notification = AppNotification(type: type, title: title, body: body, data: data)
-
+        
+        // Route to the appropriate screen or handler
         route(notification)
     }
+
 
     private func route(_ notification: AppNotification) {
         switch notification.type.category {
@@ -112,23 +98,174 @@ class NotificationManager {
             handleBackpacker(notification)
         case .common:
             handleCommon(notification)
+            
+            
         }
     }
 
     private func handleEmployer(_ notification: AppNotification) {
-        print("BackpackerHire - \(notification.type.description): \(notification.body)")
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        
+        if appDelegate.isComeFromNotification,
+           let jobId = appDelegate.pendingNotificationJobId,
+           let appType = appDelegate.pendingAppType , let notificationID = appDelegate.pendingNotificationId {
+            
+            print("⚡ Scene active with pending notification: \(jobId) \(appType)")
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                appDelegate.handleNotification(jobId: jobId, appType: appType, notificationId: notificationID)
+
+            }
+            
+            // Reset
+            appDelegate.isComeFromNotification = false
+            appDelegate.pendingNotificationJobId = nil
+            appDelegate.pendingAppType = nil
+        }
+        
         // e.g., Navigate to job detail or rating screen
     }
 
     private func handleBackpacker(_ notification: AppNotification) {
-        print("Backpacker - \(notification.type.description): \(notification.body)")
-        // e.g., Navigate to chat, job page, etc.
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        if appDelegate.isComeFromNotification,
+           let jobId = appDelegate.pendingNotificationJobId,
+           let appType = appDelegate.pendingAppType , let notificationID = appDelegate.pendingNotificationId {
+            print("⚡ Scene active with pending notification: \(jobId) \(appType)")
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                appDelegate.handleNotification(jobId: jobId, appType: appType, notificationId: notificationID)
+
+            }
+            
+            // Reset
+            appDelegate.isComeFromNotification = false
+            appDelegate.pendingNotificationJobId = nil
+            appDelegate.pendingAppType = nil
+        }
     }
 
     private func handleCommon(_ notification: AppNotification) {
-        print("🔔 Common - \(notification.type.description): \(notification.body)")
-        // e.g., Show chat screen
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        if appDelegate.isComeFromNotification,
+           let appType = appDelegate.pendingAppType , let notificationID = appDelegate.pendingNotificationId {
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.handleNavigtaionForChat(info: appDelegate.userInfo!)
+
+            }
+            
+            // Reset
+            appDelegate.isComeFromNotification = false
+            appDelegate.pendingNotificationJobId = nil
+            appDelegate.pendingAppType = nil
+            appDelegate.pendingNotificationType = nil
+        }
     }
+    
+    
+    
+    func handleNavigtaionForChat(info: [AnyHashable:Any]){
+        print("User info fro chat notifcation ",info)
+        /*
+         Notification tapped: [AnyHashable("senderId"): 68a42942b3d72df4ee02ab96, AnyHashable("google.c.fid"): d-p5QjwGp0VdiYeTjcN5tj, AnyHashable("aps"): {
+            alert =     {
+                body = "iOS Employer : Hugh";
+                title = "New message";
+            };
+        }, AnyHashable("appType"): Employer, AnyHashable("google.c.sender.id"): 68407236896, AnyHashable("gcm.message_id"): 1757941206177104, AnyHashable("receivers"): 68a42b45b3d72df4ee02abcd, AnyHashable("google.c.a.e"): 1, AnyHashable("notificationId"): 68c80dd5cd8c4e6e73961510, AnyHashable("notificationType"): 9]
+         */
+        let notificationId  = info["notificationId"] as? String
+        let senderId  = info["senderId"] as? String
+        let receiverId  = info["receivers"] as? String
+        if let senderId = info["senderId"] as? String, !senderId.isEmpty {
+            let notificationId = info["notificationId"] as? String
+            let receiverId = info["receivers"] as? String
+            
+            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = scene.windows.first {
+                
+                // -Check bearer token
+                if UserDefaultsManager.shared.bearerToken?.isEmpty ?? true {
+                    // Token is empty → show LoginVC as root
+                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
+                    let nav = UINavigationController(rootViewController: loginVC)
+                    nav.navigationBar.isHidden = true
+                    UIApplication.setRootViewController(nav)
+                    return
+                }
+
+                if let tabBarController = window.rootViewController as? UITabBarController {
+                    
+                    // Step 1: Ensure tab is switched to index 2
+                    if tabBarController.selectedIndex != 0 {
+                        tabBarController.selectedIndex = 0
+                    }
+                    
+                    if let navController = tabBarController.viewControllers?[0] as? UINavigationController {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            
+                            if let topVC = navController.topViewController as? BackPackerHomeVC {
+                                // Already on JobDescriptionVC → just refresh
+                                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                    appDelegate.isComeFromNotification = true
+                                }
+                                topVC.senderId = senderId
+                                topVC.receiverId = receiverId
+                                topVC.isComeFromNotification = true
+                                topVC.refreshData()
+                            } else  if let topVC = navController.topViewController as? MessageLisVC {
+                                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                    appDelegate.isComeFromNotification = true
+                                }
+                                topVC.senderId = senderId
+                                topVC.receiverId = receiverId
+                                topVC.isComeFromNotification = true
+                               topVC.refreshData()
+                            } else if let topVC = navController.topViewController as? ChatVC {
+                                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                    appDelegate.isComeFromNotification = true
+                                }
+                                topVC.resceiverID  = senderId
+                                topVC.refreshData()
+                            } else {
+                                
+                                //  createTab(fromStoryboard: "Home", identifier: "BackPackerHomeVC", title: "Home", image: "Home"),
+                                //  Not on JobDescriptionVC → replace stack with JobDescriptionVC
+                                let storyboard = UIStoryboard(name: "Home", bundle: nil)
+                                let detailVC = storyboard.instantiateViewController(withIdentifier: "BackPackerHomeVC") as! BackPackerHomeVC
+   
+                                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                    appDelegate.isComeFromNotification = true
+                                }
+                                detailVC.senderId = senderId
+                                detailVC.receiverId = receiverId
+                                detailVC.isComeFromNotification = true
+                                detailVC.refreshData()
+                                //  Replace the navigation stack with only MainJobController
+                                navController.setViewControllers([detailVC], animated: false)
+                            }
+                        }
+                    }
+                }
+        } else {
+            return
+        }
+
+         
+      
+
+         }
+        
+//        let storyboard = UIStoryboard(name: "Chat", bundle: nil)
+//        if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
+//            self.navigationController?.pushViewController(settingVC, animated: true)
+//        } else {
+//            print("- Could not instantiate SettingVC")
+//        }
+    }
+    
+    
 }
 
 class AppState {

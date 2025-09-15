@@ -34,7 +34,7 @@ class HomeVC: UIViewController {
     @IBOutlet weak var home_TblVw: UITableView!
     
     //HeaderOutLets
-    @IBOutlet weak var Vw_Chat: UIView!
+ //   @IBOutlet weak var Vw_Chat: UIView!
     
     let viewModel = JobVM()
     let viewModelAuth = LogInVM()
@@ -93,7 +93,6 @@ class HomeVC: UIViewController {
         home_TblVw.showsHorizontalScrollIndicator = false
         home_TblVw.contentInset = .zero
         home_TblVw.sectionHeaderTopPadding = 0 // for iOS 15+
-        Vw_Chat.addShadowAllSides()
         let nib5 = UINib(nibName: "SkeltonCollectionTVC", bundle: nil)
         self.home_TblVw.register(nib5, forCellReuseIdentifier: "SkeltonCollectionTVC")
         self.lbl_noJobs.isHidden = true

@@ -84,7 +84,19 @@ extension NotificationVC: UITableViewDelegate, UITableViewDataSource {
         self.jobId = item.redirectId
         let status = item.readStatus ?? false
     //  self.MarkNotificationRead(id: id)
-        self.navigateToDescriptionVC(status: status,notificationId: id)
+        if item.notificationTypeId == 9 {
+            let storyboard = UIStoryboard(name: "Chat", bundle: nil)
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "ChatVC") as? ChatVC {
+                settingVC.headerUserName = "Test"
+                settingVC.resceiverID  = item.senderId
+                   self.navigationController?.pushViewController(settingVC, animated: true)
+               } else {
+                   print("- Could not instantiate SettingVC")
+               }
+        }else{
+            self.navigateToDescriptionVC(status: status,notificationId: id)
+        }
+       
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

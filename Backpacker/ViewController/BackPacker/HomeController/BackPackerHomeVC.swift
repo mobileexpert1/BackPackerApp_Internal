@@ -39,9 +39,13 @@ class BackPackerHomeVC: UIViewController {
     var isLoading: Bool = true // true while loading, false once data is ready
     var jobId = String()
     private let viewModelJOb = JobVM()
+    var isComeFromNotification : Bool = false
+    //Notifcation
+    var senderId : String?
+    var receiverId : String?
     var activeSections: [SectionType] {
         var sections: [SectionType] = []
-        
+       
 #if BackpackerHire
         if role == "3"{
             if let banners = accomdationEmpHomeData?.banners, !banners.isEmpty {
@@ -207,6 +211,20 @@ class BackPackerHomeVC: UIViewController {
         self.Vw_Chat.addShadowAllSides(radius: 2.0)
         self.txtFldVw.delegate = self
     }
+    func refreshData(){
+        if isComeFromNotification == true{
+            let storyboard = UIStoryboard(name: "Chat", bundle: nil)
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
+                settingVC.isComeFromNotification = true
+                settingVC.senderId = senderId
+                settingVC.receiverId = receiverId
+                self.navigationController?.pushViewController(settingVC, animated: false)
+            } else {
+                print("- Could not instantiate SettingVC")
+            }
+        }
+    }
+    
     
     @IBAction func action_Chat(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Chat", bundle: nil)

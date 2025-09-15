@@ -86,20 +86,8 @@ let accessToken = UserDefaultsManager.shared.bearerToken
            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
            
            if appDelegate.isComeFromNotification,
-              let jobId = appDelegate.pendingNotificationJobId,
-              let appType = appDelegate.pendingAppType , let notificationID = appDelegate.pendingNotificationId{
-               
-               print("⚡ Scene active with pending notification: \(jobId) \(appType)")
-               
-               // -Small delay so rootVC is stable
-               DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                   appDelegate.handleNotification(jobId: jobId, appType: appType, notificationId: notificationID)
-               }
-               
-               // Reset
-               appDelegate.isComeFromNotification = false
-               appDelegate.pendingNotificationJobId = nil
-               appDelegate.pendingAppType = nil
+               let info = appDelegate.userInfo{
+               NotificationManager.shared.handleNotification(userInfo: info)
            }
        }
 
@@ -161,3 +149,5 @@ extension SceneDelegate {
         window.makeKeyAndVisible()
     }
 }
+
+

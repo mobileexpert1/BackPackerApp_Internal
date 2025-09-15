@@ -507,7 +507,71 @@ struct ApiConstants {
             let url = "\(BASE_URL)api/employer/history/jobs?page=\(page)&perPage=\(perPage)"
             return url
         }
+        
+        //MARK: - Chat
+      //
+        static func getEMPLOYER_CHAT_URL(
+            page: Int,
+            perPage: Int,
+            search: String? = nil
+        ) -> String {
+            var url =
+                "\(BASE_URL)api/chat/employerList?page=\(page)&perPage=\(perPage)"
+         
+            if let searchText = search?.trimmingCharacters(
+                in: .whitespacesAndNewlines), !searchText.isEmpty
+            {
+                let encodedSearch =
+                    searchText.addingPercentEncoding(
+                        withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&search=\(encodedSearch)"
+            }
+            return url
+        }
+        
+        
+        static func getBackpackerR_CHAT_URL(
+            page: Int,
+            perPage: Int,
+            search: String? = nil
+        ) -> String {
+            var url =
+                "\(BASE_URL)api/chat/backpackerList?page=\(page)&perPage=\(perPage)"
+         
+            if let searchText = search?.trimmingCharacters(
+                in: .whitespacesAndNewlines), !searchText.isEmpty
+            {
+                let encodedSearch =
+                    searchText.addingPercentEncoding(
+                        withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&search=\(encodedSearch)"
+            }
+            return url
+        }
+        
+        
+        static func getCHAT_LIST_URL(
+            page: Int,
+            perPage: Int,
+            otherUserId: String? = nil
+        ) -> String {
+            var url =
+                "\(BASE_URL)api/chat?page=\(page)&perPage=\(perPage)"
+         
+            let encodedSearch =
+            otherUserId?.addingPercentEncoding(
+                    withAllowedCharacters: .urlQueryAllowed) ?? ""
+            url += "&otherUserId=\(encodedSearch)"
+            return url
+        }
+        static let SEND_CHAT = BASE_URL + "api/chat"
     }
+    
+ 
+    
+    
+    
+    
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"
         static let invalidPhoneMessage =

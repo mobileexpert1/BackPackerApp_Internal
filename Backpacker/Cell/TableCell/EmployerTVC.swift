@@ -9,6 +9,8 @@ import UIKit
 
 class EmployerTVC: UITableViewCell {
 
+    @IBOutlet weak var lbl_header_top: NSLayoutConstraint!
+    @IBOutlet weak var lbl_ShortName: UILabel!
     @IBOutlet weak var imgVW: UIImageView!
     @IBOutlet weak var lbl_SeenTime: UILabel!
     @IBOutlet weak var lbl_Subheader: UILabel!
@@ -21,7 +23,7 @@ class EmployerTVC: UITableViewCell {
     func SetUpFonts(){
         self.lblHeader.font = FontManager.poppins(.semiBold, size: 18.0)
         self.lbl_Subheader.font = FontManager.poppins(.semiBold, size: 16.0)
-        self.lbl_SeenTime.font = FontManager.poppins(.regular, size: 14)
+        self.lbl_SeenTime.font = FontManager.poppins(.regular, size: 12)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -29,5 +31,11 @@ class EmployerTVC: UITableViewCell {
 
         // Configure the view for the selected state
     }
+ 
+    func setUpConstraint(isLastMsgExist: Bool = false) {
+        lbl_header_top.constant = isLastMsgExist ? 2 : 13
+        lbl_Subheader.isHidden = !isLastMsgExist
+    }
+
     
 }

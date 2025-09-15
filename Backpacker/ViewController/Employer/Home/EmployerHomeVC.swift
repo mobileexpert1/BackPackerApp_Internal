@@ -93,6 +93,15 @@ class EmployerHomeVC: UIViewController {
         }
 #endif
     }
+    @IBAction func action_MessageView(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Chat", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("- Could not instantiate SettingVC")
+        }
+        
+    }
     func showTopView(isShow : Bool = false,title : String = "Employer"){
         if isShow == true{
             self.lbl_MainHeader.text = title

@@ -17,7 +17,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var pendingNotificationJobId: String?
     var pendingNotificationId: String?
     var pendingAppType: String?
-        
+    var pendingNotificationType: Int?
+    var userInfo: [AnyHashable: Any]?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         self.configureGoogleInfoPlist()
         // Override point for customization after application launch.
@@ -123,13 +124,29 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
                                   withCompletionHandler completionHandler: @escaping () -> Void) {
           let userInfo = response.notification.request.content.userInfo
           print(" Notification tapped: \(userInfo)")
-          if let jobId = userInfo["jobId"] as? String,
-             let appType = userInfo["appType"] as? String, let notificationID = userInfo["notificationId"] as? String {
-              isComeFromNotification = true
-              pendingNotificationJobId = jobId
-              pendingNotificationId = notificationID
-              pendingAppType = appType
-          }
+          self.userInfo = userInfo
+          let jobId = userInfo["jobId"] as? String
+          let appType = userInfo["appType"] as? String
+          
+          let notificationID = userInfo["notificationId"] as? String
+          
+          let notificationType = userInfo["notificationType"] as? Int
+          
+          isComeFromNotification = true
+          pendingNotificationJobId = jobId
+          pendingNotificationId = notificationID
+          pendingAppType = appType
+          pendingNotificationType = notificationType
+//          if let jobId = userInfo["jobId"] as? String,
+//             let appType = userInfo["appType"] as? String,
+//                let notificationID = userInfo["notificationId"] as? String ,
+//             let notificationType = userInfo["notificationType"] as? Int {
+//              isComeFromNotification = true
+//              pendingNotificationJobId = jobId
+//              pendingNotificationId = notificationID
+//              pendingAppType = appType
+//              pendingNotificationType = notificationType
+//          }
           
           completionHandler()
       }

@@ -9,77 +9,131 @@ import UIKit
 
 class ChatVC: UIViewController {
 
+    @IBOutlet weak var chatTxtFLdVw_Bottom: NSLayoutConstraint!
+    @IBOutlet weak var lbl_NDataFound: UILabel!
     @IBOutlet weak var tblVw: UITableView!
     @IBOutlet weak var lbl_ActiveStatus: UILabel!
     @IBOutlet weak var lbl_UserName: UILabel!
-    var chatMessages: [ChatMessage] = [
-        ChatMessage(sender: .user, message: "Hi, I’m interested in the job.", time: "10:00 AM"),
-        ChatMessage(sender: .employer, message: "Thanks for reaching out!", time: "10:01 AM"),
-        ChatMessage(sender: .user, message: "Can we schedule an interview?", time: "10:02 AM"),
-        ChatMessage(sender: .employer, message: "Sure, does 3 PM work for you?", time: "10:03 AM"),
-        ChatMessage(sender: .user, message: "Yes, that works. Thank you!", time: "10:04 AM"),
-        
-        // Long message
-        ChatMessage(sender: .employer, message: """
-        Thank you for confirming your availability. The interview will be held via Zoom and will last approximately 45 minutes. Please ensure you have a stable internet connection, a quiet environment, and your resume handy. You’ll be speaking with two team members from the engineering department. If you have any questions before the meeting, feel free to reach out.
-        """, time: "10:05 AM"),
-        
-        ChatMessage(sender: .user, message: "Got it. See you then.", time: "10:06 AM"),
-        ChatMessage(sender: .employer, message: "Looking forward to it.", time: "10:07 AM"),
-        
-        // Long message
-        ChatMessage(sender: .user, message: """
-        Before we meet, I just wanted to confirm whether there’s anything specific I should prepare or review ahead of the interview. I'm really excited about the opportunity and want to make sure I’m fully ready to discuss my background, relevant projects, and how I can contribute to your team effectively.
-        """, time: "10:08 AM"),
-        
-        ChatMessage(sender: .employer, message: "No special prep is needed—just be yourself and walk us through your experience.", time: "10:09 AM"),
-        
-        // Long message
-        ChatMessage(sender: .user, message: """
-        Thank you so much! I really appreciate the transparency and the opportunity to speak with your team. I've looked into your recent product updates and find them incredibly impressive. I’m particularly interested in how your platform scales across different regions and manages real-time data synchronization.
-        """, time: "10:10 AM"),
-        
-        ChatMessage(sender: .employer, message: "That’s great to hear! We’ll touch on some of those topics in the interview.", time: "10:11 AM"),
-        ChatMessage(sender: .user, message: "Awesome, looking forward to it.", time: "10:12 AM"),
-        
-        // Long message
-        ChatMessage(sender: .employer, message: """
-        Thanks for joining the interview yesterday. It was a pleasure speaking with you and learning more about your background. The panel was especially impressed with your communication skills and the clarity in how you explained your previous project responsibilities. We will now move forward with the internal review and should be in touch with next steps by Friday.
-        """, time: "11:00 AM"),
-
-        ChatMessage(sender: .employer, message: """
-        After reviewing your profile and interview feedback, we're confident that your skillset aligns well with the role. You demonstrated strong problem-solving abilities, and your understanding of scalable systems really stood out. Our next step involves a short task round to evaluate your hands-on approach. We'll send details via email shortly.
-        """, time: "11:01 AM"),
-
-        ChatMessage(sender: .employer, message: """
-        We appreciate your interest in joining our team. Your passion for technology and your proactive attitude were evident throughout the discussion. Our culture values individuals who are collaborative, detail-oriented, and eager to learn—all qualities you seem to embody. Expect a follow-up message from HR with the official offer documents and onboarding information.
-        """, time: "11:02 AM"),
-        ChatMessage(sender: .user, message: "That’s wonderful to hear. Thanks for the update!", time: "11:01 AM"),
-        ChatMessage(sender: .employer, message: "You're welcome. Talk soon!", time: "11:02 AM"),
-        
-        // Long message
-        ChatMessage(sender: .user, message: """
-        Hello again! I just wanted to say that I truly enjoyed the entire interview process. Every conversation I had was insightful, and the passion your team has for the product really stood out. No matter the outcome, I'm grateful for the opportunity and hope to keep in touch going forward.
-        """, time: "11:03 AM"),
-        
-        ChatMessage(sender: .employer, message: "That means a lot—thank you! We'll be in touch soon.", time: "11:04 AM")
-    ]
-
+    var headerUserName : String?
+   
+    let viewModel = ChatViewModel()
+    let viewModelAuth = LogInVM()
+    var isLoading : Bool = true
+    private let topLoader = UIActivityIndicatorView(style: .medium)
+    var ListChat = [Chat]()
     
+    var page = 1
+    let perPage = 50
+    var totalAccomodations = Int()
+    @IBOutlet weak var sendButton: UIButton!
+    var isLoadingMoreData = false
+    var isAllDataLoaded = false
+    var isComeFromPullTorefresh : Bool = false
+    
+    var searchDebounceTimer: Timer?
+    var lastSearchedText: String = ""
+    var isComFromSearch : Bool = false
+    var lastContentOffset: CGFloat = 0
+    var resceiverID : String?
+    var senderId : String?
+    var chatList = [Chat]()
     @IBOutlet weak var txtFldChat: UITextField!
     var chatMessageList = [ChatMessage]()
+    var sendMessage = String()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.setUpUI()
-    }
-    
+        self.listOfChat()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow(notification:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
 
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide(notification:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
+
+    }
+   
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        appDelegate.isComeFromNotification = false
+    }
+    private func setupRefreshControl() {
+        let refreshControl = UIRefreshControl()
+        refreshControl.tintColor = .clear // hide default spinner
+
+        // Replace with smaller loader
+        topLoader.color = .gray
+        topLoader.translatesAutoresizingMaskIntoConstraints = false
+        refreshControl.addSubview(topLoader)
+
+        NSLayoutConstraint.activate([
+            topLoader.centerXAnchor.constraint(equalTo: refreshControl.centerXAnchor),
+            topLoader.centerYAnchor.constraint(equalTo: refreshControl.centerYAnchor),
+            topLoader.heightAnchor.constraint(equalToConstant: 20), // smaller size
+            topLoader.widthAnchor.constraint(equalToConstant: 20)
+        ])
+
+        tblVw.refreshControl = refreshControl
+    }
+
+    @objc private func keyboardWillShow(notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+              let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
+        
+        let keyboardHeight = keyboardFrame.height
+        
+        UIView.animate(withDuration: duration) {
+            self.chatTxtFLdVw_Bottom.constant = -(keyboardHeight)// little padding
+            self.scrollToBottom(animated: true)
+            self.view.layoutIfNeeded()
+        }
+    }
+
+    @objc private func keyboardWillHide(notification: Notification) {
+        guard let userInfo = notification.userInfo,
+              let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
+        
+        UIView.animate(withDuration: duration) {
+            self.chatTxtFLdVw_Bottom.constant = 10
+            self.view.layoutIfNeeded()
+        }
+    }
+ 
+
+
+    @IBAction func action_sendChat(_ sender: Any) {
+        guard let text = txtFldChat.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                    !text.isEmpty else {
+                  print("⚠️ Cannot send empty message")
+                  return
+              }
+              
+        self.sendMessage = text
+        self.sendChat()
+        
+        // Clear text field
+    
+        
+    }
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
     private func setUpUI(){
-        self.chatMessageList = chatMessages
+        self.lbl_NDataFound.text = "No Chat Found"
+        self.lbl_NDataFound.font = FontManager.inter(.medium, size: 12.0)
+        self.lbl_NDataFound.isHidden = true
         self.lbl_UserName.font = FontManager.inter(.medium, size: 12.0)
         self.lbl_ActiveStatus.font = FontManager.inter(.medium, size: 10.0)
         let nib = UINib(nibName: "UserChatTVC", bundle: nil)
@@ -96,48 +150,78 @@ class ChatVC: UIViewController {
                 .font: FontManager.inter(.regular, size: 14.0)             // Replace with your custom font if needed
             ]
         )
+        self.lbl_UserName.text = self.headerUserName
+        self.txtFldChat.delegate = self
+                sendButton.isEnabled = false // disable until there's text
+        // Flip table view for reverse order
+       // tblVw.transform = CGAffineTransform(scaleX: 1, y: -1)
+        tblVw.separatorStyle = .none
+       // tblVw.transform = CGAffineTransform(scaleX: 1, y: -1)
+
+        // Setup top loader
+        self.setupRefreshControl()
+    }
+  
+    func refreshData(){
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        if  appDelegate.isComeFromNotification == true{
+            self.page = 1
+            self.ListChat.removeAll()
+            self.listOfChat()
+        }
     }
 
-}
 
+}
+extension ChatVC: UITextFieldDelegate {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        // Get updated text
+        let currentText = (textField.text as NSString?)?.replacingCharacters(in: range, with: string) ?? ""
+        
+        // Enable button only if not empty after trimming spaces
+        sendButton.isEnabled = !currentText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        return true
+    }
+    
+    //  Dismiss keyboard when user presses return/done
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+}
 
 extension ChatVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Replace with your actual data source count
-        return  self.chatMessageList.count
+        return  self.ListChat.count
     }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let chat =  self.chatMessageList[indexPath.row]
-        // Show image only for the last message in a block of same sender
-            let shouldShowImage: Bool = {
-                // If it's the last message in the list, show image
-                guard indexPath.row < chatMessageList.count - 1 else { return true }
-                // Show image if next message is from different sender
-                return chat.sender != chatMessageList[indexPath.row + 1].sender
-            }()
 
-        
-        
-        switch chat.sender {
-        case .user:
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard indexPath.row < ListChat.count else { return UITableViewCell() }
+        let chat = ListChat[indexPath.row]
+        let currentUserId = self.senderId
+        if chat.sender == currentUserId {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserChatTVC", for: indexPath) as? UserChatTVC else {
                 return UITableViewCell()
             }
             cell.txtMsg.text = chat.message
-            cell.lbl_Tim.text = chat.time
+            let formattedTime = formatChatTime(chat.timestamp)
+            cell.lbl_Tim.text = formattedTime.isEmpty ? chat.timestamp : formattedTime
             return cell
-
-        case .employer:
+        } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmplyerChatTVC", for: indexPath) as? EmplyerChatTVC else {
                 return UITableViewCell()
             }
             cell.txtLbl.text = chat.message
-            cell.lbl_Time.text = chat.time
+            let formattedTime = formatChatTime(chat.timestamp)
+            cell.lbl_Time.text = formattedTime.isEmpty ? chat.timestamp : formattedTime
             return cell
         }
     }
+
+
 
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -147,7 +231,233 @@ extension ChatVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
+    func formatChatTime(_ isoString: String) -> String {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        
+        if let date = formatter.date(from: isoString) {
+            let displayFormatter = DateFormatter()
+            displayFormatter.dateFormat = "hh:mm a"   // Example: "07:28 AM"
+            return displayFormatter.string(from: date)
+        }
+        return ""
+    }
+
+    private func scrollToBottom(animated: Bool = true) {
+         guard !ListChat.isEmpty else { return }
+         let indexPath = IndexPath(row: ListChat.count - 1, section: 0)
+         tblVw.scrollToRow(at: indexPath, at: .bottom, animated: animated)
+     }
+    @objc private func loadOlderMessages() {
+        guard !isLoadingMoreData, !isAllDataLoaded else {
+            self.tblVw.refreshControl?.endRefreshing()
+            return
+        }
+        page += 1
+        listOfChat()
+    }
 }
+
+
+extension ChatVC {
+    
+    
+    private func listOfChat(){
+            if page == 1 {
+                self.isLoading = true
+                LoaderManager.shared.show()
+            } else {
+                isLoadingMoreData = true
+                self.tblVw.reloadSections(IndexSet(integer: 0), with: .none)
+            }
+        viewModel.getChatList(page: page, perPage: perPage,otherUserId: resceiverID){ [weak self] (success: Bool, result: ChatListResponse?, statusCode: Int?) in
+                    guard let self = self else { return }
+                    DispatchQueue.main.async {
+                        LoaderManager.shared.hide()
+                        
+                        guard let statusCode = statusCode else {
+                            LoaderManager.shared.hide()
+                            AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                            return
+                        }
+                        let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                        
+                        DispatchQueue.main.async {
+                            
+                            switch httpStatus {
+                            case .ok, .created:
+                                guard success, let newChats = result?.data?.chats else {
+                                     self.isAllDataLoaded = true
+                                     self.isLoadingMoreData = false
+                                     return
+                                 }
+                                 self.senderId = result?.data?.user.id
+                                 // Prevent duplicates
+                                 let existingIds = Set(self.ListChat.map { $0.id })
+                                 let filteredChats = newChats.filter { !existingIds.contains($0.id) && !$0.id.isEmpty }
+
+                                 if self.page == 1 {
+                                     // First load → replace
+                                     self.ListChat = filteredChats
+                                     self.lbl_NDataFound.isHidden = !filteredChats.isEmpty
+                                     self.tblVw.reloadData()
+                                  //   self.scrollToBottom(animated: false)  // ✅ show latest at bottom
+                                 } else {
+                                     // Older messages prepend at top
+                                     let previousContentHeight = self.tblVw.contentSize.height
+                                     self.ListChat.insert(contentsOf: filteredChats, at: 0)
+                                     self.tblVw.reloadData()
+                                     self.tblVw.layoutIfNeeded()
+                                     let newContentHeight = self.tblVw.contentSize.height
+                                     self.tblVw.contentOffset.y += (newContentHeight - previousContentHeight)
+                                 }
+
+                                 self.isAllDataLoaded = filteredChats.count < self.perPage
+                                 self.isLoadingMoreData = false
+                                self.tblVw.refreshControl?.endRefreshing()
+                            case .badRequest:
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            case .unauthorized :
+                                self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                    if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                        self.listOfChat()
+                                    } else {
+                                        LoaderManager.shared.hide()
+                                        self.tblVw.refreshControl?.endRefreshing()
+                                        self.isLoading = false
+                                        self.lastContentOffset = 0.0
+                                        self.tblVw.setContentOffset(.zero, animated: true)
+                                        self.isComeFromPullTorefresh = false
+                                        self.lastContentOffset = 0.0
+                                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                    }
+                                }
+                                
+                            case .unauthorizedToken:
+                                LoaderManager.shared.hide()
+                                self.tblVw.refreshControl?.endRefreshing()
+                                self.lastContentOffset = 0.0
+                                self.tblVw.setContentOffset(.zero, animated: true)
+                                self.isComeFromPullTorefresh = false
+                                
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                            case .unknown:
+                                LoaderManager.shared.hide()
+                                self.tblVw.refreshControl?.endRefreshing()
+                                self.lastContentOffset = 0.0
+                                self.tblVw.setContentOffset(.zero, animated: true)
+                                self.isComeFromPullTorefresh = false
+                               
+                                AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                                    self.navigationController?.popViewController(animated: true)
+                                }
+                            case .methodNotAllowed:
+                                AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            case .internalServerError:
+                                AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                                
+                            }
+                        }
+                    }
+                }
+            
+        }
+    
+    
+    private func sendChat(){
+        LoaderManager.shared.show()
+        let req = ChatRequest(receiver: resceiverID ?? "", message: self.sendMessage)
+        viewModel.sendChat(request: req) { success, message ,statusCode in
+            self.setUpLocalData()
+            self.txtFldChat.text = ""
+            self.sendMessage = ""
+            self.sendButton.isEnabled = false
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    print("Sent Sucessfluuy")
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.sendChat()
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+        }
+    }
+    func convertISOTo12Hour(_ isoString: String) -> String {
+        let isoFormatter = ISO8601DateFormatter()
+        isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        // Try parsing with fractional seconds first
+        var date = isoFormatter.date(from: isoString)
+        
+        // Fallback if parsing fails (no fractional seconds)
+        if date == nil {
+            isoFormatter.formatOptions = [.withInternetDateTime]
+            date = isoFormatter.date(from: isoString)
+        }
+
+        guard let validDate = date else {
+            return ""
+        }
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "hh:mm a" // 12-hour format
+        dateFormatter.amSymbol = "AM"
+        dateFormatter.pmSymbol = "PM"
+        
+        return dateFormatter.string(from: validDate)
+    }
+
+
+    
+    func setUpLocalData(){
+        let currentTimeISO = ISO8601DateFormatter().string(from: Date())
+        let formattedTime = convertISOTo12Hour(currentTimeISO)
+
+        let newChat = Chat(
+                id: UUID().uuidString,   // temporary local ID
+                sender: self.senderId ?? "",
+                receiver: self.resceiverID ?? "",
+                message: self.sendMessage,
+                messageType: "text",
+                status: "sending",
+                timestamp: formattedTime,
+                createdAt: formattedTime,
+                updatedAt: formattedTime,
+                v: 0
+            )
+
+        self.ListChat.append(newChat)
+        self.tblVw.reloadData()
+        scrollToBottom(animated: true)
+    }
+
+}
+
 
 struct ChatMessage {
     let sender: SenderType

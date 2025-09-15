@@ -28,33 +28,6 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="egA-LH-qAz">
-                                <rect key="frame" x="323" y="748" width="50" height="50"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2fE-EB-Gr0">
-                                        <rect key="frame" x="5" y="5" width="40" height="40"/>
-                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                        <state key="normal" image="chat_Icon"/>
-                                        <connections>
-                                            <action selector="action_Chat:" destination="IXf-7S-SRa" eventType="touchUpInside" id="mbr-U5-Ys8"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="2fE-EB-Gr0" secondAttribute="trailing" constant="5" id="6dN-pE-xat"/>
-                                    <constraint firstItem="2fE-EB-Gr0" firstAttribute="top" secondItem="egA-LH-qAz" secondAttribute="top" constant="5" id="KW1-et-VqH"/>
-                                    <constraint firstAttribute="width" constant="50" id="LfP-9z-VeS"/>
-                                    <constraint firstAttribute="height" constant="50" id="at6-0U-aez"/>
-                                    <constraint firstItem="2fE-EB-Gr0" firstAttribute="leading" secondItem="egA-LH-qAz" secondAttribute="leading" constant="5" id="dKs-h0-hyT"/>
-                                    <constraint firstAttribute="bottom" secondItem="2fE-EB-Gr0" secondAttribute="bottom" constant="5" id="rFc-WV-Okf"/>
-                                </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                        <integer key="value" value="25"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="HTv-7q-uOR"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -63,15 +36,12 @@
                             <constraint firstItem="G8R-lz-bEm" firstAttribute="centerX" secondItem="HTv-7q-uOR" secondAttribute="centerX" id="FFp-2H-ytX"/>
                             <constraint firstItem="G8R-lz-bEm" firstAttribute="centerY" secondItem="HTv-7q-uOR" secondAttribute="centerY" id="YOY-Hg-vEY"/>
                             <constraint firstItem="45L-mC-6H2" firstAttribute="leading" secondItem="HTv-7q-uOR" secondAttribute="leading" constant="10" id="ahu-ID-gYr"/>
-                            <constraint firstItem="HTv-7q-uOR" firstAttribute="trailing" secondItem="egA-LH-qAz" secondAttribute="trailing" constant="20" id="czH-n3-uHG"/>
-                            <constraint firstItem="HTv-7q-uOR" firstAttribute="bottom" secondItem="egA-LH-qAz" secondAttribute="bottom" constant="20" id="qW6-al-6Of"/>
                             <constraint firstItem="HTv-7q-uOR" firstAttribute="trailing" secondItem="45L-mC-6H2" secondAttribute="trailing" constant="10" id="rEf-sZ-KpV"/>
                             <constraint firstItem="45L-mC-6H2" firstAttribute="top" secondItem="HTv-7q-uOR" secondAttribute="top" id="ztW-fd-rl8"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="m1J-J9-KIZ"/>
                     <connections>
-                        <outlet property="Vw_Chat" destination="egA-LH-qAz" id="kP4-XL-tLW"/>
                         <outlet property="home_TblVw" destination="45L-mC-6H2" id="Do1-vx-tXW"/>
                         <outlet property="lbl_noJobs" destination="G8R-lz-bEm" id="sJ8-ml-kNP"/>
                     </connections>
@@ -676,7 +646,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemPinkColor">
-            <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
