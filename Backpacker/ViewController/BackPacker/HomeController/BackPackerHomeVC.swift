@@ -229,6 +229,10 @@ class BackPackerHomeVC: UIViewController {
     @IBAction func action_Chat(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Chat", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
+            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                appDelegate.isComeFromNotification = false
+                
+            }
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
             print("- Could not instantiate SettingVC")

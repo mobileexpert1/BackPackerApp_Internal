@@ -12,22 +12,24 @@ class ChatVC: UIViewController {
     @IBOutlet weak var chatTxtFLdVw_Bottom: NSLayoutConstraint!
     @IBOutlet weak var lbl_NDataFound: UILabel!
     @IBOutlet weak var tblVw: UITableView!
-    @IBOutlet weak var lbl_ActiveStatus: UILabel!
+   
     @IBOutlet weak var lbl_UserName: UILabel!
     var headerUserName : String?
    
     let viewModel = ChatViewModel()
+    let viewModelReport = ReportIssueViewModel()
     let viewModelAuth = LogInVM()
     var isLoading : Bool = true
     private let topLoader = UIActivityIndicatorView(style: .medium)
     var ListChat = [Chat]()
-    
+    var AdminListChat = [AdminChatMessage]()
     var page = 1
-    let perPage = 50
+    let perPage = 100
     var totalAccomodations = Int()
     @IBOutlet weak var sendButton: UIButton!
     var isLoadingMoreData = false
     var isAllDataLoaded = false
+    
     var isComeFromPullTorefresh : Bool = false
     
     var searchDebounceTimer: Timer?
@@ -40,13 +42,18 @@ class ChatVC: UIViewController {
     @IBOutlet weak var txtFldChat: UITextField!
     var chatMessageList = [ChatMessage]()
     var sendMessage = String()
-    
-    
+    var ticketId = String()
+    var isComeFromAdmin : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.setUpUI()
-        self.listOfChat()
+        if isComeFromAdmin == true{
+            AdminlistOfChat()
+        }else{
+            self.listOfChat()
+        }
+       
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillShow(notification:)),
@@ -71,19 +78,22 @@ class ChatVC: UIViewController {
     private func setupRefreshControl() {
         let refreshControl = UIRefreshControl()
         refreshControl.tintColor = .clear // hide default spinner
-
-        // Replace with smaller loader
+        
+        // Custom loader
         topLoader.color = .gray
+        topLoader.hidesWhenStopped = true
         topLoader.translatesAutoresizingMaskIntoConstraints = false
         refreshControl.addSubview(topLoader)
-
+        
         NSLayoutConstraint.activate([
             topLoader.centerXAnchor.constraint(equalTo: refreshControl.centerXAnchor),
             topLoader.centerYAnchor.constraint(equalTo: refreshControl.centerYAnchor),
-            topLoader.heightAnchor.constraint(equalToConstant: 20), // smaller size
+            topLoader.heightAnchor.constraint(equalToConstant: 20),
             topLoader.widthAnchor.constraint(equalToConstant: 20)
         ])
-
+        
+        refreshControl.addTarget(self, action: #selector(loadOlderMessages), for: .valueChanged)
+        
         tblVw.refreshControl = refreshControl
     }
 
@@ -121,7 +131,12 @@ class ChatVC: UIViewController {
               }
               
         self.sendMessage = text
-        self.sendChat()
+        if isComeFromAdmin == true{
+            self.sendAdminChat()
+        }else{
+            self.sendChat()
+        }
+        
         
         // Clear text field
     
@@ -135,7 +150,6 @@ class ChatVC: UIViewController {
         self.lbl_NDataFound.font = FontManager.inter(.medium, size: 12.0)
         self.lbl_NDataFound.isHidden = true
         self.lbl_UserName.font = FontManager.inter(.medium, size: 12.0)
-        self.lbl_ActiveStatus.font = FontManager.inter(.medium, size: 10.0)
         let nib = UINib(nibName: "UserChatTVC", bundle: nil)
         self.tblVw.register(nib, forCellReuseIdentifier: "UserChatTVC")
         
@@ -167,7 +181,12 @@ class ChatVC: UIViewController {
         if  appDelegate.isComeFromNotification == true{
             self.page = 1
             self.ListChat.removeAll()
-            self.listOfChat()
+            if isComeFromAdmin == true{
+                self.AdminlistOfChat()
+            }else{
+                self.listOfChat()
+            }
+          
         }
     }
 
@@ -195,30 +214,64 @@ extension ChatVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // Replace with your actual data source count
-        return  self.ListChat.count
+        if isComeFromAdmin == true{
+            return  self.AdminListChat.count
+            
+        }else{
+            return  self.ListChat.count
+        }
+        
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard indexPath.row < ListChat.count else { return UITableViewCell() }
-        let chat = ListChat[indexPath.row]
-        let currentUserId = self.senderId
-        if chat.sender == currentUserId {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserChatTVC", for: indexPath) as? UserChatTVC else {
-                return UITableViewCell()
+        
+        if isComeFromAdmin == true{
+            guard indexPath.row < AdminListChat.count else { return UITableViewCell() }
+            let chat = AdminListChat[indexPath.row]
+            let currentUserId = chat.senderId
+            self.senderId = currentUserId
+            if currentUserId == chat.sender?.id {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserChatTVC", for: indexPath) as? UserChatTVC else {
+                    return UITableViewCell()
+                }
+                cell.txtMsg.text = chat.message
+                let formattedTime = formatChatTime(chat.timestamp ?? "")
+                cell.lbl_Tim.text = formattedTime.isEmpty ? chat.timestamp : formattedTime
+                return cell
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmplyerChatTVC", for: indexPath) as? EmplyerChatTVC else {
+                    return UITableViewCell()
+                }
+                cell.txtLbl.text = chat.message
+                let formattedTime = formatChatTime(chat.timestamp ?? "")
+                cell.lbl_Time.text = formattedTime.isEmpty ? chat.timestamp : formattedTime
+                return cell
             }
-            cell.txtMsg.text = chat.message
-            let formattedTime = formatChatTime(chat.timestamp)
-            cell.lbl_Tim.text = formattedTime.isEmpty ? chat.timestamp : formattedTime
-            return cell
-        } else {
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmplyerChatTVC", for: indexPath) as? EmplyerChatTVC else {
-                return UITableViewCell()
+            
+        }else{
+            guard indexPath.row < ListChat.count else { return UITableViewCell() }
+            let chat = ListChat[indexPath.row]
+            let currentUserId = self.senderId
+            if chat.sender == currentUserId {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserChatTVC", for: indexPath) as? UserChatTVC else {
+                    return UITableViewCell()
+                }
+                cell.txtMsg.text = chat.message
+                let formattedTime = formatChatTime(chat.timestamp)
+                cell.lbl_Tim.text = formattedTime.isEmpty ? chat.timestamp : formattedTime
+                return cell
+            } else {
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmplyerChatTVC", for: indexPath) as? EmplyerChatTVC else {
+                    return UITableViewCell()
+                }
+                cell.txtLbl.text = chat.message
+                let formattedTime = formatChatTime(chat.timestamp)
+                cell.lbl_Time.text = formattedTime.isEmpty ? chat.timestamp : formattedTime
+                return cell
             }
-            cell.txtLbl.text = chat.message
-            let formattedTime = formatChatTime(chat.timestamp)
-            cell.lbl_Time.text = formattedTime.isEmpty ? chat.timestamp : formattedTime
-            return cell
         }
+        
+      
     }
 
 
@@ -247,14 +300,24 @@ extension ChatVC: UITableViewDelegate, UITableViewDataSource {
          guard !ListChat.isEmpty else { return }
          let indexPath = IndexPath(row: ListChat.count - 1, section: 0)
          tblVw.scrollToRow(at: indexPath, at: .bottom, animated: animated)
+        
      }
     @objc private func loadOlderMessages() {
         guard !isLoadingMoreData, !isAllDataLoaded else {
             self.tblVw.refreshControl?.endRefreshing()
+            self.topLoader.stopAnimating()
             return
         }
+        self.tblVw.refreshControl?.beginRefreshing()
+        self.topLoader.startAnimating()
         page += 1
-        listOfChat()
+        self.isComeFromPullTorefresh = true
+        if isComeFromAdmin == true {
+            AdminlistOfChat()
+        }else{
+            listOfChat()
+        }
+        
     }
 }
 
@@ -315,8 +378,14 @@ extension ChatVC {
                                  self.isAllDataLoaded = filteredChats.count < self.perPage
                                  self.isLoadingMoreData = false
                                 self.tblVw.refreshControl?.endRefreshing()
+                                if self.isComeFromPullTorefresh == false {
+                                    self.scrollToBottom()
+                                }
+                                self.isComeFromPullTorefresh = false
+                                self.topLoader.stopAnimating()
                             case .badRequest:
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                self.isComeFromPullTorefresh = false
                             case .unauthorized :
                                 self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                                     if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -383,12 +452,162 @@ extension ChatVC {
                 switch httpStatus {
                 case .ok, .created:
                     print("Sent Sucessfluuy")
+                    
                 case .badRequest:
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 case .unauthorized :
                     self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
                             self.sendChat()
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+        }
+    }
+    
+    private func AdminlistOfChat() {
+        if page == 1 {
+            self.isLoading = true
+            LoaderManager.shared.show()
+        } else {
+            isLoadingMoreData = true
+            self.tblVw.reloadSections(IndexSet(integer: 0), with: .none)
+        }
+        
+        viewModelReport.getAdminChatt(page: page, perPage: perPage, ticketId: self.ticketId) { [weak self] (success: Bool, result: AdminChatResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                
+                guard let statusCode = statusCode else {
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                switch httpStatus {
+                case .ok, .created:
+                    guard success, let newChats = result?.data?.chats  else {
+                        self.isAllDataLoaded = true
+                        self.isLoadingMoreData = false
+                        return
+                    }
+                    
+                    self.resceiverID = result?.data?.adminDetail?.id
+                    
+                    // Prevent duplicates
+                    let existingIds = Set(self.AdminListChat.map { $0.id ?? "" })
+                    let filteredChats = newChats.filter { !existingIds.contains($0.id ?? "") && !($0.id ?? "").isEmpty }
+                    
+                    if self.page == 1 {
+                        self.AdminListChat = filteredChats
+                        self.lbl_NDataFound.isHidden = !filteredChats.isEmpty
+                        self.tblVw.reloadData()
+                    } else {
+                        let previousContentHeight = self.tblVw.contentSize.height
+                        self.AdminListChat.insert(contentsOf: filteredChats, at: 0)
+                        self.tblVw.reloadData()
+                        self.tblVw.layoutIfNeeded()
+                        let newContentHeight = self.tblVw.contentSize.height
+                        self.tblVw.contentOffset.y += (newContentHeight - previousContentHeight)
+                    }
+                    
+                    self.isAllDataLoaded = filteredChats.count < self.perPage
+                    self.isLoadingMoreData = false
+                    self.tblVw.refreshControl?.endRefreshing()
+                    
+                    if !self.isComeFromPullTorefresh {
+                        self.scrollToBottom()
+                    }
+                    self.isComeFromPullTorefresh = false
+                    self.topLoader.stopAnimating()
+                    
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    self.isComeFromPullTorefresh = false
+                    
+                case .unauthorized:
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.AdminlistOfChat()
+                        } else {
+                            LoaderManager.shared.hide()
+                            self.tblVw.refreshControl?.endRefreshing()
+                            self.isLoading = false
+                            self.lastContentOffset = 0.0
+                            self.tblVw.setContentOffset(.zero, animated: true)
+                            self.isComeFromPullTorefresh = false
+                            self.lastContentOffset = 0.0
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                        }
+                    }
+                    
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    self.tblVw.refreshControl?.endRefreshing()
+                    self.lastContentOffset = 0.0
+                    self.tblVw.setContentOffset(.zero, animated: true)
+                    self.isComeFromPullTorefresh = false
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                    
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    self.tblVw.refreshControl?.endRefreshing()
+                    self.lastContentOffset = 0.0
+                    self.tblVw.setContentOffset(.zero, animated: true)
+                    self.isComeFromPullTorefresh = false
+                    AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.") {
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                    
+                case .methodNotAllowed, .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                }
+            }
+        }
+    }
+
+    private func sendAdminChat(){
+        LoaderManager.shared.show()
+        let req = AdminChatRequest(ticketId: self.ticketId, message: self.sendMessage, receiverId: self.resceiverID ?? "")
+        viewModelReport.sendAdminChat(request: req) { success, message ,statusCode in
+            self.setUpLocalData()
+            self.txtFldChat.text = ""
+            self.sendMessage = ""
+            self.sendButton.isEnabled = false
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    print("Sent Sucessfluuy")
+                    
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.sendAdminChat()
                         } else {
                             NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                         }
@@ -437,22 +656,30 @@ extension ChatVC {
     func setUpLocalData(){
         let currentTimeISO = ISO8601DateFormatter().string(from: Date())
         let formattedTime = convertISOTo12Hour(currentTimeISO)
+        
+        if isComeFromAdmin == true {
+            let adminChat = AdminChatMessageChatUser(id: self.senderId, name: "", email: "", image: "")
+            let neChat = AdminChatMessage(id: "", ticketId: "", senderId: self.senderId, senderModel: "", receiverId: "", receiverModel: "", message: self.sendMessage, messageType: "", status: "", timestamp: formattedTime, sender: adminChat, receiver: nil, createdAt: formattedTime, updatedAt: formattedTime)
+            self.AdminListChat.append(neChat)
+        }else{
+            let newChat = Chat(
+                    id: UUID().uuidString,   // temporary local ID
+                    sender: self.senderId ?? "",
+                    receiver: self.resceiverID ?? "",
+                    message: self.sendMessage,
+                    messageType: "text",
+                    status: "sending",
+                    timestamp: formattedTime,
+                    createdAt: formattedTime,
+                    updatedAt: formattedTime,
+                    v: 0
+                )
 
-        let newChat = Chat(
-                id: UUID().uuidString,   // temporary local ID
-                sender: self.senderId ?? "",
-                receiver: self.resceiverID ?? "",
-                message: self.sendMessage,
-                messageType: "text",
-                status: "sending",
-                timestamp: formattedTime,
-                createdAt: formattedTime,
-                updatedAt: formattedTime,
-                v: 0
-            )
-
-        self.ListChat.append(newChat)
+            self.ListChat.append(newChat)
+        }
+       
         self.tblVw.reloadData()
+        self.lbl_NDataFound.isHidden = true
         scrollToBottom(animated: true)
     }
 

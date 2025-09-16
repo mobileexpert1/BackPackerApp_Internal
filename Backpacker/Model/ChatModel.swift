@@ -130,3 +130,10 @@ struct ChatRequest: Codable {
     let receiver: String
     let message: String
 }
+
+struct AdminChatRequest: Codable {
+    let ticketId: String
+    let message: String
+    let receiverId :String
+}
+

@@ -21,29 +21,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var userInfo: [AnyHashable: Any]?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         self.configureGoogleInfoPlist()
-        // Override point for customization after application launch.
+        
+        // Set delegates BEFORE requesting permissions
+        Messaging.messaging().delegate = self
+        let center = UNUserNotificationCenter.current()
+        center.delegate = self
+        
+        // Request notification permission
         requestNotificationPermission()    //com.Backpacker
-        // Register for remote notifications
-        sleep(2)
+        
+        // Register for remote notifications (already called inside requestNotificationPermission)
+         sleep(2)  // optional, left as-is
         CalendarEventManager.shared.requestAccess { granted in
             print(granted ? "-Calendar access granted" : "- Calendar access denied")
         }
-           LocationManager.shared.requestLocationPermission()
-           LocationManager.shared.startUpdatingLocation()
-        Messaging.messaging().delegate = self
-        // Setup notifications
-            let center = UNUserNotificationCenter.current()
-            center.delegate = self
-        application.registerForRemoteNotifications()
+        
+        LocationManager.shared.requestLocationPermission()
+        LocationManager.shared.startUpdatingLocation()
+        
+        // Handle cold-launch notification if exists
         if let remoteNotification = launchOptions?[.remoteNotification] as? [AnyHashable: Any] {
-                  if let jobId = remoteNotification["jobId"] as? String,
-                     let appType = remoteNotification["appType"] as? String {
-                      isComeFromNotification = true
-                      pendingNotificationJobId = jobId
-                      pendingAppType = appType
-                      print("📩 Stored cold-launch notification: \(jobId) \(appType)")
-                  }
-              }
+            if let jobId = remoteNotification["jobId"] as? String,
+               let appType = remoteNotification["appType"] as? String {
+                isComeFromNotification = true
+                pendingNotificationJobId = jobId
+                pendingAppType = appType
+                print("📩 Stored cold-launch notification: \(jobId) \(appType)")
+            }
+        }
         return true
     }
 
@@ -114,6 +119,16 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
         // Show as banner and play sound
+        let userInfo = notification.request.content.userInfo
+            
+            // Example: print payload for debugging
+            print("Notification UserInfo: \(userInfo)")
+        if let  typeRaw = userInfo["notificationType"] as? String {
+            if typeRaw == "9"{
+                RefreshChatController(info: userInfo)
+            }
+        }
+       
         completionHandler([.banner, .sound])
     }
     
@@ -137,17 +152,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
           pendingNotificationId = notificationID
           pendingAppType = appType
           pendingNotificationType = notificationType
-//          if let jobId = userInfo["jobId"] as? String,
-//             let appType = userInfo["appType"] as? String,
-//                let notificationID = userInfo["notificationId"] as? String ,
-//             let notificationType = userInfo["notificationType"] as? Int {
-//              isComeFromNotification = true
-//              pendingNotificationJobId = jobId
-//              pendingNotificationId = notificationID
-//              pendingAppType = appType
-//              pendingNotificationType = notificationType
-//          }
-          
           completionHandler()
       }
         func application(_ application: UIApplication,
@@ -170,7 +174,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
             var plistName = "GoogleService-Info"
             
 #if BackpackerHire
-            plistName = "GoogleService-Info-Hire"
+            plistName = "GoogleService-Info_Hire"//"GoogleService-Info-Hire"
 #else
             plistName = "GoogleService-Info"
 #endif

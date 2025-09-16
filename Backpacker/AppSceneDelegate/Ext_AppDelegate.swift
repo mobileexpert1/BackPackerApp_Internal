@@ -151,6 +151,158 @@ extension AppDelegate {
    
 }
 
+    func RefreshChatController(info: [AnyHashable:Any]){
+#if Backapacker
+        let notificationId  = info["notificationId"] as? String
+        let senderId  = info["senderId"] as? String
+        let receiverId  = info["receivers"] as? String
+        if let senderId = info["senderId"] as? String, !senderId.isEmpty {
+            let notificationId = info["notificationId"] as? String
+            let receiverId = info["receivers"] as? String
+            
+            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = scene.windows.first {
+                
+                // -Check bearer token
+                if UserDefaultsManager.shared.bearerToken?.isEmpty ?? true {
+                    // Token is empty → show LoginVC as root
+                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
+                    let nav = UINavigationController(rootViewController: loginVC)
+                    nav.navigationBar.isHidden = true
+                    UIApplication.setRootViewController(nav)
+                    return
+                }
+                
+                if let tabBarController = window.rootViewController as? UITabBarController {
+                    
+                    // Step 1: Ensure tab is switched to index 2
+                    if tabBarController.selectedIndex == 0 {
+                        if let navController = tabBarController.viewControllers?[0] as? UINavigationController {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                if let topVC = navController.topViewController as? ChatVC {
+                                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                        appDelegate.isComeFromNotification = true
+                                    }
+                                    topVC.resceiverID  = senderId
+                                    topVC.refreshData()
+                                }else if  let topVC = navController.topViewController as? MessageLisVC      {
+                                    
+                                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                        appDelegate.isComeFromNotification = true
+                                    }
+                                    topVC.senderId = senderId
+                                    topVC.receiverId = receiverId
+                                    topVC.isComeFromNotification = true
+                                    topVC.refreshViaApiCall()
+                                    
+                                    
+                                }else{
+                                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                        appDelegate.isComeFromNotification = false
+                                        
+                                    }
+                                    
+                                }
+                            }
+                        }else{
+                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                appDelegate.isComeFromNotification = false
+                                
+                            }
+                        }
+                        
+                        
+                    }else{
+                        if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                            appDelegate.isComeFromNotification = false
+                            
+                        }
+                        
+                    }
+                    
+                   
+                }
+            } else {
+                return
+            }
+        }
+        
+#else
+        if let senderId = info["senderId"] as? String, !senderId.isEmpty {
+            let receiverId = info["receivers"] as? String
+            
+            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = scene.windows.first {
+                
+                //  Check bearer token
+                if UserDefaultsManager.shared.employerbearerToken?.isEmpty ?? true {
+                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
+                    let nav = UINavigationController(rootViewController: loginVC)
+                    nav.navigationBar.isHidden = true
+                    UIApplication.setRootViewController(nav)
+                    return
+                }
+                //  Check Role
+                if let role = UserDefaults.standard.string(forKey: "UserRoleType") {
+                    if role == "2" {
+                        if let tabBarController = window.rootViewController as? UITabBarController {
+                            // Step 1: Ensure tab is switched to index 2
+                            if tabBarController.selectedIndex == 0 {
+                                if let navController = tabBarController.viewControllers?[0] as? UINavigationController {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        if  let topVC = navController.topViewController as? ChatVC  {
+                                            //  Otherwise reset stack to MainJobController
+                                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                                appDelegate.isComeFromNotification = true
+                                            }
+                                            topVC.resceiverID  = senderId
+                                            topVC.refreshData()
+                                        }else if  let topVC = navController.topViewController as? MessageLisVC      {
+                                            
+                                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                                appDelegate.isComeFromNotification = true
+                                            }
+                                            topVC.senderId = senderId
+                                            topVC.receiverId = receiverId
+                                            topVC.isComeFromNotification = true
+                                            topVC.refreshViaApiCall()
+                                            
+                                            
+                                        }else{
+                                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                                appDelegate.isComeFromNotification = false
+                                                
+                                            }
+                                        }
+                                    }
+                                }else{
+                                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                        appDelegate.isComeFromNotification = false
+                                        
+                                    }
+                                }
+                                
+                            }else{
+                                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                    appDelegate.isComeFromNotification = false
+                                    
+                                }
+                            }
+                            
+                        } else {
+                            // Call API → after success go to MainJobController
+                        }
+                    } else {
+                        
+                      //  self.ChooseRoleTypeApiCall(senderId: senderId, receiverId: receiverId ?? "")
+                    }
+                }
+            }
+        }
+#endif
+       
+    }
+    
     private func ChooseRoleTypeApiCall(jobID: String) {
         let role = "2"
         let req = ChooseRoleTypeRequest(subRoleType: role)
@@ -213,7 +365,79 @@ extension AppDelegate {
             }
         }
     }
+    private func  ChooseRoleTypeApiCall(senderId: String,receiverId:String) {
+        let role = "2"
+        let req = ChooseRoleTypeRequest(subRoleType: role)
+        
+        viewModel.chooseRoleType(otpRequest: req) { success, result, statusCode in
+            guard let statusCode = statusCode else { return }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            
+            DispatchQueue.main.async {
+                switch httpStatus {
+                case .ok, .created:
+                    if ((result?.success) != nil) == true {
+                            UserDefaults.standard.set("2", forKey: "UserRoleType")
 
+                            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                               let window = scene.windows.first,
+                               let tabBarController = window.rootViewController as? MainTabBarEmpController {
+
+                                //  Update the tabs for the new role
+                                tabBarController.setupTabsForUserRole()
+
+                                //  Select Employer tab
+                                tabBarController.selectedIndex = 0
+
+                                // If you want to push to job detail page
+                                if let navController = tabBarController.viewControllers?[0] as? UINavigationController {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                        if  let topVC = navController.topViewController as? ChatVC  {
+                                            //  Otherwise reset stack to MainJobController
+                                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                                appDelegate.isComeFromNotification = true
+                                            }
+                                            topVC.resceiverID  = senderId
+                                            topVC.refreshData()
+                                        }else if  let topVC = navController.topViewController as? MessageLisVC      {
+                                            
+                                            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                                                appDelegate.isComeFromNotification = true
+                                            }
+                                            topVC.senderId = senderId
+                                            topVC.receiverId = receiverId
+                                            topVC.isComeFromNotification = true
+                                            topVC.refreshViaApiCall()
+                                            
+                                            
+                                        }
+                                    }
+                                }
+                            }
+                    } else {
+                        print("- API responded but failed: \(result?.message ?? "Unknown error")")
+                       
+                    }
+                    
+                case .badRequest, .methodNotAllowed, .internalServerError, .unknown:
+                    print("- API error: \(result?.message ?? "Something went wrong")")
+                    
+                    
+                case .unauthorized:
+                    self.viewModel.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.ChooseRoleTypeApiCall(senderId: senderId, receiverId: receiverId) // Retry
+                        } else {
+                            self.showLogin()
+                        }
+                    }
+                    
+                case .unauthorizedToken:
+                    self.showLogin()
+                }
+            }
+        }
+    }
     // MARK: - Helper Fallbacks
     private func navigateToSecondTabWithoutJob() {
         if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,

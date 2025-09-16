@@ -119,14 +119,21 @@ struct FavoriteJobData: Codable {
 }
 struct FavoriteJob: Codable {
     let id: String
-    let description: String
-    let image: String
-    let favoriteStatus: Int
+     let name: String
+     let address: String
+     let description: String
+     let image: String
+     let startDate: String
+     let endDate: String
+     let startTime: String
+     let endTime: String
+     let price: Double
+     let favoriteStatus: Int
 
-    enum CodingKeys: String, CodingKey {
-        case id = "_id"
-        case description, image, favoriteStatus
-    }
+     enum CodingKeys: String, CodingKey {
+         case id = "_id"
+         case name, address, description, image, startDate, endDate, startTime, endTime, price, favoriteStatus
+     }
 }
 
 //MARK: - History of comleted jobs

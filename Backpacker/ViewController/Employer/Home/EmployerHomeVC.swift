@@ -42,7 +42,10 @@ class EmployerHomeVC: UIViewController {
 #endif
         return sections
     }
-    
+    var senderId = String()
+    var receiverId = String()
+    var isComeFromNotification :Bool = false
+   //                                    detailVC.refreshData()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lblnodataFound.isHidden = true
@@ -92,6 +95,20 @@ class EmployerHomeVC: UIViewController {
             self.HomeApi()
         }
 #endif
+    }
+    
+    func refreshData(){
+        if isComeFromNotification == true{
+            let storyboard = UIStoryboard(name: "Chat", bundle: nil)
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
+                settingVC.isComeFromNotification = true
+                settingVC.senderId = senderId
+                settingVC.receiverId = receiverId
+                self.navigationController?.pushViewController(settingVC, animated: false)
+            } else {
+                print("- Could not instantiate SettingVC")
+            }
+        }
     }
     @IBAction func action_MessageView(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Chat", bundle: nil)

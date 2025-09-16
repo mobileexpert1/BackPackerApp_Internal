@@ -121,8 +121,8 @@
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6vA-48-VEu">
                                                         <rect key="frame" x="15" y="75" width="384" height="145.5"/>
                                                         <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Month" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hIt-2B-1RY">
-                                                                <rect key="frame" x="20" y="10" width="114" height="25.5"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Month &amp; Year" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hIt-2B-1RY">
+                                                                <rect key="frame" x="20" y="10" width="174" height="25.5"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="25.329999999999998" id="Aye-HC-d2Z"/>
                                                                 </constraints>
@@ -559,8 +559,8 @@
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VlX-Ip-9VM">
                                                         <rect key="frame" x="15" y="10" width="384" height="145.5"/>
                                                         <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Month" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zNj-LU-Wih">
-                                                                <rect key="frame" x="20" y="10" width="114" height="25.5"/>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select Month &amp; Year" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zNj-LU-Wih">
+                                                                <rect key="frame" x="20" y="10" width="174" height="25.5"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="25.329999999999998" id="Ctd-Fv-9uP"/>
                                                                 </constraints>

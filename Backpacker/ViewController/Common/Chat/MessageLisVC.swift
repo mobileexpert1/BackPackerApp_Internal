@@ -32,12 +32,13 @@ class MessageLisVC: UIViewController {
     ]
     let viewModel = ChatViewModel()
     let viewModelAuth = LogInVM()
+    let viewModelReport = ReportIssueViewModel()
     var isLoading : Bool = true
     let refreshControl = UIRefreshControl()
     var employerList = [EmployerChat]()
     
     var page = 1
-    let perPage = 10
+    let perPage = 20
     var totalAccomodations = Int()
     var isLoadingMoreData = false
     var isAllDataLoaded = false
@@ -49,6 +50,7 @@ class MessageLisVC: UIViewController {
     var lastContentOffset: CGFloat = 0
     var senderId : String?
     var receiverId : String?
+    var ticketList =  [Ticket]()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
@@ -104,6 +106,24 @@ class MessageLisVC: UIViewController {
             self.refreshData()
         }
     }
+    
+    func refreshViaApiCall(){
+        if btn_Employer.tag == 1 {
+#if BackpackerHire
+            self.listOfAllBackpacker()
+            #else
+            
+            self.listOfAllEmployer()
+#endif
+        }else{
+#if BackpackerHire
+            
+            #else
+            
+            self.getListOfTickets()
+#endif
+        }
+    }
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
         refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
@@ -114,6 +134,7 @@ class MessageLisVC: UIViewController {
     @objc private func refreshTableData() {
         // Show the default spinner, reload after delay
         self.refreshControl.beginRefreshing()
+        self.removeTableFooterView()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.page = 1
             self.isAllDataLoaded = false
@@ -133,6 +154,15 @@ class MessageLisVC: UIViewController {
                     self.listOfAllEmployer()
         #endif
                    
+                }else{
+                    if self.btn_Admin.tag == 1 {
+            #if BackpackerHire
+                        
+                        #else
+                        self.getListOfTickets()
+            #endif
+                       
+                    }
                 }
             }
         }
@@ -169,6 +199,18 @@ class MessageLisVC: UIViewController {
         self.btn_Employer.tag =  0
         
         self.UpdateBtnAppearance()
+        self.page = 1
+        self.isAllDataLoaded = false
+        self.isLoadingMoreData = false
+        self.isLoading = false
+        if self.btn_Admin.tag == 1 {
+#if BackpackerHire
+            
+            #else
+            self.getListOfTickets()
+#endif
+           
+        }
     }
     
     @IBAction func action_EmplyerToggle(_ sender: Any) {
@@ -176,6 +218,10 @@ class MessageLisVC: UIViewController {
         self.btn_Employer.tag =  1
         
         self.UpdateBtnAppearance()
+        self.page = 1
+        self.isAllDataLoaded = false
+        self.isLoadingMoreData = false
+        self.isLoading = false
         if self.btn_Employer.tag == 1 {
 #if BackpackerHire
             self.listOfAllBackpacker()
@@ -193,8 +239,12 @@ class MessageLisVC: UIViewController {
 extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //#if Backapacker
-        
-        return employerList.count
+        if btn_Employer.tag == 1 {
+            return employerList.count
+        }else{
+            return ticketList.count
+        }
+       
 //        #else
         
        // return userList.count
@@ -207,36 +257,62 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmployerTVC", for: indexPath) as? EmployerTVC else {
             return UITableViewCell()
         }
-        
-        let user = employerList[indexPath.row]
-        
-        // Header & short name
-        if user.name.isEmpty {
-            cell.lblHeader.text = user.mobileNumber
-            cell.lbl_ShortName.text = "" // clear if name is empty
-        } else {
-            cell.lblHeader.text = user.name
-            cell.lbl_ShortName.text = getFirstLetter(of: user.name)
+        if btn_Employer.tag == 1 {
+            let user = employerList[indexPath.row]
+            
+            // Header & short name
+            if user.name.isEmpty {
+                cell.lblHeader.text = user.mobileNumber
+                cell.lbl_ShortName.text = "" // clear if name is empty
+            } else {
+                cell.lblHeader.text = user.name
+                cell.lbl_ShortName.text = getFirstLetter(of: user.name)
+            }
+            
+            // Last message
+            if let lastMessage = user.lastMessageInfo?.lastMessage, !lastMessage.isEmpty {
+                cell.lbl_Subheader.text = lastMessage
+                cell.setUpConstraint(isLastMsgExist: true)
+            } else {
+                cell.lbl_Subheader.text = ""
+                cell.setUpConstraint(isLastMsgExist: false)
+            }
+            
+            // Last message time
+            if let dateString = user.lastMessageInfo?.lastMessageDate,
+               !dateString.isEmpty,
+               let timeOnly = extractTime(from: dateString) {
+                cell.lbl_SeenTime.text = timeOnly
+            } else {
+                cell.lbl_SeenTime.text = "" // clear if no timestamp
+            }
+            
+        }else{
+            let user = ticketList[indexPath.row]
+            
+            // Header & short name
+                cell.lblHeader.text =  user.title
+            cell.lbl_ShortName.text = getFirstLetter(of: user.title ?? "Admin")
+            
+            // Last message
+            if let lastMessage = user.lastMessage?.message, !lastMessage.isEmpty {
+                cell.lbl_Subheader.text = lastMessage
+                cell.setUpConstraint(isLastMsgExist: true)
+            } else {
+                cell.lbl_Subheader.text = ""
+                cell.setUpConstraint(isLastMsgExist: false)
+            }
+            
+            // Last message time
+            if let dateString = user.lastMessage?.timestamp,
+               !dateString.isEmpty,
+               let timeOnly = extractTime(from: dateString) {
+                cell.lbl_SeenTime.text = timeOnly
+            } else {
+                cell.lbl_SeenTime.text = "" // clear if no timestamp
+            }
         }
-        
-        // Last message
-        if let lastMessage = user.lastMessageInfo?.lastMessage, !lastMessage.isEmpty {
-            cell.lbl_Subheader.text = lastMessage
-            cell.setUpConstraint(isLastMsgExist: true)
-        } else {
-            cell.lbl_Subheader.text = ""
-            cell.setUpConstraint(isLastMsgExist: false)
-        }
-        
-        // Last message time
-        if let dateString = user.lastMessageInfo?.lastMessageDate,
-           !dateString.isEmpty,
-           let timeOnly = extractTime(from: dateString) {
-            cell.lbl_SeenTime.text = timeOnly
-        } else {
-            cell.lbl_SeenTime.text = "" // clear if no timestamp
-        }
-        
+      
         return cell
     }
 
@@ -256,14 +332,31 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let storyboard = UIStoryboard(name: "Chat", bundle: nil)
-        if let settingVC = storyboard.instantiateViewController(withIdentifier: "ChatVC") as? ChatVC {
-            settingVC.headerUserName = employerList[indexPath.row].name
-            settingVC.resceiverID  = employerList[indexPath.row].id
-               self.navigationController?.pushViewController(settingVC, animated: true)
-           } else {
-               print("- Could not instantiate SettingVC")
-           }
+        
+        if btn_Employer.tag == 1 {
+            let storyboard = UIStoryboard(name: "Chat", bundle: nil)
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "ChatVC") as? ChatVC {
+                settingVC.isComeFromAdmin = false
+                settingVC.headerUserName = employerList[indexPath.row].name
+                settingVC.resceiverID  = employerList[indexPath.row].id
+                   self.navigationController?.pushViewController(settingVC, animated: true)
+               } else {
+                   print("- Could not instantiate SettingVC")
+               }
+            
+            
+        }else{
+            let storyboard = UIStoryboard(name: "Chat", bundle: nil)
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "ChatVC") as? ChatVC {
+                settingVC.isComeFromAdmin = true
+                settingVC.headerUserName = ticketList[indexPath.row].title
+                settingVC.ticketId  = ticketList[indexPath.row].id ?? ""
+                   self.navigationController?.pushViewController(settingVC, animated: true)
+               } else {
+                   print("- Could not instantiate SettingVC")
+               }
+        }
+      
     }
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y < 0 {
@@ -297,6 +390,14 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
                             self.listOfAllEmployer()
                 #endif
                            
+                        }else{
+#if BackpackerHire
+                            
+            #else
+            
+                            self.getListOfTickets()
+#endif
+        
                         }
                     }
                     
@@ -387,13 +488,23 @@ extension MessageLisVC :UITextFieldDelegate{
                 self.lastSearchedText = trimmedSearch
                 self.page = 1
                 removeTableFooterView()
+                if btn_Employer.tag == 1{
 #if BackpackerHire
-                
+                self.listOfAllBackpacker()
                 
 #else
                 
                 self.listOfAllEmployer()
 #endif
+                }else{
+#if BackpackerHire
+                
+#else
+                
+                    self.getListOfTickets()
+#endif
+                }
+
                
             }
         }
@@ -471,6 +582,7 @@ extension MessageLisVC   {
                                 self.lastContentOffset = 0.0
                                 LoaderManager.shared.hide()
                             }
+                            self.removeTableFooterView()
                             
                         case .badRequest:
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
@@ -519,6 +631,7 @@ extension MessageLisVC   {
             }
         
     }
+    
     
     
     
@@ -583,7 +696,7 @@ extension MessageLisVC   {
                                 self.lastContentOffset = 0.0
                                 LoaderManager.shared.hide()
                             }
-                            
+                            self.removeTableFooterView()
                         case .badRequest:
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         case .unauthorized :
@@ -643,7 +756,117 @@ extension MessageLisVC   {
     
     
 #endif
+   
     
+    
+    func getListOfTickets(){
+        if page == 1 {
+            self.isLoading = true
+            LoaderManager.shared.show()
+        } else {
+            isLoadingMoreData = true
+           // self.tblVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
+        }
+        viewModelReport.getTicketList(page: page, perPage: perPage){ [weak self] (success: Bool, result: TicketsResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                              //  ticketList
+                                let newAccommodations = result?.data?.tickets ?? []
+                                
+                                if self.page == 1 {
+                                    if newAccommodations.isEmpty {
+                                        self.lbl_NDataFound.isHidden = false
+                                        self.ticketList.removeAll()
+                                        self.ticketList = newAccommodations
+                                    } else {
+                                        self.ticketList.removeAll()
+                                        self.lbl_NDataFound.isHidden = true
+                                        self.isLoading = false
+                                        self.ticketList = newAccommodations
+                                    }
+                                } else {
+                                    self.isLoading = false
+                                    self.ticketList.append(contentsOf: newAccommodations)
+                                }
+                                self.totalAccomodations = result?.data?.total ?? 0
+                                // Pagination end check
+                                self.isAllDataLoaded = newAccommodations.count < self.perPage
+                                
+                             
+                                self.isLoadingMoreData = false
+                                self.tblVw.reloadData()
+                                self.refreshControl.endRefreshing()
+                                self.isComeFromPullTorefresh = false
+                                self.lastContentOffset = 0.0
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                self.refreshControl.endRefreshing()
+                                self.tblVw.setContentOffset(.zero, animated: true)
+                                self.isLoadingMoreData = false
+                                self.isComeFromPullTorefresh = false
+                                self.lastContentOffset = 0.0
+                                LoaderManager.shared.hide()
+                            }
+                            self.removeTableFooterView()
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.getListOfTickets()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.refreshControl.endRefreshing()
+                                    self.isLoading = false
+                                    self.lastContentOffset = 0.0
+                                    self.tblVw.setContentOffset(.zero, animated: true)
+                                    self.isComeFromPullTorefresh = false
+                                    self.lastContentOffset = 0.0
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            self.lastContentOffset = 0.0
+                            self.tblVw.setContentOffset(.zero, animated: true)
+                            self.isComeFromPullTorefresh = false
+                            
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            self.lastContentOffset = 0.0
+                            self.tblVw.setContentOffset(.zero, animated: true)
+                            self.isComeFromPullTorefresh = false
+                           
+                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+    }
 }
 
 struct MessageUser {

@@ -32,6 +32,9 @@ class ReportIssueVC: UIViewController {
     @IBOutlet weak var lbl_title: UILabel!
     @IBOutlet weak var BgVw_Table: UIView!
     @IBOutlet weak var BgVwheight: NSLayoutConstraint!
+    
+    var viewModel = ReportIssueViewModel()
+    var viewModelAuth = LogInVM()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
@@ -88,7 +91,13 @@ class ReportIssueVC: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     @IBAction func action_Save(_ sender: Any) {
-        self.navigationController?.popViewController(animated: true)
+        if self.lbl_IssueTitle.text?.isEmpty == true || self.lbl_IssueTitle.text == "Reason"{
+            AlertManager.showAlert(on: self, title: "Reason", message: "Please choose the reason.")
+        }else if txtVw.text.isEmpty == true || txtVw.text == "Comments" {
+            AlertManager.showAlert(on: self, title: "Comments", message: "Please Add Comments")
+        }else{
+            self.CreateReportIssue()
+        }
     }
     
     @IBAction func action_Back(_ sender: Any) {
@@ -151,4 +160,67 @@ extension ReportIssueVC: UITextViewDelegate {
             textView.textColor = UIColor.lightGray
         }
     }
+    func textView(_ textView: UITextView,
+                      shouldChangeTextIn range: NSRange,
+                      replacementText text: String) -> Bool {
+            if text == "\n" { // user pressed return
+                textView.resignFirstResponder() // dismiss keyboard
+                return false // do not insert newline
+            }
+            return true
+        }
+}
+
+
+extension ReportIssueVC {
+    func CreateReportIssue(){
+        LoaderManager.shared.show()
+        let rawText =  self.txtVw.text ?? ""
+        let cleanedText = rawText.replacingOccurrences(of: "\n", with: " ")
+        let title = self.lbl_IssueTitle.text ?? ""
+        let req = ReportRequest(title: title, desc: cleanedText, reason: "")
+        viewModel.createSupportTicket(request: req) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Availability updated successfully"){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.CreateReportIssue()
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+        }
+    }
+    
 }

@@ -196,14 +196,38 @@ class FavourateJobVC: UIViewController {
     private func callApis(){
         if selectedIndexHeader == 0{
             self.lbl_No_AccomdodationFound.text = "No Accomodation Found"
+            self.page = 1
+            self.isAllDataLoaded = false
+            self.isLoadingMoreData = false
+            self.isLoading = true
+            
+            // Start refreshing UI
+            
+            isComeFromPullTorefresh = false
             self.getListOfFavourateAccommodation()
            
         }else if selectedIndexHeader == 1 {
             self.lbl_No_AccomdodationFound.text = "No Hangout Found"
+            self.page = 1
+            self.isAllDataLoaded = false
+            self.isLoadingMoreData = false
+            self.isLoading = true
+            
+            // Start refreshing UI
+            
+            isComeFromPullTorefresh = false
             self.getListOfFavourateHangOut()
             
         }else{
             self.lbl_No_AccomdodationFound.text = "No Job Found"
+            self.page = 1
+            self.isAllDataLoaded = false
+            self.isLoadingMoreData = false
+            self.isLoading = true
+            
+            // Start refreshing UI
+            
+            isComeFromPullTorefresh = false
             self.getListOfFavourateJobs()
            
         }
@@ -455,10 +479,10 @@ extension FavourateJobVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                         }
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
-                        cell.lbl_Title.text = favJobList?[indexPath.item].description ?? "No Data"
-//                        if let amnt = favJobList?[indexPath.item].price {
-//                            cell.lblAmount.text = "$\(amnt) per day"//per day
-//                        }
+                        cell.lbl_Title.text = favJobList?[indexPath.item].name ?? "No Data"
+                        if let amnt = favJobList?[indexPath.item].price {
+                            cell.lblAmount.text = "$\(amnt) per day"//per day
+                        }
                         cell.lbl_SubTitle.text = favJobList?[indexPath.item].description ?? "No Data"
                        
                         if ((declineJob.image.hasPrefix("http")) != nil) {
@@ -476,19 +500,19 @@ extension FavourateJobVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                                 }
                             }
                            
-                            if favJobList?[indexPath.item].favoriteStatus == 1 {
-                                cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
-                            }else{
-                                cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
-                            }
+                           
                         }
-                        
+                        if favJobList?[indexPath.item].favoriteStatus == 1 {
+                            cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
+                        }else{
+                            cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
+                        }
                        // cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)  (Not include)
                         cell.setUpUI(iscomeFromAccept: false)
-//                        let strtTime = favJobList?[indexPath.item].startTime
-//                        let endTime = favJobList?[indexPath.item].endTime
-//                        let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
-//                        cell.lbl_duration.text = "Duration \(duration1)"
+                        let strtTime = favJobList?[indexPath.item].startTime
+                        let endTime = favJobList?[indexPath.item].endTime
+                        let duration1 = Date.durationString(from: strtTime ?? "", to: endTime ?? "") // "8 hr"
+                        cell.lbl_duration.text = "Duration \(duration1)"
                     }
                   //  cell.setUpUI(iscomeFromAccept: false)
                     return cell

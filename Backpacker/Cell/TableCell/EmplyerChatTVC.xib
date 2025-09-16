@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -21,10 +22,10 @@
                         <rect key="frame" x="0.0" y="0.0" width="360" height="137"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8Pi-pc-1pk">
-                                <rect key="frame" x="15" y="12" width="57.333333333333343" height="100"/>
+                                <rect key="frame" x="15.000000000000004" y="5" width="57.333333333333343" height="107"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="i9q-b6-Txu">
-                                        <rect key="frame" x="8" y="8" width="41.333333333333336" height="84"/>
+                                        <rect key="frame" x="8" y="8" width="41.333333333333336" height="91"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -38,8 +39,8 @@
                                     <constraint firstItem="i9q-b6-Txu" firstAttribute="leading" secondItem="8Pi-pc-1pk" secondAttribute="leading" constant="8" id="w6X-vq-Odh"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uom-Ii-6hK">
-                                <rect key="frame" x="30.333333333333329" y="117" width="42" height="20"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uom-Ii-6hK">
+                                <rect key="frame" x="15.000000000000004" y="117" width="57.333333333333343" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="edz-Ao-BeB"/>
                                 </constraints>
@@ -50,9 +51,10 @@
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="uom-Ii-6hK" firstAttribute="leading" secondItem="8Pi-pc-1pk" secondAttribute="leading" id="DCB-fJ-52a"/>
                             <constraint firstAttribute="bottom" secondItem="uom-Ii-6hK" secondAttribute="bottom" id="FBe-ZN-Bmm"/>
                             <constraint firstItem="uom-Ii-6hK" firstAttribute="top" secondItem="8Pi-pc-1pk" secondAttribute="bottom" constant="5" id="SWy-F2-Cez"/>
-                            <constraint firstItem="8Pi-pc-1pk" firstAttribute="top" secondItem="RXI-6q-ehh" secondAttribute="top" constant="12" id="grt-bs-e2b"/>
+                            <constraint firstItem="8Pi-pc-1pk" firstAttribute="top" secondItem="RXI-6q-ehh" secondAttribute="top" constant="5" id="grt-bs-e2b"/>
                             <constraint firstItem="uom-Ii-6hK" firstAttribute="trailing" secondItem="8Pi-pc-1pk" secondAttribute="trailing" id="kaa-p3-lWw"/>
                             <constraint firstItem="8Pi-pc-1pk" firstAttribute="leading" secondItem="RXI-6q-ehh" secondAttribute="leading" constant="15" id="sdK-Ce-Uxb"/>
                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="8Pi-pc-1pk" secondAttribute="trailing" constant="15" id="wDJ-Ar-xJt"/>

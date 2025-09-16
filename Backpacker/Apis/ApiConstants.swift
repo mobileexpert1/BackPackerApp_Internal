@@ -565,6 +565,34 @@ struct ApiConstants {
             return url
         }
         static let SEND_CHAT = BASE_URL + "api/chat"
+        
+        
+        //MARK: - Raise Ticket
+        
+        static let CREATE_NEW_TICKET = BASE_URL + "api/ticket"
+        
+        
+        static func getTICKET_LIST_URL(
+            page: Int,
+            perPage: Int
+        ) -> String {
+            let url =
+                "\(BASE_URL)api/ticket?page=\(page)&perPage=\(perPage)"
+            return url
+        }
+        
+        
+        static func getTICKET_CHAT_URL(
+            page: Int,
+            perPage: Int,
+            ticketId : String
+        ) -> String {
+            let url =
+                "\(BASE_URL)api/ticket/chat?ticketId=\(ticketId)&page=\(page)&perPage=\(perPage)"
+            return url
+        }
+        
+        static let SEND_ADMIN_CHAT = BASE_URL + "api/ticket/chat"
     }
     
  

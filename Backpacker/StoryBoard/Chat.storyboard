@@ -240,27 +240,17 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="John Abraham" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ou2-rW-eQU">
-                                        <rect key="frame" x="60" y="0.0" width="323" height="21"/>
+                                        <rect key="frame" x="60" y="9.6666666666666714" width="323" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" red="0.0" green="0.054901960784313725" blue="0.031372549019607843" alpha="1" colorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Active now" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GCq-Bz-djh">
-                                        <rect key="frame" x="60" y="21" width="323" height="21"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" red="0.47450980392156861" green="0.48627450980392156" blue="0.4823529411764706" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="GCq-Bz-djh" secondAttribute="trailing" constant="10" id="Fzd-iM-UMC"/>
-                                    <constraint firstItem="ou2-rW-eQU" firstAttribute="top" secondItem="qc7-zn-wZG" secondAttribute="top" id="IBL-bX-alY"/>
-                                    <constraint firstItem="GCq-Bz-djh" firstAttribute="top" secondItem="ou2-rW-eQU" secondAttribute="bottom" id="IS0-gm-9ao"/>
-                                    <constraint firstItem="GCq-Bz-djh" firstAttribute="leading" secondItem="ou2-rW-eQU" secondAttribute="leading" id="Q8B-64-OaW"/>
+                                    <constraint firstItem="ou2-rW-eQU" firstAttribute="centerY" secondItem="rdo-mT-X6O" secondAttribute="centerY" id="Qz8-aH-f9t"/>
                                     <constraint firstItem="rdo-mT-X6O" firstAttribute="leading" secondItem="qc7-zn-wZG" secondAttribute="leading" constant="10" id="Umx-S3-2xM"/>
                                     <constraint firstAttribute="trailing" secondItem="ou2-rW-eQU" secondAttribute="trailing" constant="10" id="ZTp-gH-uwR"/>
-                                    <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="GCq-Bz-djh" secondAttribute="bottom" id="gfD-G2-1Pf"/>
                                     <constraint firstItem="ou2-rW-eQU" firstAttribute="leading" secondItem="rdo-mT-X6O" secondAttribute="trailing" constant="10" id="oGa-VF-HdZ"/>
                                     <constraint firstItem="rdo-mT-X6O" firstAttribute="top" secondItem="qc7-zn-wZG" secondAttribute="top" id="qcz-oZ-hPh"/>
                                     <constraint firstAttribute="height" constant="60" id="rS6-l8-Nmg"/>
@@ -355,7 +345,6 @@
                     </view>
                     <connections>
                         <outlet property="chatTxtFLdVw_Bottom" destination="UHd-c2-er0" id="AVU-lU-fpa"/>
-                        <outlet property="lbl_ActiveStatus" destination="GCq-Bz-djh" id="ixW-BC-qZd"/>
                         <outlet property="lbl_NDataFound" destination="xBz-l8-l9i" id="xai-mm-vaq"/>
                         <outlet property="lbl_UserName" destination="ou2-rW-eQU" id="1du-8h-dIe"/>
                         <outlet property="sendButton" destination="8gE-DU-4sw" id="pNK-mn-lDR"/>

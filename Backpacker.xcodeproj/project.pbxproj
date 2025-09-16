@@ -39,7 +39,6 @@
 		7580D03A2E279472000335C8 /* Backpacker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Backpacker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		75AE5A832E28E49C00CEA82B /* BackpackerHireRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BackpackerHireRelease.entitlements; sourceTree = "<group>"; };
 		75D1DEB22E28D08C005CDFC8 /* BackpackerHire.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BackpackerHire.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		75D1DEB42E28D08C005CDFC8 /* BackpackerHire-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BackpackerHire-Info.plist"; sourceTree = "<group>"; };
 		75D1E3BA2E28D2F9005CDFC8 /* Backpacker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Backpacker.entitlements; sourceTree = "<group>"; };
 		75D1E3BB2E28D2F9005CDFC8 /* BackpackerDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = BackpackerDebug.entitlements; sourceTree = "<group>"; };
 		94E2E739E993863FB9BC37EF /* Pods_BackpackerPods_BackpackerHire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_BackpackerPods_BackpackerHire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -55,7 +54,7 @@
 				EmpAssets.xcassets,
 				EmployerStoryboard/EmployerHome.storyboard,
 				EmployerStoryboard/MainTabBarEmpStoryboard.storyboard,
-				"GoogleService-Info-Hire.plist",
+				"GoogleService-Info_Hire.plist",
 				Info.plist,
 			);
 			target = 7580D0392E279472000335C8 /* Backpacker */;
@@ -124,7 +123,6 @@
 				7580D03B2E279472000335C8 /* Products */,
 				8A1A1B9F09A587AC97B9911B /* Pods */,
 				645F7D32D58C77E1BE27EABA /* Frameworks */,
-				75D1DEB42E28D08C005CDFC8 /* BackpackerHire-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
