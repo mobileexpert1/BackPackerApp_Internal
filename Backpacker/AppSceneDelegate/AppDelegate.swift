@@ -124,7 +124,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
             // Example: print payload for debugging
             print("Notification UserInfo: \(userInfo)")
         if let  typeRaw = userInfo["notificationType"] as? String {
-            if typeRaw == "9"{
+            if typeRaw == "9" || typeRaw == "8" || typeRaw == "7"{// 
                 RefreshChatController(info: userInfo)
             }
         }
@@ -152,6 +152,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
           pendingNotificationId = notificationID
           pendingAppType = appType
           pendingNotificationType = notificationType
+          
+         NotificationManager.shared.handleNotification(userInfo: userInfo)
+        
           completionHandler()
       }
         func application(_ application: UIApplication,

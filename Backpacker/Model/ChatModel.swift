@@ -86,6 +86,7 @@ struct ChatListResponse: Codable {
 // MARK: - ChatListData
 struct ChatListData: Codable {
     let user: ChatUser
+    let otherUserName : String?
     let chats: [Chat]
     let total: Int
     let page: Int

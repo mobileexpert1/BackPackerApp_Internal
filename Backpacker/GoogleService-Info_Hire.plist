@@ -9,7 +9,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.employer.shiftly</string>
+	<string>com.bp.Hirebackpacker</string>
 	<key>PROJECT_ID</key>
 	<string>backpacker-2beda</string>
 	<key>STORAGE_BUCKET</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:68407236896:ios:88e5cc96dfb0d327885f45</string>
+	<string>1:68407236896:ios:8b6f2292fc67eb88885f45</string>
 </dict>
 </plist>

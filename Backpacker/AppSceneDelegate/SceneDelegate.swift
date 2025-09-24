@@ -84,10 +84,10 @@ let accessToken = UserDefaultsManager.shared.bearerToken
     // MARK: - Scene Lifecycle
        func sceneDidBecomeActive(_ scene: UIScene) {
            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-           
+           //previous code work
            if appDelegate.isComeFromNotification,
                let info = appDelegate.userInfo{
-               NotificationManager.shared.handleNotification(userInfo: info)
+             //  NotificationManager.shared.handleNotification(userInfo: info)
            }
        }
 

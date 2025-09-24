@@ -22,6 +22,7 @@ class MessageLisVC: UIViewController {
     @IBOutlet weak var searchVw: UIView!
     @IBOutlet weak var lbl_MainHeader: UILabel!
     var isComeFromNotification : Bool = false
+    var isComefFromAdmin : Bool = false
     // MARK: - Sample Array
     var userList: [MessageUser] = [
         MessageUser(userId: UUID().uuidString, name: "John Doe", subHeader: "Hey, got your message!", seenTime: "29 Mar"),
@@ -50,6 +51,7 @@ class MessageLisVC: UIViewController {
     var lastContentOffset: CGFloat = 0
     var senderId : String?
     var receiverId : String?
+    var ticketId : String?
     var ticketList =  [Ticket]()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -104,25 +106,34 @@ class MessageLisVC: UIViewController {
             self.listOfAllEmployer()
 #endif
             self.refreshData()
+        }else{
+            if btn_Admin.tag == 1{
+                self.getListOfTickets()
+                self.refreshData()
+            }
         }
     }
     
     func refreshViaApiCall(){
-        if btn_Employer.tag == 1 {
-#if BackpackerHire
-            self.listOfAllBackpacker()
-            #else
+        if isComefFromAdmin == true {
+            self.btn_Admin.tag = 1
+            self.btn_Employer.tag =  0
             
-            self.listOfAllEmployer()
-#endif
-        }else{
-#if BackpackerHire
-            
-            #else
-            
+            self.UpdateBtnAppearance()
             self.getListOfTickets()
-#endif
+        }else{
+            if btn_Employer.tag == 1 {
+    #if BackpackerHire
+                self.listOfAllBackpacker()
+                #else
+                
+                self.listOfAllEmployer()
+    #endif
+            }else{
+                self.getListOfTickets()
+            }
         }
+ 
     }
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
@@ -157,7 +168,7 @@ class MessageLisVC: UIViewController {
                 }else{
                     if self.btn_Admin.tag == 1 {
             #if BackpackerHire
-                        
+                        self.getListOfTickets()
                         #else
                         self.getListOfTickets()
             #endif
@@ -205,7 +216,7 @@ class MessageLisVC: UIViewController {
         self.isLoading = false
         if self.btn_Admin.tag == 1 {
 #if BackpackerHire
-            
+            self.getListOfTickets()
             #else
             self.getListOfTickets()
 #endif
@@ -346,6 +357,7 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
             
             
         }else{
+           // AlertManager.showAlert(on: self, title: "Admin Chat", message: "In Progress")
             let storyboard = UIStoryboard(name: "Chat", bundle: nil)
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "ChatVC") as? ChatVC {
                 settingVC.isComeFromAdmin = true
@@ -453,6 +465,20 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
             let storyboard = UIStoryboard(name: "Chat", bundle: nil)
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "ChatVC") as? ChatVC {
                 settingVC.headerUserName = "Test"
+                if isComefFromAdmin == true{
+                    self.btn_Admin.tag = 0
+                    self.btn_Employer.tag =  1
+                    
+                    self.UpdateBtnAppearance()
+                    settingVC.isComeFromAdmin = true
+                    settingVC.ticketId = ticketId ?? ""
+                }else{
+                    settingVC.isComeFromAdmin = false
+                    self.btn_Admin.tag = 1
+                    self.btn_Employer.tag =  0
+                    
+                    self.UpdateBtnAppearance()
+                }
                 settingVC.resceiverID  = senderId
                    self.navigationController?.pushViewController(settingVC, animated: true)
                } else {

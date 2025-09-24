@@ -174,6 +174,8 @@ class NotificationManager {
         let receiverId  = info["receivers"] as? String
         if let senderId = info["senderId"] as? String, !senderId.isEmpty {
             let notificationId = info["notificationId"] as? String
+            let notificationtype = info["notificationType"] as? String
+            let ticketId = info["ticketId"] as? String
             let receiverId = info["receivers"] as? String
             
             if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -207,6 +209,12 @@ class NotificationManager {
                                 topVC.senderId = senderId
                                 topVC.receiverId = receiverId
                                 topVC.isComeFromNotification = true
+                                if notificationtype == "8"{
+                                    topVC.isComeFromAdmin = true
+                                    topVC.ticketId = ticketId
+                                }else{
+                                    topVC.isComeFromAdmin = false
+                                }
                                 topVC.refreshData()
                             } else  if let topVC = navController.topViewController as? MessageLisVC {
                                 if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
@@ -215,6 +223,12 @@ class NotificationManager {
                                 topVC.senderId = senderId
                                 topVC.receiverId = receiverId
                                 topVC.isComeFromNotification = true
+                                if notificationtype == "8"{
+                                    topVC.isComefFromAdmin = true
+                                    topVC.ticketId = ticketId
+                                }else{
+                                    topVC.isComefFromAdmin = false
+                                }
                                 topVC.refreshData()
                             } else if let topVC = navController.topViewController as? ChatVC {
                                 if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
@@ -235,9 +249,16 @@ class NotificationManager {
                                 detailVC.senderId = senderId
                                 detailVC.receiverId = receiverId
                                 detailVC.isComeFromNotification = true
-                                detailVC.refreshData()
+                                if notificationtype == "8"{
+                                    detailVC.isComeFromAdmin = true
+                                    detailVC.ticketId = ticketId
+                                }else{
+                                    detailVC.isComeFromAdmin = false
+                                }
+                                
                                 //  Replace the navigation stack with only MainJobController
                                 navController.setViewControllers([detailVC], animated: false)
+                                detailVC.refreshData()
                             }
                         }
                     }
@@ -250,7 +271,8 @@ class NotificationManager {
 #else
         if let senderId = info["senderId"] as? String, !senderId.isEmpty {
             let receiverId = info["receivers"] as? String
-            
+            let notificationtype = info["notificationType"] as? String
+            let ticketId = info["ticketId"] as? String ?? ""
             if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let window = scene.windows.first {
                 
@@ -282,6 +304,12 @@ class NotificationManager {
                                         topVC.senderId = senderId
                                         topVC.receiverId = receiverId ?? ""
                                         topVC.isComeFromNotification = true
+                                        if notificationtype == "7"{
+                                            topVC.isComeFromAdmin = true
+                                            topVC.ticketId = ticketId
+                                        }else{
+                                            topVC.isComeFromAdmin = false
+                                        }
                                         topVC.refreshData() //  Call your refresh API method here
                                     } else if let topVC = navController.topViewController as? MessageLisVC {
                                         // If currently on JobDescriptionVC → refresh it instead
@@ -291,6 +319,12 @@ class NotificationManager {
                                         topVC.senderId = senderId
                                         topVC.receiverId = receiverId
                                         topVC.isComeFromNotification = true
+                                        if notificationtype == "7"{
+                                            topVC.isComefFromAdmin = true
+                                            topVC.ticketId = ticketId
+                                        }else{
+                                            topVC.isComefFromAdmin = false
+                                        }
                                         topVC.refreshData()
                                     } else if  let topVC = navController.topViewController as? ChatVC  {
                                         //  Otherwise reset stack to MainJobController
@@ -298,6 +332,12 @@ class NotificationManager {
                                             appDelegate.isComeFromNotification = true
                                         }
                                         topVC.resceiverID  = senderId
+                                        if notificationtype == "7"{
+                                            topVC.isComeFromAdmin = true
+                                            topVC.ticketId = ticketId
+                                        }else{
+                                            topVC.isComeFromAdmin = false
+                                        }
                                         topVC.refreshData()
                                     }else{
                                         let storyboard = UIStoryboard(name: "EmployerHome", bundle: nil)
@@ -309,9 +349,15 @@ class NotificationManager {
                                         detailVC.senderId = senderId
                                         detailVC.receiverId = receiverId ?? ""
                                         detailVC.isComeFromNotification = true
-                                        detailVC.refreshData()
+                                        if notificationtype == "7"{
+                                            detailVC.isComeFromAdmin = true
+                                            detailVC.ticketId = ticketId
+                                        }else{
+                                            detailVC.isComeFromAdmin = false
+                                        }
                                         //  Replace the navigation stack with only MainJobController
                                         navController.setViewControllers([detailVC], animated: false)
+                                        detailVC.refreshData()
                                     }
                                 }
                             }
@@ -319,7 +365,7 @@ class NotificationManager {
                         
                     } else {
                         // Call API → after success go to MainJobController
-                        ChooseRoleTypeApiCall(senderId: senderId, receiverId: receiverId ?? "")
+                        ChooseRoleTypeApiCall(senderId: senderId, receiverId: receiverId ?? "", ticketId: ticketId, info: info)
                     }
                 } else {
                     // No role set yet → fallback → open tab 2 without jobId
@@ -338,10 +384,11 @@ class NotificationManager {
         
     }
     
-     func ChooseRoleTypeApiCall(senderId: String,receiverId:String) {
+    func ChooseRoleTypeApiCall(senderId: String,receiverId:String,ticketId:String,info:[AnyHashable:Any] ) {
         let role = "2"
         let req = ChooseRoleTypeRequest(subRoleType: role)
-        
+        let notificationtype = info["notificationType"] as? String
+        let ticketId = info["ticketId"] as? String ?? ""
         viewModel.chooseRoleType(otpRequest: req) { success, result, statusCode in
             guard let statusCode = statusCode else { return }
             let httpStatus = HTTPStatusCode(rawValue: statusCode)
@@ -373,6 +420,12 @@ class NotificationManager {
                                             topVC.senderId = senderId
                                             topVC.receiverId = receiverId
                                             topVC.isComeFromNotification = true
+                                            if notificationtype == "7"{
+                                                topVC.isComeFromAdmin = true
+                                                topVC.ticketId = ticketId
+                                            }else{
+                                                topVC.isComeFromAdmin = false
+                                            }
                                             topVC.refreshData() //  Call your refresh API method here
                                         }
                                     }
@@ -390,7 +443,7 @@ class NotificationManager {
                 case .unauthorized:
                     self.viewModel.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                            self.ChooseRoleTypeApiCall(senderId: senderId, receiverId: receiverId) // Retry
+                            self.ChooseRoleTypeApiCall(senderId: senderId, receiverId: receiverId, ticketId: ticketId, info: info) // Retry
                         } else {
                             self.showLogin()
                         }

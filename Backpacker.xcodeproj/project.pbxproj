@@ -56,12 +56,14 @@
 				EmployerStoryboard/MainTabBarEmpStoryboard.storyboard,
 				"GoogleService-Info_Hire.plist",
 				Info.plist,
+				"StoryBoard/HireLaunch Screen.storyboard",
 			);
 			target = 7580D0392E279472000335C8 /* Backpacker */;
 		};
 		75D1DEB32E28D08C005CDFC8 /* Exceptions for "Backpacker" folder in "BackpackerHire" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				"/Localized: StoryBoard/LaunchScreen.storyboard",
 				Assets.xcassets,
 				"GoogleService-Info.plist",
 				Info.plist,
@@ -355,15 +357,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Backpacker.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 39725U3KYU;
-				DEVELOPMENT_TEAM = 9422ZUYF32;
+				DEVELOPMENT_TEAM = 9H6AYY67L8;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Backpacker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Backpacker;
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app needs calendar access to add tasks to your calendar.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to take photos or videos.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show relevant results nearby.";
@@ -373,6 +376,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
@@ -382,7 +386,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D Backapacker";
-				PRODUCT_BUNDLE_IDENTIFIER = com.bp.backapcker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bp.bpbackpacker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -400,15 +404,16 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Backpacker/BackpackerRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 39725U3KYU;
-				DEVELOPMENT_TEAM = 9422ZUYF32;
+				DEVELOPMENT_TEAM = 9H6AYY67L8;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Backpacker/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Backpacker;
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app needs calendar access to add tasks to your calendar.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to take photos or videos.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show relevant results nearby.";
@@ -418,6 +423,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
@@ -427,7 +433,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D Backapacker";
-				PRODUCT_BUNDLE_IDENTIFIER = com.bp.backapcker;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bp.bpbackpacker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -568,12 +574,13 @@
 				CODE_SIGN_ENTITLEMENTS = BackpackerHire.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9422ZUYF32;
+				DEVELOPMENT_TEAM = 9H6AYY67L8;
 				ENABLE_DEBUG_DYLIB = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BackpackerHire-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Backacker Hire";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to take photos or videos.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show relevant results nearby.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to the microphone for speech input.";
@@ -583,6 +590,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "HireLaunch Screen.storyboard";
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
@@ -592,7 +600,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D BackpackerHire";
-				PRODUCT_BUNDLE_IDENTIFIER = com.employer.shiftly;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bp.bpbackpackerHire;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -615,12 +623,13 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 9422ZUYF32;
+				DEVELOPMENT_TEAM = 9H6AYY67L8;
 				ENABLE_DEBUG_DYLIB = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BackpackerHire-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Backacker Hire";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to take photos or videos.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show relevant results nearby.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to the microphone for speech input.";
@@ -630,6 +639,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = "HireLaunch Screen.storyboard";
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
@@ -639,7 +649,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D COCOAPODS -D BackpackerHire";
-				PRODUCT_BUNDLE_IDENTIFIER = com.employer.shiftly;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bp.bpbackpackerHire;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

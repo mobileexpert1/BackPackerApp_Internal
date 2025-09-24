@@ -44,6 +44,7 @@ class ChatVC: UIViewController {
     var sendMessage = String()
     var ticketId = String()
     var isComeFromAdmin : Bool = false
+    var titleOfChat : String?
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -74,6 +75,7 @@ class ChatVC: UIViewController {
         super.viewWillDisappear(animated)
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         appDelegate.isComeFromNotification = false
+        isComeFromAdmin = false
     }
     private func setupRefreshControl() {
         let refreshControl = UIRefreshControl()
@@ -164,7 +166,7 @@ class ChatVC: UIViewController {
                 .font: FontManager.inter(.regular, size: 14.0)             // Replace with your custom font if needed
             ]
         )
-        self.lbl_UserName.text = self.headerUserName
+        self.lbl_UserName.text = "Test"
         self.txtFldChat.delegate = self
                 sendButton.isEnabled = false // disable until there's text
         // Flip table view for reverse order
@@ -179,11 +181,12 @@ class ChatVC: UIViewController {
     func refreshData(){
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         if  appDelegate.isComeFromNotification == true{
-            self.page = 1
-            self.ListChat.removeAll()
+          
             if isComeFromAdmin == true{
+                self.AdminListChat.removeAll()
                 self.AdminlistOfChat()
             }else{
+                self.ListChat.removeAll()
                 self.listOfChat()
             }
           
@@ -228,23 +231,25 @@ extension ChatVC: UITableViewDelegate, UITableViewDataSource {
         if isComeFromAdmin == true{
             guard indexPath.row < AdminListChat.count else { return UITableViewCell() }
             let chat = AdminListChat[indexPath.row]
-            let currentUserId = chat.senderId
-            self.senderId = currentUserId
-            if currentUserId == chat.sender?.id {
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserChatTVC", for: indexPath) as? UserChatTVC else {
-                    return UITableViewCell()
-                }
-                cell.txtMsg.text = chat.message
-                let formattedTime = formatChatTime(chat.timestamp ?? "")
-                cell.lbl_Tim.text = formattedTime.isEmpty ? chat.timestamp : formattedTime
-                return cell
-            } else {
+            let currentSenderId = chat.sender?.id
+            // Check if either sender or receiver matches self.resceiverID
+            if currentSenderId != self.resceiverID {/*|| currentReceiverId == self.resceiverID {*/
+                // Show EmployerChat cell
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmplyerChatTVC", for: indexPath) as? EmplyerChatTVC else {
                     return UITableViewCell()
                 }
                 cell.txtLbl.text = chat.message
                 let formattedTime = formatChatTime(chat.timestamp ?? "")
                 cell.lbl_Time.text = formattedTime.isEmpty ? chat.timestamp : formattedTime
+                return cell
+            } else {
+                // Show UserChat cell
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: "UserChatTVC", for: indexPath) as? UserChatTVC else {
+                    return UITableViewCell()
+                }
+                cell.txtMsg.text = chat.message
+                let formattedTime = formatChatTime(chat.timestamp ?? "")
+                cell.lbl_Tim.text = formattedTime.isEmpty ? chat.timestamp : formattedTime
                 return cell
             }
             
@@ -298,8 +303,14 @@ extension ChatVC: UITableViewDelegate, UITableViewDataSource {
 
     private func scrollToBottom(animated: Bool = true) {
          guard !ListChat.isEmpty else { return }
-         let indexPath = IndexPath(row: ListChat.count - 1, section: 0)
-         tblVw.scrollToRow(at: indexPath, at: .bottom, animated: animated)
+        if isComeFromAdmin == true {
+            let indexPath = IndexPath(row: AdminListChat.count - 1, section: 0)
+            tblVw.scrollToRow(at: indexPath, at: .bottom, animated: animated)
+        }else{
+            let indexPath = IndexPath(row: ListChat.count - 1, section: 0)
+            tblVw.scrollToRow(at: indexPath, at: .bottom, animated: animated)
+        }
+      
         
      }
     @objc private func loadOlderMessages() {
@@ -354,6 +365,8 @@ extension ChatVC {
                                      self.isLoadingMoreData = false
                                      return
                                  }
+                                self.titleOfChat = result?.data?.otherUserName
+                                self.lbl_UserName.text = self.titleOfChat
                                  self.senderId = result?.data?.user.id
                                  // Prevent duplicates
                                  let existingIds = Set(self.ListChat.map { $0.id })
@@ -508,8 +521,9 @@ extension ChatVC {
                         return
                     }
                     
-                    self.resceiverID = result?.data?.adminDetail?.id
-                    
+                    self.resceiverID = result?.data?.ticket?.userId
+                    self.titleOfChat = result?.data?.ticket?.title ?? "Title Missing"
+                    self.lbl_UserName.text = self.titleOfChat
                     // Prevent duplicates
                     let existingIds = Set(self.AdminListChat.map { $0.id ?? "" })
                     let filteredChats = newChats.filter { !existingIds.contains($0.id ?? "") && !($0.id ?? "").isEmpty }
@@ -658,8 +672,8 @@ extension ChatVC {
         let formattedTime = convertISOTo12Hour(currentTimeISO)
         
         if isComeFromAdmin == true {
-            let adminChat = AdminChatMessageChatUser(id: self.senderId, name: "", email: "", image: "")
-            let neChat = AdminChatMessage(id: "", ticketId: "", senderId: self.senderId, senderModel: "", receiverId: "", receiverModel: "", message: self.sendMessage, messageType: "", status: "", timestamp: formattedTime, sender: adminChat, receiver: nil, createdAt: formattedTime, updatedAt: formattedTime)
+            let adminChat = AdminChatMessageChatUser(id: self.resceiverID, name: "", email: "", image: "")
+            let neChat = AdminChatMessage(id: "", ticketId: "", senderId: self.resceiverID, senderModel: "", receiverId: "", receiverModel: "", message: self.sendMessage, messageType: "", status: "", timestamp: formattedTime, sender: adminChat, receiver: nil, createdAt: formattedTime, updatedAt: formattedTime)
             self.AdminListChat.append(neChat)
         }else{
             let newChat = Chat(

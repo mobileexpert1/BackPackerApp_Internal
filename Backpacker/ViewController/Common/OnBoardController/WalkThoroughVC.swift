@@ -147,10 +147,12 @@ class WalkThoroughVC: UIViewController {
     }
     
     
-    @IBAction func action_Submit(_ sender: Any) {
+    @IBAction func action_BtnSkip(_ sender: UIButton) {
         UserDefaults.standard.set(true, forKey: "hasSeenWalkthrough")
         self.navigateToLogin()
+        
     }
+   
     private func navigateToLogin() {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let navVC = storyboard.instantiateViewController(withIdentifier: "LoginNavVC")
@@ -165,7 +167,7 @@ class WalkThoroughVC: UIViewController {
     private func checkVisibiltyForNextBytton(){
         if pageController.currentPage == 0{
             self.btn_Skip.isHidden = false
-            self.btn_Skip.isUserInteractionEnabled = false
+            self.btn_Skip.isUserInteractionEnabled = true
         }else{
             self.btn_Skip.isHidden = false
             self.btn_Skip.isUserInteractionEnabled = true

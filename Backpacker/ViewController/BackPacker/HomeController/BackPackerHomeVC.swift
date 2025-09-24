@@ -40,9 +40,11 @@ class BackPackerHomeVC: UIViewController {
     var jobId = String()
     private let viewModelJOb = JobVM()
     var isComeFromNotification : Bool = false
+    var isComeFromAdmin : Bool = false
     //Notifcation
     var senderId : String?
     var receiverId : String?
+    var ticketId : String?
     var activeSections: [SectionType] {
         var sections: [SectionType] = []
        
@@ -216,8 +218,12 @@ class BackPackerHomeVC: UIViewController {
             let storyboard = UIStoryboard(name: "Chat", bundle: nil)
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
                 settingVC.isComeFromNotification = true
+                settingVC.isComefFromAdmin = isComeFromAdmin
                 settingVC.senderId = senderId
                 settingVC.receiverId = receiverId
+                if isComeFromAdmin == true{
+                    settingVC.ticketId = ticketId
+                }
                 self.navigationController?.pushViewController(settingVC, animated: false)
             } else {
                 print("- Could not instantiate SettingVC")

@@ -45,7 +45,8 @@ class EmployerHomeVC: UIViewController {
     var senderId = String()
     var receiverId = String()
     var isComeFromNotification :Bool = false
-   //                                    detailVC.refreshData()
+    var isComeFromAdmin : Bool = false
+    var ticketId = String()
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lblnodataFound.isHidden = true
@@ -102,6 +103,12 @@ class EmployerHomeVC: UIViewController {
             let storyboard = UIStoryboard(name: "Chat", bundle: nil)
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
                 settingVC.isComeFromNotification = true
+                if isComeFromAdmin == true {
+                    settingVC.isComefFromAdmin = true
+                    settingVC.ticketId = self.ticketId
+                }else{
+                    settingVC.isComefFromAdmin = false
+                }
                 settingVC.senderId = senderId
                 settingVC.receiverId = receiverId
                 self.navigationController?.pushViewController(settingVC, animated: false)

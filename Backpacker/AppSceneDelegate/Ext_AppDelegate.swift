@@ -158,6 +158,8 @@ extension AppDelegate {
         let receiverId  = info["receivers"] as? String
         if let senderId = info["senderId"] as? String, !senderId.isEmpty {
             let notificationId = info["notificationId"] as? String
+            let notificationtype = info["notificationType"] as? String
+            let ticketId = info["ticketId"] as? String ?? ""
             let receiverId = info["receivers"] as? String
             
             if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
@@ -183,6 +185,12 @@ extension AppDelegate {
                                     if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
                                         appDelegate.isComeFromNotification = true
                                     }
+                                    if notificationtype == "8"{
+                                        topVC.isComeFromAdmin = true
+                                        topVC.ticketId = ticketId
+                                    }else{
+                                        topVC.isComeFromAdmin = false
+                                    }
                                     topVC.resceiverID  = senderId
                                     topVC.refreshData()
                                 }else if  let topVC = navController.topViewController as? MessageLisVC      {
@@ -193,6 +201,12 @@ extension AppDelegate {
                                     topVC.senderId = senderId
                                     topVC.receiverId = receiverId
                                     topVC.isComeFromNotification = true
+                                    if notificationtype == "8"{
+                                        topVC.isComefFromAdmin = true
+                                        topVC.ticketId = ticketId
+                                    }else{
+                                        topVC.isComefFromAdmin = false
+                                    }
                                     topVC.refreshViaApiCall()
                                     
                                     
@@ -230,7 +244,8 @@ extension AppDelegate {
 #else
         if let senderId = info["senderId"] as? String, !senderId.isEmpty {
             let receiverId = info["receivers"] as? String
-            
+            let notificationtype = info["notificationType"] as? String
+            let ticketId = info["ticketId"] as? String ?? ""
             if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let window = scene.windows.first {
                 
@@ -256,6 +271,12 @@ extension AppDelegate {
                                                 appDelegate.isComeFromNotification = true
                                             }
                                             topVC.resceiverID  = senderId
+                                            if notificationtype == "7"{
+                                                topVC.isComeFromAdmin = true
+                                                topVC.ticketId = ticketId
+                                            }else{
+                                                topVC.isComeFromAdmin = false
+                                            }
                                             topVC.refreshData()
                                         }else if  let topVC = navController.topViewController as? MessageLisVC      {
                                             
@@ -265,6 +286,12 @@ extension AppDelegate {
                                             topVC.senderId = senderId
                                             topVC.receiverId = receiverId
                                             topVC.isComeFromNotification = true
+                                            if notificationtype == "7"{
+                                                topVC.isComefFromAdmin = true
+                                                topVC.ticketId = ticketId
+                                            }else{
+                                                topVC.isComefFromAdmin = false
+                                            }
                                             topVC.refreshViaApiCall()
                                             
                                             
@@ -365,7 +392,7 @@ extension AppDelegate {
             }
         }
     }
-    private func  ChooseRoleTypeApiCall(senderId: String,receiverId:String) {
+    private func  ChooseRoleTypeApiCall(senderId: String,receiverId:String,ticketId: String) {
         let role = "2"
         let req = ChooseRoleTypeRequest(subRoleType: role)
         
@@ -426,7 +453,7 @@ extension AppDelegate {
                 case .unauthorized:
                     self.viewModel.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                            self.ChooseRoleTypeApiCall(senderId: senderId, receiverId: receiverId) // Retry
+                            self.ChooseRoleTypeApiCall(senderId: senderId, receiverId: receiverId, ticketId: ticketId) // Retry
                         } else {
                             self.showLogin()
                         }

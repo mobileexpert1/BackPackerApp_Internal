@@ -9,24 +9,22 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.bp.backapcker</string>
+	<string>com.bp.bpbackpacker</string>
 	<key>PROJECT_ID</key>
 	<string>backpacker-2beda</string>
 	<key>STORAGE_BUCKET</key>
 	<string>backpacker-2beda.firebasestorage.app</string>
 	<key>IS_ADS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false/>
+	<false></false>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_GCM_ENABLED</key>
-	<true/>
+	<true></true>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true/>
-	<key>CFBundleIdentifier</key>
-	<string></string>
+	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:68407236896:ios:4c27c5977bfd987f885f45</string>
+	<string>1:68407236896:ios:0fe9b450cfbfe756885f45</string>
 </dict>
 </plist>

@@ -130,16 +130,16 @@
                                                 </constraints>
                                             </pageControl>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gS1-ph-rX8">
-                                                <rect key="frame" x="16" y="2" width="60" height="46"/>
-                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <rect key="frame" x="14" y="2" width="70" height="46"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="width" constant="60" id="J0e-fd-fg8"/>
+                                                    <constraint firstAttribute="width" constant="70" id="J0e-fd-fg8"/>
                                                 </constraints>
                                                 <color key="tintColor" name="subTitleColor"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                 <state key="normal" title="Skip"/>
                                                 <connections>
-                                                    <action selector="action_Submit:" destination="lxv-qB-Fjv" eventType="touchUpInside" id="uD3-zM-xjs"/>
+                                                    <action selector="action_BtnSkip:" destination="lxv-qB-Fjv" eventType="touchUpInside" id="lLR-sM-7Bo"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t9E-YQ-bx8">
@@ -159,7 +159,7 @@
                                         <constraints>
                                             <constraint firstItem="t9E-YQ-bx8" firstAttribute="centerY" secondItem="8D9-Tw-nsa" secondAttribute="centerY" id="0kQ-0O-VOq"/>
                                             <constraint firstAttribute="bottom" secondItem="gS1-ph-rX8" secondAttribute="bottom" constant="2" id="GUB-gX-AGQ"/>
-                                            <constraint firstItem="gS1-ph-rX8" firstAttribute="leading" secondItem="r1f-Yj-Dp9" secondAttribute="leading" constant="16" id="Hg7-rW-wjh"/>
+                                            <constraint firstItem="gS1-ph-rX8" firstAttribute="leading" secondItem="r1f-Yj-Dp9" secondAttribute="leading" constant="14" id="Hg7-rW-wjh"/>
                                             <constraint firstItem="8D9-Tw-nsa" firstAttribute="centerY" secondItem="r1f-Yj-Dp9" secondAttribute="centerY" id="K7y-hV-Hw1"/>
                                             <constraint firstItem="gS1-ph-rX8" firstAttribute="top" secondItem="r1f-Yj-Dp9" secondAttribute="top" constant="2" id="UsU-nv-q7y"/>
                                             <constraint firstAttribute="bottom" secondItem="t9E-YQ-bx8" secondAttribute="bottom" constant="2" id="hkV-pC-Zrt"/>

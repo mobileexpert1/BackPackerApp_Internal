@@ -143,6 +143,7 @@ struct AdminDetail: Codable {
 }
 struct TicketDetail: Codable {
     let id: String?
+    let userId : String?
     let title: String?
     let desc: String?
     let ticketId: String?
@@ -153,7 +154,7 @@ struct TicketDetail: Codable {
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
-        case title, desc, ticketId, userType, reason, createdAt, updatedAt
+        case userId, title, desc, ticketId, userType, reason, createdAt, updatedAt
     }
 }
 
