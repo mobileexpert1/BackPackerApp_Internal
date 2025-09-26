@@ -6,6 +6,9 @@
 //
 
 import UIKit
+protocol CommonDetailChildDelegate: AnyObject {
+    func enableEditing(_ isEnabled: Bool)
+}
 
 class AccountDetailVC: UIViewController {
     @IBOutlet weak var EmailVw: CommonTxtFldLblVw!
@@ -74,10 +77,11 @@ class AccountDetailVC: UIViewController {
             self.btn_drpdwn.isHidden = true
             if role == "2" {
                 self.lbl_MainHeader.isHidden = true
-                self.btn_Edit.isHidden = false
+                self.btn_Edit.isHidden = true
                 self.btn_back.isHidden = true
                 self.btn_back.setImage(UIImage(named: ""), for: .normal)
                 self.handleBottomBtn()
+                self.top_HeaderHeight.constant = 0.0
                
             }
         }
@@ -162,7 +166,22 @@ class AccountDetailVC: UIViewController {
         
         self.navigationController?.popViewController(animated: true)
     }
-    
+    func isEditap(){
+#if BackpackerHire
+        if isComeFromUpdate == true{
+            DispatchQueue.main.async {
+                self.NameVw.txtFld.isUserInteractionEnabled = true
+                self.EmailVw.txtFld.isUserInteractionEnabled = true
+                self.stateVw.txtFld.isUserInteractionEnabled = true
+                self.AreaVW.txtFld.isUserInteractionEnabled = true
+            }
+            self.stckBotmHeight.constant = 50.0
+        }else{
+            self.isComeFromUpdate = false
+            self.stckBotmHeight.constant = 0.0
+        }
+        #endif
+    }
     @IBAction func actionEdit(_ sender: Any) {
         if self.btn_Edit.tag == 0{
             self.btn_Edit.tag = 1
@@ -239,6 +258,22 @@ class AccountDetailVC: UIViewController {
     }
     
 }
+extension AccountDetailVC: CommonDetailChildDelegate {
+    func enableEditing(_ isEnabled: Bool) {
+            // Enable or disable editing UI
+            if isEnabled {
+                self.isComeFromUpdate = true
+               
+            } else {
+                self.isComeFromUpdate = false
+            }
+        isEditap()
+        }
+}
+
+
+
+
 extension AccountDetailVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return visaTypes.count

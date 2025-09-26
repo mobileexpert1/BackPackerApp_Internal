@@ -10,6 +10,10 @@ import UIKit
 class CompanyDetailVC: UIViewController {
     @IBOutlet weak var scroll_Height: NSLayoutConstraint!
     
+    @IBOutlet weak var tapImageBtn: UIButton!
+    @IBOutlet weak var btn_Cancle: UIButton!
+    @IBOutlet weak var btn_Save: UIButton!
+    @IBOutlet weak var btn_btnHeight: NSLayoutConstraint!
     @IBOutlet weak var jobs_Tble_Height: NSLayoutConstraint!
     @IBOutlet weak var jobs_TblVw: UITableView!
     @IBOutlet weak var lbl_CompanyLOgi: UILabel!
@@ -29,6 +33,7 @@ class CompanyDetailVC: UIViewController {
     @IBOutlet weak var MainVw_Industries: UIView!
     @IBOutlet weak var btn_Industry: UIButton!
     @IBOutlet weak var placeholder_Vw: UIView!
+    var isComeFromUpdate : Bool = false
     let industries = [
         "Information Technology",
         "Software Development",
@@ -38,10 +43,19 @@ class CompanyDetailVC: UIViewController {
         "Web Development",]
     var jobsTotalCount : Int = 5
     var mediaPicker: MediaPickerManager?
+    let profileVm = ProfileVM()
+    let viewModelAuth = LogInVM()
+    var companyObj : CompanyDetail?
+    var listOfIndeustries : [Industry]?
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.setUpUI()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.getCompanyInfo()
+        self.getIndustriesList()
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -71,14 +85,14 @@ class CompanyDetailVC: UIViewController {
         
         self.tblVw.delegate = self
         self.tblVw.dataSource = self
-        
+        applyGradientButtonStyle(to: btn_Save)
         self.jobs_TblVw.delegate = self
         self.jobs_TblVw.dataSource = self
         self.jobs_TblVw.showsVerticalScrollIndicator = false
         self.jobs_TblVw.showsHorizontalScrollIndicator = false
         jobs_TblVw.isScrollEnabled = false
         self.reloadTableData()
-
+        
 
     }
     
@@ -161,14 +175,53 @@ class CompanyDetailVC: UIViewController {
             self.MainVw_Industries.layer.borderWidth = 1.0
         }
     }
+    @IBAction func actio_addLocation(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+           if let locationVC = storyboard.instantiateViewController(withIdentifier: "CompanyLocationVC") as? CompanyLocationVC {
+               locationVC.modalPresentationStyle = .overFullScreen
+                  locationVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.2) // dim effect
+                  
+                  let nav = UINavigationController(rootViewController: locationVC)
+                  nav.navigationBar.isHidden = true
+                  nav.modalPresentationStyle = .overFullScreen   // 👈 keeps transparency
+                  
+                  self.present(nav, animated: true)
+           }
+    }
 }
-
+extension CompanyDetailVC: CommonDetailChildDelegate {
+    func enableEditing(_ isEnabled: Bool) {
+            // Enable or disable editing UI
+            if isEnabled {
+                self.isComeFromUpdate = true
+               
+            } else {
+                self.isComeFromUpdate = false
+            }
+        isEditap()
+        }
+    func isEditap(){
+#if BackpackerHire
+        if isComeFromUpdate == true{
+            DispatchQueue.main.async {
+                self.bussinesName_Vw.txtFld.isUserInteractionEnabled = true
+                self.btn_Industry.isUserInteractionEnabled = false
+                self.tapImageBtn.isUserInteractionEnabled = false
+            }
+            self.btn_btnHeight.constant = 50.0
+        }else{
+            self.isComeFromUpdate = false
+            self.btn_btnHeight.constant = 0.0
+        }
+        #endif
+    }
+}
 extension CompanyDetailVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView == jobs_TblVw{
             return jobsTotalCount
         }else{
-            return industries.count
+            return listOfIndeustries?.count ?? 0
         }
        
     }
@@ -185,7 +238,7 @@ extension CompanyDetailVC : UITableViewDelegate,UITableViewDataSource{
                 return UITableViewCell()
             }
 
-            cell.lbl_Issue.text = industries[indexPath.row] // assuming your cell has `lbl_title`
+            cell.lbl_Issue.text = listOfIndeustries?[indexPath.row].name // assuming your cell has `lbl_title`
             return cell
         }
        
@@ -193,9 +246,9 @@ extension CompanyDetailVC : UITableViewDelegate,UITableViewDataSource{
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView != jobs_TblVw{
-            let selectedIssue = industries[indexPath.row]
+            let selectedIssue = listOfIndeustries?[indexPath.row]
                 print("Selected issue: \(selectedIssue)")
-            self.lbl_Val_SelctedIndustry.text = selectedIssue
+            self.lbl_Val_SelctedIndustry.text = selectedIssue?.name
             self.btn_Industry.tag = 0
             self.manageHeight()
             self.setUpLblIndustryColor()
@@ -214,4 +267,130 @@ extension CompanyDetailVC : UITableViewDelegate,UITableViewDataSource{
     }
     
     
+}
+
+extension CompanyDetailVC{
+    
+    private func setCompanyDetail(_ obj: Company){
+        /*
+         "_id": "68a2ffd6f26c026679d74b1a",
+               "userId": "68a2ffd6f26c026679d74b1a",
+               "name": "Acme Corporation",
+               "industryTypeId": "68b4ffd6f26c026679d74b2b",
+               "logo": "https://example.com/logo.png",
+               "website": "https://acme-corp.com",
+               "contactNumber": "+1234567890",
+               "createdAt": "2025-01-10T08:00:00.000Z",
+               "updatedAt": "2025-09-20T09:30:00.000Z"
+         */
+        self.bussinesName_Vw.txtFld.text = obj.name ?? ""
+        
+    }
+    
+    func getCompanyInfo() {
+            LoaderManager.shared.show()
+            
+            profileVm.getCompanyDetail { [weak self] (success: Bool, result: CompanyCreateResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success, let profileData = result?.data {
+                            print("User Profile data fetched result:", profileData)
+                            if profileData != nil{
+                               // self.setCompanyDetail(profileData.company!)
+                            }
+                           
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getCompanyInfo() // Retry on token refresh success
+                            } else {
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
+                            }
+                        }
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    }
+                }
+            }
+        }
+    
+    func getIndustriesList() {
+        profileVm.getIndustriesList() { [weak self] (success: Bool, result: IndustryResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                
+                switch httpStatus {
+                case .ok, .created:
+                    if success, let profileData = result?.data {
+                        print("User Profile data fetched result:", profileData)
+                        self.listOfIndeustries = result?.data.industries
+                        self.tblVw.reloadData()
+                       
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.getCompanyInfo() // Retry on token refresh success
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                }
+            }
+        }
+    }
+    
+    func createCompany(){
+        
+    }
 }

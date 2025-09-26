@@ -573,7 +573,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = BackpackerHire.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 9H6AYY67L8;
 				ENABLE_DEBUG_DYLIB = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -581,6 +581,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BackpackerHire-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Backacker Hire";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app needs calendar access to add tasks to your calendar.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to take photos or videos.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show relevant results nearby.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to the microphone for speech input.";
@@ -621,7 +622,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = BackpackerHireRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 9H6AYY67L8;
 				ENABLE_DEBUG_DYLIB = YES;
@@ -630,6 +631,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BackpackerHire-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Backacker Hire";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app needs calendar access to add tasks to your calendar.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need access to your camera to take photos or videos.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show relevant results nearby.";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "We need access to the microphone for speech input.";

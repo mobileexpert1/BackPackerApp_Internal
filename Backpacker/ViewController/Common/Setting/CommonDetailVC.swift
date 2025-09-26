@@ -7,12 +7,15 @@
 
 import UIKit
 
+
 class CommonDetailVC: UIViewController {
 
+    @IBOutlet weak var btn_Edit: UIButton!
     @IBOutlet weak var collection_Vw: UICollectionView!
     let colArray = ["Account Details","Company Details"]
     var selectedIndex =  0
     @IBOutlet weak var containerVw: UIView!
+    private var activeChildVC: (UIViewController & CommonDetailChildDelegate)?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUi()
@@ -28,6 +31,8 @@ class CommonDetailVC: UIViewController {
           }
     }
     func setUpUi(){
+        self.btn_Edit.titleLabel?.font = FontManager.inter(.regular, size: 14.0)
+        self.btn_Edit.tag = 0
         self.selectedIndex = 0
         collection_Vw.register(UINib(nibName: "MainJobCVC", bundle: nil), forCellWithReuseIdentifier: "MainJobCVC")
         collection_Vw.delegate = self
@@ -40,8 +45,18 @@ class CommonDetailVC: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
     
-    
-    
+    @IBAction func action_EditTapped(_ sender: UIButton) {
+        
+        if btn_Edit.tag == 0{
+            btn_Edit.tag = 1
+            activeChildVC?.enableEditing(true)
+        }else{
+            btn_Edit.tag = 0
+            activeChildVC?.enableEditing(false)
+        }
+        
+        
+    }
     
     
 }
@@ -98,6 +113,10 @@ extension CommonDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,U
                 newVC.view.frame = containerVw.bounds
                 containerVw.addSubview(newVC.view)
                 newVC.didMove(toParent: self)
+            // Cast to conform to CommonDetailChildDelegate
+                if let childWithDelegate = newVC as? (UIViewController & CommonDetailChildDelegate) {
+                    activeChildVC = childWithDelegate
+                }
         }
 #endif
        

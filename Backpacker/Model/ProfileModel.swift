@@ -115,3 +115,142 @@ struct EmpAcceptedBackpacker: Codable {
     let image: String
 }
 
+
+
+//MARK: - Company Detail
+
+import Foundation
+
+// MARK: - CompanyResponse
+struct CompanyResponse: Codable {
+    let success: Bool?
+    let message: String?
+    let data: CompanyData?
+}
+
+// MARK: - CompanyData/New Comany
+struct CompanyData: Codable {
+    let company: Company?
+    let locations: [Location]?
+}
+
+// MARK: - Company
+struct Company: Codable {
+    let id: String?
+    let userId: String?
+    let name: String?
+    let industryTypeId: String?
+    let logo: String?
+    let website: String?
+    let contactNumber: String?
+    let createdAt: String?
+    let updatedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case userId, name, industryTypeId, logo, website, contactNumber, createdAt, updatedAt
+    }
+}
+
+// MARK: - Location
+struct Location: Codable {
+    let id: String?
+    let userId: String?
+    let businessCompanyId: String?
+    let name: String?
+    let lat: Double?
+    let long: Double?
+    let createdAt: String?
+    let updatedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case userId, businessCompanyId, name, lat, long, createdAt, updatedAt
+    }
+}
+
+
+import Foundation
+
+// MARK: - CompanyCreateResponse
+struct CompanyCreateResponse: Codable {
+    let success: Bool?
+    let message: String?
+    let data: CompanyDetail?
+    let errors: [String]?
+}
+
+// MARK: - CompanyDetail
+struct CompanyDetail: Codable {
+    let id: String?
+    let userId: String?
+    let name: String?
+    let industryTypeId: String?
+    let logo: String?
+    let website: String?
+    let contactNumber: String?
+    let createdAt: String?
+    let updatedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case userId, name, industryTypeId, logo, website, contactNumber, createdAt, updatedAt
+    }
+}
+import Foundation
+
+// MARK: - LocationCreateResponse
+struct CompanyLocationCreateResponse: Codable {
+    let success: Bool?
+    let message: String?
+    let data: CompanyLocationDetail?
+}
+
+// MARK: - LocationDetail
+struct CompanyLocationDetail: Codable {
+    let id: String?
+    let userId: String?
+    let businessCompanyId: String?
+    let name: String?
+    let lat: Double?
+    let long: Double?
+    let createdAt: String?
+    let updatedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case userId, businessCompanyId, name, lat, long, createdAt, updatedAt
+    }
+}
+import Foundation
+
+// MARK: - IndustryResponse
+struct IndustryResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: IndustryData
+}
+
+// MARK: - IndustryData
+struct IndustryData: Codable {
+    let industries: [Industry]
+}
+
+// MARK: - Industry
+struct Industry: Codable, Identifiable {
+    let id: String
+    let name: String
+    let image: String
+    let v: Int
+    let createdAt: String
+    let updatedAt: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case name
+        case image
+        case v = "__v"
+        case createdAt
+        case updatedAt
+    }
+}
