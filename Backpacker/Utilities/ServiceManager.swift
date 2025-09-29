@@ -695,7 +695,7 @@ extension ServiceManager {
         }
     }
 
-     func requestMultipartAPI<T:Codable>(_ url: URLConvertible,image:Data? = nil,method:HTTPMethod, parameters: Parameters? = nil,httpBody:String? = nil,headers:[String:String]? = nil, completion: @escaping (ApiResult<ApiResponseModel<T>, APIError>) -> Void) {
+    func requestMultipartAPI<T:Codable>(_ url: URLConvertible,image:Data? = nil,method:HTTPMethod, parameters: Parameters? = nil,httpBody:String? = nil,headers:[String:String]? = nil,isComeFromCompany: Bool = false, completion: @escaping (ApiResult<ApiResponseModel<T>, APIError>) -> Void) {
         print("URL: ",url)
         do {
             var request = try URLRequest(url: url.asURL())
@@ -719,7 +719,15 @@ extension ServiceManager {
                     }
                 }
                 if image != nil {
-                    multipartFormData.append(image!, withName: "image", fileName: "file.jpg", mimeType: "image/jpg")
+                    if isComeFromCompany == true {
+                        multipartFormData.append(image!, withName: "logo", fileName: "file.jpg", mimeType: "image/jpg")
+                    }else
+                    {
+                        multipartFormData.append(image!, withName: "image", fileName: "file.jpg", mimeType: "image/jpg")
+                    }
+                        
+
+                   
                 }
             }, to: url, usingThreshold: UInt64.init(), method: method, headers: request.headers ).responseJSON {[weak self] response1 in
                 let statusCode = response1.response?.statusCode

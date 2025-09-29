@@ -12,8 +12,9 @@ class CompanyDetailTVC: UITableViewCell {
     @IBOutlet weak var main_Vw: UIView!
     @IBOutlet weak var lbl_Location: UILabel!
     @IBOutlet weak var title_Location: UILabel!
-    @IBOutlet weak var lbl_jobsCount: UILabel!
-    @IBOutlet weak var title_ActiveJobs: UILabel!
+//    @IBOutlet weak var lbl_jobsCount: UILabel!
+//    @IBOutlet weak var title_ActiveJobs: UILabel!
+    var onDeleteButtonTapped: (() -> Void)?
     @IBOutlet weak var btn_More: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -21,9 +22,9 @@ class CompanyDetailTVC: UITableViewCell {
         self.main_Vw.addShadowAllSides(radius:2)
         self.main_Vw.layer.cornerRadius = 10.0
         self.lbl_Location.font = FontManager.inter(.semiBold, size: 13.0)
-        self.lbl_jobsCount.font = FontManager.inter(.semiBold, size: 13.0)
+      //  self.lbl_jobsCount.font = FontManager.inter(.semiBold, size: 13.0)
         self.title_Location.font = FontManager.inter(.regular, size: 13.0)
-        self.title_ActiveJobs.font = FontManager.inter(.regular, size: 13.0)
+      //  self.title_ActiveJobs.font = FontManager.inter(.regular, size: 13.0)
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -32,4 +33,7 @@ class CompanyDetailTVC: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    @IBAction func aactin_delete(_ sender: Any) {
+        onDeleteButtonTapped?()
+    }
 }

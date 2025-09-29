@@ -175,21 +175,77 @@ class ProfileVM {
                 image: logo,
                 method: .post,
                 parameters: params,
-                headers: headers
-            ) { (result: ApiResult<ApiResponseModel<AccommodationResponseData>, APIError>) in
+                headers: headers,
+                isComeFromCompany: true
+            ) { (result: ApiResult<ApiResponseModel<UpdatedCompanyDetail>, APIError>) in
                 switch result {
                 case .success(let data, let statusCode):
-                    print("Accommodation uploaded successfully.")
-                    completion(true, data?.message ?? "Accommodation Added", statusCode)
+                    print("Company uploaded successfully.")
+                    completion(true, data?.message ?? "Company Added", statusCode)
 
                 case .failure(let error, let statusCode):
-                    print("Accommodation upload failed:", error.localizedDescription)
+                    print("Company upload failed:", error.localizedDescription)
                     completion(false, error.localizedDescription, statusCode)
                 }
             }
             
             
         }
+    
+    // MARK: -Update Company Deail
+    func updateComapnyDetail(
+        name: String,
+        industryTypeId: String,
+        logo: Data?,
+        website: String,
+        contactNumber: String,
+        completion: @escaping (Bool, String?, Int?) -> Void
+    )  {
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+  #else
+  let bearerToken = UserDefaultsManager.shared.bearerToken
+  #endif
+  
+  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+      print("⚠️ No refresh token found.")
+      completion(false, nil, nil)
+      return
+  }
+
+        let url = ApiConstants.API.CREATE_NEW_COMPANY // 🔁 Replace with correct endpoint
+
+        var params: Parameters = [
+                    "name": name,
+                    "industryTypeId": industryTypeId,
+                    "logo": logo,
+                    "website": website,
+                    "contactNumber": contactNumber
+                ]
+        
+      
+        let headers = ServiceManager.sharedInstance.getHeaders()
+        ServiceManager.sharedInstance.requestMultipartAPI(
+            url,
+            image: logo,
+            method: .patch,
+            parameters: params,
+            headers: headers,
+            isComeFromCompany: true
+        ) { (result: ApiResult<ApiResponseModel<UpdatedCompanyDetail>, APIError>) in
+            switch result {
+            case .success(let data, let statusCode):
+                print("Company uploaded successfully.")
+                completion(true, data?.message ?? "Company Added", statusCode)
+
+            case .failure(let error, let statusCode):
+                print("Company upload failed:", error.localizedDescription)
+                completion(false, error.localizedDescription, statusCode)
+            }
+        }
+        
+        
+    }
     //MARK: Add New Accommodation
         func addCompanyLocation(
             name: String,
@@ -244,7 +300,58 @@ class ProfileVM {
                }
             
         }
-    
+    func addCompanyLocation2(
+        name: String,
+        lat: Double,
+        long: Double,
+        completion: @escaping (ApiResponseModel<LocationCheckData>?, APIError?, Int?) -> Void
+    ) {
+        #if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+        #else
+        let bearerToken = UserDefaultsManager.shared.bearerToken
+        #endif
+
+        guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+            print("⚠️ No refresh token found.")
+            completion(nil, .customError(message: "Refresh token not found"), nil)
+            return
+        }
+
+        let url = ApiConstants.API.COMPANY_LOCATION
+
+        let req = CompanyLocationRequest(name: name, lat: lat, long: long)
+
+        // Encode the request
+        let jsonBody: String
+        do {
+            let data = try JSONEncoder().encode(req)
+            jsonBody = String(data: data, encoding: .utf8) ?? "{}"
+        } catch {
+            print("⚠️ Failed to encode request: \(error)")
+            completion(nil, .customError(message: "Failed to encode request: \(error)"), nil) // ✅ FIXED
+            return
+        }
+
+        print("Request JSON:", jsonBody)
+
+        ServiceManager.sharedInstance.requestValidatedApiCreateAvailabilty(
+            url,
+            method: .post,
+            parameters: nil,
+            httpBody: jsonBody,
+            headers: ServiceManager.sharedInstance.getHeaders()
+        ) { (result: ApiResult<ApiResponseModel<LocationCheckData>, APIError>) in
+            switch result {
+            case .success(let response, let statusCode):
+                completion(response, nil, statusCode)
+            case .failure(let error, let statusCode):
+                completion(nil, error, statusCode)
+            }
+        }
+    }
+
+
     func getIndustriesList<T: Codable>(
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
     ) {
@@ -271,6 +378,39 @@ class ProfileVM {
             completion(success, result, statusCode)
         }
     }
+    func getCompanyLocationList<T: Codable>(
+        page: Int,
+        perPage: Int,
+        search:String,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getCOMPANY_LOCATION_URL(page: page, perPage: perPage, search: search)
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
+    //MARK: Delet
+     func delete<T: Codable>(
+         locationID:String,
+         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+     ) {
+         let url = ApiConstants.API.DELETE_ComapnyLOCATION(locID: locationID)
+
+         ServiceManager.sharedInstance.requestApi(
+             url,
+             method: .delete,
+             parameters: nil,
+             httpBody: nil
+         ) { (success: Bool, result: T?, statusCode: Int?) in
+             completion(success, result, statusCode)
+         }
+     }
 }
 struct CompanyLocationRequest: Codable {
     let name: String

@@ -8,8 +8,14 @@
 import UIKit
 import Foundation
 import MapKit
-class CompanyLocationVC: UIViewController {
 
+protocol CompanyLocationVCDelegate: AnyObject {
+    func didLocationAdded(success: Bool)
+}
+
+
+class CompanyLocationVC: UIViewController {
+    weak var delegate: CompanyLocationVCDelegate?
     @IBOutlet weak var txtFld_manual: UITextField!
     @IBOutlet weak var txtFld_Vw: UIView!
     @IBOutlet weak var lbl_manually: UILabel!
@@ -19,11 +25,12 @@ class CompanyLocationVC: UIViewController {
     @IBOutlet weak var VwTxtFld: UIView!
     @IBOutlet weak var lbl_addlocation: UILabel!
     @IBOutlet weak var bgVwAddLocation: UIView!
-    var isLocAlreadyAdded: Bool = true
+    var isLocAlreadyAdded: Bool = false
     let profileVm = ProfileVM()
     let viewModelAuth = LogInVM()
     var lat : Double?
     var long : Double?
+    var locationAlreadyExist : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
@@ -41,17 +48,39 @@ class CompanyLocationVC: UIViewController {
         self.txtFld_Vw.addShadowAllSides(radius: 0.5)
         self.txtFld_manual.font = FontManager.inter(.regular, size: 14.0)
         self.handleManualTxtFldAppearance()
+        txtFldLcation.delegate = self
+        txtFld_manual.delegate = self
     }
     @IBAction func btn_canle(_ sender: Any) {
         self.dismiss(animated: true)
     }
     
     @IBAction func btn_save(_ sender: Any) {
-        if self.lat != 0.0 && self.long != 0.0{
-            self.addCompanyLocation()
-        }else{
-            AlertManager.showAlert(on: self, title: "Alert!", message: "Location not properly get,Please choose location again.")
+        // Check if latitude and longitude are valid
+            guard self.lat != 0.0 && self.long != 0.0 else {
+                AlertManager.showAlert(on: self, title: "Alert!", message: "Location not properly obtained. Please choose location again.")
+                return
+            }
+        var loctext = String()
+            // Trimmed location text
+        if isLocAlreadyAdded {
+            loctext = self.txtFld_manual.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        } else {
+            loctext = self.txtFldLcation.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         }
+        
+            
+            // Check if location text is empty
+        guard !loctext.isEmpty else {
+                AlertManager.showAlert(on: self, title: "Alert", message: "Please enter your address")
+                return
+            }
+            
+            // Show alert based on whether the location is already added
+           
+            
+            // Call API
+            self.addCompanyLocation()
         
     }
     @IBAction func action_choosecation(_ sender: Any) {
@@ -65,7 +94,7 @@ class CompanyLocationVC: UIViewController {
         
     }
     private func handleManualTxtFldAppearance(){
-        if isLocAlreadyAdded == true{
+        if isLocAlreadyAdded == false{
             self.main_VwManual.isHidden = true
             self.lbl_manually.isHidden = true
             self.txtFld_manual.isHidden = true
@@ -86,14 +115,23 @@ extension CompanyLocationVC : SetLocationDelegate{
     }
 }
 
-extension CompanyLocationVC {
-    private func addCompanyLocation(){
+extension CompanyLocationVC : UITextFieldDelegate {
+    private func addCompanyLocation() {
         
         // Call API
         LoaderManager.shared.show()
-        let locationText = self.txtFldLcation.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        var locationText : String?
+        if isLocAlreadyAdded == true {
+            locationText = self.txtFld_manual.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        }else{
+            locationText = self.txtFldLcation.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        }
 
-        profileVm.addCompanyLocation(name: locationText, lat: lat ?? 0.0, long: long ?? 0.0) { success, message ,statusCode in
+        profileVm.addCompanyLocation2(
+            name: locationText ?? "",
+            lat: lat ?? 0.0,
+            long: long ?? 0.0
+        ) { response, error, statusCode in
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()
                 AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
@@ -104,35 +142,85 @@ extension CompanyLocationVC {
                 LoaderManager.shared.hide()
                 switch httpStatus {
                 case .ok, .created:
-                    if success == true {
-                        self.dismiss(animated: true)
+                    if let response = response, response.success == true {
+                        self.handleLocationCheck(response: response.data)
+                     //   self.dismiss(animated: true)
                     } else {
-                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                        let msg = response?.message ?? error?.customDescription ?? "Something went wrong."
+                        AlertManager.showAlert(on: self, title: "Error", message: msg)
                     }
+                    
                 case .badRequest:
-                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
-                case .unauthorized :
+                    let msg = response?.message ?? error?.customDescription ?? "Something went wrong."
+                    AlertManager.showAlert(on: self, title: "Error", message: msg)
+                    
+                case .unauthorized:
                     self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
                             self.addCompanyLocation()
                         } else {
-                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                            let msg = response?.message ?? error?.customDescription ?? "Internal Server Error"
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: msg)
                         }
                     }
-                case .unauthorizedToken:
-                    LoaderManager.shared.hide()
-                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
-                case .unknown:
-                    LoaderManager.shared.hide()
-                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
-                case .methodNotAllowed:
-                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
-                case .internalServerError:
-                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     
+                case .unauthorizedToken:
+                    let msg = response?.message ?? error?.customDescription ?? "Internal Server Error"
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: msg)
+                    
+                case .unknown:
+                    let msg = response?.message ?? error?.customDescription ?? "Something went wrong. Try again later."
+                    AlertManager.showAlert(on: self, title: "Server Error", message: msg)
+                    
+                case .methodNotAllowed, .internalServerError:
+                    let msg = response?.message ?? error?.customDescription ?? "Something went wrong."
+                    AlertManager.showAlert(on: self, title: "Error", message: msg)
                 }
             }
         }
-        
     }
+    func handleLocationCheck(response: LocationCheckData?) {
+        guard let isNotExist = response?.isNotExist else {
+            print("⚠️ Could not get isNotExist")
+            self.delegate?.didLocationAdded(success: false)
+            self.dismiss(animated: true)
+            return
+        }
+        
+        if isNotExist {
+            print("✅ Location does not exist. You can add it.")
+            self.delegate?.didLocationAdded(success: true)
+            self.dismiss(animated: true)
+            self.isLocAlreadyAdded = false
+        } else {
+            print("❌ Location already exists.")
+            self.isLocAlreadyAdded = true
+            AlertManager.showAlert(on: self, title: "Error", message:"A location with this name already exists for your business."){
+                self.handleUIForIfLocationExist()
+            }
+            
+        }
+       
+    }
+    func handleUIForIfLocationExist(){
+        if isLocAlreadyAdded == true {
+            self.isLocAlreadyAdded = true
+            self.handleManualTxtFldAppearance()
+        }
+    }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder() // Dismiss keyboard
+        return true
+    }
+}
+// MARK: - LocationCheckResponse
+struct LocationCheckResponse: Codable {
+    let success: Bool?
+    let message: String?
+    let data: LocationCheckData?
+}
+
+// MARK: - LocationCheckData
+struct LocationCheckData: Codable {
+    let isNotExist: Bool?
 }

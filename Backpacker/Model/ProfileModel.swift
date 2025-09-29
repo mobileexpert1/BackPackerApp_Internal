@@ -173,11 +173,17 @@ struct Location: Codable {
 import Foundation
 
 // MARK: - CompanyCreateResponse
+
+// MARK: - CompanyCreateResponse
 struct CompanyCreateResponse: Codable {
     let success: Bool?
     let message: String?
-    let data: CompanyDetail?
+    let data: CompanyResponseData?
     let errors: [String]?
+}
+// MARK: - CompanyData
+struct CompanyResponseData: Codable {
+    let company: CompanyDetail?
 }
 
 // MARK: - CompanyDetail
@@ -185,18 +191,40 @@ struct CompanyDetail: Codable {
     let id: String?
     let userId: String?
     let name: String?
-    let industryTypeId: String?
+    let industryType: CompanyIndustry?
     let logo: String?
     let website: String?
     let contactNumber: String?
     let createdAt: String?
     let updatedAt: String?
+    let v: Int?
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
-        case userId, name, industryTypeId, logo, website, contactNumber, createdAt, updatedAt
+        case userId, name
+        case industryType = "industryTypeId" // maps API field to property
+        case logo, website, contactNumber, createdAt, updatedAt
+        case v = "__v"
     }
 }
+
+// MARK: - Industry
+struct CompanyIndustry: Codable {
+    let id: String?
+    let name: String?
+    let image: String?
+    let v: Int?
+    let createdAt: String?
+    let updatedAt: String?
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case name, image
+        case v = "__v"
+        case createdAt, updatedAt
+    }
+}
+
 import Foundation
 
 // MARK: - LocationCreateResponse
@@ -252,5 +280,76 @@ struct Industry: Codable, Identifiable {
         case v = "__v"
         case createdAt
         case updatedAt
+    }
+}
+import Foundation
+
+// MARK: - Main Response
+struct LocationResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: LocationData
+}
+
+// MARK: - Data
+struct LocationData: Codable {
+    let locations: [LocationList]
+    let total: Int
+    let page: Int
+    let perPage: Int
+    let totalPages: Int
+}
+
+// MARK: - Location
+struct LocationList: Codable {
+    let id: String
+    let userId: String
+    let businessCompanyId: String
+    let name: String
+    let lat: Double
+    let long: Double
+    let createdAt: String
+    let updatedAt: String
+    let v: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case userId
+        case businessCompanyId
+        case name
+        case lat
+        case long
+        case createdAt
+        case updatedAt
+        case v = "__v"
+    }
+}
+import Foundation
+
+// MARK: - UpdateCompanyResponse
+struct UpdateCompanyResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: UpdatedCompanyDetail
+    let errors: [String]
+}
+
+// MARK: - UpdatedCompanyDetail
+struct UpdatedCompanyDetail: Codable {
+    let id: String
+    let userId: String
+    let name: String
+    let industryTypeId: String
+    let logo: String
+    let website: String
+    let contactNumber: String
+    let createdAt: String
+    let updatedAt: String
+    let v: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case userId, name, industryTypeId, logo, website, contactNumber, createdAt, updatedAt
+        case v = "__v"
     }
 }

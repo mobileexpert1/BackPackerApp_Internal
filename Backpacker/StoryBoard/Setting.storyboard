@@ -959,10 +959,10 @@ the payment </string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KIm-82-GcC">
-                                <rect key="frame" x="0.0" y="59" width="393" height="793"/>
+                                <rect key="frame" x="0.0" y="59" width="393" height="669"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ek5-gd-sr0">
-                                        <rect key="frame" x="0.0" y="0.0" width="393" height="1007"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="897"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="DhV-nL-fd4">
                                                 <rect key="frame" x="10" y="10" width="373" height="352"/>
@@ -1273,61 +1273,26 @@ the payment </string>
                                                 <rect key="frame" x="20" y="587" width="353" height="300"/>
                                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="300" id="SAt-HL-sfs"/>
+                                                    <constraint firstAttribute="height" constant="300" id="ojK-vg-bQE"/>
                                                 </constraints>
                                                 <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                                             </tableView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="u32-r3-ZZH">
-                                                <rect key="frame" x="20" y="907" width="353" height="50"/>
-                                                <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Gd-op-h7Q">
-                                                        <rect key="frame" x="0.0" y="0.0" width="171.66666666666666" height="50"/>
-                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                        <state key="normal" title="Save"/>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                                <integer key="value" value="10"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                        </userDefinedRuntimeAttributes>
-                                                    </button>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4xe-6n-wAI">
-                                                        <rect key="frame" x="181.66666666666663" y="0.0" width="171.33333333333337" height="50"/>
-                                                        <color key="backgroundColor" name="lightGray"/>
-                                                        <color key="tintColor" name="blackColor"/>
-                                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                        <state key="normal" title="Cancel"/>
-                                                        <userDefinedRuntimeAttributes>
-                                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                                <integer key="value" value="10"/>
-                                                            </userDefinedRuntimeAttribute>
-                                                        </userDefinedRuntimeAttributes>
-                                                    </button>
-                                                </subviews>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="50" id="Xti-dd-02u"/>
-                                                </constraints>
-                                            </stackView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="nXh-bb-4Xe" firstAttribute="top" secondItem="ca4-xm-DTy" secondAttribute="bottom" constant="20" id="0sK-zO-qEb"/>
                                             <constraint firstItem="nXh-bb-4Xe" firstAttribute="leading" secondItem="ek5-gd-sr0" secondAttribute="leading" constant="20" id="2G2-7j-Rp5"/>
-                                            <constraint firstAttribute="bottom" secondItem="u32-r3-ZZH" secondAttribute="bottom" constant="50" id="3Zt-lZ-Wbo"/>
                                             <constraint firstItem="ca4-xm-DTy" firstAttribute="trailing" secondItem="wd4-Ik-xlm" secondAttribute="trailing" id="6PL-aL-UeR"/>
                                             <constraint firstItem="DhV-nL-fd4" firstAttribute="top" secondItem="ek5-gd-sr0" secondAttribute="top" constant="10" id="8Om-ac-ekA"/>
                                             <constraint firstItem="Yfu-Bb-c7H" firstAttribute="leading" secondItem="ek5-gd-sr0" secondAttribute="leading" constant="20" id="PHx-wL-Awm"/>
                                             <constraint firstItem="DhV-nL-fd4" firstAttribute="leading" secondItem="ek5-gd-sr0" secondAttribute="leading" constant="10" id="XEX-ec-1Pn"/>
                                             <constraint firstItem="ca4-xm-DTy" firstAttribute="top" secondItem="Yfu-Bb-c7H" secondAttribute="bottom" constant="10" id="fvJ-he-xaf"/>
-                                            <constraint firstAttribute="trailing" secondItem="u32-r3-ZZH" secondAttribute="trailing" constant="20" id="gDA-9o-ksA"/>
                                             <constraint firstAttribute="trailing" secondItem="nXh-bb-4Xe" secondAttribute="trailing" constant="20" id="hrk-xb-9H1"/>
                                             <constraint firstAttribute="trailing" secondItem="DhV-nL-fd4" secondAttribute="trailing" constant="10" id="kNJ-L5-dxQ"/>
                                             <constraint firstAttribute="height" priority="970" constant="900" id="kr2-63-21A"/>
                                             <constraint firstItem="Yfu-Bb-c7H" firstAttribute="top" secondItem="DhV-nL-fd4" secondAttribute="bottom" constant="5" id="le1-Ul-Lb1"/>
-                                            <constraint firstItem="u32-r3-ZZH" firstAttribute="top" secondItem="nXh-bb-4Xe" secondAttribute="bottom" constant="20" id="nRG-hq-Xj6"/>
+                                            <constraint firstAttribute="bottom" secondItem="nXh-bb-4Xe" secondAttribute="bottom" constant="10" id="wrg-ja-g38"/>
                                             <constraint firstAttribute="trailing" secondItem="Yfu-Bb-c7H" secondAttribute="trailing" constant="20" id="wt2-A1-2p9"/>
-                                            <constraint firstItem="u32-r3-ZZH" firstAttribute="leading" secondItem="ek5-gd-sr0" secondAttribute="leading" constant="20" id="xCW-oB-iUG"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -1341,14 +1306,55 @@ the payment </string>
                                 <viewLayoutGuide key="contentLayoutGuide" id="un0-4h-hQY"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="D2I-uv-a39"/>
                             </scrollView>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="u32-r3-ZZH">
+                                <rect key="frame" x="20" y="748" width="353" height="50"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Gd-op-h7Q">
+                                        <rect key="frame" x="0.0" y="0.0" width="171.66666666666666" height="50"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Save"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="action_save:" destination="7hS-yE-uu5" eventType="touchUpInside" id="T4l-Fy-ujl"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4xe-6n-wAI">
+                                        <rect key="frame" x="181.66666666666663" y="0.0" width="171.33333333333337" height="50"/>
+                                        <color key="backgroundColor" name="lightGray"/>
+                                        <color key="tintColor" name="blackColor"/>
+                                        <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                        <state key="normal" title="Cancel"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                <integer key="value" value="10"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                        <connections>
+                                            <action selector="action_cancle:" destination="7hS-yE-uu5" eventType="touchUpInside" id="ZYz-Sg-Nee"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="Xti-dd-02u"/>
+                                </constraints>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="4jF-dp-YaL"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="4jF-dp-YaL" firstAttribute="trailing" secondItem="u32-r3-ZZH" secondAttribute="trailing" constant="20" id="Ddr-Uj-Bfc"/>
+                            <constraint firstItem="u32-r3-ZZH" firstAttribute="leading" secondItem="4jF-dp-YaL" secondAttribute="leading" constant="20" id="F2b-hg-dN6"/>
+                            <constraint firstItem="u32-r3-ZZH" firstAttribute="top" secondItem="KIm-82-GcC" secondAttribute="bottom" constant="20" id="OsU-WY-6Gk"/>
                             <constraint firstAttribute="trailing" secondItem="KIm-82-GcC" secondAttribute="trailing" id="hyC-Hi-Gbt"/>
                             <constraint firstItem="KIm-82-GcC" firstAttribute="leading" secondItem="4jF-dp-YaL" secondAttribute="leading" id="rZl-1e-V32"/>
+                            <constraint firstItem="4jF-dp-YaL" firstAttribute="bottom" secondItem="u32-r3-ZZH" secondAttribute="bottom" constant="20" id="u4n-DY-cEG"/>
                             <constraint firstItem="KIm-82-GcC" firstAttribute="top" secondItem="4jF-dp-YaL" secondAttribute="top" id="wc0-bj-pth"/>
-                            <constraint firstAttribute="bottom" secondItem="KIm-82-GcC" secondAttribute="bottom" id="yBb-Zj-fgZ"/>
                         </constraints>
                     </view>
                     <connections>
@@ -1360,11 +1366,12 @@ the payment </string>
                         <outlet property="btn_remove" destination="k9d-KU-jIC" id="eEe-dq-Kws"/>
                         <outlet property="bussinesName_Vw" destination="eFq-7i-fMd" id="ii8-Ww-Fod"/>
                         <outlet property="jobs_TblVw" destination="nXh-bb-4Xe" id="r0N-Mm-kXR"/>
-                        <outlet property="jobs_Tble_Height" destination="SAt-HL-sfs" id="wTn-fl-agU"/>
+                        <outlet property="jobs_Tble_Height" destination="ojK-vg-bQE" id="ALF-5l-MvH"/>
                         <outlet property="lbl_CompanyLOgi" destination="h9Z-Sx-lRy" id="KSR-jG-xgd"/>
                         <outlet property="lbl_Industry" destination="RUq-df-HUj" id="n8C-vE-rdD"/>
                         <outlet property="lbl_Placeholder" destination="Ecn-bF-bDI" id="5pg-ue-vbk"/>
                         <outlet property="lbl_Val_SelctedIndustry" destination="jpO-gC-Wx6" id="zKa-01-QUR"/>
+                        <outlet property="main_scrollVw" destination="KIm-82-GcC" id="jSj-Jj-ZUb"/>
                         <outlet property="placeholde_Img" destination="Dv3-4h-DZ1" id="9yZ-AR-F00"/>
                         <outlet property="placeholder_Vw" destination="asa-sy-Yty" id="4E2-K5-AF8"/>
                         <outlet property="scroll_Height" destination="kr2-63-21A" id="Ilz-tu-xG0"/>
@@ -1403,7 +1410,7 @@ the payment </string>
                                             <action selector="btn_canle:" destination="61Z-Bp-5jG" eventType="touchUpInside" id="w8y-JI-5mS"/>
                                         </connections>
                                     </button>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="SDa-qa-OfH">
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="SDa-qa-OfH">
                                         <rect key="frame" x="20" y="80" width="313" height="190"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OBG-ML-kNf">
@@ -1411,6 +1418,9 @@ the payment </string>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vvr-xq-P3q">
                                                         <rect key="frame" x="0.0" y="0.0" width="313" height="30"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="30" id="2ME-KM-Iqw"/>
+                                                        </constraints>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <color key="textColor" name="blackColor"/>
                                                         <nil key="highlightedColor"/>
@@ -1475,16 +1485,19 @@ the payment </string>
                                                 <rect key="frame" x="0.0" y="100" width="313" height="90"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Address Manually" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ggs-Vp-pxh">
-                                                        <rect key="frame" x="0.0" y="0.0" width="313" height="20.333333333333332"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="313" height="25"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="25" id="86Z-vV-35t"/>
+                                                        </constraints>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <color key="textColor" name="blackColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bdp-8K-pkw">
-                                                        <rect key="frame" x="0.0" y="28.333333333333311" width="313" height="59.666666666666657"/>
+                                                        <rect key="frame" x="0.0" y="33" width="313" height="55"/>
                                                         <subviews>
                                                             <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Manual location" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hgq-Zu-nQa">
-                                                                <rect key="frame" x="10" y="2" width="293" height="55.666666666666664"/>
+                                                                <rect key="frame" x="10" y="2" width="293" height="51"/>
                                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                                 <textInputTraits key="textInputTraits"/>
                                                             </textField>
@@ -1550,7 +1563,6 @@ the payment </string>
                                     <constraint firstItem="TBn-ld-bVY" firstAttribute="centerX" secondItem="3TH-6a-NVw" secondAttribute="centerX" id="Cya-UV-3vY"/>
                                     <constraint firstItem="J3q-Z0-x6a" firstAttribute="top" secondItem="3TH-6a-NVw" secondAttribute="top" constant="10" id="NEo-6o-wHO"/>
                                     <constraint firstAttribute="bottom" secondItem="TBn-ld-bVY" secondAttribute="bottom" constant="20" id="Wuo-RH-jWa"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="300" id="g6i-yo-PmS"/>
                                     <constraint firstItem="SDa-qa-OfH" firstAttribute="top" secondItem="J3q-Z0-x6a" secondAttribute="bottom" constant="20" id="hk7-nN-pb7"/>
                                     <constraint firstAttribute="trailing" secondItem="SDa-qa-OfH" secondAttribute="trailing" constant="20" id="kN5-9B-xpU"/>
                                     <constraint firstItem="TBn-ld-bVY" firstAttribute="top" secondItem="SDa-qa-OfH" secondAttribute="bottom" constant="20" id="mRu-MQ-MX4"/>

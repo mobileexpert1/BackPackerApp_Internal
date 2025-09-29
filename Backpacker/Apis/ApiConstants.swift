@@ -598,6 +598,34 @@ struct ApiConstants {
         static let INDUSTRIES_LIST = BASE_URL + "api/industryType"
         
         static let CREATE_NEW_COMPANY = BASE_URL + "api/employer/companyDetail"
+        static func getCOMPANY_LOCATION_URL(
+            page: Int,
+            perPage: Int,
+            search: String? = nil
+        ) -> String {
+            var url =
+            "\(BASE_URL)api/employer/companyDetail/location?page=\(page)&perPage=\(perPage)"
+            
+            if let searchText = search?.trimmingCharacters(
+                in: .whitespacesAndNewlines), !searchText.isEmpty
+            {
+                let encodedSearch =
+                searchText.addingPercentEncoding(
+                    withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&search=\(encodedSearch)"
+            }
+            return url
+        }
+        
+        static func DELETE_ComapnyLOCATION(locID: String?) -> String {  //api/employer/accommodation
+            var url = "\(BASE_URL)api/employer/companyDetail/location/"
+            if let locID = locID {
+                url += "\(locID)"
+            }
+            return url
+        }
+        
+        
         }
  
     
