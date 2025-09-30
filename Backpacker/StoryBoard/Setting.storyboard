@@ -959,10 +959,10 @@ the payment </string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KIm-82-GcC">
-                                <rect key="frame" x="0.0" y="59" width="393" height="669"/>
+                                <rect key="frame" x="0.0" y="59" width="393" height="689"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ek5-gd-sr0">
-                                        <rect key="frame" x="0.0" y="0.0" width="393" height="897"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="887"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="DhV-nL-fd4">
                                                 <rect key="frame" x="10" y="10" width="373" height="352"/>
@@ -1291,7 +1291,7 @@ the payment </string>
                                             <constraint firstAttribute="trailing" secondItem="DhV-nL-fd4" secondAttribute="trailing" constant="10" id="kNJ-L5-dxQ"/>
                                             <constraint firstAttribute="height" priority="970" constant="900" id="kr2-63-21A"/>
                                             <constraint firstItem="Yfu-Bb-c7H" firstAttribute="top" secondItem="DhV-nL-fd4" secondAttribute="bottom" constant="5" id="le1-Ul-Lb1"/>
-                                            <constraint firstAttribute="bottom" secondItem="nXh-bb-4Xe" secondAttribute="bottom" constant="10" id="wrg-ja-g38"/>
+                                            <constraint firstAttribute="bottom" secondItem="nXh-bb-4Xe" secondAttribute="bottom" id="wrg-ja-g38"/>
                                             <constraint firstAttribute="trailing" secondItem="Yfu-Bb-c7H" secondAttribute="trailing" constant="20" id="wt2-A1-2p9"/>
                                         </constraints>
                                     </view>
@@ -1307,7 +1307,7 @@ the payment </string>
                                 <viewLayoutGuide key="frameLayoutGuide" id="D2I-uv-a39"/>
                             </scrollView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="u32-r3-ZZH">
-                                <rect key="frame" x="20" y="748" width="353" height="50"/>
+                                <rect key="frame" x="20" y="768" width="353" height="50"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Gd-op-h7Q">
                                         <rect key="frame" x="0.0" y="0.0" width="171.66666666666666" height="50"/>
@@ -1353,7 +1353,7 @@ the payment </string>
                             <constraint firstItem="u32-r3-ZZH" firstAttribute="top" secondItem="KIm-82-GcC" secondAttribute="bottom" constant="20" id="OsU-WY-6Gk"/>
                             <constraint firstAttribute="trailing" secondItem="KIm-82-GcC" secondAttribute="trailing" id="hyC-Hi-Gbt"/>
                             <constraint firstItem="KIm-82-GcC" firstAttribute="leading" secondItem="4jF-dp-YaL" secondAttribute="leading" id="rZl-1e-V32"/>
-                            <constraint firstItem="4jF-dp-YaL" firstAttribute="bottom" secondItem="u32-r3-ZZH" secondAttribute="bottom" constant="20" id="u4n-DY-cEG"/>
+                            <constraint firstItem="4jF-dp-YaL" firstAttribute="bottom" secondItem="u32-r3-ZZH" secondAttribute="bottom" id="u4n-DY-cEG"/>
                             <constraint firstItem="KIm-82-GcC" firstAttribute="top" secondItem="4jF-dp-YaL" secondAttribute="top" id="wc0-bj-pth"/>
                         </constraints>
                     </view>

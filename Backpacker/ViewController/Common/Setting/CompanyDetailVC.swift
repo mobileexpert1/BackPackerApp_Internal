@@ -37,13 +37,6 @@ class CompanyDetailVC: UIViewController {
     var isComeFromUpdate : Bool = false
     var isLoading : Bool = false
     var iscomeFromCamera : Bool = false
-    let industries = [
-        "Information Technology",
-        "Software Development",
-        "Cybersecurity",
-        "Cloud Computing",
-        "Artificial Intelligence",
-        "Web Development",]
     var jobsTotalCount : Int = 5
     var mediaPicker: MediaPickerManager?
     let profileVm = ProfileVM()
@@ -56,7 +49,7 @@ class CompanyDetailVC: UIViewController {
     
     
     var page = 1
-    let perPage = 10
+    let perPage = 20
     var totalAccomodations = Int()
     var isLoadingMoreData = false
     var isAllDataLoaded = false
@@ -66,9 +59,15 @@ class CompanyDetailVC: UIViewController {
     var lastSearchedText: String = ""
     var isComFromSearch : Bool = false
     var lastContentOffset: CGFloat = 0
+    
+    private lazy var refreshControl: UIRefreshControl = {
+           let rc = UIRefreshControl()
+           rc.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
+           return rc
+       }()
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.attachRefreshControl()
         self.setUpUI()
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -84,6 +83,21 @@ class CompanyDetailVC: UIViewController {
         super.viewDidLayoutSubviews()
        /// jobs_Tble_Height.constant = CGFloat(locations?.count ?? 0) * (100 + 10)
     }
+    
+    private func attachRefreshControl() {
+                main_scrollVw.refreshControl = refreshControl
+       
+        }
+    @objc private func didPullToRefresh() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
+            if self.iscomeFromCamera == false{
+                    self.getCompanyInfo()
+                    self.getIndustriesList()
+                    self.getListOfLocationAll()
+                }
+        }
+          
+      }
     func setUpUI(){
         self.main_scrollVw.delegate = self
         self.MainVw_Industries.layer.cornerRadius = 10.0
@@ -219,10 +233,10 @@ class CompanyDetailVC: UIViewController {
     func reloadTableData() {
         jobs_TblVw.reloadData()
         jobs_TblVw.layoutIfNeeded()
-        jobs_Tble_Height.constant = CGFloat(locations?.count ?? 0) * (105)
-        let constantHeight = CGFloat(locations?.count ?? 0) * (105)
+        jobs_Tble_Height.constant = CGFloat(locations?.count ?? 0) * (100)
+        let constantHeight = CGFloat(locations?.count ?? 0) * (100)
         let mainScrolHeight = self.scroll_Height.constant - constantHeight
-        self.scroll_Height.constant = ( mainScrolHeight + jobs_Tble_Height.constant) - 300
+        self.scroll_Height.constant = ( mainScrolHeight + jobs_Tble_Height.constant) //- 300
 
     }
 
@@ -380,7 +394,6 @@ extension CompanyDetailVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView != jobs_TblVw{
             let selectedIssue = listOfIndeustries?[indexPath.row]
-                print("Selected issue: \(selectedIssue)")
             self.lbl_Val_SelctedIndustry.text = selectedIssue?.name
             self.industryId = selectedIssue?.id
             self.btn_Industry.tag = 0
@@ -442,7 +455,11 @@ extension CompanyDetailVC{
             }
            
         )
-
+        self.selected_Image.layer.cornerRadius = 10.0
+        self.btn_remove.isHidden = false
+        self.btn_remove.isUserInteractionEnabled = true
+        self.placeholde_Img.isHidden = true
+        self.lbl_Placeholder.isHidden = true
     
     }
     
@@ -479,7 +496,7 @@ extension CompanyDetailVC{
                                 self.companyDetailObj = nil
                             }
                             self.updateAppearanceOfBottomBtns()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3){
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
                                 self.setUpImagePlacehoder()
                             }
                             self.setUpLblIndustryColor()
@@ -487,6 +504,7 @@ extension CompanyDetailVC{
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         }
+                        self.refreshControl.endRefreshing()
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     case .unauthorized :
@@ -494,18 +512,23 @@ extension CompanyDetailVC{
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
                                 self.getCompanyInfo() // Retry on token refresh success
                             } else {
+                                self.refreshControl.endRefreshing()
                                 NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
                             }
                         }
                     case .unauthorizedToken:
                         LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
                         AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
                     case .methodNotAllowed:
+                        self.refreshControl.endRefreshing()
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     case .internalServerError:
+                        self.refreshControl.endRefreshing()
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     }
                 }
@@ -877,7 +900,7 @@ extension CompanyDetailVC: UIScrollViewDelegate {
         loader.tag = 9999
         loader.center = CGPoint(
             x: main_scrollVw.frame.width / 2,
-            y: main_scrollVw.contentSize.height + 25
+            y: main_scrollVw.contentSize.height + 100
         )
         loader.startAnimating()
         main_scrollVw.addSubview(loader)

@@ -124,6 +124,23 @@ class AddNewJobVC: UIViewController {
     var selectedStatDate : Date?
     var selectedEndDate : Date?
     
+    
+    let profileVm = ProfileVM()
+    var  locations: [LocationList]?
+    
+    
+    var page = 1
+    let perPage = 100
+    var totalAccomodations = Int()
+    var isLoading : Bool = false
+    var isLoadingMoreData = false
+    var isAllDataLoaded = false
+    var isComeFromPullTorefresh : Bool = false
+    
+    var searchDebounceTimer: Timer?
+    var lastSearchedText: String = ""
+    var isComFromSearch : Bool = false
+    var lastContentOffset: CGFloat = 0
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
@@ -135,7 +152,7 @@ class AddNewJobVC: UIViewController {
         self.btn_Mic.isHidden = true
         self.lbl_placeholder_description.font = FontManager.inter(.regular, size: 14.0)
         // Do any additional setup after loading the view.
-       
+        self.getListOfLocationAll()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -282,16 +299,31 @@ class AddNewJobVC: UIViewController {
         }
     }
     @IBAction func action_SetLoctaion(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
-        if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
-            settingVC.delegate = self
-            if isComeFromEdit == true {
-                settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
-            }
-            self.navigationController?.pushViewController(settingVC, animated: true)
-        } else {
-            print("- Could not instantiate SettingVC")
-        }
+        
+//        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+//        if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonLocationListVC") as? CommonLocationListVC {
+//            settingVC.delegate = self
+////            if isComeFromEdit == true {
+////                settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
+////            }
+//            self.navigationController?.pushViewController(settingVC, animated: true)
+//        } else {
+//            print("- Could not instantiate SettingVC")
+//        }
+        
+   //     /*
+         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
+             settingVC.delegate = self
+             if isComeFromEdit == true {
+                 settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
+             }
+             self.navigationController?.pushViewController(settingVC, animated: true)
+         } else {
+             print("- Could not instantiate SettingVC")
+         }
+      //  */
+      
         
         
     }
@@ -1279,6 +1311,97 @@ extension AddNewJobVC {
             }
         }
         
+    }
+    func getListOfLocationAll(){
+        let trimmedSearch = ""
+        if page == 1 {
+            self.isLoading = true
+            LoaderManager.shared.show()
+        } else {
+            isLoadingMoreData = true
+        }
+        profileVm.getCompanyLocationList(page: page, perPage: perPage, search: trimmedSearch)  { [weak self] (success: Bool, result: LocationResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            let newLocations = result?.data.locations
+                            
+                            if self.page == 1 {
+                                if newLocations?.count == 0 {
+                                    self.locations?.removeAll()
+                                    self.locations = newLocations
+                                } else {
+                                    self.locations?.removeAll()
+                                    self.isLoading = false
+                                    self.locations = newLocations
+                                }
+                            } else {
+                                self.isLoading = false
+                                self.locations?.append(contentsOf: newLocations ?? [])
+                            }
+                            self.totalAccomodations = result?.data.total ?? 0
+                            // Pagination end check
+                            self.isAllDataLoaded = newLocations?.count ?? 0 < self.perPage
+                            
+                         
+                            self.isLoadingMoreData = false
+                            self.isComeFromPullTorefresh = false
+                            self.lastContentOffset = 0.0
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                       
+                            self.isLoadingMoreData = false
+                            self.isComeFromPullTorefresh = false
+                            self.lastContentOffset = 0.0
+                            LoaderManager.shared.hide()
+                        }
+//                        self.reloadTableData()
+//                        self.hideBottomLoader()
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                     
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getListOfLocationAll()
+                            } else {
+                                LoaderManager.shared.hide()
+                                //self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                                NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
+                                
+                            }
+                        }
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                      //  self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                     //   self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
+                     
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                     
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    
+                    }
+                }
+            }
+            }
     }
 }
 extension AddNewJobVC {
