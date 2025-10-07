@@ -6,7 +6,9 @@
 //
 
 import UIKit
-
+protocol CommonLocationDelegate: AnyObject {
+    func didSelectBackpacker(_ location: [LocationList])
+}
 class CommonLocationListVC: UIViewController {
     @IBOutlet weak var btn_cross: UIButton!
     @IBOutlet weak var Btn_Save: UIButton!
@@ -22,7 +24,6 @@ class CommonLocationListVC: UIViewController {
     var  selectedData : [LocationList] = []
     let viewModel = JobVM()
     private let refreshControl = UIRefreshControl()
-    weak var delegate: CommonSearchDelegate?
     let viewModelAuth = LogInVM()
     var isLoading : Bool = true
     var page = 1
@@ -42,18 +43,25 @@ class CommonLocationListVC: UIViewController {
     var totalAccomodations = Int()
     
     var isComFromSearch : Bool = false
+    var editLocationId : String?
+    weak var delegaet : CommonLocationDelegate?
+    var isComeromEdit : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
       
         self.setUpUI()
        
         self.setUpRefreshControl()
-        self.getListOfLocationAll()
+       
         // Do any additional setup after loading the view.
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         isComeFromPullTorefresh = false
+        self.getListOfLocationAll()
+        if isComeromEdit == true {
+            self.handleEditcase()
+        }
     }
     func setUpRefreshControl() {
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
@@ -105,7 +113,7 @@ class CommonLocationListVC: UIViewController {
         
     }
     @IBAction func action_Save(_ sender: Any) {
-         //  delegate?.didSelectBackpacker(self.selectedData)
+        delegaet?.didSelectBackpacker(self.selectedData)
            self.navigationController?.popViewController(animated: true)
     }
     
@@ -147,11 +155,19 @@ extension CommonLocationListVC: UITableViewDelegate, UITableViewDataSource {
                 selectedData.remove(at: index)
             } else {
                 // Not selected → add
+                selectedData.removeAll()
                 selectedData.append(selectedItem)
             }
 
             // Reload just the tapped row
             tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+    
+    func handleEditcase(){
+        let data = LocationList(id: self.editLocationId ?? "", userId: "", businessCompanyId: "", name: "", lat: 0.0, long: 0.0, createdAt: "", updatedAt:     "", v: 0)
+        self.selectedData.removeAll()
+        self.selectedData.append(data)
+        self.tblVw.reloadData()
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
@@ -316,6 +332,12 @@ extension CommonLocationListVC {
                             self.isLoadingMoreData = false
                             self.isComeFromPullTorefresh = false
                             self.lastContentOffset = 0.0
+                            if self.searchData.count == 0 {
+                                AlertManager.showAlert(on: self, title: "Action Required", message: "Please Add Location"){
+                                    self.moveToAccountScreen()
+                                }
+                            }
+                            self.refreshControl.endRefreshing()
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                        
@@ -360,5 +382,14 @@ extension CommonLocationListVC {
                 }
             }
             }
+    }
+    
+    private func moveToAccountScreen(){
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+
+        if let vc = storyboard.instantiateViewController(withIdentifier: "CommonDetailVC") as? CommonDetailVC {
+            vc.selectedIndex = 1
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
     }
 }

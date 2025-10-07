@@ -624,8 +624,10 @@ struct ApiConstants {
             }
             return url
         }
+       //MARK: - Subscriptions
         
-        
+       // https://backpacker.csdevhub.com/api/admin/subscription
+        static let GET_LISTOF_SUBSCRIPTIONS = BASE_URL + "api/subscription"
         }
  
     

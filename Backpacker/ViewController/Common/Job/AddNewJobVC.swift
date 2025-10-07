@@ -141,6 +141,7 @@ class AddNewJobVC: UIViewController {
     var lastSearchedText: String = ""
     var isComFromSearch : Bool = false
     var lastContentOffset: CGFloat = 0
+    var locationId : String?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
@@ -152,7 +153,7 @@ class AddNewJobVC: UIViewController {
         self.btn_Mic.isHidden = true
         self.lbl_placeholder_description.font = FontManager.inter(.regular, size: 14.0)
         // Do any additional setup after loading the view.
-        self.getListOfLocationAll()
+   //     self.getListOfLocationAll()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -300,18 +301,20 @@ class AddNewJobVC: UIViewController {
     }
     @IBAction func action_SetLoctaion(_ sender: Any) {
         
-//        let storyboard = UIStoryboard(name: "Job", bundle: nil)
-//        if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonLocationListVC") as? CommonLocationListVC {
-//            settingVC.delegate = self
-////            if isComeFromEdit == true {
-////                settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
-////            }
-//            self.navigationController?.pushViewController(settingVC, animated: true)
-//        } else {
-//            print("- Could not instantiate SettingVC")
-//        }
+        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonLocationListVC") as? CommonLocationListVC {
+            settingVC.delegaet = self
+            if isComeFromEdit == true {
+                settingVC.isComeromEdit = isComeFromEdit
+                settingVC.editLocationId = self.locationId
+               // settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
+            }
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("- Could not instantiate SettingVC")
+        }
         
-   //     /*
+        /*
          let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
          if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
              settingVC.delegate = self
@@ -322,7 +325,7 @@ class AddNewJobVC: UIViewController {
          } else {
              print("- Could not instantiate SettingVC")
          }
-      //  */
+        */
       
         
         
@@ -452,12 +455,15 @@ class AddNewJobVC: UIViewController {
         
         
         let isValid = validateHangoutFields(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDate, endDate: endDate, startTime: startTime, endTime: endTime, request: ["iOs","iOS2"], image: imageData, latitude: self.latitude, longitude: self.longitude, on: self)
+        if self.locationId?.isEmpty == true{
+            AlertManager.showAlert(on: self, title: "Alert!", message: "Location is missing ")
+        }
         
         if isValid {
             if isComeFromEdit == true {
                 self.EditJob(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDate, endDate: endDate, startTime: startTime, endTime: endTime, image: imageData, latitude:  self.latitude, longitude: self.longitude,jobId: self.jobID ?? "")
             }else{
-                self.AddNewJob(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDate, endDate: endDate, startTime: startTime, endTime: endTime, request: [], image: imageData, latitude:  self.latitude, longitude: self.longitude)
+                self.AddNewJob(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDate, endDate: endDate, startTime: startTime, endTime: endTime, request: [], image: imageData, latitude:  self.latitude, longitude: self.longitude, locationID: self.locationId ?? "")
             }
            
         }else{
@@ -1170,6 +1176,10 @@ extension AddNewJobVC {
             
         }
         
+        if self.locationId?.isEmpty == true {
+            AlertManager.showAlert(on: viewController, title: "Invalid Location", message: "Please select a location")
+                     return false
+        }
        
         if latitude == 0.0 || longitude == 0.0 {
             AlertManager.showAlert(on: viewController, title: "Invalid Location", message: "Please select a valid location on map.")
@@ -1193,7 +1203,8 @@ extension AddNewJobVC {
         request: [String],
         image: Data?,
         latitude: Double,
-        longitude: Double
+        longitude: Double,
+        locationID : String
     ) {
         let image = self.main_ImgVw.image?.jpegData(compressionQuality: 0.8)
         LoaderManager.shared.show()
@@ -1201,7 +1212,7 @@ extension AddNewJobVC {
             .replacingOccurrences(of: "$", with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
-        viewModel.uploadNewJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: priceWithoutSymbol, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, selectedBackpackerJSONString: selectedBackPackerJSONString ?? "", image: image) { success, message ,statusCode in
+        viewModel.uploadNewJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: priceWithoutSymbol, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, selectedBackpackerJSONString: selectedBackPackerJSONString ?? "", image: image, locationId: self.locationId ?? "") { success, message ,statusCode in
             
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()
@@ -1226,7 +1237,7 @@ extension AddNewJobVC {
                 case .unauthorized :
                     self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                            self.AddNewJob(name: name, address: address, locationText: locationText, description: description, requirment: requirment, price: price, strtDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, request: request, image: image, latitude: latitude, longitude: longitude)
+                            self.AddNewJob(name: name, address: address, locationText: locationText, description: description, requirment: requirment, price: price, strtDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, request: request, image: image, latitude: latitude, longitude: longitude, locationID: locationID)
                         } else {
                             NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                         }
@@ -1520,6 +1531,23 @@ extension AddNewJobVC{
         main_ScrollVw.contentInset = contentInsets
         main_ScrollVw.scrollIndicatorInsets = contentInsets
     }
+    
+    
+}
+
+extension AddNewJobVC : CommonLocationDelegate {
+    func didSelectBackpacker(_ location: [LocationList]) {
+        print("Location",location.last)
+        if let loc = location.last{
+            self.locationId = loc.id
+            self.lbl_Location.text = loc.name
+            self.latitude = loc.lat
+            self.longitude = loc.long
+        }else{
+            AlertManager.showAlert(on: self, title: "Alert!", message: "Please select location")
+        }
+    }
+    
 }
 struct BackpackerIdWrapper: Codable {
     let backpackerId: String

@@ -10,79 +10,67 @@ import UIKit
 class SubscriptionVC: UIViewController {
     @IBOutlet weak var lbl_MainHeader: UILabel!
     
+    @IBOutlet weak var tblVw: UITableView!
+    @IBOutlet weak var main_scrollVw: UIScrollView!
     @IBOutlet weak var lbl_ChoosePlan: UILabel!
     @IBOutlet weak var lbl_SubTitle: UILabel!
     
-    @IBOutlet weak var Vw_premium: UIView!
-    
-    @IBOutlet weak var ve_Annual: UIView!
-    
-    @IBOutlet weak var vw_Freetrial: UIView!
-    
-    
     @IBOutlet weak var btnProceed: UIButton!
     
+    @IBOutlet weak var tblHeght: NSLayoutConstraint!
     @IBOutlet weak var btn_Cancle: UIButton!
-    
-    @IBOutlet weak var lbl_premium: UILabel!
-    
-    @IBOutlet weak var lbl_PremiumAmny: UILabel!
-    
-    @IBOutlet weak var premiumImg: UIImageView!
-    
-    @IBOutlet weak var lbl_Anual: UILabel!
-    @IBOutlet weak var imgFreetrial: UIImageView!
-    
-    @IBOutlet weak var lbl_freetrialAmount: UILabel!
-    @IBOutlet weak var lbl_FreeTrial: UILabel!
-    @IBOutlet weak var img_Annual: UIImageView!
-    @IBOutlet weak var lbl_AnnualAmount: UILabel!
+    let viewModel = SubscriptionViewModel()
+    let viewAuth = LogInVM()
+    var isLoading : Bool = true
+    let refreshControl = UIRefreshControl()
+    var plans : [Plan]?
+    var selectedIndex: IndexPath? {
+            didSet {
+                tblVw.reloadData() // Reload table to update images
+            }
+        }
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.getListOfAllSubscriptions()
+        tblVw.isScrollEnabled = false
+
+        let nib = UINib(nibName: "SubscriptionTVC", bundle: nil)
+        tblVw.register(nib, forCellReuseIdentifier: "SubscriptionTVC")
+        tblVw.delegate = self
+        tblVw.dataSource = self
+        tblVw.reloadData()
+        manageHeight()
+
         applyGradientButtonStyle(to: self.btnProceed)
         
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
         self.lbl_ChoosePlan.font = FontManager.inter(.semiBold, size: 20.0)
         self.lbl_SubTitle.font = FontManager.inter(.regular, size: 14.0)
-        self.lbl_premium.font = FontManager.inter(.medium, size: 16.0)
-        self.lbl_PremiumAmny.font = FontManager.inter(.regular, size: 16.0)
-        self.lbl_Anual.font = FontManager.inter(.medium, size: 16.0)
-        self.lbl_AnnualAmount.font = FontManager.inter(.regular, size: 16.0)
-        self.lbl_FreeTrial.font = FontManager.inter(.medium, size: 16.0)
-        self.lbl_freetrialAmount.font = FontManager.inter(.regular, size: 16.0)
-        
         self.btnProceed.titleLabel?.font  = FontManager.inter(.medium, size: 16.0)
         self.btn_Cancle.titleLabel?.font  = FontManager.inter(.medium, size: 16.0)
-        vw_Freetrial.addShadowAllSides(radius:2)
-        Vw_premium.addShadowAllSides(radius:2)
-        ve_Annual.addShadowAllSides(radius:2)
-        vw_Freetrial.layer.cornerRadius = 10.0
-        Vw_premium.layer.cornerRadius = 10.0
-        ve_Annual.layer.cornerRadius = 10.0
-        self.imgFreetrial.image = UIImage(named: "off")
-        self.premiumImg.image = UIImage(named: "off")
-        self.img_Annual.image = UIImage(named: "off")
+        if #available(iOS 10.0, *) {
+                    main_scrollVw.refreshControl = refreshControl
+                } else {
+                    main_scrollVw.addSubview(refreshControl)
+                }
+                
+                refreshControl.addTarget(self, action: #selector(refreshScrollView), for: .valueChanged)
     }
     
-    @IBAction func action_Freetrial(_ sender: Any) {
-        self.imgFreetrial.image = UIImage(named: "on")
-        self.premiumImg.image = UIImage(named: "off")
-        self.img_Annual.image = UIImage(named: "off")
-        
-    }
-    @IBAction func action_Premium(_ sender: Any) {
-        self.premiumImg.image = UIImage(named: "on")
-        self.imgFreetrial.image = UIImage(named: "off")
-        self.img_Annual.image = UIImage(named: "off")
-    }
-    
-    
-    @IBAction func action_Annual(_ sender: Any) {
-        self.img_Annual.image = UIImage(named: "on")
-        self.imgFreetrial.image = UIImage(named: "off")
-        self.premiumImg.image = UIImage(named: "off")
-        
-    }
+    @objc func refreshScrollView() {
+           print("ScrollView pulled to refresh")
+
+           // Call your data reload function here
+        self.getListOfAllSubscriptions()
+
+           // End refreshing after reload
+       }
+
+       func reloadData() {
+           // Your logic to reload table or other content inside scroll view
+           tblVw.reloadData()
+           manageHeight() // If you’re updating table height
+       }
     
     @IBAction func action_Proceed(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
@@ -93,6 +81,122 @@ class SubscriptionVC: UIViewController {
     
     @IBAction func action_Cancel(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
+    }
+    
+}
+
+extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.plans?.count ?? 0
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = self.tblVw.dequeueReusableCell(withIdentifier: "SubscriptionTVC", for: indexPath) as! SubscriptionTVC
+        
+        if let plan = plans?[indexPath.row] {
+            cell.lbl_header.text = plan.name ?? ""
+            cell.lbl_price.text = "\(plan.price ?? 0.0) per month"
+            cell.lbl_description.text = plan.desc  ?? ""
+            cell.indexPath = indexPath
+            cell.lbl_feature1.text = plan.feature?[0]
+            cell.lbl_feature2.text = plan.feature?[1]
+            cell.lbl_feature3.text = plan.feature?[2]
+            cell.lbl_feature4.text = plan.feature?[3]
+            cell.onCellTapped = { [weak self] tappedIndex in
+                        print("Cell tapped: \(tappedIndex.row)")
+                        self?.selectedIndex = tappedIndex
+                    }
+                    
+                    // Update cell image based on selectedIndex
+                    let isSelected = (indexPath == selectedIndex)
+                    cell.updateImage(isSelected: isSelected)
+        }
+     
+        return cell
+    }
+    
+   
+    
+    func manageHeight() {
+        tblVw.layoutIfNeeded()
+        tblHeght.constant =  CGFloat(((self.plans?.count ?? 0) * 250))
+    }
+
+}
+extension SubscriptionVC {
+    
+    private func getListOfAllSubscriptions()
+    {
+        LoaderManager.shared.show()
+        viewModel.getlistOfSubscriptions { [weak self] (success: Bool, result: GetSubscriptionModel?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                if result?.data != nil{
+                                    self.isLoading = false
+                                    self.plans?.removeAll()
+                                    self.plans = result?.data?.plans ?? []
+                                    
+                                }else{
+                                    AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
+                                }
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                LoaderManager.shared.hide()
+                            }
+                            self.refreshControl.endRefreshing()
+                            self.tblVw.reloadData()
+                            self.manageHeight()
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            self.refreshControl.endRefreshing()
+                        case .unauthorized :
+                            self.viewAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.getListOfAllSubscriptions()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.isLoading = false
+                                    self.refreshControl.endRefreshing()
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
     }
     
 }

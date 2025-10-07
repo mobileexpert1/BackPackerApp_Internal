@@ -41,7 +41,7 @@ class AddNewPlaceVC: UIViewController {
     var selectedImages: [UIImage] = []
     var selectedImagesData: [Data] = []
     //Mic btn OutLet
-    
+    var locationId : String?
     @IBOutlet weak var btn_Name_mic: UIButton!
     
     
@@ -275,16 +275,29 @@ class AddNewPlaceVC: UIViewController {
     }
     
     @IBAction func setLocation(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
-        if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
-            settingVC.delegate = self
-            if isComeFromEdit == true {
-                settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
-            }
+        
+        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonLocationListVC") as? CommonLocationListVC {
+            settingVC.delegaet = self
+//            if isComeFromEdit == true {
+//                settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
+//            }
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
             print("- Could not instantiate SettingVC")
         }
+        
+        
+//        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+//        if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
+//            settingVC.delegate = self
+//            if isComeFromEdit == true {
+//                settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
+//            }
+//            self.navigationController?.pushViewController(settingVC, animated: true)
+//        } else {
+//            print("- Could not instantiate SettingVC")
+//        }
     }
     /*
      tional<Double>
@@ -384,7 +397,7 @@ class AddNewPlaceVC: UIViewController {
         if isComeFromEdit == true{
             self.editHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData, removedImages: self.removedStrings)
         }else{
-            self.submitHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData)
+            self.submitHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData, locationId: self.locationId ?? "")
         }
         
     }
@@ -474,7 +487,7 @@ extension AddNewPlaceVC: UITextFieldDelegate, UITextViewDelegate {
         return true
     }
 }
-extension AddNewPlaceVC : SetLocationDelegate{
+extension AddNewPlaceVC : SetLocationDelegate,CommonLocationDelegate{
     func didSelectLocation(locationName: String, fullAddress: String, coordinate: CLLocationCoordinate2D) {
         lbl_Val_Location.text = locationName
         // txtFld_Address.text = fullAddress
@@ -483,12 +496,23 @@ extension AddNewPlaceVC : SetLocationDelegate{
         self.latitude = coordinate.latitude
         self.longitude = coordinate.longitude
     }
-    
+    func didSelectBackpacker(_ location: [LocationList]) {
+        print("Location",location.last)
+        if let loc = location.last{
+            self.locationId = loc.id
+            lbl_Val_Location.text = loc.name
+            self.latitude = loc.lat
+            self.longitude = loc.long
+        }else{
+            AlertManager.showAlert(on: self, title: "Alert!", message: "Please select location")
+        }
+    }
+  
 }
 
 
 extension AddNewPlaceVC{
-    func submitHangout(name: String, address: String, lat: Double, long: Double, locationText: String, description: String, image: Data?,imageArrayData : [Data]) {
+    func submitHangout(name: String, address: String, lat: Double, long: Double, locationText: String, description: String, image: Data?,imageArrayData : [Data],locationId:String) {
         LoaderManager.shared.show()
         viewModel.uploadHangout(
             name: name,
@@ -497,7 +521,8 @@ extension AddNewPlaceVC{
             long: long,
             locationText: locationText,
             description: description,
-            image: image, imagesArrayData: imageArrayData
+            image: image, imagesArrayData: imageArrayData,
+            locationId: locationId
         ) { success, message ,statusCode in
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()
@@ -522,7 +547,7 @@ extension AddNewPlaceVC{
                 case .unauthorized :
                     self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                            self.submitHangout(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, image: image, imageArrayData: self.selectedImagesData) // Retry
+                            self.submitHangout(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, image: image, imageArrayData: self.selectedImagesData, locationId: locationId) // Retry
                         } else {
                             NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                         }
@@ -633,6 +658,10 @@ extension AddNewPlaceVC{
                 AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select at least one image.")
                 return false
             }
+        }
+        if self.locationId?.isEmpty == true{
+            AlertManager.showAlert(on: viewController, title: "Alert!", message: "Please select a location")
+            return false
         }
         return true
     }

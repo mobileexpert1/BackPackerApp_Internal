@@ -54,7 +54,7 @@ class AccountDetailVC: UIViewController {
     @IBOutlet weak var btn_editHeight: NSLayoutConstraint!
     @IBOutlet weak var btn_backHeight: NSLayoutConstraint!
     var isComeFromUpdate : Bool = false
-    
+  
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpButtons()

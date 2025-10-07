@@ -83,7 +83,7 @@ class AddNewAccomodationVC: UIViewController {
     var removedStrings: String = ""
     var editedImages: [EditedImage] = []
     var isMediaPickerTap : Bool = false
-    
+    var locationId : String?
     
     // Example of adding one
     
@@ -279,16 +279,26 @@ class AddNewAccomodationVC: UIViewController {
     
     @IBAction func action_Location(_ sender: Any) {
         
-        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
-        if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
-            settingVC.delegate = self
-            if isComeFromEdit == true {
-                settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
-            }
+        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonLocationListVC") as? CommonLocationListVC {
+            settingVC.delegaet = self
+//            if isComeFromEdit == true {
+//                settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
+//            }
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
             print("- Could not instantiate SettingVC")
         }
+//        let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
+//        if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
+//            settingVC.delegate = self
+//            if isComeFromEdit == true {
+//                settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
+//            }
+//            self.navigationController?.pushViewController(settingVC, animated: true)
+//        } else {
+//            print("- Could not instantiate SettingVC")
+//        }
     }
     
     
@@ -351,7 +361,7 @@ class AddNewAccomodationVC: UIViewController {
             if isComeFromEdit {
                 self.editAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: priceWithoutSymbol, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, accId: self.accomodationID ?? "", remvedImages: self.removedStrings, on: self)
             }else{
-                self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: priceWithoutSymbol, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, on: self)
+                self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: priceWithoutSymbol, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, locationId: self.locationId ?? "", on: self)
             }
             
         }
@@ -634,7 +644,7 @@ extension AddNewAccomodationVC: UITextFieldDelegate, UITextViewDelegate {
 }
 
 
-extension AddNewAccomodationVC : SetLocationDelegate{
+extension AddNewAccomodationVC : SetLocationDelegate ,CommonLocationDelegate{
     func didSelectLocation(locationName: String, fullAddress: String, coordinate: CLLocationCoordinate2D) {
         valLocation.text = locationName
         txtFldAddress.text = fullAddress
@@ -642,6 +652,18 @@ extension AddNewAccomodationVC : SetLocationDelegate{
         
         self.latitude = coordinate.latitude
         self.longitude = coordinate.longitude
+    }
+    func didSelectBackpacker(_ location: [LocationList]) {
+        print("Location",location.last)
+        if let loc = location.last{
+            self.locationId = loc.id
+            valLocation.text = loc.name
+            txtFldAddress.text = loc.name
+            self.latitude = loc.lat
+            self.longitude = loc.long
+        }else{
+            AlertManager.showAlert(on: self, title: "Alert!", message: "Please select location")
+        }
     }
 }
 extension AddNewAccomodationVC {
@@ -696,6 +718,10 @@ extension AddNewAccomodationVC {
             }
         }
         
+        if self.locationId?.isEmpty == true {
+            AlertManager.showAlert(on: viewController, title: "Alert!", message: "Please select a location")
+            return false
+        }
         
         
         return true
@@ -714,6 +740,7 @@ extension AddNewAccomodationVC {
         image: Data?,
         ImagesData : [Data],
         mainImageView: UIImageView,
+        locationId: String,
         on viewController: UIViewController
     ) {
         
@@ -728,7 +755,8 @@ extension AddNewAccomodationVC {
             description: description,
             price: price,
             facilities: filterArray,
-            image: image, imagesArrayData: ImagesData
+            image: image, imagesArrayData: ImagesData,
+            locationId : locationId
         ) { success, message ,statusCode in
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()
@@ -753,7 +781,7 @@ extension AddNewAccomodationVC {
                 case .unauthorized :
                     self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                            self.submitAccommodation(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, price: price, facilitiesIndexes: facilitiesIndexes, filterArray: filterArray, image: image, ImagesData: ImagesData, mainImageView: mainImageView, on: self)
+                            self.submitAccommodation(name: name, address: address, lat: lat, long: long, locationText: locationText, description: description, price: price, facilitiesIndexes: facilitiesIndexes, filterArray: filterArray, image: image, ImagesData: ImagesData, mainImageView: mainImageView, locationId: locationId, on: self)
                         } else {
                             NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                         }

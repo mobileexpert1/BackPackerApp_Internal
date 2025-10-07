@@ -16,6 +16,7 @@ class CommonDetailVC: UIViewController {
     var selectedIndex =  0
     @IBOutlet weak var containerVw: UIView!
     private var activeChildVC: (UIViewController & CommonDetailChildDelegate)?
+    var isComeFromAddScreen : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUi()
@@ -33,7 +34,7 @@ class CommonDetailVC: UIViewController {
     func setUpUi(){
         self.btn_Edit.titleLabel?.font = FontManager.inter(.regular, size: 14.0)
         self.btn_Edit.tag = 0
-        self.selectedIndex = 0
+   //     self.selectedIndex = 0
         collection_Vw.register(UINib(nibName: "MainJobCVC", bundle: nil), forCellWithReuseIdentifier: "MainJobCVC")
         collection_Vw.delegate = self
         collection_Vw.dataSource = self

@@ -79,6 +79,7 @@ struct EmployerJobDetail: Codable {
     let address: String
     let lat: Double
     let long: Double
+    let locationId : String
     let locationText: String
     let description: String
     let requirements: String
@@ -96,7 +97,7 @@ struct EmployerJobDetail: Codable {
     enum CodingKeys: String, CodingKey {
            case id = "_id"
            case employerId, name, address, lat, long, locationText, description, requirements, image,
-                startDate, endDate, startTime, endTime, price, jobAcceptStatus, completedJobsCount, requests
+                startDate, endDate, startTime, endTime, price, jobAcceptStatus, completedJobsCount, requests,locationId
            case v = "__v"
        }
    }

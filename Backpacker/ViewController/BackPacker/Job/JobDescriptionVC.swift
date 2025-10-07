@@ -349,6 +349,7 @@ class JobDescriptionVC: UIViewController {
             let strtTime = self.jobDetailEmployerObj?.startTime ?? ""
             let endTime = self.jobDetailEmployerObj?.endTime ?? ""
             let req  = self.jobDetailEmployerObj?.requests
+            
             if let imageUrls = self.jobDetailEmployerObj?.image {
                 ImageLoader.loadImages(from: [imageUrls]) { images in
                     // here you get your [UIImage]
@@ -368,6 +369,7 @@ class JobDescriptionVC: UIViewController {
                     accVC.editEndDate = enddate
                     accVC.editStartTime = strtTime
                     accVC.editEndTime = endTime
+                    accVC.locationId = self.jobDetailEmployerObj?.locationId
                     self.navigationController?.pushViewController(accVC, animated: true)
                 }
             }

@@ -20,6 +20,7 @@ class HangoutViewModel {
         description: String,
         image: Data?,
         imagesArrayData : [Data],
+        locationId: String,
         completion: @escaping (Bool, String?, Int?) -> Void
     ) {
 #if BackpackerHire
@@ -42,7 +43,8 @@ class HangoutViewModel {
             "lat": lat,
             "long": long,
             "locationText": locationText,
-            "description": description
+            "description": description,
+            "locationId": locationId
         ]
         let headers = ServiceManager.sharedInstance.getHeaders()
         ServiceManager.sharedInstance.requestMultipartMultiAPI(
