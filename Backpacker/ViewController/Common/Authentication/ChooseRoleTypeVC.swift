@@ -181,6 +181,7 @@ class ChooseRoleTypeVC: UIViewController {
                             let storyboard = UIStoryboard(name: "MainTabBarEmpStoryboard", bundle: nil)
                             let rootVC = storyboard.instantiateViewController(withIdentifier: "MainTabBarEmpController")
                             UIApplication.setRootViewController(rootVC)
+                            
                         }
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Invalid OTP")
