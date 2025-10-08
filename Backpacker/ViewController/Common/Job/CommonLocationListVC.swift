@@ -52,13 +52,13 @@ class CommonLocationListVC: UIViewController {
         self.setUpUI()
        
         self.setUpRefreshControl()
-       
+        self.getListOfLocationAll()
         // Do any additional setup after loading the view.
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         isComeFromPullTorefresh = false
-        self.getListOfLocationAll()
+        
         if isComeromEdit == true {
             self.handleEditcase()
         }
@@ -148,19 +148,31 @@ extension CommonLocationListVC: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        let selectedItem = searchData[indexPath.row]
+//
+//        if let index = selectedData.firstIndex(where: { $0.id == selectedItem.id }) {
+//                // Already selected → remove
+//                selectedData.remove(at: index)
+//            } else {
+//                // Not selected → add
+//                selectedData.removeAll()
+//                selectedData.append(selectedItem)
+//            }
+//
+//            // Reload just the tapped row
+//            tableView.reloadRows(at: [indexPath], with: .automatic)
         let selectedItem = searchData[indexPath.row]
 
-        if let index = selectedData.firstIndex(where: { $0.id == selectedItem.id }) {
-                // Already selected → remove
-                selectedData.remove(at: index)
-            } else {
-                // Not selected → add
+            // If the same item is tapped again, deselect it
+            if let existing = selectedData.first, existing.id == selectedItem.id {
                 selectedData.removeAll()
-                selectedData.append(selectedItem)
+            } else {
+                // Otherwise, select the new item
+                selectedData = [selectedItem]
             }
 
-            // Reload just the tapped row
-            tableView.reloadRows(at: [indexPath], with: .automatic)
+            // Reload the whole table or just visible rows (to update checkbox state)
+            tableView.reloadData()
     }
     
     func handleEditcase(){
@@ -333,9 +345,25 @@ extension CommonLocationListVC {
                             self.isComeFromPullTorefresh = false
                             self.lastContentOffset = 0.0
                             if self.searchData.count == 0 {
-                                AlertManager.showAlert(on: self, title: "Action Required", message: "Please Add Location"){
-                                    self.moveToAccountScreen()
-                                }
+                                self.showAddLocationAlert()
+                                /*
+                                 AlertManager.showAlert(on: self, title: "Action Required", message: "Please Add Location"){
+                                     let role =  UserDefaults.standard.string(forKey: "UserRoleType")
+                                     if role == "2"{
+                                         self.moveToAccountScreen()
+                                     }else{
+                                         AlertManager.showAlert(on: self, title: "Alert!", message: "To add a location, please select 'Employer' as your role."){
+                                             let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
+                                             if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
+                                                 vc.isBackButtonHidden = false
+                                                 self.navigationController?.pushViewController(vc, animated: true)
+                                             }
+                                         }
+
+                                     }
+                                   
+                                 }
+                                 */
                             }
                             self.refreshControl.endRefreshing()
                         } else {
@@ -392,4 +420,28 @@ extension CommonLocationListVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
+   
+
+    private func showAddLocationAlert() {
+        AlertManager.showAlert(on: self, title: "Action Required", message: "Please Add Location") {
+            let role = UserDefaults.standard.string(forKey: "UserRoleType")
+            
+            if role == "2" {
+                self.moveToAccountScreen()
+            } else {
+                self.showRoleSelectionAlert()
+            }
+        }
+    }
+
+    private func showRoleSelectionAlert() {
+        AlertManager.showAlert(on: self, title: "Alert!", message: "To add a location, please select 'Employer' as your role.") {
+            let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
+            if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
+                vc.isBackButtonHidden = false
+                self.navigationController?.pushViewController(vc, animated: true)
+            }
+        }
+    }
+
 }

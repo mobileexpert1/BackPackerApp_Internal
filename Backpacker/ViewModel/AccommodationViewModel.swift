@@ -89,6 +89,7 @@ class AccommodationViewModel {
             imagesArrayData : [Data],
             removedImages : String,
             accId: String,
+            locationId: String,
             completion: @escaping (Bool, String?, Int?) -> Void
         ) {
     #if BackpackerHire
@@ -113,7 +114,8 @@ class AccommodationViewModel {
                         "locationText": locationText,
                         "description": description,
                         "price": price,
-                        "removedImages":removedImages
+                        "removedImages":removedImages,
+                        "locationId":locationId
                     ]
             
             // Append array of string correctly as comma-separated string

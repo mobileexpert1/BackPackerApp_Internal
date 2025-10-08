@@ -64,6 +64,7 @@ struct AccommodationDetail: Codable {
     let address: String
     let lat: Double
     let long: Double
+    let locationId : String
     let locationText: String
     let description: String
     let image: [String]
@@ -74,7 +75,7 @@ struct AccommodationDetail: Codable {
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
-        case name, address, lat, long, locationText, description, image, price, facilities//, favoriteStatus
+        case name, address, lat, long, locationText, description, image, price, facilities, locationId//, favoriteStatus
         case v = "__v"
     }
 }

@@ -1279,7 +1279,7 @@ extension AddNewJobVC {
         let priceWithoutSymbol = price
             .replacingOccurrences(of: "$", with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        viewModel.editJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: priceWithoutSymbol, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, selectedBackpackerJSONString: selectedBackPackerJSONString ?? "", image: image, jobID: jobId) { success, message ,statusCode in
+        viewModel.editJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: priceWithoutSymbol, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, selectedBackpackerJSONString: selectedBackPackerJSONString ?? "", image: image, jobID: jobId, locationId: self.locationId ?? "") { success, message ,statusCode in
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()
                 AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")

@@ -69,6 +69,7 @@ class AddNewPlaceVC: UIViewController {
     var removedStrings: String = ""
     var editedImages: [EditedImage] = []
     var isMediaPickerTap : Bool = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.SetUpUI()
@@ -279,9 +280,11 @@ class AddNewPlaceVC: UIViewController {
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonLocationListVC") as? CommonLocationListVC {
             settingVC.delegaet = self
-//            if isComeFromEdit == true {
-//                settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
-//            }
+            if isComeFromEdit == true {
+                settingVC.isComeromEdit = isComeFromEdit
+                settingVC.editLocationId = self.locationId
+               // settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
+            }
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
             print("- Could not instantiate SettingVC")
@@ -579,7 +582,7 @@ extension AddNewPlaceVC{
                                long: long,
                                locationText: locationText,
                                description: description,
-                               image: image, imagesArrayData: imageArrayData, removedImages: removedImages, hangoutId: self.hangoutId ?? ""){ success, message ,statusCode in
+                               image: image, imagesArrayData: imageArrayData, removedImages: removedImages, hangoutId: self.hangoutId ?? "", locationId: self.locationId ?? ""){ success, message ,statusCode in
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()
                 AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")

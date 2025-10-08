@@ -91,6 +91,7 @@ struct Hangout: Codable {
     let address: String
     let lat: Double
     let long: Double
+    let locationId : String
     let locationText: String
     let description: String
     let image: [String]
@@ -99,7 +100,7 @@ struct Hangout: Codable {
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
-        case name, address, lat, long, locationText, description, image//, favoriteStatus
+        case name, address, lat, long, locationText, description, image, locationId//, favoriteStatus
         case v = "__v"
     }
 }

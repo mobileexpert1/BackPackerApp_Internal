@@ -94,7 +94,7 @@ class ChooseRoleTypeVC: UIViewController {
         self.BgVwEmp.layer.borderColor = UIColor(hex: "#785DC2").cgColor
         self.BgVwEmp.layer.borderWidth = 1.0
         
-        saveRoleType(empRoleType)
+    //    saveRoleType(empRoleType)
         self.selectedRoleType = empRoleType
     }
     
@@ -114,7 +114,7 @@ class ChooseRoleTypeVC: UIViewController {
         self.BgVwEmp.layer.cornerRadius = 10
         self.BgVwEmp.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwEmp.layer.borderWidth = 1.0
-        saveRoleType(hangOutRoleType)
+  //      saveRoleType(hangOutRoleType)
         self.selectedRoleType = hangOutRoleType
     }
     
@@ -134,7 +134,7 @@ class ChooseRoleTypeVC: UIViewController {
         self.BgVwEmp.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwEmp.layer.borderWidth = 1.0
         
-        saveRoleType(accomodationRoleType)
+//saveRoleType(accomodationRoleType)
         self.selectedRoleType = accomodationRoleType
     }
     
@@ -162,8 +162,8 @@ class ChooseRoleTypeVC: UIViewController {
     
     private func ChooseRoleTypeApiCall() {
         LoaderManager.shared.show()
-        let role = UserDefaults.standard.string(forKey: "UserRoleType") ?? "2"
-        let req = ChooseRoleTypeRequest(subRoleType: role)
+    //    let role = UserDefaults.standard.string(forKey: "UserRoleType") ?? "2"
+        let req = ChooseRoleTypeRequest(subRoleType: self.selectedRoleType ?? "2")
         
         viewModel.chooseRoleType(otpRequest: req) { success, result, statusCode in
             guard let statusCode = statusCode else {

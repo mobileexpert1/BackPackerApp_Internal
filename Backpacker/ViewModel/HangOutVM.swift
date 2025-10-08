@@ -78,6 +78,7 @@ class HangoutViewModel {
         imagesArrayData : [Data],
         removedImages:String,
         hangoutId:String,
+        locationId: String,
         completion: @escaping (Bool, String?, Int?) -> Void
     ) {
 #if BackpackerHire
@@ -101,7 +102,8 @@ class HangoutViewModel {
             "long": long,
             "locationText": locationText,
             "description": description,
-            "removedImages" : removedImages
+            "removedImages" : removedImages,
+            "locationId":locationId
         ]
         let headers = ServiceManager.sharedInstance.getHeaders()
         ServiceManager.sharedInstance.requestMultipartMultiAPI(

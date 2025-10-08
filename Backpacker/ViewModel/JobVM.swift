@@ -278,6 +278,7 @@ class JobVM {
         selectedBackpackerJSONString: String,
         image: Data?,
         jobID: String,
+        locationId:String,
         completion: @escaping (Bool, String?, Int?) -> Void
     ) {
 #if BackpackerHire
@@ -307,7 +308,8 @@ class JobVM {
             "endDate": endDate,
             "startTime": startTime,
             "endTime": endTime,
-            "requests": selectedBackpackerJSONString
+            "requests": selectedBackpackerJSONString,
+            "locationId":locationId
         ]
 
         let headers = ServiceManager.sharedInstance.getHeaders()
