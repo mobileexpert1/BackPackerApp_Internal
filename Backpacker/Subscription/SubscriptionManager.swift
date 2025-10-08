@@ -23,6 +23,11 @@ struct SubscriptionPlan {
     let pricePerMonth: Double
     let description: String
     let features: [String]
+    
+    // App Store details
+    let productID: String?
+    let duration: String?   // e.g., "1 month"
+    let localization: String? // Placeholder for metadata/localization
 }
 
 // MARK: - Subscription Manager
@@ -45,7 +50,10 @@ final class SubscriptionManager {
                     "Application inbox",
                     "Listed on Gumtree & Facebook Groups",
                     "15,000 small cafes + small accom venues"
-                ]
+                ],
+                productID: nil,
+                duration: nil,
+                localization: nil
             ),
             
             SubscriptionPlan(
@@ -58,7 +66,10 @@ final class SubscriptionManager {
                     "Auto-filtering by visa/type",
                     "Employer profile upvotes",
                     "Visible on workingholidays.com (4,000 reach)"
-                ]
+                ],
+                productID: "com.shiftly.app.subscription.basic",
+                duration: "1 month",
+                localization: "Missing Metadata"
             ),
             
             SubscriptionPlan(
@@ -71,7 +82,10 @@ final class SubscriptionManager {
                     "A.I. Recruiting Outreach",
                     "Employer profile upvotes",
                     "Backpacker Job Board ($30–70/post)"
-                ]
+                ],
+                productID: "com.shiftly.app.subscription.growth",
+                duration: "1 month",
+                localization: "Missing Metadata"
             ),
             
             SubscriptionPlan(
@@ -84,7 +98,10 @@ final class SubscriptionManager {
                     "Job Posting Syndication - listings pushed to other platforms",
                     "Talent pool management (invite past applicants)",
                     "Sidekicker + SEEK multi-post bundles"
-                ]
+                ],
+                productID: "com.shiftly.app.subscription.pro",
+                duration: "1 month",
+                localization: "Missing Metadata"
             ),
             
             SubscriptionPlan(
@@ -97,7 +114,10 @@ final class SubscriptionManager {
                     "Branded careers page",
                     "Team logins (multi-manager access)",
                     "Internal HR tools, Recruiters, Enterprise ATS"
-                ]
+                ],
+                productID: "com.shiftly.app.subscription.headOffice",
+                duration: "1 month",
+                localization: "Missing Metadata"
             )
         ]
     }
@@ -115,9 +135,6 @@ final class SubscriptionManager {
     
     // MARK: - Compare tiers (for feature access control)
     func canAccessFeature(requiredTier: SubscriptionTier) -> Bool {
-        guard let currentPlan = getActivePlan().tier.rawValue as String? else {
-            return false
-        }
         let tiers = SubscriptionTier.allCases
         guard let currentIndex = tiers.firstIndex(of: getActivePlan().tier),
               let requiredIndex = tiers.firstIndex(of: requiredTier) else {
@@ -126,3 +143,4 @@ final class SubscriptionManager {
         return currentIndex >= requiredIndex
     }
 }
+

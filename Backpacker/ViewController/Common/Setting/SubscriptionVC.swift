@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import StoreKit
 class SubscriptionVC: UIViewController {
     @IBOutlet weak var lbl_MainHeader: UILabel!
     
@@ -73,7 +73,10 @@ class SubscriptionVC: UIViewController {
        }
     
     @IBAction func action_Proceed(_ sender: Any) {
-        self.navigationController?.popViewController(animated: true)
+   //     self.navigationController?.popViewController(animated: true)
+        Task {
+                    await purchasePlan(tier: .basic)
+                }
     }
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
@@ -98,10 +101,10 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
             cell.lbl_price.text = "\(plan.price ?? 0.0) per month"
             cell.lbl_description.text = plan.desc  ?? ""
             cell.indexPath = indexPath
-            cell.lbl_feature1.text = plan.feature?[0]
-            cell.lbl_feature2.text = plan.feature?[1]
-            cell.lbl_feature3.text = plan.feature?[2]
-            cell.lbl_feature4.text = plan.feature?[3]
+            cell.lbl_feature1.text = plan.feature?[0] ?? ""
+            cell.lbl_feature2.text = plan.feature?[1] ?? ""
+            cell.lbl_feature3.text = plan.feature?[2] ?? ""
+          //  cell.lbl_feature4.text = plan.feature?[3]
             cell.onCellTapped = { [weak self] tappedIndex in
                         print("Cell tapped: \(tappedIndex.row)")
                         self?.selectedIndex = tappedIndex
@@ -199,4 +202,51 @@ extension SubscriptionVC {
             }
     }
     
+}
+
+
+extension SubscriptionVC {
+    func purchasePlan(tier: SubscriptionTier) async {
+            guard let plan = SubscriptionManager.shared.getPlan(for: tier),
+                  let productID = plan.productID else {
+                print("Invalid plan or product ID")
+                return
+            }
+
+            do {
+                let products = try await Product.products(for: ["com.shiftly.app.subscription.basic"])
+                guard let product = products.first else {
+                    print("Product not found on App Store")
+                    return
+                }
+
+                let result = try await product.purchase()
+
+                switch result {
+                case .success(let verification):
+                    let transaction = try checkVerified(verification)
+                    await transaction.finish()
+                    print("Purchase successful for \(tier.rawValue)")
+                    // Unlock features or update UI
+                case .userCancelled:
+                    print("User cancelled the purchase")
+                case .pending:
+                    print("Purchase pending")
+                @unknown default:
+                    print("Unknown purchase result")
+                }
+            } catch {
+                print("Purchase failed: \(error)")
+            }
+        }
+
+        // MARK: - Verification Helper
+        func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
+            switch result {
+            case .unverified(_, let error):
+                throw error ?? StoreKitError.unknown
+            case .verified(let signed):
+                return signed
+            }
+        }
 }
