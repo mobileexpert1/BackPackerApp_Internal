@@ -8,24 +8,122 @@
 import UIKit
 
 class ForceUpdateVC: UIViewController {
-
+    @IBOutlet weak var date_stackHeight: NSLayoutConstraint!
+    @IBOutlet weak var startDateField: UITextField!
+        @IBOutlet weak var endDateField: UITextField!
+    @IBOutlet weak var Vw_ExpiryDate: UIView!
+    @IBOutlet weak var lbl_expiryDate: UILabel!
+    @IBOutlet weak var lbl_Val_StatrDate: UILabel!
+    @IBOutlet weak var ve_ValsatrtDate: UIView!
+    @IBOutlet weak var lbl_startDate: UILabel!
+    @IBOutlet weak var Vw_LblExpiryDate: UIView!
+    @IBOutlet weak var Vw_SatartDate: UIView!
+    @IBOutlet weak var DateStackVw: UIStackView!
+    @IBOutlet weak var lbl_error_VisaHeight: NSLayoutConstraint!
     @IBOutlet weak var main_Vw: UIView!
     
+    @IBOutlet weak var imgDrpDwon: UIImageView!
+    @IBOutlet weak var lbl_error_endDate: UILabel!
+    @IBOutlet weak var lbl_error_startDate: UILabel!
+    @IBOutlet weak var lbl_Val_ExpiryDate: UILabel!
+    @IBOutlet weak var lbl_error_SelectVisaType: UILabel!
+    @IBOutlet weak var mainScrollView: UIScrollView!
+    @IBOutlet weak var tblVw: UITableView!
     @IBOutlet weak var vw_Scroll: UIView!
     @IBOutlet weak var lbl_Header: UILabel!
     
+    @IBOutlet weak var main_visaTypeHeight: NSLayoutConstraint!
+    @IBOutlet weak var btn_drpdwn: UIButton!
+    @IBOutlet weak var tbl_height: NSLayoutConstraint!
+    @IBOutlet weak var bg_tableVw: UIView!
+    @IBOutlet weak var Vw_VisaType: UIView!
     @IBOutlet weak var email_Vw: CommonTxtFldLblVw!
     
+    @IBOutlet weak var vWHeightContraint: NSLayoutConstraint!
+    @IBOutlet weak var lbl_Val_VisaType: UILabel!
     @IBOutlet weak var btn_Save: UIButton!
+    @IBOutlet weak var lbl_main_visaType: UILabel!
     @IBOutlet weak var name_Vw: CommonTxtFldLblVw!
     let profileVm = ProfileVM()
     let viewModelAuth = LogInVM()
+    let visaTypes = [
+        "Tourist Visa",
+        "Business Visa",
+        "Student Visa",
+        "Work Visa",
+        "Spouse/Partner Visa",
+        "Permanent Residency",
+        "Investor Visa"
+    ]
+    var scrollHight : CGFloat?
+    private var startDatePicker: UIDatePicker?
+        private var endDatePicker: UIDatePicker?
+    
+    var startDateCovertedVal : String?
+    var endDateConvertedVal : String?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
+        
         // Do any additional setup after loading the view.
+        
+#if Backapacker
+        let nib = UINib(nibName: "ReportIssueTVC", bundle: nil)
+        self.tblVw.register(nib, forCellReuseIdentifier: "ReportIssueTVC")
+        self.tblVw.delegate = self
+        self.tblVw.dataSource = self
+        self.btn_drpdwn.tag = 0
+        self.manageHeightOfTable()
+        self.scrollHight = self.mainScrollView.contentSize.height
+        self.setUpUIForDate()
+        self.date_stackHeight.constant = 85.0
+        self.main_visaTypeHeight.constant = 70.0
+        self.imgDrpDwon.isHidden = false
+        self.lbl_error_SelectVisaType.isHidden = false
+#else
+        self.date_stackHeight.constant = 0.0
+        self.tbl_height.constant = 0
+        self.vWHeightContraint.constant = 0
+        self.main_visaTypeHeight.constant = 0.0
+        self.imgDrpDwon.isHidden = true
+        self.lbl_error_VisaHeight.constant = 0.0
+        self.lbl_error_SelectVisaType.isHidden = true
+#endif
+    }
+    private func setUpUIForDate(){
+        self.lbl_error_startDate.isHidden = true
+        self.lbl_error_endDate.isHidden = true
+        self.lbl_error_startDate.font = FontManager.inter(.regular, size: 8.0)
+        self.lbl_error_endDate.font = FontManager.inter(.regular, size: 8.0)
+        self.lbl_error_startDate.textColor = .red
+        self.lbl_error_endDate.textColor = .red
+        self.lbl_error_VisaHeight.constant = 10.0
+        self.lbl_startDate.font = FontManager.inter(.medium, size: 14.0)
+        self.lbl_expiryDate.font = FontManager.inter(.medium, size: 14.0)
+        self.startDateField.font = FontManager.inter(.regular, size: 12.0)
+        self.endDateField.font = FontManager.inter(.regular, size: 12.0)
+        self.Vw_LblExpiryDate.layer.cornerRadius = 10.0
+        self.Vw_LblExpiryDate.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        self.Vw_LblExpiryDate.layer.borderWidth = 1.0
+        
+        self.ve_ValsatrtDate.layer.cornerRadius = 10.0
+        self.ve_ValsatrtDate.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        self.ve_ValsatrtDate.layer.borderWidth = 1.0
+        self.setupPicker()
     }
     func setUpUI(){
+        if lbl_Val_VisaType.text == "Select Visa Type" {
+            self.lbl_Val_VisaType.textColor = UIColor(named: "subTitleColor")
+        }else{
+            self.lbl_Val_VisaType.textColor = UIColor(named: "blackColor")
+        }
+        self.lbl_error_SelectVisaType.font = FontManager.inter(.regular, size: 8.0)
+        self.lbl_error_SelectVisaType.textColor = .red
+        self.Vw_VisaType.layer.cornerRadius = 10.0
+        self.Vw_VisaType.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        self.Vw_VisaType.layer.borderWidth = 1.0
+        self.lbl_main_visaType.font = FontManager.inter(.medium, size: 14.0)
+        self.lbl_Val_VisaType.font = FontManager.inter(.regular, size: 12.0)
         self.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
        // self.vw_Scroll.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         applyGradientButtonStyle(to: btn_Save)
@@ -43,27 +141,140 @@ class ForceUpdateVC: UIViewController {
         self.email_Vw.lblErrorVisibility(val: true)
         
     }
+    private func setupPicker(){
+        startDatePicker = UIDatePicker()
+              startDatePicker?.datePickerMode = .date
+              if #available(iOS 14.0, *) {
+                  startDatePicker?.preferredDatePickerStyle = .wheels
+              }
+              startDatePicker?.addTarget(self, action: #selector(startDateChanged), for: .valueChanged)
+              startDateField.inputView = startDatePicker
+              
+              // Setup End Date Picker
+              endDatePicker = UIDatePicker()
+              endDatePicker?.datePickerMode = .date
+              if #available(iOS 14.0, *) {
+                  endDatePicker?.preferredDatePickerStyle = .wheels
+              }
+              endDatePicker?.addTarget(self, action: #selector(endDateChanged), for: .valueChanged)
+              endDateField.inputView = endDatePicker
+              
+              // Optional: Add toolbar with Done button
+              let toolbar = UIToolbar()
+              toolbar.sizeToFit()
+              let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(donePressed))
+              toolbar.setItems([doneButton], animated: true)
+              startDateField.inputAccessoryView = toolbar
+              endDateField.inputAccessoryView = toolbar
+    }
+    @objc func startDateChanged() {
+           let formatter = DateFormatter()
+           formatter.dateStyle = .medium
+           startDateField.text = formatter.string(from: startDatePicker?.date ?? Date())
+        
+        guard let date = startDatePicker?.date else { return }
 
- 
-    @IBAction func action_Continue(_ sender: Any) {
-        let isNameValid = name_Vw.validateNotEmpty(errorMessage: "Please enter your name")
-        let isEmailValid = email_Vw.validateEmail(errorMessage: "Please enter your email")
-        // Visa type validation
+            let formatter2 = ISO8601DateFormatter()
+            formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            formatter2.timeZone = TimeZone(secondsFromGMT: 0) // UTC
+        self.startDateCovertedVal = formatter2.string(from: date)
+        self.lbl_error_startDate.isHidden = true
+       }
        
-        if isNameValid && isEmailValid{
-            self.updateProfileInfo(name: name_Vw.txtFld.text ?? "", email: email_Vw.txtFld.text ?? "", state: "", area: "", visaType: "")
-        } else {
+       @objc func endDateChanged() {
+           let formatter = DateFormatter()
+           formatter.dateStyle = .medium
+           endDateField.text = formatter.string(from: endDatePicker?.date ?? Date())
            
-        }
+           
+           guard let date = endDatePicker?.date else { return }
+
+               let formatter2 = ISO8601DateFormatter()
+               formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+               formatter2.timeZone = TimeZone(secondsFromGMT: 0) // UTC
+           self.endDateConvertedVal = formatter2.string(from: date)
+           self.lbl_error_endDate.isHidden = true
+       }
+       
+       @objc func donePressed() {
+           self.view.endEditing(true)
+       }
+    @IBAction func action_Continue(_ sender: Any) {
+        var hasError = false
+
+            // Name & Email validation
+            let isNameValid = name_Vw.validateNotEmpty(errorMessage: "Please enter your name")
+            if !isNameValid { hasError = true }
+
+            let isEmailValid = email_Vw.validateEmail(errorMessage: "Please enter your email")
+            if !isEmailValid { hasError = true }
+
+            // Visa type validation
+            if lbl_Val_VisaType.text == "Select Visa Type" {
+                lbl_error_VisaHeight.constant = 20
+                lbl_error_SelectVisaType.text = "Please select visa type"
+                hasError = true
+            }
+
+            // Start date validation
+            if startDateField.text?.isEmpty == true {
+                lbl_error_startDate.isHidden = false
+                hasError = true
+            }else{
+                lbl_error_startDate.isHidden = true
+            }
+
+            // End date validation
+            if endDateField.text?.isEmpty == true {
+                lbl_error_endDate.isHidden = false
+                hasError = true
+            }else{
+                lbl_error_endDate.isHidden = true
+            }
+
+            // Check if end date is after start date
+            if let startText = startDateField.text, let endText = endDateField.text,
+               let formatter = DateFormatter() as DateFormatter?,
+               let startDate = formatter.date(from: startText),
+               let endDate = formatter.date(from: endText) {
+                
+                formatter.dateFormat = "MM/dd/yyyy" // make sure this matches your text field format
+                if endDate < startDate {
+                    lbl_error_endDate.text = "End date must be after start date"
+                    lbl_error_endDate.isHidden = false
+                    hasError = true
+                }
+            }
+
+            // If no errors, update profile
+            if !hasError {
+                updateProfileInfo(
+                    name: name_Vw.txtFld.text ?? "",
+                    email: email_Vw.txtFld.text ?? "",
+                    state: "",
+                    area: "",
+                    visaType: lbl_Val_VisaType.text ?? "",
+                    statrtDate: self.startDateCovertedVal ?? "",
+                    endDate: self.endDateConvertedVal ?? ""
+                )
+            }
         
     }
     
+    @IBAction func action_VisaDrodwn(_ sender: Any) {
+        if btn_drpdwn.tag == 0{
+            self.btn_drpdwn.tag = 1
+        }else{
+            self.btn_drpdwn.tag = 0
+        }
+        self.manageHeightOfTable()
+    }
 }
 extension ForceUpdateVC {
     //MARK: - UPdate Profile Api Call
-    func updateProfileInfo(name: String, email: String, state: String, area: String, visaType: String) {
+    func updateProfileInfo(name: String, email: String, state: String, area: String, visaType: String,statrtDate: String,endDate: String) {
         LoaderManager.shared.show()
-        profileVm.updateBackPackerProfile(email: email, name: name, state: "", area: "", visaType: "", notificationStatus: false) { [weak self] (success: Bool, result: UpdateProfileResponse?, statusCode: Int?) in
+        profileVm.updateBackPackerProfile(email: email, name: name, state: "", area: "", visaType: visaType, notificationStatus: false,startDate: statrtDate,endDate: endDate) { [weak self] (success: Bool, result: UpdateProfileResponse?, statusCode: Int?) in
             guard let self = self else { return }
             
             guard let statusCode = statusCode else {
@@ -92,7 +303,7 @@ extension ForceUpdateVC {
                 case .unauthorized :
                     self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                            self.updateProfileInfo(name: name, email: email, state: state, area: area, visaType: visaType)
+                            self.updateProfileInfo(name: name, email: email, state: state, area: area, visaType: visaType,statrtDate: self.startDateCovertedVal ?? "",endDate:  self.endDateConvertedVal ?? "")
                         } else {
                             NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
                         }
@@ -115,3 +326,55 @@ extension ForceUpdateVC {
 }
 
 
+
+
+extension ForceUpdateVC : UITableViewDelegate,UITableViewDataSource{
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return visaTypes.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "ReportIssueTVC", for: indexPath) as? ReportIssueTVC else {
+            return UITableViewCell()
+        }
+
+        cell.lbl_Issue.text = visaTypes[indexPath.row] // assuming your cell has `lbl_title`
+        return cell
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedIssue = visaTypes[indexPath.row]
+            print("Selected issue: \(selectedIssue)")
+        self.lbl_Val_VisaType.text = selectedIssue
+        self.btn_drpdwn.tag = 0
+        self.manageHeightOfTable()
+        if self.lbl_Val_VisaType.text == "Select Visa Type" {
+            self.lbl_error_SelectVisaType.isHidden = false
+            self.lbl_error_VisaHeight.constant = 20.0
+        } else {
+            self.lbl_error_SelectVisaType.isHidden = true
+            self.lbl_error_VisaHeight.constant = 0.0
+        }
+        if lbl_Val_VisaType.text == "Select Visa Type" {
+            self.lbl_Val_VisaType.textColor = UIColor(named: "subTitleColor")
+        }else{
+            self.lbl_Val_VisaType.textColor = UIColor(named: "blackColor")
+        }
+
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50.0
+    }
+    func manageHeightOfTable(){
+        if self.btn_drpdwn.tag == 0{
+            self.tbl_height.constant = 0.0
+            self.vWHeightContraint.constant = 0.0
+            self.bg_tableVw.addShadowAllSides(radius: 0)
+            self.mainScrollView.contentSize.height =  self.scrollHight ?? 700
+        }else{
+            self.bg_tableVw.addShadowAllSides(radius: 1.5)
+            self.tbl_height.constant = CGFloat((visaTypes.count * 50)) //176.0
+            self.vWHeightContraint.constant = CGFloat((visaTypes.count * 50)) + 14 //190.0
+            self.mainScrollView.contentSize.height =  (self.scrollHight ?? 700) +   self.vWHeightContraint.constant
+        }
+    }
+}

@@ -1482,7 +1482,7 @@
                                 <rect key="frame" x="0.0" y="104" width="393" height="694"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zkA-JV-mJx">
-                                        <rect key="frame" x="0.0" y="0.0" width="393" height="1162"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="1022"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="tR9-1p-U6n">
                                                 <rect key="frame" x="10" y="10" width="373" height="762"/>
@@ -1643,8 +1643,111 @@
                                                 <color key="textColor" systemColor="systemRedColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="M89-jK-Mvl">
+                                                <rect key="frame" x="10" y="807" width="373" height="85"/>
+                                                <subviews>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7TV-fJ-OM6">
+                                                        <rect key="frame" x="0.0" y="0.0" width="185.66666666666666" height="85"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Start Date" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h2W-5T-clJ">
+                                                                <rect key="frame" x="10" y="0.0" width="165.66666666666666" height="15.666666666666666"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TA4-1J-2JV">
+                                                                <rect key="frame" x="10" y="25.666666666666625" width="165.66666666666666" height="46.666666666666657"/>
+                                                                <subviews>
+                                                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Start Date" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dPh-i0-4VN">
+                                                                        <rect key="frame" x="8" y="0.0" width="157.66666666666666" height="46.666666666666664"/>
+                                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                        <textInputTraits key="textInputTraits"/>
+                                                                    </textField>
+                                                                </subviews>
+                                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                                <constraints>
+                                                                    <constraint firstItem="dPh-i0-4VN" firstAttribute="leading" secondItem="TA4-1J-2JV" secondAttribute="leading" constant="8" id="E0Y-4i-vHm"/>
+                                                                    <constraint firstItem="dPh-i0-4VN" firstAttribute="top" secondItem="TA4-1J-2JV" secondAttribute="top" id="KgB-8u-0O2"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="dPh-i0-4VN" secondAttribute="trailing" id="U21-r2-VzB"/>
+                                                                    <constraint firstAttribute="bottom" secondItem="dPh-i0-4VN" secondAttribute="bottom" id="hY0-7o-Hnz"/>
+                                                                </constraints>
+                                                            </view>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please select start Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jaj-6z-evc">
+                                                                <rect key="frame" x="10" y="74.333333333333371" width="165.66666666666666" height="9.6666666666666714"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="8"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <constraints>
+                                                            <constraint firstItem="TA4-1J-2JV" firstAttribute="leading" secondItem="7TV-fJ-OM6" secondAttribute="leading" constant="10" id="0CU-a8-ZKv"/>
+                                                            <constraint firstAttribute="bottom" secondItem="jaj-6z-evc" secondAttribute="bottom" constant="1" id="4Sg-ze-zY0"/>
+                                                            <constraint firstAttribute="trailing" secondItem="h2W-5T-clJ" secondAttribute="trailing" constant="10" id="643-Gh-LbP"/>
+                                                            <constraint firstAttribute="trailing" secondItem="jaj-6z-evc" secondAttribute="trailing" constant="10" id="8Uz-QF-Iah"/>
+                                                            <constraint firstItem="jaj-6z-evc" firstAttribute="top" secondItem="TA4-1J-2JV" secondAttribute="bottom" constant="2" id="Lzj-ih-F9n"/>
+                                                            <constraint firstItem="jaj-6z-evc" firstAttribute="leading" secondItem="7TV-fJ-OM6" secondAttribute="leading" constant="10" id="W0u-Nv-lhr"/>
+                                                            <constraint firstAttribute="trailing" secondItem="TA4-1J-2JV" secondAttribute="trailing" constant="10" id="YH8-H1-DiJ"/>
+                                                            <constraint firstItem="h2W-5T-clJ" firstAttribute="top" secondItem="7TV-fJ-OM6" secondAttribute="top" id="gc5-ca-dxc"/>
+                                                            <constraint firstItem="TA4-1J-2JV" firstAttribute="top" secondItem="h2W-5T-clJ" secondAttribute="bottom" constant="10" id="iME-LH-siJ"/>
+                                                            <constraint firstItem="h2W-5T-clJ" firstAttribute="leading" secondItem="7TV-fJ-OM6" secondAttribute="leading" constant="10" id="mCr-Qr-leS"/>
+                                                        </constraints>
+                                                    </view>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qg2-Dw-SoR">
+                                                        <rect key="frame" x="187.66666666666663" y="0.0" width="185.33333333333337" height="85"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Expiry Date" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FtV-Ar-K36">
+                                                                <rect key="frame" x="10" y="0.0" width="165.33333333333334" height="15.666666666666666"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QoC-yS-vQx">
+                                                                <rect key="frame" x="10" y="25.666666666666625" width="165.33333333333334" height="46.666666666666657"/>
+                                                                <subviews>
+                                                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Expiry Date" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Z1t-E8-wba">
+                                                                        <rect key="frame" x="8" y="0.0" width="157.33333333333334" height="46.666666666666664"/>
+                                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                                        <textInputTraits key="textInputTraits"/>
+                                                                    </textField>
+                                                                </subviews>
+                                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                                <constraints>
+                                                                    <constraint firstItem="Z1t-E8-wba" firstAttribute="leading" secondItem="QoC-yS-vQx" secondAttribute="leading" constant="8" id="I16-1U-Iy0"/>
+                                                                    <constraint firstAttribute="trailing" secondItem="Z1t-E8-wba" secondAttribute="trailing" id="fGP-qF-uFX"/>
+                                                                    <constraint firstAttribute="bottom" secondItem="Z1t-E8-wba" secondAttribute="bottom" id="kWV-rG-Gez"/>
+                                                                    <constraint firstItem="Z1t-E8-wba" firstAttribute="top" secondItem="QoC-yS-vQx" secondAttribute="top" id="zPJ-ZK-Vjc"/>
+                                                                </constraints>
+                                                            </view>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please select expiry Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vhh-eU-og0">
+                                                                <rect key="frame" x="10" y="74.333333333333371" width="165.33333333333334" height="9.6666666666666714"/>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="8"/>
+                                                                <nil key="textColor"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                        </subviews>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="trailing" secondItem="QoC-yS-vQx" secondAttribute="trailing" constant="10" id="2Hk-L6-706"/>
+                                                            <constraint firstItem="Vhh-eU-og0" firstAttribute="top" secondItem="QoC-yS-vQx" secondAttribute="bottom" constant="2" id="AeA-Nb-kko"/>
+                                                            <constraint firstAttribute="trailing" secondItem="Vhh-eU-og0" secondAttribute="trailing" constant="10" id="KpD-mA-6EE"/>
+                                                            <constraint firstItem="FtV-Ar-K36" firstAttribute="leading" secondItem="Qg2-Dw-SoR" secondAttribute="leading" constant="10" id="L3v-X9-Rbp"/>
+                                                            <constraint firstItem="QoC-yS-vQx" firstAttribute="top" secondItem="FtV-Ar-K36" secondAttribute="bottom" constant="10" id="LPl-bR-QEX"/>
+                                                            <constraint firstItem="FtV-Ar-K36" firstAttribute="top" secondItem="Qg2-Dw-SoR" secondAttribute="top" id="Mto-sp-XXV"/>
+                                                            <constraint firstAttribute="bottom" secondItem="Vhh-eU-og0" secondAttribute="bottom" constant="1" id="PXt-Zr-oAs"/>
+                                                            <constraint firstItem="Vhh-eU-og0" firstAttribute="leading" secondItem="Qg2-Dw-SoR" secondAttribute="leading" constant="10" id="WCP-xv-c4c"/>
+                                                            <constraint firstItem="QoC-yS-vQx" firstAttribute="leading" secondItem="Qg2-Dw-SoR" secondAttribute="leading" constant="10" id="aNX-jK-sOd"/>
+                                                            <constraint firstAttribute="trailing" secondItem="FtV-Ar-K36" secondAttribute="trailing" constant="10" id="psD-6Y-6V2"/>
+                                                        </constraints>
+                                                    </view>
+                                                </subviews>
+                                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="85" id="Ywq-KL-ty4"/>
+                                                </constraints>
+                                            </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="H0k-lX-OBz">
-                                                <rect key="frame" x="20" y="812" width="353" height="50"/>
+                                                <rect key="frame" x="20" y="922" width="353" height="50"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vhj-vf-Ncq">
                                                         <rect key="frame" x="0.0" y="0.0" width="171.66666666666666" height="50"/>
@@ -1685,7 +1788,10 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstItem="Dpl-to-Acn" firstAttribute="leading" secondItem="97J-YZ-jte" secondAttribute="leading" id="5Ir-rN-mMJ"/>
-                                            <constraint firstAttribute="bottom" secondItem="H0k-lX-OBz" secondAttribute="bottom" constant="300" id="GGV-qc-cH4"/>
+                                            <constraint firstAttribute="bottom" secondItem="H0k-lX-OBz" secondAttribute="bottom" constant="50" id="GGV-qc-cH4"/>
+                                            <constraint firstItem="M89-jK-Mvl" firstAttribute="top" secondItem="Dpl-to-Acn" secondAttribute="bottom" constant="15" id="PPa-Aq-WDp"/>
+                                            <constraint firstItem="M89-jK-Mvl" firstAttribute="leading" secondItem="zkA-JV-mJx" secondAttribute="leading" constant="10" id="QX6-eB-U2F"/>
+                                            <constraint firstAttribute="trailing" secondItem="M89-jK-Mvl" secondAttribute="trailing" constant="10" id="Sk4-ca-mel"/>
                                             <constraint firstItem="Dpl-to-Acn" firstAttribute="top" secondItem="tR9-1p-U6n" secondAttribute="bottom" id="WAH-Wx-75U"/>
                                             <constraint firstAttribute="trailing" secondItem="Dpl-to-Acn" secondAttribute="trailing" constant="10" id="Zng-55-kxo"/>
                                             <constraint firstItem="tR9-1p-U6n" firstAttribute="top" secondItem="zkA-JV-mJx" secondAttribute="top" constant="10" id="aVy-hg-jsU"/>
@@ -1693,7 +1799,7 @@
                                             <constraint firstAttribute="trailing" secondItem="tR9-1p-U6n" secondAttribute="trailing" constant="10" id="bhl-dE-xGI"/>
                                             <constraint firstItem="H0k-lX-OBz" firstAttribute="leading" secondItem="zkA-JV-mJx" secondAttribute="leading" constant="20" id="gMt-eO-Yho"/>
                                             <constraint firstItem="tR9-1p-U6n" firstAttribute="leading" secondItem="zkA-JV-mJx" secondAttribute="leading" constant="10" id="qwc-bS-Lkq"/>
-                                            <constraint firstItem="H0k-lX-OBz" firstAttribute="top" secondItem="Dpl-to-Acn" secondAttribute="bottom" constant="20" id="ud6-rF-jCo"/>
+                                            <constraint firstItem="H0k-lX-OBz" firstAttribute="top" secondItem="M89-jK-Mvl" secondAttribute="bottom" constant="30" id="tRr-5G-FO5"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -1726,17 +1832,25 @@
                         <outlet property="CountryVw" destination="lt6-GR-ryr" id="NIM-tn-DFm"/>
                         <outlet property="EmailVw" destination="WlZ-8h-i5w" id="TJD-xZ-IjK"/>
                         <outlet property="NameVw" destination="ZRN-fq-B7A" id="5uU-EZ-jfj"/>
+                        <outlet property="Vw_strtdate" destination="TA4-1J-2JV" id="K53-yw-Vbv"/>
                         <outlet property="btn_Cancel" destination="Xi9-DW-egn" id="FDV-H5-yez"/>
                         <outlet property="btn_Edit" destination="BIR-kv-h8f" id="tBr-3p-Wx2"/>
                         <outlet property="btn_Save" destination="vhj-vf-Ncq" id="VAC-ui-dcx"/>
                         <outlet property="btn_back" destination="Pay-6u-buw" id="Jrt-6n-muX"/>
                         <outlet property="btn_drpdwn" destination="9Ge-Pq-dlV" id="caC-XD-6AF"/>
+                        <outlet property="endDateField" destination="Z1t-E8-wba" id="CCE-nW-wOK"/>
                         <outlet property="lbl_MainHeader" destination="UjV-VA-067" id="C11-jA-cXH"/>
                         <outlet property="lbl_VisaTitle" destination="SR5-FG-pDR" id="QrJ-B1-Okn"/>
+                        <outlet property="lbl_errExpDate" destination="Vhh-eU-og0" id="qaR-I3-60V"/>
+                        <outlet property="lbl_errStrtDate" destination="jaj-6z-evc" id="zZH-Q6-2LV"/>
                         <outlet property="lbl_error_SelectVisaType" destination="Dpl-to-Acn" id="01c-UX-Z7e"/>
                         <outlet property="lbl_error_VisaHeight" destination="FID-rQ-yXT" id="dtQ-Wz-DqT"/>
+                        <outlet property="lbl_expDate" destination="FtV-Ar-K36" id="qlH-hQ-anz"/>
+                        <outlet property="lbl_strtDate" destination="h2W-5T-clJ" id="fXb-2W-AoA"/>
                         <outlet property="lblzHeaderVisa" destination="97J-YZ-jte" id="abE-7q-I4w"/>
                         <outlet property="phoneNumberVw" destination="FNc-3L-i4Q" id="JMA-NQ-bfu"/>
+                        <outlet property="stackVw_VisaDateHeight" destination="Ywq-KL-ty4" id="bae-8x-dbZ"/>
+                        <outlet property="startDateField" destination="dPh-i0-4VN" id="aES-XV-hbg"/>
                         <outlet property="stateVw" destination="Dmd-Qs-gr3" id="G8W-cN-ise"/>
                         <outlet property="stckBotmHeight" destination="wXq-LT-PZ9" id="UF3-1q-YJs"/>
                         <outlet property="tblVwHeight" destination="Dgn-hg-gTm" id="OtF-dD-GAb"/>
@@ -1745,6 +1859,7 @@
                         <outlet property="vWHeightContraint" destination="Opr-eA-9Qu" id="sZ4-3E-HPL"/>
                         <outlet property="visaTypeHeight" destination="sZz-nV-dpV" id="wKw-o5-Ibz"/>
                         <outlet property="visaVw" destination="FWM-9X-1mC" id="Ubk-EP-aC2"/>
+                        <outlet property="vw_EndDate" destination="QoC-yS-vQx" id="h2y-Ga-qJd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="M0C-N7-AKT" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -2027,7 +2142,7 @@ the payment </string>
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

@@ -19,18 +19,19 @@ struct BackpackerHomeResponseModel: Codable {
 struct JobItem: Codable {
     let id: String
     let name: String
+    let address: String
     let description: String
     let image: String
     let startDate: String
     let endDate: String
     let startTime: String
     let endTime: String
-    let price: Int
+    let price: Double
     let favoriteStatus: Int
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
-        case name, description, image, startDate, endDate, startTime, endTime, price, favoriteStatus
+        case name, address, description, image, startDate, endDate, startTime, endTime, price, favoriteStatus
     }
 }
 
@@ -56,7 +57,7 @@ struct AccommodationItem: Codable {
     let long: Double
     let description: String
     let image: [String]
-    let price: Int
+    let price: Double
     let favoriteStatus: Int
 
     enum CodingKeys: String, CodingKey {

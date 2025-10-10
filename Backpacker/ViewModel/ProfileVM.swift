@@ -46,6 +46,8 @@ class ProfileVM {
         area: String,
         visaType: String,
         notificationStatus: Bool,
+        startDate: String,
+        endDate:String,
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
     ) {
 #if BackpackerHire
@@ -68,7 +70,9 @@ class ProfileVM {
             "state": state,
             "area": area,
             "visaType": visaType,
-            "notificationStatus": notificationStatus ? "1" : "0"
+            "notificationStatus": notificationStatus ? "1" : "0",
+            "startDate": startDate,
+            "endDate": endDate
         ]
  let headers = ServiceManager.sharedInstance.getHeaders()
         

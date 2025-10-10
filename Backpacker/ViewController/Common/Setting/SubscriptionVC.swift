@@ -24,6 +24,7 @@ class SubscriptionVC: UIViewController {
     var isLoading : Bool = true
     let refreshControl = UIRefreshControl()
     var plans : [Plan]?
+    var currentPlan : Plan?
     var selectedIndex: IndexPath? {
             didSet {
                 tblVw.reloadData() // Reload table to update images
@@ -151,7 +152,11 @@ extension SubscriptionVC {
                                     self.isLoading = false
                                     self.plans?.removeAll()
                                     self.plans = result?.data?.plans ?? []
-                                    
+                                    if let plan =  result?.data?.currentPlan{
+                                        self.currentPlan = plan
+                                       
+                                            
+                                    }
                                 }else{
                                     AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
                                 }
@@ -201,7 +206,7 @@ extension SubscriptionVC {
                 }
             }
     }
-    
+   
 }
 
 

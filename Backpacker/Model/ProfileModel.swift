@@ -26,6 +26,8 @@ struct UserProfileData: Codable {
     let lat: Double
     let long: Double
     let notificationStatus: Bool
+    let startDate : String?
+    let endDate : String?
 }
 
 

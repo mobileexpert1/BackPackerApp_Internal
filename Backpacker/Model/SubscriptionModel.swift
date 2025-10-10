@@ -18,6 +18,7 @@ struct GetSubscriptionModel: Codable {
 // MARK: - PlansResponse
 struct PlansResponse: Codable {
     let plans: [Plan]?
+    let currentPlan : Plan?
 }
 
 // MARK: - Plan
