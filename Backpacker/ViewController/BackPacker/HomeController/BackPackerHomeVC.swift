@@ -19,6 +19,7 @@ class BackPackerHomeVC: UIViewController {
     @IBOutlet weak var Vw_Chat: UIView!
     @IBOutlet weak var lblMainHeader: UILabel!
     
+    @IBOutlet weak var lbl_NoData: UILabel!
     @IBOutlet weak var vw_searchBtm: NSLayoutConstraint!
     @IBOutlet weak var img_placeholde_Search: UIImageView!
     @IBOutlet weak var Vw_SearchHeight: NSLayoutConstraint!
@@ -94,6 +95,8 @@ class BackPackerHomeVC: UIViewController {
     var long : Double?
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.lbl_NoData.isHidden = true
+        self.lbl_NoData.font = FontManager.inter(.medium, size: 14.0)
         self.setupPullToRefresh()
         Vw_SearchHeight.constant = 0.0
         txtFldVw.isHidden = true
@@ -1001,6 +1004,13 @@ extension BackPackerHomeVC {
                     case .ok, .created:
                         if success == true {
                             self.accomdationEmpHomeData = data
+                            if self.accomdationEmpHomeData?.accommodationList.count == 0 {
+                                self.lbl_NoData.isHidden = false
+                                self.lbl_NoData.text = "No Accommodation Found"
+                            }else{
+                                self.lbl_NoData.isHidden = true
+                                self.lbl_NoData.text = ""
+                            }
                             if self.accomdationEmpHomeData?.name.isEmpty == true && self.accomdationEmpHomeData?.email.isEmpty == true{
                                 self.showForceUpdatePopUp()
                             }
@@ -1070,6 +1080,14 @@ extension BackPackerHomeVC {
                     case .ok, .created:
                         if success == true {
                             self.hangoutEmpHomeData = data
+                            if self.hangoutEmpHomeData?.hangoutList.count == 0 {
+                                self.lbl_NoData.isHidden = false
+                                self.lbl_NoData.text = "No Hangout Found"
+                            }else{
+                                self.lbl_NoData.isHidden = true
+                                self.lbl_NoData.text = ""
+                            }
+                            
                             if self.hangoutEmpHomeData?.name.isEmpty == true && self.hangoutEmpHomeData?.email.isEmpty == true{
                                 self.showForceUpdatePopUp()
                             }

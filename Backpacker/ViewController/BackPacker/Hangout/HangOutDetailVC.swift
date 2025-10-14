@@ -171,7 +171,6 @@ class HangOutDetailVC: UIViewController {
                 ImageLoader.loadImages(from: imageUrls) { images in
                     // here you get your [UIImage]
                     jobDescriptionVC.editImages = images
-                    
                     jobDescriptionVC.editName = name
                     jobDescriptionVC.editAddress = addres
                     jobDescriptionVC.editDescription = description
@@ -256,6 +255,10 @@ extension HangOutDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:)))
         cell.img_Vw.addGestureRecognizer(tap)
+#if BackpackerHire
+        cell.Btn_Fav.isUserInteractionEnabled = false
+        cell.Btn_Fav.setImage(UIImage(named: ""), for: .normal)
+#endif
         return cell
     }
     @objc func imageTapped(_ sender: UITapGestureRecognizer) {

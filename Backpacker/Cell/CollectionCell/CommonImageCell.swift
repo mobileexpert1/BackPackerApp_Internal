@@ -15,6 +15,10 @@ class CommonImageCell: UICollectionViewCell {
     @IBOutlet weak var img_Vw: UIImageView!
     @IBOutlet weak var Bg_Vw: UIView!
     var  isComeFromHangout : Bool = false
+    // Closure that passes Int (0 or 1)
+        var onFavoriteStatusChange: ((Int) -> Void)?
+    var fav : Bool = false
+    var indexpathItem : Int?
     override func awakeFromNib() {
         super.awakeFromNib()
         // Any styling if needed
@@ -30,26 +34,40 @@ class CommonImageCell: UICollectionViewCell {
 
     func setImage(with imageURL: String, isFavorite: Bool) {
         // Load image from URL string (you can use Kingfisher or SDWebImage)
-        if let url = URL(string: imageURL) {
-            // Example using native URLSession (for simplicity)
-            DispatchQueue.global().async {
-                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        self.img_Vw.image = image
-                    }
-                }
-            }
-        } else {
-            if isComeFromHangout == true{
-                img_Vw.image = UIImage(named: "restaurantImg") // fallback
-            }else{
-                img_Vw.image = UIImage(named: "aCCOMODATION") // fallback
-            }
-           
-        }
+//        if let url = URL(string: imageURL) {
+//            // Example using native URLSession (for simplicity)
+//            DispatchQueue.global().async {
+//                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+//                    DispatchQueue.main.async {
+//                        self.img_Vw.image = image
+//                    }
+//                }
+//            }
+//        } else {
+//            if isComeFromHangout == true{
+//                img_Vw.image = UIImage(named: "restaurantImg") // fallback
+//            }else{
+//                img_Vw.image = UIImage(named: "aCCOMODATION") // fallback
+//            }
+//           
+//        }
 
         // Set favorite heart image
         let heartImage = isFavorite ? UIImage(named: "Heart") : UIImage(named: "ic_heart_unfilled")
-        imgHeart.image = heartImage
+        self.fav = isFavorite
+#if Backapacker
+        imgHeart.image =  heartImage
+        #else
+        imgHeart.image =   UIImage(named: "")//heartImage
+        #endif
+        
+        
     }
+    
+    
+    @IBAction func btn_favAction(_ sender: Any) {
+        onFavoriteStatusChange?(indexpathItem ?? 0) // 0 = non-favorite
+      
+    }
+    
 }

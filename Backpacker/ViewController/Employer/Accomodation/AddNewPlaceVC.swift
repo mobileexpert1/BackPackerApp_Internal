@@ -157,7 +157,7 @@ class AddNewPlaceVC: UIViewController {
     
     func setupEditData(){
         if isComeFromEdit == true{
-            self.lbl_MainHeader.text = "Edit Place"
+            self.lbl_MainHeader.text = "Edit HangOut"
             self.btn_Save.setTitle("Update", for: .normal)
             if let name = editName {
                 self.txtFldName.text = name
@@ -405,6 +405,9 @@ class AddNewPlaceVC: UIViewController {
         
     }
     
+    @IBAction func action_cancle(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
 }
 
 extension AddNewPlaceVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {

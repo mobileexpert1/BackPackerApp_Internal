@@ -66,7 +66,7 @@ class AccomodationDetailVC: UIViewController {
     let refreshControl = UIRefreshControl()
     var localImages: [UIImage] = []   // your UIImage array
     var remoteImages: [String] = []   // your URL array
-
+    private let viewModelJOb = JobVM()
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -286,7 +286,21 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
 
             let tap = UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:)))
             cell.img_Vw.addGestureRecognizer(tap)
-
+#if BackpackerHire
+        cell.Btn_Fav.isUserInteractionEnabled = false
+        cell.Btn_Fav.setImage(UIImage(named: ""), for: .normal)
+#else
+            cell.Btn_Fav.isUserInteractionEnabled = false
+            cell.Btn_Fav.setImage(UIImage(named: ""), for: .normal)
+            
+#endif
+            cell.onFavoriteStatusChange = { index in
+                
+                if let id = self.accomodationID{
+                    self.MakeJobAccomodationFav(id: id)
+                }
+                
+            }
             return cell
         }else{
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FacilityCVC", for: indexPath) as? FacilityCVC else {
@@ -701,6 +715,51 @@ extension AccomodationDetailVC {
            
     }
 }
+    func MakeJobAccomodationFav(id: String){
+        LoaderManager.shared.show()
+        viewModelJOb.MakeAccomodationFAVOURATE(id: id) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Job added to favorites"){
+                            self.getDetailOfAccomodation()
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.MakeJobAccomodationFav(id: id)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+               }
+    }
 }
 
 extension AccomodationDetailVC: MKMapViewDelegate {

@@ -694,6 +694,9 @@
                                                                 <integer key="value" value="10"/>
                                                             </userDefinedRuntimeAttribute>
                                                         </userDefinedRuntimeAttributes>
+                                                        <connections>
+                                                            <action selector="action_cancle:" destination="WGa-y4-siU" eventType="touchUpInside" id="ag0-mM-fAi"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                                 <constraints>

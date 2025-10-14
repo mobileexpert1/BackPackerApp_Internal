@@ -201,51 +201,55 @@ class ForceUpdateVC: UIViewController {
        }
     @IBAction func action_Continue(_ sender: Any) {
         var hasError = false
+        // Name & Email validation
+        let isNameValid = name_Vw.validateNotEmpty(errorMessage: "Please enter your name")
+        if !isNameValid { hasError = true }
 
-            // Name & Email validation
-            let isNameValid = name_Vw.validateNotEmpty(errorMessage: "Please enter your name")
-            if !isNameValid { hasError = true }
+        let isEmailValid = email_Vw.validateEmail(errorMessage: "Please enter your email")
+        if !isEmailValid { hasError = true }
+#if BackpackerHire
+        
+        
+        #else
+        // Visa type validation
+        if lbl_Val_VisaType.text == "Select Visa Type" {
+            lbl_error_VisaHeight.constant = 20
+            lbl_error_SelectVisaType.text = "Please select visa type"
+            hasError = true
+        }
 
-            let isEmailValid = email_Vw.validateEmail(errorMessage: "Please enter your email")
-            if !isEmailValid { hasError = true }
+        // Start date validation
+        if startDateField.text?.isEmpty == true {
+            lbl_error_startDate.isHidden = false
+            hasError = true
+        }else{
+            lbl_error_startDate.isHidden = true
+        }
 
-            // Visa type validation
-            if lbl_Val_VisaType.text == "Select Visa Type" {
-                lbl_error_VisaHeight.constant = 20
-                lbl_error_SelectVisaType.text = "Please select visa type"
-                hasError = true
-            }
+        // End date validation
+        if endDateField.text?.isEmpty == true {
+            lbl_error_endDate.isHidden = false
+            hasError = true
+        }else{
+            lbl_error_endDate.isHidden = true
+        }
 
-            // Start date validation
-            if startDateField.text?.isEmpty == true {
-                lbl_error_startDate.isHidden = false
-                hasError = true
-            }else{
-                lbl_error_startDate.isHidden = true
-            }
-
-            // End date validation
-            if endDateField.text?.isEmpty == true {
+        // Check if end date is after start date
+        if let startText = startDateField.text, let endText = endDateField.text,
+           let formatter = DateFormatter() as DateFormatter?,
+           let startDate = formatter.date(from: startText),
+           let endDate = formatter.date(from: endText) {
+            
+            formatter.dateFormat = "MM/dd/yyyy" // make sure this matches your text field format
+            if endDate < startDate {
+                lbl_error_endDate.text = "End date must be after start date"
                 lbl_error_endDate.isHidden = false
                 hasError = true
-            }else{
-                lbl_error_endDate.isHidden = true
             }
-
-            // Check if end date is after start date
-            if let startText = startDateField.text, let endText = endDateField.text,
-               let formatter = DateFormatter() as DateFormatter?,
-               let startDate = formatter.date(from: startText),
-               let endDate = formatter.date(from: endText) {
-                
-                formatter.dateFormat = "MM/dd/yyyy" // make sure this matches your text field format
-                if endDate < startDate {
-                    lbl_error_endDate.text = "End date must be after start date"
-                    lbl_error_endDate.isHidden = false
-                    hasError = true
-                }
-            }
-
+        }
+        
+        
+#endif
             // If no errors, update profile
             if !hasError {
                 updateProfileInfo(

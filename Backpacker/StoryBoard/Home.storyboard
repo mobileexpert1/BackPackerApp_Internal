@@ -616,6 +616,12 @@
                                 <rect key="frame" x="5" y="184" width="383" height="634"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E50-ch-Ghc">
+                                <rect key="frame" x="196.66666666666666" y="501" width="0.0" height="0.0"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="oIh-MW-ifi"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -625,6 +631,8 @@
                             <constraint firstItem="wEE-t8-jSB" firstAttribute="leading" secondItem="oIh-MW-ifi" secondAttribute="leading" constant="5" id="DpE-TX-qY6"/>
                             <constraint firstItem="1FX-Ay-hoV" firstAttribute="leading" secondItem="oIh-MW-ifi" secondAttribute="leading" constant="5" id="Edy-d6-eeb"/>
                             <constraint firstItem="oIh-MW-ifi" firstAttribute="trailing" secondItem="wnI-7f-W2z" secondAttribute="trailing" constant="15" id="LGt-y2-k9y"/>
+                            <constraint firstItem="E50-ch-Ghc" firstAttribute="centerX" secondItem="wEE-t8-jSB" secondAttribute="centerX" id="LVs-up-Ced"/>
+                            <constraint firstItem="E50-ch-Ghc" firstAttribute="centerY" secondItem="wEE-t8-jSB" secondAttribute="centerY" id="b92-8C-Kwc"/>
                             <constraint firstItem="wEE-t8-jSB" firstAttribute="top" secondItem="wnI-7f-W2z" secondAttribute="bottom" constant="15" id="id3-kh-eoq"/>
                             <constraint firstItem="oIh-MW-ifi" firstAttribute="trailing" secondItem="1FX-Ay-hoV" secondAttribute="trailing" constant="5" id="ihG-Wa-Rb1"/>
                             <constraint firstItem="wnI-7f-W2z" firstAttribute="leading" secondItem="b37-dL-jdH" secondAttribute="leading" constant="15" id="lTZ-6t-mUL"/>
@@ -640,6 +648,7 @@
                         <outlet property="homeTblVw" destination="wEE-t8-jSB" id="cG1-aJ-Yme"/>
                         <outlet property="img_placeholde_Search" destination="stk-aj-NBm" id="qk6-VB-hkR"/>
                         <outlet property="lblMainHeader" destination="iM9-7p-w3P" id="2f6-Vh-iwq"/>
+                        <outlet property="lbl_NoData" destination="E50-ch-Ghc" id="oxc-x2-qFg"/>
                         <outlet property="lbl_NotificationCount" destination="QqA-mK-xvb" id="fuf-SL-s4C"/>
                         <outlet property="mainHeaderImgWidth" destination="aG8-IZ-2An" id="AQl-MM-nv1"/>
                         <outlet property="notifictionCountBgVw" destination="Ijn-fr-2KY" id="jIg-mM-3W5"/>
@@ -892,7 +901,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemPinkColor">
-            <color red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

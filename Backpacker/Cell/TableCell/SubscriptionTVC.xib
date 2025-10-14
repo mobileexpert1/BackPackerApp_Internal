@@ -51,7 +51,7 @@
                                 <rect key="frame" x="2" y="103" width="681" height="320"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="q4h-pw-45e">
-                                        <rect key="frame" x="0.0" y="0.0" width="681" height="80"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="681" height="106.66666666666667"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X4l-HK-rc3">
                                                 <rect key="frame" x="10" y="10" width="10" height="10"/>
@@ -84,7 +84,7 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W7Q-qi-6Mz">
-                                        <rect key="frame" x="0.0" y="80" width="681" height="80"/>
+                                        <rect key="frame" x="0.0" y="106.66666666666666" width="681" height="106.66666666666666"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kaz-NN-rJy">
                                                 <rect key="frame" x="10" y="10" width="10" height="10"/>
@@ -117,7 +117,7 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x8j-xl-Lps">
-                                        <rect key="frame" x="0.0" y="160" width="681" height="80"/>
+                                        <rect key="frame" x="0.0" y="213.33333333333329" width="681" height="106.66666666666666"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7OW-ch-nly">
                                                 <rect key="frame" x="10" y="10" width="10" height="10"/>
@@ -147,39 +147,6 @@
                                             <constraint firstItem="tOT-6h-zoo" firstAttribute="centerY" secondItem="7OW-ch-nly" secondAttribute="centerY" id="HBc-YJ-ozD"/>
                                             <constraint firstItem="tOT-6h-zoo" firstAttribute="leading" secondItem="7OW-ch-nly" secondAttribute="trailing" constant="10" id="POD-8L-zdF"/>
                                             <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="tOT-6h-zoo" secondAttribute="bottom" constant="5" id="fIP-NF-vR2"/>
-                                        </constraints>
-                                    </view>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KDo-y3-jN3">
-                                        <rect key="frame" x="0.0" y="240" width="681" height="80"/>
-                                        <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="B70-5C-CyE">
-                                                <rect key="frame" x="10" y="10" width="10" height="10"/>
-                                                <color key="backgroundColor" name="themeColor"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="10" id="EYx-a9-WNy"/>
-                                                    <constraint firstAttribute="width" constant="10" id="fno-vI-Er5"/>
-                                                </constraints>
-                                                <userDefinedRuntimeAttributes>
-                                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                                        <integer key="value" value="5"/>
-                                                    </userDefinedRuntimeAttribute>
-                                                </userDefinedRuntimeAttributes>
-                                            </view>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ylj-V0-boc">
-                                                <rect key="frame" x="30" y="8" width="641" height="14.333333333333336"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
-                                                <color key="textColor" name="blackColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
-                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                        <constraints>
-                                            <constraint firstItem="ylj-V0-boc" firstAttribute="leading" secondItem="B70-5C-CyE" secondAttribute="trailing" constant="10" id="0C2-ap-mvV"/>
-                                            <constraint firstItem="B70-5C-CyE" firstAttribute="top" secondItem="KDo-y3-jN3" secondAttribute="top" constant="10" id="4H6-9b-gzX"/>
-                                            <constraint firstAttribute="trailing" secondItem="ylj-V0-boc" secondAttribute="trailing" constant="10" id="elR-1w-RQe"/>
-                                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="ylj-V0-boc" secondAttribute="bottom" constant="5" id="iwT-kU-0GU"/>
-                                            <constraint firstItem="B70-5C-CyE" firstAttribute="leading" secondItem="KDo-y3-jN3" secondAttribute="leading" constant="10" id="lzJ-Ie-eJi"/>
-                                            <constraint firstItem="ylj-V0-boc" firstAttribute="centerY" secondItem="B70-5C-CyE" secondAttribute="centerY" id="xtZ-Lc-88D"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -235,7 +202,6 @@
                 <outlet property="lbl_feature1" destination="pav-gG-EW8" id="2bF-9s-EYp"/>
                 <outlet property="lbl_feature2" destination="bos-eQ-0OF" id="Mpy-Ww-a66"/>
                 <outlet property="lbl_feature3" destination="tOT-6h-zoo" id="0T2-P7-8Do"/>
-                <outlet property="lbl_feature4" destination="ylj-V0-boc" id="2yl-fd-X4B"/>
                 <outlet property="lbl_header" destination="rZI-ho-IYH" id="QeH-u6-yX5"/>
                 <outlet property="lbl_price" destination="xhU-WF-uve" id="BYX-Td-hgP"/>
             </connections>

@@ -75,9 +75,9 @@ class SubscriptionVC: UIViewController {
     
     @IBAction func action_Proceed(_ sender: Any) {
    //     self.navigationController?.popViewController(animated: true)
-        Task {
-                    await purchasePlan(tier: .basic)
-                }
+//        Task {
+//                    await purchasePlan(tier: .basic)
+//                }
     }
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
@@ -123,7 +123,7 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
     
     func manageHeight() {
         tblVw.layoutIfNeeded()
-        tblHeght.constant =  CGFloat(((self.plans?.count ?? 0) * 250))
+        tblHeght.constant =  CGFloat(((self.plans?.count ?? 0) * 205))
     }
 
 }

@@ -20,7 +20,7 @@ class SubscriptionTVC: UITableViewCell {
     @IBOutlet weak var lbl_feature2: UILabel!
     var feature2: String?
     var feature3: String?
-    @IBOutlet weak var lbl_feature4: UILabel!
+    //@IBOutlet weak var lbl_feature4: UILabel!
     var feature4: String?
     @IBOutlet weak var lbl_feature3: UILabel!
     @IBOutlet weak var lbl_feature1: UILabel!
@@ -43,7 +43,7 @@ class SubscriptionTVC: UITableViewCell {
         self.lbl_feature1.font = FontManager.inter(.regular, size: 12.0)
         self.lbl_feature2.font = FontManager.inter(.regular, size: 12.0)
         self.lbl_feature3.font = FontManager.inter(.regular, size: 12.0)
-        self.lbl_feature4.font = FontManager.inter(.regular, size: 12.0)
+ //       self.lbl_feature4.font = FontManager.inter(.regular, size: 12.0)
     }
     @IBAction func action_cellTapped(_ sender: Any) {
         
