@@ -10,11 +10,11 @@ import StoreKit
 
 // MARK: - Subscription Tier Enum
 enum SubscriptionTier: String, CaseIterable {
-    case free = "Free / Starter"
-    case basic = "Basic"
-    case growth = "Growth"
-    case pro = "Pro"
-    case headOffice = "Head Office"
+    case free = "Free / Starter Plan"
+    case basic = "Basic Plan"
+    case growth = "Growth Plan"
+    case pro = "Pro Plan"
+    case headOffice = "Head Office Plan"
 }
 
 // MARK: - Subscription Plan Model
@@ -31,13 +31,27 @@ struct SubscriptionPlan {
 }
 
 // MARK: - Subscription Manager
+import Foundation
+import StoreKit
+
+@MainActor
 final class SubscriptionManager {
     
     static let shared = SubscriptionManager()
     
-    private init() {}
+    private init() {
+        // Start listening for ongoing or new transactions
+        Task.detached { [weak self] in
+            await self?.listenForTransactions()
+        }
+    }
     
-    // MARK: - All Plans
+    // MARK: - Stored Property
+    private(set) var activePlan: SubscriptionPlan?
+    
+    var selectedPlan : SubscriptionTier?
+    var controller : UIViewController?
+    // MARK: - Fetch all available plans
     func getAllPlans() -> [SubscriptionPlan] {
         return [
             SubscriptionPlan(
@@ -55,7 +69,6 @@ final class SubscriptionManager {
                 duration: nil,
                 localization: nil
             ),
-            
             SubscriptionPlan(
                 tier: .basic,
                 pricePerMonth: 19,
@@ -71,7 +84,6 @@ final class SubscriptionManager {
                 duration: "1 month",
                 localization: "Missing Metadata"
             ),
-            
             SubscriptionPlan(
                 tier: .growth,
                 pricePerMonth: 49,
@@ -87,7 +99,6 @@ final class SubscriptionManager {
                 duration: "1 month",
                 localization: "Missing Metadata"
             ),
-            
             SubscriptionPlan(
                 tier: .pro,
                 pricePerMonth: 149,
@@ -103,7 +114,6 @@ final class SubscriptionManager {
                 duration: "1 month",
                 localization: "Missing Metadata"
             ),
-            
             SubscriptionPlan(
                 tier: .headOffice,
                 pricePerMonth: 299,
@@ -122,25 +132,151 @@ final class SubscriptionManager {
         ]
     }
     
-    // MARK: - Fetch a specific plan by tier
+    // MARK: - Get plan by tier
     func getPlan(for tier: SubscriptionTier) -> SubscriptionPlan? {
-        return getAllPlans().first { $0.tier == tier }
+        getAllPlans().first { $0.tier == tier }
     }
     
-    // MARK: - Get user's active plan (dummy for now)
-    func getActivePlan() -> SubscriptionPlan {
-        // In real use case, fetch from backend or saved user info
-        return getPlan(for: .basic)!
+    // MARK: - Purchase Plan
+    func purchasePlan(tier: SubscriptionTier) async {
+        guard let plan = getPlan(for: tier),
+              let productID = plan.productID else {
+            print("❌ Invalid plan or product ID")
+            return
+        }
+        
+        do {
+            let products = try await Product.products(for: [productID])
+            guard let product = products.first else {
+                print("❌ Product not found on App Store")
+                return
+            }
+            
+            let result = try await product.purchase()
+            
+            switch result {
+            case .success(let verification):
+                let transaction = try checkVerified(verification)
+                await handle(transaction)
+                await transaction.finish()
+                print("Transcation",transaction)
+                print("Verification",verification)
+                print("✅ Purchase successful for \(tier.rawValue)")
+                if let vc = self.controller{
+                    AlertManager.showAlert(
+                               on: vc,
+                               title: "Purchase Successful",
+                               message: "Your \(tier.rawValue) subscription has been successfully activated. Enjoy your premium features!"
+                           )
+                }
+                
+            case .userCancelled:
+                print("🟡 User cancelled purchase")
+                if let vc = self.controller{
+                    AlertManager.showAlert(
+                        on: vc,
+                        title: "Purchase Cancelled",
+                        message: "You have cancelled the subscription process. You can try again anytime from the subscription screen."
+                    )
+                }
+            case .pending:
+                print("⏳ Purchase pending")
+                if let vc = self.controller{
+                    AlertManager.showAlert(
+                        on: vc,
+                        title: "Purchase Pending",
+                        message: "Your purchase is currently pending. Please wait for the transaction to complete or check your App Store account for updates."
+                    )
+                }
+               
+                
+            @unknown default:
+                print("❓ Unknown purchase result")
+                guard let controllers = self.controller else {
+                        print("⚠️ No controller available to show alerts or loader.")
+                        return
+                    }
+                if let vc = self.controller{
+                    AlertManager.showAlert(
+                        on: vc,
+                        title: "Unknown Status",
+                        message: "An unexpected issue occurred during the purchase process. Please try again later."
+                    )
+                }
+               
+            }
+        } catch {
+            print("❌ Purchase failed: \(error.localizedDescription)")
+        }
     }
     
-    // MARK: - Compare tiers (for feature access control)
+    // MARK: - Listen for ongoing transactions (background, renewals, etc.)
+    private func listenForTransactions() async {
+        for await result in Transaction.updates {
+            do {
+                let transaction = try checkVerified(result)
+                await handle(transaction)
+                await transaction.finish()
+            } catch {
+                print("❌ Transaction update verification failed: \(error)")
+            }
+        }
+    }
+    
+    // MARK: - Verify transactions
+    private func checkVerified(_ result: VerificationResult<Transaction>) throws -> Transaction {
+        switch result {
+        case .unverified(_, let error):
+            throw error
+        case .verified(let transaction):
+            return transaction
+        }
+    }
+
+    
+    // MARK: - Handle verified transaction
+    private func handle(_ transaction: Transaction) async {
+        guard let plan = getAllPlans().first(where: { $0.productID == transaction.productID }) else { return }
+        
+        // Save active plan
+        activePlan = plan
+        saveActiveTier(plan.tier)
+        
+        print("✅ Transaction handled for plan: \(plan.tier.rawValue)")
+    }
+    
+    // MARK: - Restore Purchases
+    func restorePurchases() async {
+        for await result in Transaction.currentEntitlements {
+            do {
+                let transaction = try checkVerified(result)
+                await handle(transaction)
+            } catch {
+                print("❌ Restore failed: \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    // MARK: - Tier Access Control
     func canAccessFeature(requiredTier: SubscriptionTier) -> Bool {
         let tiers = SubscriptionTier.allCases
-        guard let currentIndex = tiers.firstIndex(of: getActivePlan().tier),
+        guard let activeTier = activePlan?.tier ?? loadActiveTier(),
+              let currentIndex = tiers.firstIndex(of: activeTier),
               let requiredIndex = tiers.firstIndex(of: requiredTier) else {
             return false
         }
         return currentIndex >= requiredIndex
     }
+    
+    // MARK: - Persistence
+    private let activeTierKey = "activeSubscriptionTier"
+    
+    private func saveActiveTier(_ tier: SubscriptionTier) {
+        UserDefaults.standard.set(tier.rawValue, forKey: activeTierKey)
+    }
+    
+    private func loadActiveTier() -> SubscriptionTier? {
+        guard let raw = UserDefaults.standard.string(forKey: activeTierKey) else { return nil }
+        return SubscriptionTier(rawValue: raw)
+    }
 }
-

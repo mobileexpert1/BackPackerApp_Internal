@@ -38,7 +38,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         LocationManager.shared.requestLocationPermission()
         LocationManager.shared.startUpdatingLocation()
-        
+        _ = SubscriptionManager.shared // start listener
         // Handle cold-launch notification if exists
         if let remoteNotification = launchOptions?[.remoteNotification] as? [AnyHashable: Any] {
             if let jobId = remoteNotification["jobId"] as? String,

@@ -30,6 +30,7 @@ class SubscriptionVC: UIViewController {
                 tblVw.reloadData() // Reload table to update images
             }
         }
+    let arrayOfPrducts = ["com.shiftly.app.subscription.basic","com.shiftly.app.subscription.growth","com.shiftly.app.subscription.pro","com.shiftly.app.subscription.headOffice"]
     override func viewDidLoad() {
         super.viewDidLoad()
         self.getListOfAllSubscriptions()
@@ -56,8 +57,12 @@ class SubscriptionVC: UIViewController {
                 }
                 
                 refreshControl.addTarget(self, action: #selector(refreshScrollView), for: .valueChanged)
+        self.handleAppearanceFrBottomBtns()
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        SubscriptionManager.shared.controller = self
+    }
     @objc func refreshScrollView() {
            print("ScrollView pulled to refresh")
 
@@ -74,10 +79,22 @@ class SubscriptionVC: UIViewController {
        }
     
     @IBAction func action_Proceed(_ sender: Any) {
-   //     self.navigationController?.popViewController(animated: true)
-//        Task {
-//                    await purchasePlan(tier: .basic)
-//                }
+        // Show loader when purchase starts
+        LoaderManager.shared.show()
+
+        Task {
+            do {
+                await SubscriptionManager.shared.purchasePlan(tier: SubscriptionManager.shared.selectedPlan ?? .basic)
+                // Hide loader after success
+                LoaderManager.shared.hide()
+            } catch {
+                // Hide loader on failure too
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Purchase failed", message: "\(error.localizedDescription)")
+                print("Purchase failed: \(error.localizedDescription)")
+            }
+        }
+
     }
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
@@ -85,6 +102,15 @@ class SubscriptionVC: UIViewController {
     
     @IBAction func action_Cancel(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
+    }
+    private func handleAppearanceFrBottomBtns(){
+        if  SubscriptionManager.shared.selectedPlan == .free{
+            self.btnProceed.isUserInteractionEnabled = false
+            self.btnProceed.layer.opacity = 0.4
+        }else{
+            self.btnProceed.isUserInteractionEnabled = true
+            self.btnProceed.layer.opacity = 1.0
+        }
     }
     
 }
@@ -106,14 +132,34 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
             cell.lbl_feature2.text = plan.feature?[1] ?? ""
             cell.lbl_feature3.text = plan.feature?[2] ?? ""
           //  cell.lbl_feature4.text = plan.feature?[3]
+//                    }
             cell.onCellTapped = { [weak self] tappedIndex in
+                        guard let self = self,
+                              let tappedPlan = self.plans?[tappedIndex.row],
+                              let planName = tappedPlan.name,
+                              let selectedTier = SubscriptionTier.allCases.first(where: { $0.rawValue == planName }) else {
+                            print("No matching tier found for tapped plan")
+                            SubscriptionManager.shared.selectedPlan = .free
+                                    // Update selected index for UI highlighting
+                            self?.selectedIndex = tappedIndex
+                            self?.tblVw.reloadData()
+                            self?.handleAppearanceFrBottomBtns()
+                            return
+                        }
+
                         print("Cell tapped: \(tappedIndex.row)")
-                        self?.selectedIndex = tappedIndex
+                        print("Selected Tier: \(selectedTier.rawValue)")
+                SubscriptionManager.shared.selectedPlan = selectedTier
+                        // Update selected index for UI highlighting
+                        self.selectedIndex = tappedIndex
+                        self.tblVw.reloadData()
+
                     }
-                    
+            self.handleAppearanceFrBottomBtns()
                     // Update cell image based on selectedIndex
                     let isSelected = (indexPath == selectedIndex)
                     cell.updateImage(isSelected: isSelected)
+            
         }
      
         return cell
@@ -207,51 +253,4 @@ extension SubscriptionVC {
             }
     }
    
-}
-
-
-extension SubscriptionVC {
-    func purchasePlan(tier: SubscriptionTier) async {
-            guard let plan = SubscriptionManager.shared.getPlan(for: tier),
-                  let productID = plan.productID else {
-                print("Invalid plan or product ID")
-                return
-            }
-
-            do {
-                let products = try await Product.products(for: ["com.shiftly.app.subscription.basic"])
-                guard let product = products.first else {
-                    print("Product not found on App Store")
-                    return
-                }
-
-                let result = try await product.purchase()
-
-                switch result {
-                case .success(let verification):
-                    let transaction = try checkVerified(verification)
-                    await transaction.finish()
-                    print("Purchase successful for \(tier.rawValue)")
-                    // Unlock features or update UI
-                case .userCancelled:
-                    print("User cancelled the purchase")
-                case .pending:
-                    print("Purchase pending")
-                @unknown default:
-                    print("Unknown purchase result")
-                }
-            } catch {
-                print("Purchase failed: \(error)")
-            }
-        }
-
-        // MARK: - Verification Helper
-        func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
-            switch result {
-            case .unverified(_, let error):
-                throw error ?? StoreKitError.unknown
-            case .verified(let signed):
-                return signed
-            }
-        }
 }
