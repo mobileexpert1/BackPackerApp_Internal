@@ -141,14 +141,14 @@ final class SubscriptionManager {
     func purchasePlan(tier: SubscriptionTier) async {
         guard let plan = getPlan(for: tier),
               let productID = plan.productID else {
-            print("❌ Invalid plan or product ID")
+            print(" Invalid plan or product ID")
             return
         }
         
         do {
             let products = try await Product.products(for: [productID])
             guard let product = products.first else {
-                print("❌ Product not found on App Store")
+                print(" Product not found on App Store")
                 return
             }
             
@@ -161,7 +161,7 @@ final class SubscriptionManager {
                 await transaction.finish()
                 print("Transcation",transaction)
                 print("Verification",verification)
-                print("✅ Purchase successful for \(tier.rawValue)")
+                print(" Purchase successful for \(tier.rawValue)")
                 if let vc = self.controller{
                     AlertManager.showAlert(
                                on: vc,
@@ -171,7 +171,7 @@ final class SubscriptionManager {
                 }
                 
             case .userCancelled:
-                print("🟡 User cancelled purchase")
+                print("User cancelled purchase")
                 if let vc = self.controller{
                     AlertManager.showAlert(
                         on: vc,
@@ -180,7 +180,7 @@ final class SubscriptionManager {
                     )
                 }
             case .pending:
-                print("⏳ Purchase pending")
+                print("Purchase pending")
                 if let vc = self.controller{
                     AlertManager.showAlert(
                         on: vc,
@@ -193,8 +193,9 @@ final class SubscriptionManager {
             @unknown default:
                 print("❓ Unknown purchase result")
                 guard let controllers = self.controller else {
-                        print("⚠️ No controller available to show alerts or loader.")
-                        return
+                        print("No controller available to show alerts or loader.")
+                    return
+                    
                     }
                 if let vc = self.controller{
                     AlertManager.showAlert(
@@ -206,7 +207,7 @@ final class SubscriptionManager {
                
             }
         } catch {
-            print("❌ Purchase failed: \(error.localizedDescription)")
+            print("Purchase failed: \(error.localizedDescription)")
         }
     }
     
@@ -218,7 +219,7 @@ final class SubscriptionManager {
                 await handle(transaction)
                 await transaction.finish()
             } catch {
-                print("❌ Transaction update verification failed: \(error)")
+                print("Transaction update verification failed: \(error)")
             }
         }
     }
@@ -242,7 +243,7 @@ final class SubscriptionManager {
         activePlan = plan
         saveActiveTier(plan.tier)
         
-        print("✅ Transaction handled for plan: \(plan.tier.rawValue)")
+        print("Transaction handled for plan: \(plan.tier.rawValue)")
     }
     
     // MARK: - Restore Purchases
@@ -252,7 +253,7 @@ final class SubscriptionManager {
                 let transaction = try checkVerified(result)
                 await handle(transaction)
             } catch {
-                print("❌ Restore failed: \(error.localizedDescription)")
+                print("Restore failed: \(error.localizedDescription)")
             }
         }
     }

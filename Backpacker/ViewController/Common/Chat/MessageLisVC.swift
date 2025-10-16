@@ -180,7 +180,30 @@ class MessageLisVC: UIViewController {
     }
 
     @IBAction func action_btn_Close(_ sender: Any) {
-        
+        self.txtFldSearch.text = ""
+        self.btn_Close.isHidden = true
+        self.lastSearchedText = ""
+        self.txtFldSearch.resignFirstResponder()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            if self.btn_Employer.tag == 1 {
+    #if BackpackerHire
+                self.listOfAllBackpacker()
+                #else
+                
+                self.listOfAllEmployer()
+    #endif
+               
+            }else{
+                if self.btn_Admin.tag == 1 {
+        #if BackpackerHire
+                    self.getListOfTickets()
+                    #else
+                    self.getListOfTickets()
+        #endif
+                   
+                }
+            }
+        }
     }
     
     
@@ -524,7 +547,7 @@ extension MessageLisVC :UITextFieldDelegate{
 #endif
                 }else{
 #if BackpackerHire
-                
+                    self.getListOfTickets()
 #else
                 
                     self.getListOfTickets()
