@@ -204,9 +204,9 @@ extension OtpVC {
         
         var fcmToken = String()
 #if BackpackerHire
-        fcmToken = UserDefaultsManager.shared.employerfcmToken ??  ""
+        fcmToken = UserDefaultsManager.shared.employerfcmToken ??  "123456"
 #else
-        fcmToken = UserDefaultsManager.shared.fcmToken ?? ""
+        fcmToken = UserDefaultsManager.shared.fcmToken ?? "12345"
 #endif
         let deviceInfo = getDeviceInfo()
         
