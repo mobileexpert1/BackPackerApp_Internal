@@ -628,6 +628,8 @@ struct ApiConstants {
         
        // https://backpacker.csdevhub.com/api/admin/subscription
         static let GET_LISTOF_SUBSCRIPTIONS = BASE_URL + "api/subscription"
+        
+        static let CREATE_NEW_USER_PLAN = BASE_URL + "api/backpackers/userPlan"
         }
  
     

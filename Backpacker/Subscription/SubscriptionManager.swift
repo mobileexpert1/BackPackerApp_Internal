@@ -50,6 +50,7 @@ final class SubscriptionManager {
     private(set) var activePlan: SubscriptionPlan?
     
     var selectedPlan : SubscriptionTier?
+    var purchasePlanDetail : CreateUserPlanRequest?
     var controller : UIViewController?
     // MARK: - Fetch all available plans
     func getAllPlans() -> [SubscriptionPlan] {
@@ -169,7 +170,13 @@ final class SubscriptionManager {
                                message: "Your \(tier.rawValue) subscription has been successfully activated. Enjoy your premium features!"
                            )
                 }
-                
+                // ✅ Create backend request from transaction
+                    let purchaseRequest = createUserPlanRequest(from: transaction)
+                self.purchasePlanDetail = purchaseRequest
+                if let vc = self.controller as? SubscriptionVC{
+                    vc.createNewUserPlan()
+                }
+
             case .userCancelled:
                 print("User cancelled purchase")
                 if let vc = self.controller{
@@ -280,4 +287,25 @@ final class SubscriptionManager {
         guard let raw = UserDefaults.standard.string(forKey: activeTierKey) else { return nil }
         return SubscriptionTier(rawValue: raw)
     }
+    func createUserPlanRequest(from transaction: Transaction) -> CreateUserPlanRequest {
+        return CreateUserPlanRequest(
+            appTransactionId: String(transaction.id),
+            transactionId: String(transaction.id),
+            transactionReason: "PURCHASE",
+            purchaseDate: Int(transaction.purchaseDate.timeIntervalSince1970 * 1000),
+            expiresDate: Int(transaction.expirationDate?.timeIntervalSince1970 ?? 0 * 1000),
+            originalPurchaseDate: Int(transaction.originalPurchaseDate.timeIntervalSince1970 * 1000),
+            originalTransactionId: String(transaction.originalID),
+            productId: transaction.productID,
+            bundleId: Bundle.main.bundleIdentifier ?? "",
+            platformType: "ios",
+            quantity: transaction.purchasedQuantity,
+            type: "Auto-Renewable Subscription",
+            currency: "USD",
+            price: NSDecimalNumber(decimal: transaction.price ?? 0).doubleValue,
+            subscriptionId: UUID().uuidString
+        )
+    }
+
 }
+

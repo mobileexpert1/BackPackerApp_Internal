@@ -372,7 +372,7 @@
 				INFOPLIST_FILE = Backpacker/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Backpacker;
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Backpacker uses your calendar to help you schedule, view, and manage your upcoming shifts, check availability, and plan work events efficiently.";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Backpackerneeds camera access so you can capture and upload photos related to your workplace documentation";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Backpacker needs camera access so you can capture and upload photos related to your workplace documentation";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Backpacker uses your location to show nearby job opportunities and improve job-related accuracy while you’re using the app";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Backpacker uses your microphone to convert your speech into text for faster and hands-free note taking.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Backpacker needs access to your photo library so you can personalize your workplace profiles.";
@@ -419,7 +419,7 @@
 				INFOPLIST_FILE = Backpacker/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Backpacker;
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Backpacker uses your calendar to help you schedule, view, and manage your upcoming shifts, check availability, and plan work events efficiently.";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Backpackerneeds camera access so you can capture and upload photos related to your workplace documentation";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Backpacker needs camera access so you can capture and upload photos related to your workplace documentation";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Backpacker uses your location to show nearby job opportunities and improve job-related accuracy while you’re using the app";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Backpacker uses your microphone to convert your speech into text for faster and hands-free note taking.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Backpacker needs access to your photo library so you can personalize your workplace profiles.";

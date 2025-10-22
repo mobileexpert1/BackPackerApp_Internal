@@ -295,11 +295,9 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
             
 #endif
             cell.onFavoriteStatusChange = { index in
-                
                 if let id = self.accomodationID{
                     self.MakeJobAccomodationFav(id: id)
                 }
-                
             }
             return cell
         }else{

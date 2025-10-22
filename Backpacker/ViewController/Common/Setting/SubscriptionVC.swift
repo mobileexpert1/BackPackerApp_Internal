@@ -25,6 +25,7 @@ class SubscriptionVC: UIViewController {
     let refreshControl = UIRefreshControl()
     var plans : [Plan]?
     var currentPlan : Plan?
+    var selectedPlanId : String?
     var selectedIndex: IndexPath? {
             didSet {
                 tblVw.reloadData() // Reload table to update images
@@ -142,7 +143,9 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
                             SubscriptionManager.shared.selectedPlan = .free
                                     // Update selected index for UI highlighting
                             self?.selectedIndex = tappedIndex
+                            self?.selectedPlanId = self?.plans?[self?.selectedIndex?.row ?? 0].id ?? ""
                             self?.tblVw.reloadData()
+                            
                             self?.handleAppearanceFrBottomBtns()
                             return
                         }
@@ -152,6 +155,7 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
                 SubscriptionManager.shared.selectedPlan = selectedTier
                         // Update selected index for UI highlighting
                         self.selectedIndex = tappedIndex
+                self.selectedPlanId = self.plans?[self.selectedIndex?.row ?? 0].id ?? ""
                         self.tblVw.reloadData()
 
                     }
@@ -251,6 +255,57 @@ extension SubscriptionVC {
                     }
                 }
             }
+    }
+    
+     func createNewUserPlan(){
+        LoaderManager.shared.show()
+         guard let purchase = SubscriptionManager.shared.purchasePlanDetail else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No purchase found.")
+                return
+            }
+        viewModel.createUserPlanAfterPurchase(purchaseInfo: purchase) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Purchased Succesfully"){
+                            
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.createNewUserPlan()
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+               }
     }
    
 }

@@ -11,6 +11,9 @@ import CountryPickerView
 class LoginVC: UIViewController {
     
     //Outlet
+    @IBOutlet weak var btn_term_Topconstraint: NSLayoutConstraint!
+    @IBOutlet weak var lbl_temsandCondition: UILabel!
+    @IBOutlet weak var btn_trmcondition: UIButton!
     @IBOutlet weak var vwTxtFld: UIView!
     @IBOutlet weak var phoneNumberVw: UIView!
     @IBOutlet weak var lblLogIn: UILabel!
@@ -40,6 +43,11 @@ class LoginVC: UIViewController {
         applyGradientButtonStyle(to: btn_Continue)
     }
     private func setUI(){
+        self.btn_term_Topconstraint.constant = 0.0
+        self.btn_trmcondition.tag = 0
+        self.lbl_temsandCondition.textColor = UIColor(named: "subTitleColor")
+        self.btn_trmcondition.setImage(UIImage(named: "Checkbox"), for: .normal)
+        self.lbl_temsandCondition.font = FontManager.inter(.regular, size: 10.0)
         self.lblLogIn.font = FontManager.inter(.regular, size: 26.0)
         self.lblSubTitle.font = FontManager.inter(.regular, size: 14.0)
         self.txtFld_PhoneNumber.font = FontManager.inter(.regular, size: 17.0)
@@ -64,8 +72,30 @@ class LoginVC: UIViewController {
         self.txtFld_PhoneNumber.delegate = self
         txtFld_PhoneNumber.returnKeyType = .done
         btn_countryPicker.addTarget(self, action: #selector(selectCountryAction(_:)), for: .touchUpInside)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(termsLabelTapped))
+        lbl_temsandCondition.addGestureRecognizer(tapGesture)
+        self.lbl_temsandCondition.isUserInteractionEnabled = false
+
     }
-    
+    @objc func termsLabelTapped() {
+        if let url = URL(string: "https://backpacker.csdevhub.com/api/common/content/termsAndConditions") {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+    }
+
+    private func handleTermConditionBtn(){
+        if self.btn_trmcondition.tag == 0{
+            self.btn_trmcondition.tag = 1
+            self.btn_trmcondition.setImage(UIImage(named: "Checkbox2"), for: .normal)
+            self.lbl_temsandCondition.textColor = UIColor(named: "themeColor")
+            self.lbl_temsandCondition.isUserInteractionEnabled = true
+        }else{
+            self.btn_trmcondition.tag = 0
+            self.btn_trmcondition.setImage(UIImage(named: "Checkbox"), for: .normal)
+            self.lbl_temsandCondition.textColor = UIColor(named: "subTitleColor")
+            self.lbl_temsandCondition.isUserInteractionEnabled = false
+        }
+    }
     @objc func selectCountryAction(_ sender: Any) {
         picker_Vw.showCountriesList(from: self)
         
@@ -76,7 +106,17 @@ class LoginVC: UIViewController {
     @IBAction func action_Continue(_ sender: Any) {
         self.view.endEditing(true)
         if self.validatePhoneNumber() {
-            self.loginApiCall()
+            if self.btn_trmcondition.tag == 1{
+                self.loginApiCall()
+            }else{
+                AlertManager.showAlert(
+                    on: self,
+                    title: "Terms & Conditions Required",
+                    message: "You must agree to the Terms & Conditions to create an account or log in."
+                )
+
+            }
+            
         }
     }
     func setupRoundedBorder(for view: UIView) {
@@ -86,6 +126,10 @@ class LoginVC: UIViewController {
         view.clipsToBounds = true
     }
     
+    @IBAction func action_termsAndCondtionBtn(_ sender: Any) {
+        
+        self.handleTermConditionBtn()
+    }
     
     
 }
@@ -122,11 +166,13 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
         if phoneNumber.isEmpty {
             self.lbl_Error.isHidden = false
             self.lbl_Error.text = "Phone number cannot be empty."
+            self.btn_term_Topconstraint.constant = 10.0
             return false
         }
         if phoneCode.isEmpty {
             self.lbl_Error.isHidden = false
             self.lbl_Error.text = "Please select a country code."
+            self.btn_term_Topconstraint.constant = 10.0
             return false
         }
         // Validate format
@@ -136,10 +182,12 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
             print("-Valid number")
             self.lbl_Error.isHidden = true
             self.lbl_Error.text = ""
+            self.btn_term_Topconstraint.constant = 2.0
             return true
         } else {
             self.lbl_Error.isHidden = false
             self.lbl_Error.text = Constants.Alert.invalidPhoneMessage
+            self.btn_term_Topconstraint.constant = 10.0
             return false
         }
     }
