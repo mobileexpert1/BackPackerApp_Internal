@@ -55,55 +55,112 @@ extension TermsConditionVC {
     func getContentApiCall(key:String){
         LoaderManager.shared.show()
         
-        viewModel.getContent(key: key) { [weak self] (success: Bool, result: ContentResponse?, statusCode: Int?) in
-            guard let self = self else { return }
-            
-            guard let statusCode = statusCode else {
-                LoaderManager.shared.hide()
-                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
-                return
-            }
-            
-            let httpStatus = HTTPStatusCode(rawValue: statusCode)
-            
-            DispatchQueue.main.async {
-                LoaderManager.shared.hide()
+        if key == "privacyPolicy"{
+            viewModel.getContent(key: key) { [weak self] (success: Bool, result: PrivacyPolicyResponse?, statusCode: Int?) in
+                guard let self = self else { return }
                 
-                switch httpStatus {
-                case .ok, .created:
-                    if success, let profileData = result?.data {
-                        print("User Profile data fetched result:", profileData)
-                        self.txt_Vw.text = result?.data?.aboutUs?.content
-                    } else {
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success, let profileData = result?.data {
+                            print("User Profile data fetched result:", profileData)
+                            let plainContent = result?.data.privacyPolicy.content.htmlToPlainText
+                            self.txt_Vw.text =   plainContent
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        }
+                        if result?.data.privacyPolicy.content == nil{
+                            self.lbl_nodatFound.isHidden = false
+                        }else{
+                            self.lbl_nodatFound.isHidden = true
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getContentApiCall(key: key) // Retry on token refresh success
+                            } else {
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
+                            }
+                        }
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .internalServerError:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     }
-                    if result?.data?.aboutUs?.content == nil{
-                        self.lbl_nodatFound.isHidden = false
-                    }else{
-                        self.lbl_nodatFound.isHidden = true
-                    }
-                case .badRequest:
-                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                case .unauthorized :
-                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                            self.getContentApiCall(key: key) // Retry on token refresh success
+                }
+            }
+        }else{
+            viewModel.getContent(key: key) { [weak self] (success: Bool, result: TermsAndConditionsResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success, let profileData = result?.data {
+                            print("User Profile data fetched result:", profileData)
+                            let plainContent = result?.data.termsAndConditions.content.htmlToPlainText
+                            self.txt_Vw.text =   plainContent
+
                         } else {
-                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         }
+                        if result?.data.termsAndConditions.content == nil{
+                            self.lbl_nodatFound.isHidden = false
+                        }else{
+                            self.lbl_nodatFound.isHidden = true
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getContentApiCall(key: key) // Retry on token refresh success
+                            } else {
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
+                            }
+                        }
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     }
-                case .unauthorizedToken:
-                    LoaderManager.shared.hide()
-                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-                case .unknown:
-                    LoaderManager.shared.hide()
-                    AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
-                case .methodNotAllowed:
-                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                case .internalServerError:
-                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                 }
             }
         }
+      
     }
 }
