@@ -12,9 +12,9 @@ struct ApiConstants {
         static let DEBUG_MODE_ON = true
         private static let BASE_URL: String = {
             if DEBUG_MODE_ON {
-                return "https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"
+                return "http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"
             } else {
-                return "https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"
+                return "http://192.168.11.4:3003/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"
             }
         }()
         
@@ -601,10 +601,11 @@ struct ApiConstants {
         static func getCOMPANY_LOCATION_URL(
             page: Int,
             perPage: Int,
-            search: String? = nil
+            search: String? = nil,
+            businessCompanyId : String
         ) -> String {
             var url =
-            "\(BASE_URL)api/employer/companyDetail/location?page=\(page)&perPage=\(perPage)"
+            "\(BASE_URL)api/employer/companyDetail/location?page=\(page)&perPage=\(perPage)&businessCompanyId=\(businessCompanyId)"
             
             if let searchText = search?.trimmingCharacters(
                 in: .whitespacesAndNewlines), !searchText.isEmpty
@@ -624,6 +625,23 @@ struct ApiConstants {
             }
             return url
         }
+        static func getEMPLOYER_COMPANY_LISt(
+            page: Int, perPage: Int, search: String? = nil
+        ) -> String {
+            var url =
+            "\(BASE_URL)api/employer/companyDetail?page=\(page)&perPage=\(perPage)"
+            
+            if let searchText = search?.trimmingCharacters(
+                in: .whitespacesAndNewlines), !searchText.isEmpty
+            {
+                let encodedSearch =
+                searchText.addingPercentEncoding(
+                    withAllowedCharacters: .urlQueryAllowed) ?? ""
+                url += "&search=\(encodedSearch)"
+            }
+            
+            return url
+        }
        //MARK: - Subscriptions
         
        // https://backpacker.csdevhub.com/api/admin/subscription
@@ -634,7 +652,6 @@ struct ApiConstants {
  
     
  
-    
     
     
     

@@ -148,6 +148,7 @@ class ProfileVM {
             logo: Data?,
             website: String,
             contactNumber: String,
+            email:String,
             completion: @escaping (Bool, String?, Int?) -> Void
         ) {
     #if BackpackerHire
@@ -169,7 +170,8 @@ class ProfileVM {
                         "industryTypeId": industryTypeId,
                         "logo": logo,
                         "website": website,
-                        "contactNumber": contactNumber
+                        "contactNumber": contactNumber,
+                        "email": email
                     ]
             
           
@@ -386,9 +388,10 @@ class ProfileVM {
         page: Int,
         perPage: Int,
         search:String,
+        businessCompanyId : String,
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
     ) {
-        let url = ApiConstants.API.getCOMPANY_LOCATION_URL(page: page, perPage: perPage, search: search)
+        let url = ApiConstants.API.getCOMPANY_LOCATION_URL(page: page, perPage: perPage, search: search, businessCompanyId: businessCompanyId)
 
         ServiceManager.sharedInstance.requestApi(
             url,
@@ -415,6 +418,28 @@ class ProfileVM {
              completion(success, result, statusCode)
          }
      }
+    // MARK: - BackPacker: List of All Accommodation
+    func GETComapnyList<T: Codable>(
+        page: Int,
+        perPage: Int,
+        search: String? = nil,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getEMPLOYER_COMPANY_LISt(
+            page: page,
+            perPage: perPage,
+            search: search
+        )
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 struct CompanyLocationRequest: Codable {
     let name: String

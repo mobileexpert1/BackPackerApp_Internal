@@ -47,16 +47,34 @@ class CommonDetailVC: UIViewController {
     }
     
     @IBAction func action_EditTapped(_ sender: UIButton) {
-        
-        if btn_Edit.tag == 0{
-            btn_Edit.tag = 1
-            activeChildVC?.enableEditing(true)
+        if selectedIndex == 0 {
+                    if btn_Edit.tag == 0{
+                        btn_Edit.tag = 1
+                        activeChildVC?.enableEditing(true)
+                    }else{
+                        btn_Edit.tag = 0
+                        activeChildVC?.enableEditing(false)
+                    }
         }else{
-            btn_Edit.tag = 0
-            activeChildVC?.enableEditing(false)
+            let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+            if let settingVC = storyboard.instantiateViewController(withIdentifier: "CompanyDetailVC") as? CompanyDetailVC {
+                settingVC.isComeFromUpdate = false
+                   self.navigationController?.pushViewController(settingVC, animated: true)
+               } else {
+                   print("- Could not instantiate SettingVC")
+               }
+            
         }
-        
-        
+        /*
+         if btn_Edit.tag == 0{
+             btn_Edit.tag = 1
+             activeChildVC?.enableEditing(true)
+         }else{
+             btn_Edit.tag = 0
+             activeChildVC?.enableEditing(false)
+         }
+         */
+
     }
     
     
@@ -103,9 +121,12 @@ extension CommonDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,U
         case 0:
             storyboardName = "Setting"
             vcIdentifier = "AccountDetailVC"
+            self.btn_Edit.setTitle("Edit", for: .normal)
         case 1:
             storyboardName = "Setting"
-            vcIdentifier = "CompanyDetailVC"
+         ///   vcIdentifier = "CompanyDetailVC"
+            vcIdentifier = "CompanyListVC"
+            self.btn_Edit.setTitle("Add", for: .normal)
         default:
             return
         }

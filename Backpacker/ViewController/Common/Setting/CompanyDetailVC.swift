@@ -10,6 +10,11 @@ import UIKit
 class CompanyDetailVC: UIViewController {
     @IBOutlet weak var scroll_Height: NSLayoutConstraint!
     
+    @IBOutlet weak var emailVw: CommonTxtFldLblVw!
+    @IBOutlet weak var btn_edit: UIButton!
+    @IBOutlet weak var websiteVw: CommonTxtFldLblVw!
+    @IBOutlet weak var contactNumberVw: CommonTxtFldLblVw!
+    @IBOutlet weak var lbl_HeaderLbl: UILabel!
     @IBOutlet weak var tapImageBtn: UIButton!
     @IBOutlet weak var btn_Cancle: UIButton!
     @IBOutlet weak var btn_Save: UIButton!
@@ -59,6 +64,8 @@ class CompanyDetailVC: UIViewController {
     var lastSearchedText: String = ""
     var isComFromSearch : Bool = false
     var lastContentOffset: CGFloat = 0
+    var selectedCompanyId : String?
+    var objComapny : CompanyList?
     
     private lazy var refreshControl: UIRefreshControl = {
            let rc = UIRefreshControl()
@@ -72,18 +79,69 @@ class CompanyDetailVC: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if iscomeFromCamera == false{
+        print("ComanyObj",companyObj)
+        self.getIndustriesList()
+        if iscomeFromCamera == false && isComeFromUpdate == true{
             self.getCompanyInfo()
-            self.getIndustriesList()
             self.getListOfLocationAll()
         }
-      
+        self.setupData()
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
        /// jobs_Tble_Height.constant = CGFloat(locations?.count ?? 0) * (100 + 10)
     }
-    
+    private func setupData(){
+        if isComeFromUpdate == true{
+            self.bussinesName_Vw.txtFld.text = self.objComapny?.name
+            self.contactNumberVw.txtFld.text = self.objComapny?.contactNumber
+            self.websiteVw.txtFld.text = self.objComapny?.website
+            self.emailVw.txtFld.text = self.objComapny?.website
+            self.lbl_Val_SelctedIndustry.text = self.objComapny?.industryType.name
+            self.lbl_Val_SelctedIndustry.textColor = .black
+            self.industryId = self.objComapny?.industryType.id
+            let image = objComapny?.logo
+            let baseURL1 = ApiConstants.API.API_IMAGEURL
+
+            let imageURLString: String
+            if ((image?.hasPrefix("http")) != nil) {
+                imageURLString = image ?? ""
+            } else {
+                imageURLString = baseURL1 + (image ?? "")
+            }
+
+            self.selected_Image.sd_setImage(
+                with: URL(string: imageURLString),
+                placeholderImage: UIImage(named: "BgUploadImage"),
+                options: [],
+                completed: { [weak self] loadedImage, error, _, _ in
+                    guard let self = self else { return }
+                    if loadedImage == nil {
+                        // First attempt failed, try HTTPS or alternative path if needed
+                        var fallbackURLString = image
+                        if !(image?.hasPrefix("http") ?? false) {
+                            fallbackURLString = baseURL1 + (image ?? "")
+                        }
+                        
+                        // Only retry if the fallback URL is different
+                        if fallbackURLString != imageURLString {
+                            self.selected_Image.sd_setImage(
+                                with: URL(string: fallbackURLString ?? ""),
+                                placeholderImage: UIImage(named: "BgUploadImage")
+                            )
+                        }
+                    }
+                }
+               
+            )
+            self.selected_Image.layer.cornerRadius = 10.0
+            self.btn_remove.isHidden = false
+            self.btn_remove.isUserInteractionEnabled = true
+            self.placeholde_Img.isHidden = true
+            self.lbl_Placeholder.isHidden = true
+            
+        }
+    }
     private func attachRefreshControl() {
                 main_scrollVw.refreshControl = refreshControl
        
@@ -99,6 +157,18 @@ class CompanyDetailVC: UIViewController {
           
       }
     func setUpUI(){
+        if isComeFromUpdate == true{
+            self.btn_edit.isHidden = false
+            self.btn_edit.isUserInteractionEnabled = true
+        }else{
+            self.btn_edit.isHidden = true
+            self.btn_edit.isUserInteractionEnabled = false
+        }
+        self.btn_edit.tag = 0
+        isEditap()
+        self.updateAppearanceOfBottomBtns()
+        self.btn_edit.titleLabel?.font = FontManager.inter(.medium, size: 12.0)
+        self.lbl_HeaderLbl.font = FontManager.inter(.medium, size: 16.0)
         self.main_scrollVw.delegate = self
         self.MainVw_Industries.layer.cornerRadius = 10.0
         self.MainVw_Industries.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
@@ -107,6 +177,21 @@ class CompanyDetailVC: UIViewController {
         self.bussinesName_Vw.setTitleLabel("Business Name")
         self.bussinesName_Vw.setPlaceholder("Name")
         self.bussinesName_Vw.setError("")
+        
+        self.contactNumberVw.setTitleLabel("Contact Number")
+        self.contactNumberVw.setPlaceholder("Contact Number")
+        self.contactNumberVw.setError("")
+        self.contactNumberVw.txtFld.keyboardType = .numberPad
+        
+        self.websiteVw.setTitleLabel("Website")
+        self.websiteVw.setPlaceholder("Website Url")
+        self.websiteVw.setError("")
+        self.websiteVw.txtFld.keyboardType = .URL
+        
+        self.emailVw.setTitleLabel("Email")
+        self.emailVw.setPlaceholder("Email")
+        self.emailVw.setError("")
+        
         self.lbl_Industry.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_Val_SelctedIndustry.font = FontManager.inter(.regular, size: 14.0)
         lbl_CompanyLOgi.font = FontManager.inter(.medium, size: 14.0)
@@ -160,6 +245,21 @@ class CompanyDetailVC: UIViewController {
         }
     }
     
+    @IBAction func btn_editaction(_ sender: UIButton) {
+        if self.btn_edit.tag == 0 {
+            self.btn_edit.tag = 1
+            self.isComeFromUpdate = true
+        }else{
+            self.btn_edit.tag = 0
+            self.isComeFromUpdate = false
+        }
+        isEditap()
+        self.updateAppearanceOfBottomBtns()
+        
+    }
+    @IBAction func action_back(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
     @IBAction func action_save(_ sender: Any) {
         guard let name = bussinesName_Vw.txtFld.text?.trimmingCharacters(in: .whitespacesAndNewlines),
                   !name.isEmpty else {
@@ -167,6 +267,19 @@ class CompanyDetailVC: UIViewController {
                 return
             }
             
+        guard let contctNumber = contactNumberVw.txtFld.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !name.isEmpty else {
+                AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter contact number")
+                return
+            }
+        
+        guard let website = websiteVw.txtFld.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !name.isEmpty else {
+                AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter website url")
+                return
+            }
+        
+        
             guard let industry = lbl_Val_SelctedIndustry.text,
                   !industry.isEmpty,
                   industry != "Select Industry" else {
@@ -182,15 +295,33 @@ class CompanyDetailVC: UIViewController {
                 return
             }
             let industryTypeId = industryId ?? ""
-                let contactNumber = "1234567890"
-                let website = "www.google.com"
-                
+            guard let industry = lbl_Val_SelctedIndustry.text,
+                  !industry.isEmpty,
+                  industry != "Select Industry" else {
+                AlertManager.showAlert(on: self, title: "Field Missing", message: "Please select industry")
+                return
+            }
+            
+            guard let industry = lbl_Val_SelctedIndustry.text,
+                  !industry.isEmpty,
+                  industry != "Select Industry" else {
+                AlertManager.showAlert(on: self, title: "Field Missing", message: "Please select industry")
+                return
+            }
+            
+            guard let email = emailVw.txtFld.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      !name.isEmpty else {
+                    AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter email")
+                    return
+                }
+                let contactNumber = contctNumber
+                let website = website
             if isComeFromUpdate == true {
                 self.updateCompany(
                     name: name,
                     industryTypeId: industryTypeId,
                     contactNumber: contactNumber,
-                    website: website,
+                    website: website, email: email,
                     logo: imageData
                 )
             }else{
@@ -198,7 +329,7 @@ class CompanyDetailVC: UIViewController {
                     name: name,
                     industryTypeId: industryTypeId,
                     contactNumber: contactNumber,
-                    website: website,
+                    website: website, email: email,
                     logo: imageData
                 )
             }
@@ -589,10 +720,11 @@ extension CompanyDetailVC{
                                industryTypeId: String,
                                contactNumber: String,
                                website: String,
+                       email:String,
                                logo: Data?){
             LoaderManager.shared.show()
 
-        profileVm.addCompanyDetail(name: name, industryTypeId: industryTypeId, logo: logo, website: website, contactNumber: contactNumber){ success, message ,statusCode in
+        profileVm.addCompanyDetail(name: name, industryTypeId: industryTypeId, logo: logo, website: website, contactNumber: contactNumber, email: email){ success, message ,statusCode in
                 guard let statusCode = statusCode else {
                     LoaderManager.shared.hide()
                     AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
@@ -616,7 +748,7 @@ extension CompanyDetailVC{
                     case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                self.createCompany(name: name, industryTypeId: industryTypeId, contactNumber: contactNumber, website: website, logo: logo)
+                                self.createCompany(name: name, industryTypeId: industryTypeId, contactNumber: contactNumber, website: website, email: email, logo: logo)
                             } else {
                                 NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                             }
@@ -643,6 +775,7 @@ extension CompanyDetailVC{
                                industryTypeId: String,
                                contactNumber: String,
                                website: String,
+                       email:String,
                                logo: Data?){
             LoaderManager.shared.show()
 
@@ -670,7 +803,7 @@ extension CompanyDetailVC{
                     case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                self.createCompany(name: name, industryTypeId: industryTypeId, contactNumber: contactNumber, website: website, logo: logo)
+                                self.createCompany(name: name, industryTypeId: industryTypeId, contactNumber: contactNumber, website: website, email: email, logo: logo)
                             } else {
                                 NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                             }
@@ -693,6 +826,11 @@ extension CompanyDetailVC{
         
     }
     func getListOfLocationAll(){
+        guard let id = self.objComapny?.id else {
+            AlertManager.showAlert(on: self, title: "Error", message: "Company ID not found.")
+            return
+        }
+
         let trimmedSearch = ""
         if page == 1 {
             self.isLoading = true
@@ -700,7 +838,7 @@ extension CompanyDetailVC{
         } else {
             isLoadingMoreData = true
         }
-        profileVm.getCompanyLocationList(page: page, perPage: perPage, search: trimmedSearch)  { [weak self] (success: Bool, result: LocationResponse?, statusCode: Int?) in
+        profileVm.getCompanyLocationList(page: page, perPage: perPage, search: trimmedSearch, businessCompanyId: id)  { [weak self] (success: Bool, result: LocationResponse?, statusCode: Int?) in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 LoaderManager.shared.hide()

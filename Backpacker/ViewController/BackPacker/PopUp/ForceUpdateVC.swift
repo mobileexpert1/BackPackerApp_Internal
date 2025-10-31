@@ -10,7 +10,7 @@ import UIKit
 class ForceUpdateVC: UIViewController {
     @IBOutlet weak var date_stackHeight: NSLayoutConstraint!
     @IBOutlet weak var startDateField: UITextField!
-        @IBOutlet weak var endDateField: UITextField!
+    @IBOutlet weak var endDateField: UITextField!
     @IBOutlet weak var Vw_ExpiryDate: UIView!
     @IBOutlet weak var lbl_expiryDate: UILabel!
     @IBOutlet weak var lbl_Val_StatrDate: UILabel!

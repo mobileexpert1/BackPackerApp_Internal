@@ -159,6 +159,7 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
                         self.tblVw.reloadData()
 
                     }
+            
             self.handleAppearanceFrBottomBtns()
                     // Update cell image based on selectedIndex
                     let isSelected = (indexPath == selectedIndex)
@@ -201,12 +202,10 @@ extension SubscriptionVC {
                                 if result?.data != nil{
                                     self.isLoading = false
                                     self.plans?.removeAll()
-                                    self.plans = result?.data?.plans ?? []
-                                    if let plan =  result?.data?.currentPlan{
-                                        self.currentPlan = plan
-                                       
-                                            
-                                    }
+                                    self.plans = result?.data ?? []
+//                                    if let plan =  result?.data?.currentPlan{
+//                                        self.currentPlan = plan
+//                                    }
                                 }else{
                                     AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
                                 }

@@ -1331,7 +1331,7 @@ extension AddNewJobVC {
         } else {
             isLoadingMoreData = true
         }
-        profileVm.getCompanyLocationList(page: page, perPage: perPage, search: trimmedSearch)  { [weak self] (success: Bool, result: LocationResponse?, statusCode: Int?) in
+        profileVm.getCompanyLocationList(page: page, perPage: perPage, search: trimmedSearch, businessCompanyId: "")  { [weak self] (success: Bool, result: LocationResponse?, statusCode: Int?) in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 LoaderManager.shared.hide()

@@ -355,3 +355,62 @@ struct UpdatedCompanyDetail: Codable {
         case v = "__v"
     }
 }
+
+//MARK: - CompanyList
+// MARK: - Root Response
+struct CompanyListResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: CompanyListData
+}
+
+// MARK: - Company Data
+struct CompanyListData: Codable {
+    let company: [CompanyList]
+    let total: Int
+    let page: Int
+    let perPage: Int
+    let totalPages: Int
+}
+
+// MARK: - Company
+struct CompanyList: Codable {
+    let id: String
+    let userId: String
+    let name: String
+    let industryType: IndustryType
+    let logo: String
+    let website: String
+    let contactNumber: String
+    let createdAt: String
+    let updatedAt: String
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case userId
+        case name
+        case industryType = "industryTypeId"
+        case logo
+        case website
+        case contactNumber
+        case createdAt
+        case updatedAt
+    }
+}
+
+// MARK: - Industry Type
+struct IndustryType: Codable {
+    let id: String
+    let name: String
+    let image: String
+    let createdAt: String
+    let updatedAt: String
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case name
+        case image
+        case createdAt
+        case updatedAt
+    }
+}
