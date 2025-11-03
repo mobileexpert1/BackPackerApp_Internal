@@ -200,6 +200,7 @@ class ProfileVM {
     
     // MARK: -Update Company Deail
     func updateComapnyDetail(
+        comapnyId: String,
         name: String,
         industryTypeId: String,
         logo: Data?,
@@ -222,6 +223,7 @@ class ProfileVM {
         let url = ApiConstants.API.CREATE_NEW_COMPANY // 🔁 Replace with correct endpoint
 
         var params: Parameters = [
+            "id":comapnyId,
                     "name": name,
                     "industryTypeId": industryTypeId,
                     "logo": logo,
@@ -257,6 +259,7 @@ class ProfileVM {
             name: String,
             lat: Double,
             long: Double,
+            businessCompanyId: String,
             completion: @escaping (Bool, String?, Int?) -> Void
         ) {
     #if BackpackerHire
@@ -274,7 +277,7 @@ class ProfileVM {
             let url = ApiConstants.API.COMPANY_LOCATION // 🔁 Replace with correct endpoint
 
             
-            let req = CompanyLocationRequest(name: name, lat: lat, long: long)
+            let req = CompanyLocationRequest(name: name, lat: lat, long: long, businessCompanyId: businessCompanyId)
 
             
             // Encode the request
@@ -310,6 +313,7 @@ class ProfileVM {
         name: String,
         lat: Double,
         long: Double,
+        businessCompanyId:String,
         completion: @escaping (ApiResponseModel<LocationCheckData>?, APIError?, Int?) -> Void
     ) {
         #if BackpackerHire
@@ -326,7 +330,7 @@ class ProfileVM {
 
         let url = ApiConstants.API.COMPANY_LOCATION
 
-        let req = CompanyLocationRequest(name: name, lat: lat, long: long)
+        let req = CompanyLocationRequest(name: name, lat: lat, long: long, businessCompanyId: businessCompanyId)
 
         // Encode the request
         let jsonBody: String
@@ -402,6 +406,23 @@ class ProfileVM {
             completion(success, result, statusCode)
         }
     }
+    func getAddJobCompanyLocationList<T: Codable>(
+        page: Int,
+        perPage: Int,
+        search:String,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.getAddJobCOMPANY_LOCATION_URL(page: page, perPage: perPage, search: search)
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
     //MARK: Delet
      func delete<T: Codable>(
          locationID:String,
@@ -445,5 +466,6 @@ struct CompanyLocationRequest: Codable {
     let name: String
     let lat: Double
     let long : Double
+    let businessCompanyId : String
 }
 

@@ -31,6 +31,7 @@ class CompanyLocationVC: UIViewController {
     var lat : Double?
     var long : Double?
     var locationAlreadyExist : Bool = false
+    var companyID: String?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
@@ -130,7 +131,7 @@ extension CompanyLocationVC : UITextFieldDelegate {
         profileVm.addCompanyLocation2(
             name: locationText ?? "",
             lat: lat ?? 0.0,
-            long: long ?? 0.0
+            long: long ?? 0.0, businessCompanyId: self.companyID ?? ""
         ) { response, error, statusCode in
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()

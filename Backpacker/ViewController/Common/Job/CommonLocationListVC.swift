@@ -268,7 +268,7 @@ extension CommonLocationListVC: UITextFieldDelegate {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Loading more backpackers..."
+        label.text = "Loading more locations..."
         label.font = FontManager.inter(.medium, size: 12.0)
         label.textColor = .gray
         
@@ -305,7 +305,7 @@ extension CommonLocationListVC {
         } else {
             isLoadingMoreData = true
         }
-        profileVm.getCompanyLocationList(page: page, perPage: perPage, search: trimmedSearch, businessCompanyId: "")  { [weak self] (success: Bool, result: LocationResponse?, statusCode: Int?) in
+        profileVm.getAddJobCompanyLocationList(page: page, perPage: perPage, search: trimmedSearch)  { [weak self] (success: Bool, result: LocationResponse?, statusCode: Int?) in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 LoaderManager.shared.hide()
@@ -344,6 +344,7 @@ extension CommonLocationListVC {
                             self.isLoadingMoreData = false
                             self.isComeFromPullTorefresh = false
                             self.lastContentOffset = 0.0
+                           
                             if self.searchData.count == 0 {
                                 self.showAddLocationAlert()
                                 /*
@@ -377,9 +378,10 @@ extension CommonLocationListVC {
                         self.tblVw.reloadData()
 //                        self.reloadTableData()
 //                        self.hideBottomLoader()
+                        self.removeTableFooterView()
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                     
+                        self.removeTableFooterView()
                     case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -393,17 +395,21 @@ extension CommonLocationListVC {
                         }
                     case .unauthorizedToken:
                         LoaderManager.shared.hide()
+                        self.removeTableFooterView()
                       //  self.jobs_TblVw.setContentOffset(.zero, animated: true)
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
+                        self.removeTableFooterView()
                      //   self.jobs_TblVw.setContentOffset(.zero, animated: true)
                         AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
                      
                     case .methodNotAllowed:
+                        self.removeTableFooterView()
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                      
                     case .internalServerError:
+                        self.removeTableFooterView()
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     
                     }

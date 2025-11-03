@@ -80,9 +80,11 @@ class CompanyDetailVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("ComanyObj",companyObj)
+        self.btn_edit.isHidden = true
+        self.btn_edit.isUserInteractionEnabled = true
         self.getIndustriesList()
         if iscomeFromCamera == false && isComeFromUpdate == true{
-            self.getCompanyInfo()
+          //  self.getCompanyInfo()
             self.getListOfLocationAll()
         }
         self.setupData()
@@ -149,21 +151,26 @@ class CompanyDetailVC: UIViewController {
     @objc private func didPullToRefresh() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
             if self.iscomeFromCamera == false{
+                if self.iscomeFromCamera == false && self.isComeFromUpdate == true{
                     self.getCompanyInfo()
                     self.getIndustriesList()
                     self.getListOfLocationAll()
+                }else{
+                    self.getIndustriesList()
+                }
+                    
                 }
         }
           
       }
     func setUpUI(){
-        if isComeFromUpdate == true{
-            self.btn_edit.isHidden = false
-            self.btn_edit.isUserInteractionEnabled = true
-        }else{
-            self.btn_edit.isHidden = true
-            self.btn_edit.isUserInteractionEnabled = false
-        }
+//        if isComeFromUpdate == true{
+//            self.btn_edit.isHidden = false
+//            self.btn_edit.isUserInteractionEnabled = true
+//        }else{
+//            self.btn_edit.isHidden = true
+//            self.btn_edit.isUserInteractionEnabled = false
+//        }
         self.btn_edit.tag = 0
         isEditap()
         self.updateAppearanceOfBottomBtns()
@@ -404,17 +411,23 @@ class CompanyDetailVC: UIViewController {
         }
     }
     @IBAction func actio_addLocation(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-           if let locationVC = storyboard.instantiateViewController(withIdentifier: "CompanyLocationVC") as? CompanyLocationVC {
-               locationVC.modalPresentationStyle = .overFullScreen
-                  locationVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.2) // dim effect
-               locationVC.delegate = self
-                  let nav = UINavigationController(rootViewController: locationVC)
-                  nav.navigationBar.isHidden = true
-                  nav.modalPresentationStyle = .overFullScreen   // 👈 keeps transparency
-                  
-                  self.present(nav, animated: true)
-           }
+        if  self.objComapny?.id != nil{
+            let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+               if let locationVC = storyboard.instantiateViewController(withIdentifier: "CompanyLocationVC") as? CompanyLocationVC {
+                   locationVC.companyID = self.objComapny?.id
+                   locationVC.modalPresentationStyle = .overFullScreen
+                      locationVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.2) // dim effect
+                   locationVC.delegate = self
+                      let nav = UINavigationController(rootViewController: locationVC)
+                      nav.navigationBar.isHidden = true
+                      nav.modalPresentationStyle = .overFullScreen   // 👈 keeps transparency
+                      
+                      self.present(nav, animated: true)
+               }
+        }else{
+            AlertManager.showAlert(on: self, title: "Error", message: "Please add company first.")
+        }
+       
     }
 }
 extension CompanyDetailVC: CommonDetailChildDelegate {
@@ -430,13 +443,13 @@ extension CompanyDetailVC: CommonDetailChildDelegate {
         self.updateAppearanceOfBottomBtns()
         }
     func updateAppearanceOfBottomBtns() {
-        if companyDetailObj == nil {
-            self.btn_btnHeight.constant = 50.0
-            self.btn_Save.isHidden = false
-            self.btn_Cancle.isHidden = false
-            self.btn_Save.setTitle("Save", for: .normal)
-            applyGradientButtonStyle(to: self.btn_Save)
-        }else{
+//        if companyDetailObj == nil {
+//            self.btn_btnHeight.constant = 50.0
+//            self.btn_Save.isHidden = false
+//            self.btn_Cancle.isHidden = false
+//            self.btn_Save.setTitle("Save", for: .normal)
+//            applyGradientButtonStyle(to: self.btn_Save)
+//        }else{
             DispatchQueue.main.async { [self] in
                 if isComeFromUpdate == true{
                     self.btn_btnHeight.constant = 50.0
@@ -445,16 +458,21 @@ extension CompanyDetailVC: CommonDetailChildDelegate {
                     self.btn_Save.setTitle("Update", for: .normal)
                     applyGradientButtonStyle(to: self.btn_Save)
                 }else{
-                    self.btn_Save.setTitle("", for: .normal)
-                    self.btn_Save.setTitle("", for: .normal)
-                    self.btn_btnHeight.constant = 0.0
-                    self.btn_Save.isHidden = true
-                    self.btn_Cancle.isHidden = true
+//                    self.btn_Save.setTitle("", for: .normal)
+//                    self.btn_Save.setTitle("", for: .normal)
+//                    self.btn_btnHeight.constant = 0.0
+//                    self.btn_Save.isHidden = true
+//                    self.btn_Cancle.isHidden = true
+                                self.btn_btnHeight.constant = 50.0
+                                self.btn_Save.isHidden = false
+                                self.btn_Cancle.isHidden = false
+                                self.btn_Save.setTitle("Save", for: .normal)
+                                applyGradientButtonStyle(to: self.btn_Save)
                 }
                 
             }
           
-        }
+       // }
     }
     
     func isEditap(){
@@ -691,7 +709,9 @@ extension CompanyDetailVC{
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     }
+                    self.refreshControl.endRefreshing()
                 case .badRequest:
+                    self.refreshControl.endRefreshing()
                     AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                 case .unauthorized :
                     self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
@@ -779,7 +799,7 @@ extension CompanyDetailVC{
                                logo: Data?){
             LoaderManager.shared.show()
 
-        profileVm.updateComapnyDetail(name: name, industryTypeId: industryTypeId, logo: logo, website: website, contactNumber: contactNumber){ success, message ,statusCode in
+        profileVm.updateComapnyDetail(comapnyId: self.objComapny?.id ?? "", name: name, industryTypeId: industryTypeId, logo: logo, website: website, contactNumber: contactNumber){ success, message ,statusCode in
                 guard let statusCode = statusCode else {
                     LoaderManager.shared.hide()
                     AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
@@ -792,7 +812,8 @@ extension CompanyDetailVC{
                     case .ok, .created:
                         if success == true {
                             AlertManager.showAlert(on: self, title: "Success", message: message ?? "Comapny Added."){
-                                self.getCompanyInfo()
+                      //          self.getCompanyInfo()
+                                self.navigationController?.popViewController(animated: true)
                             }
                             
                         } else {
@@ -803,7 +824,7 @@ extension CompanyDetailVC{
                     case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                self.createCompany(name: name, industryTypeId: industryTypeId, contactNumber: contactNumber, website: website, email: email, logo: logo)
+                                self.updateCompany(name: name, industryTypeId: industryTypeId, contactNumber: contactNumber, website: website, email: email, logo: logo)
                             } else {
                                 NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
                             }
@@ -1024,7 +1045,10 @@ extension CompanyDetailVC: UIScrollViewDelegate {
 
                 // Simulate data fetch or call your API
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    self.getListOfLocationAll()
+                    if self.iscomeFromCamera == false && self.isComeFromUpdate == true{
+                        self.getListOfLocationAll()
+                    }
+                    
                 }
             }
         }
