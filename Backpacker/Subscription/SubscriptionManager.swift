@@ -174,7 +174,7 @@ final class SubscriptionManager {
                     let purchaseRequest = createUserPlanRequest(from: transaction)
                 self.purchasePlanDetail = purchaseRequest
                 if let vc = self.controller as? SubscriptionVC{
-                    vc.createNewUserPlan()
+                 //   vc.createNewUserPlan()
                 }
 
             case .userCancelled:

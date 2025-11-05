@@ -9,6 +9,12 @@ import UIKit
 import CoreLocation
 class AddNewJobVC: UIViewController {
     
+    @IBOutlet weak var btn_regional: UIButton!
+    @IBOutlet weak var lbl_regional: UILabel!
+    @IBOutlet weak var img_reginal: UIImageView!
+    @IBOutlet weak var btn_frm: UIButton!
+    @IBOutlet weak var lbl_frmWrk: UILabel!
+    @IBOutlet weak var imgVw_frm: UIImageView!
     //Outlets
     @IBOutlet weak var main_ScrollVw: UIScrollView!
     @IBOutlet weak var Main_Header: UILabel!
@@ -142,6 +148,7 @@ class AddNewJobVC: UIViewController {
     var isComFromSearch : Bool = false
     var lastContentOffset: CGFloat = 0
     var locationId : String?
+    var selectedWork : String?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
@@ -207,7 +214,41 @@ class AddNewJobVC: UIViewController {
             txtFldAddress.resignFirstResponder()
         }
         }
+    @IBAction func action_farm(_ sender: Any) {
+        self.btn_regional.tag = 0
+        if self.btn_frm.tag == 0 {
+            self.btn_frm.tag = 1
+        }else{
+            self.btn_frm.tag = 0
+        }
+        self.updateFrmReginalBtn()
+    }
+    @IBAction func action_regional(_ sender: Any) {
+        self.btn_frm.tag = 0
+        if self.btn_regional.tag == 0 {
+            self.btn_regional.tag = 1
+        }else{
+            self.btn_regional.tag = 0
+        }
+        self.updateFrmReginalBtn()
+    }
     
+    
+    private func updateFrmReginalBtn(){
+        if self.btn_regional.tag == 1 {
+            self.img_reginal.image = UIImage(named: "Checkbox2")
+            self.imgVw_frm.image = UIImage(named: "Checkbox")
+            self.lbl_regional.textColor = .black
+            self.lbl_frmWrk.textColor = UIColor(named: "subTitleColor")
+            self.selectedWork = "Regional Work"
+        }else{
+            self.img_reginal.image = UIImage(named: "Checkbox")
+            self.imgVw_frm.image = UIImage(named: "Checkbox2")
+            self.lbl_frmWrk.textColor = .black
+            self.lbl_regional.textColor = UIColor(named: "subTitleColor")
+            self.selectedWork = "Farm Worl"
+        }
+    }
     private func setUpEditData(){
         if isComeFromEdit == true{
             self.txtFldName.text = editName
@@ -805,6 +846,13 @@ extension AddNewJobVC {
 
     
     private func setUpUI(){
+        self.btn_regional.tag = 0
+        self.btn_frm.tag = 0
+        self.lbl_regional.textColor = UIColor(named: "subTitleColor")
+        self.lbl_frmWrk.textColor = UIColor(named: "subTitleColor")
+        self.lbl_frmWrk.font = FontManager.inter(.medium, size: 12.0)
+        self.lbl_regional.font = FontManager.inter(.medium, size: 12.0)
+        
         self.main_ImgVw.image = UIImage(named: "BgUploadImage")
         self.setUpImagePlacehoder()
         self.Main_Header.font = FontManager.inter(.semiBold, size: 16.0)
@@ -1185,7 +1233,10 @@ extension AddNewJobVC {
             AlertManager.showAlert(on: viewController, title: "Invalid Location", message: "Please select a valid location on map.")
             return false
         }
-        
+        if self.selectedWork?.isEmpty == true {
+            AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please select a work")
+                     return false
+        }
         return true
     }
     

@@ -152,7 +152,6 @@ class CompanyDetailVC: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
             if self.iscomeFromCamera == false{
                 if self.iscomeFromCamera == false && self.isComeFromUpdate == true{
-                //    self.getCompanyInfo()
                     self.getIndustriesList()
                     self.getListOfLocationAll()
                 }else{
