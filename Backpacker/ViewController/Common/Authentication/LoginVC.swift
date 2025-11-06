@@ -78,7 +78,7 @@ class LoginVC: UIViewController {
 
     }
     @objc func termsLabelTapped() {
-        if let url = URL(string: "https://backpacker.csdevhub.com/api/common/content/termsAndConditions") {
+        if let url = URL(string: "https://backpacker.csdevhub.com/terms-condition") {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
     }

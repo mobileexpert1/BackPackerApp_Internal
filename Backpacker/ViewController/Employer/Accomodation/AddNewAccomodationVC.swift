@@ -657,7 +657,7 @@ extension AddNewAccomodationVC : SetLocationDelegate ,CommonLocationDelegate{
         self.longitude = coordinate.longitude
     }
     func didSelectBackpacker(_ location: [LocationList]) {
-        print("Location",location.last)
+        print("Location",location.last ?? "")
         if let loc = location.last{
             self.locationId = loc.id
             valLocation.text = loc.name

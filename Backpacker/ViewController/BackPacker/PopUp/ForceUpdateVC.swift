@@ -22,6 +22,7 @@ class ForceUpdateVC: UIViewController {
     @IBOutlet weak var lbl_error_VisaHeight: NSLayoutConstraint!
     @IBOutlet weak var main_Vw: UIView!
     
+    @IBOutlet weak var mainDOBVw: UIView!
     @IBOutlet weak var imgDrpDwon: UIImageView!
     @IBOutlet weak var lbl_error_endDate: UILabel!
     @IBOutlet weak var lbl_error_startDate: UILabel!
@@ -42,6 +43,7 @@ class ForceUpdateVC: UIViewController {
     @IBOutlet weak var vWHeightContraint: NSLayoutConstraint!
     @IBOutlet weak var lbl_Val_VisaType: UILabel!
     @IBOutlet weak var btn_Save: UIButton!
+    @IBOutlet weak var lbl_dobError: UILabel!
     @IBOutlet weak var lbl_main_visaType: UILabel!
     @IBOutlet weak var name_Vw: CommonTxtFldLblVw!
     let profileVm = ProfileVM()
@@ -60,11 +62,22 @@ class ForceUpdateVC: UIViewController {
         private var endDatePicker: UIDatePicker?
     
     var startDateCovertedVal : String?
+    @IBOutlet weak var Vw_DobMini: UIView!
     var endDateConvertedVal : String?
+    
+    @IBOutlet weak var lbl_dob: UILabel!
+    var DOBPicker: UIDatePicker?
+    @IBOutlet weak var lbl_avlDob: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
-        
+        self.lbl_dobError.isHidden = true
+        self.lbl_dobError.textColor = .red
+        self.lbl_avlDob.textColor = UIColor(named: "subTitleColor")
+        self.lbl_dobError.font = FontManager.inter(.regular, size: 8.0)
+        self.lbl_dob.font = FontManager.inter(.regular, size: 14.0)
+        self.lbl_avlDob.font = FontManager.inter(.regular, size: 12.0)
+        self.Vw_DobMini.addShadowAllSides(radius: 2.0)
         // Do any additional setup after loading the view.
         
 #if Backapacker
@@ -101,6 +114,9 @@ class ForceUpdateVC: UIViewController {
         self.lbl_startDate.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_expiryDate.font = FontManager.inter(.medium, size: 14.0)
         self.startDateField.font = FontManager.inter(.regular, size: 12.0)
+        
+   
+        
         self.endDateField.font = FontManager.inter(.regular, size: 12.0)
         self.Vw_LblExpiryDate.layer.cornerRadius = 10.0
         self.Vw_LblExpiryDate.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
@@ -181,7 +197,38 @@ class ForceUpdateVC: UIViewController {
         self.lbl_error_startDate.isHidden = true
        }
        
-       @objc func endDateChanged() {
+    @IBAction func action_chosseDOB(_ sender: Any) {
+        self.showDatePicker()
+        
+        
+    }
+    func showDatePicker() {
+        let alert = UIAlertController(title: "Select DOB", message: "\n\n\n\n\n\n\n\n", preferredStyle: .actionSheet)
+                
+                DOBPicker = UIDatePicker(frame: CGRect(x: 0, y: 20, width: alert.view.bounds.width - 20, height: 200))
+                DOBPicker?.datePickerMode = .date
+                DOBPicker?.maximumDate = Date()
+                if #available(iOS 14.0, *) {
+                    DOBPicker?.preferredDatePickerStyle = .wheels
+                }
+                
+                alert.view.addSubview(DOBPicker!)
+                
+                let doneAction = UIAlertAction(title: "Done", style: .default) { _ in
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "dd/MM/yyyy"
+                    if let date = self.DOBPicker?.date {
+                        self.lbl_avlDob.text = formatter.string(from: date)
+                        self.lbl_dobError.isHidden = true
+                     
+                        self.lbl_avlDob.textColor = UIColor(named: "blackColor")
+                    }
+                }
+                alert.addAction(doneAction)
+                
+                present(alert, animated: true, completion: nil)
+        }
+    @objc func endDateChanged() {
            let formatter = DateFormatter()
            formatter.dateStyle = .medium
            endDateField.text = formatter.string(from: endDatePicker?.date ?? Date())
@@ -206,6 +253,13 @@ class ForceUpdateVC: UIViewController {
         if !isNameValid { hasError = true }
 
         let isEmailValid = email_Vw.validateEmail(errorMessage: "Please enter your email")
+        if lbl_avlDob.text == "DOB" || lbl_avlDob.text?.isEmpty == true {
+            lbl_dobError.isHidden = false
+            hasError = true
+        } else {
+            lbl_dobError.isHidden = true
+        }
+
         if !isEmailValid { hasError = true }
 #if BackpackerHire
         
