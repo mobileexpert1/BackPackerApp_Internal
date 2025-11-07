@@ -28,6 +28,7 @@ struct UserProfileData: Codable {
     let notificationStatus: Bool
     let startDate : String?
     let endDate : String?
+    let dob : String?
 }
 
 

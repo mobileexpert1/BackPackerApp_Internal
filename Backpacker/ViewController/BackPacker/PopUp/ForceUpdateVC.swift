@@ -313,7 +313,7 @@ class ForceUpdateVC: UIViewController {
                     area: "",
                     visaType: lbl_Val_VisaType.text ?? "",
                     statrtDate: self.startDateCovertedVal ?? "",
-                    endDate: self.endDateConvertedVal ?? ""
+                    endDate: self.endDateConvertedVal ?? "", dob: lbl_avlDob.text ?? ""
                 )
             }
         
@@ -330,9 +330,9 @@ class ForceUpdateVC: UIViewController {
 }
 extension ForceUpdateVC {
     //MARK: - UPdate Profile Api Call
-    func updateProfileInfo(name: String, email: String, state: String, area: String, visaType: String,statrtDate: String,endDate: String) {
+    func updateProfileInfo(name: String, email: String, state: String, area: String, visaType: String,statrtDate: String,endDate: String,dob:String) {
         LoaderManager.shared.show()
-        profileVm.updateBackPackerProfile(email: email, name: name, state: "", area: "", visaType: visaType, notificationStatus: false,startDate: statrtDate,endDate: endDate) { [weak self] (success: Bool, result: UpdateProfileResponse?, statusCode: Int?) in
+        profileVm.updateBackPackerProfile(email: email, name: name, state: "", area: "", visaType: visaType, notificationStatus: false,startDate: statrtDate,endDate: endDate,dob: dob) { [weak self] (success: Bool, result: UpdateProfileResponse?, statusCode: Int?) in
             guard let self = self else { return }
             
             guard let statusCode = statusCode else {
@@ -361,7 +361,7 @@ extension ForceUpdateVC {
                 case .unauthorized :
                     self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                            self.updateProfileInfo(name: name, email: email, state: state, area: area, visaType: visaType,statrtDate: self.startDateCovertedVal ?? "",endDate:  self.endDateConvertedVal ?? "")
+                            self.updateProfileInfo(name: name, email: email, state: state, area: area, visaType: visaType,statrtDate: self.startDateCovertedVal ?? "",endDate:  self.endDateConvertedVal ?? "", dob: dob)
                         } else {
                             NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
                         }

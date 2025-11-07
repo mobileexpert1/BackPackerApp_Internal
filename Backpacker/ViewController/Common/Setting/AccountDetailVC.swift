@@ -48,6 +48,7 @@ class AccountDetailVC: UIViewController {
         "Permanent Residency",
         "Investor Visa"
     ]
+    var DOBPicker: UIDatePicker?
     @IBOutlet weak var top_HeaderHeight: NSLayoutConstraint!
     @IBOutlet weak var lblzHeaderVisa: UILabel!
     let role = UserDefaults.standard.string(forKey: "UserRoleType")
@@ -63,6 +64,10 @@ class AccountDetailVC: UIViewController {
     @IBOutlet weak var vw_EndDate: UIView!
     @IBOutlet weak var Vw_strtdate: UIView!
     
+    @IBOutlet weak var Vw_DobMini: UIView!
+    @IBOutlet weak var lbl_dob: UILabel!
+    @IBOutlet weak var lbl_avlDob: UILabel!
+    @IBOutlet weak var lbl_dobError: UILabel!
     @IBOutlet weak var startDateField: UITextField!
     @IBOutlet weak var lbl_errExpDate: UILabel!
     @IBOutlet weak var endDateField: UITextField!
@@ -75,6 +80,16 @@ class AccountDetailVC: UIViewController {
     var endDateConvertedVal : String?
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.lbl_dobError.isHidden = true
+        self.lbl_dobError.textColor = .red
+        self.lbl_avlDob.textColor = UIColor(named: "subTitleColor")
+        self.lbl_dobError.font = FontManager.inter(.regular, size: 8.0)
+        self.lbl_dob.font = FontManager.inter(.regular, size: 14.0)
+        self.lbl_avlDob.font = FontManager.inter(.regular, size: 12.0)
+        self.Vw_DobMini.addShadowAllSides(radius: 2.0)
+        
+        
         self.setUpButtons()
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
         self.setUpFonts()
@@ -264,7 +279,35 @@ class AccountDetailVC: UIViewController {
             self.vWHeightContraint.constant = 190.0
         }
     }
-    
+    func showDatePicker() {
+        let alert = UIAlertController(title: "Select DOB", message: "\n\n\n\n\n\n\n\n", preferredStyle: .actionSheet)
+                
+                DOBPicker = UIDatePicker(frame: CGRect(x: 0, y: 20, width: alert.view.bounds.width - 20, height: 200))
+                DOBPicker?.datePickerMode = .date
+                DOBPicker?.maximumDate = Date()
+                if #available(iOS 14.0, *) {
+                    DOBPicker?.preferredDatePickerStyle = .wheels
+                }
+                
+                alert.view.addSubview(DOBPicker!)
+                
+                let doneAction = UIAlertAction(title: "Done", style: .default) { _ in
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "dd/MM/yyyy"
+                    if let date = self.DOBPicker?.date {
+                        self.lbl_avlDob.text = formatter.string(from: date)
+                        self.lbl_dobError.isHidden = true
+                     
+                        self.lbl_avlDob.textColor = UIColor(named: "blackColor")
+                    }
+                }
+                alert.addAction(doneAction)
+                
+                present(alert, animated: true, completion: nil)
+        }
+    @IBAction func action_chosseDob(_ sender: Any) {
+        self.showDatePicker()
+    }
     @IBAction func action_Back(_ sender: Any) {
         
         self.navigationController?.popViewController(animated: true)
@@ -542,6 +585,33 @@ extension AccountDetailVC {
                 print("Invalid date")
             }
         }
+        
+        if let isoDate = data.dob {
+            let isoFormatter = ISO8601DateFormatter()
+            isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds] // handles .000Z too
+
+            if let date = isoFormatter.date(from: isoDate) ?? ISO8601DateFormatter().date(from: isoDate.replacingOccurrences(of: ".000Z", with: "Z")) {
+                
+                let displayFormatter = DateFormatter()
+                displayFormatter.dateFormat = "MM/dd/yyyy"
+                displayFormatter.timeZone = .current // converts to local
+                
+                let formattedDate = displayFormatter.string(from: date)
+                lbl_avlDob.text = formattedDate
+                lbl_dobError.isHidden = true
+                self.lbl_avlDob.textColor = UIColor(named: "blackColor")
+                
+                print("✅ Formatted DOB:", formattedDate)
+                
+            } else {
+                print("❌ Could not parse ISO date:", isoDate)
+                lbl_dobError.isHidden = false
+            }
+        } else {
+            lbl_dobError.isHidden = false
+        }
+
+       
     }
     func formatISODate(_ isoString: String) -> String? {
         // 1. Convert ISO string to Date
@@ -563,7 +633,7 @@ extension AccountDetailVC {
 
     func updateProfileInfo(name: String, email: String, state: String, area: String, visaType: String,startDate: String,endDate: String) {
         LoaderManager.shared.show()
-        profileVm.updateBackPackerProfile(email: email, name: name, state: state, area: area, visaType: visaType, notificationStatus: false,startDate: startDate,endDate: endDate) { [weak self] (success: Bool, result: UpdateProfileResponse?, statusCode: Int?) in
+        profileVm.updateBackPackerProfile(email: email, name: name, state: state, area: area, visaType: visaType, notificationStatus: false,startDate: startDate,endDate: endDate,dob: self.lbl_avlDob.text ?? "") { [weak self] (success: Bool, result: UpdateProfileResponse?, statusCode: Int?) in
             guard let self = self else { return }
             
             guard let statusCode = statusCode else {

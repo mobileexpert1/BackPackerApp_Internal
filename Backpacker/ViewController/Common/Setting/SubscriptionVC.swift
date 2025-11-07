@@ -126,7 +126,7 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
         
         if let plan = plans?[indexPath.row] {
             cell.lbl_header.text = plan.name ?? ""
-            cell.lbl_price.text = "\(plan.price ?? 0.0) per month"
+            cell.lbl_price.text = "$\(plan.price ?? 0.0) per month"
             cell.lbl_description.text = plan.desc  ?? ""
             cell.indexPath = indexPath
             cell.lbl_feature1.text = plan.feature?[0] ?? ""
