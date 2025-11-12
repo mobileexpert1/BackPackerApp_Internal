@@ -92,12 +92,13 @@ struct EmployerJobDetail: Codable {
     let v: Int
     let jobAcceptStatus: Int
     let completedJobsCount: Int
+    let jobFilter : String
     let requests: [JobRequest]
 
     enum CodingKeys: String, CodingKey {
            case id = "_id"
            case employerId, name, address, lat, long, locationText, description, requirements, image,
-                startDate, endDate, startTime, endTime, price, jobAcceptStatus, completedJobsCount, requests,locationId
+                startDate, endDate, startTime, endTime, price, jobAcceptStatus, completedJobsCount, requests,locationId,jobFilter
            case v = "__v"
        }
    }

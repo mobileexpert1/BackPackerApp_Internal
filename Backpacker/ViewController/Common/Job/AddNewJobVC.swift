@@ -246,7 +246,7 @@ class AddNewJobVC: UIViewController {
             self.imgVw_frm.image = UIImage(named: "Checkbox2")
             self.lbl_frmWrk.textColor = .black
             self.lbl_regional.textColor = UIColor(named: "subTitleColor")
-            self.selectedWork = "Farm Worl"
+            self.selectedWork = "Farm Work"
         }
     }
     private func setUpEditData(){
@@ -324,7 +324,15 @@ class AddNewJobVC: UIViewController {
                 self.selectedEndDate = endDate
                 self.endDate = dateToString(endDate)
             }
-           
+            if selectedWork == "Farm Work"{
+                self.btn_frm.tag = 1
+                self.btn_regional.tag = 0
+            }else{
+                self.btn_frm.tag = 0
+                self.btn_regional.tag = 1
+            }
+            self.updateFrmReginalBtn()
+          
         }
     }
     func formatDate(_ dateString: String) -> String {
@@ -1262,8 +1270,13 @@ extension AddNewJobVC {
         let priceWithoutSymbol = price
             .replacingOccurrences(of: "$", with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-
-        viewModel.uploadNewJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: priceWithoutSymbol, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, selectedBackpackerJSONString: selectedBackPackerJSONString ?? "", image: image, locationId: self.locationId ?? "") { success, message ,statusCode in
+        var jobFiter : String?
+        if self.selectedWork == "Farm Work"{
+            jobFiter = "1"
+        }else{
+            jobFiter = "2"
+        }
+        viewModel.uploadNewJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: priceWithoutSymbol, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, selectedBackpackerJSONString: selectedBackPackerJSONString ?? "", image: image, locationId: self.locationId ?? "", jobFilter: jobFiter ?? "1") { success, message ,statusCode in
             
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()
@@ -1327,10 +1340,16 @@ extension AddNewJobVC {
     ) {
         let image = self.main_ImgVw.image?.jpegData(compressionQuality: 0.8)
         LoaderManager.shared.show()
+        var jobFiter : String?
+        if self.selectedWork == "Farm Work"{
+            jobFiter = "1"
+        }else{
+            jobFiter = "2"
+        }
         let priceWithoutSymbol = price
             .replacingOccurrences(of: "$", with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        viewModel.editJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: priceWithoutSymbol, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, selectedBackpackerJSONString: selectedBackPackerJSONString ?? "", image: image, jobID: jobId, locationId: self.locationId ?? "") { success, message ,statusCode in
+        viewModel.editJob(name: name, address: address, lat: latitude, long: longitude, locationText: locationText, description: description, requirement: requirment, price: priceWithoutSymbol, startDate: strtDate, endDate: endDate, startTime: startTime, endTime: endTime, selectedBackpackerJSONString: selectedBackPackerJSONString ?? "", image: image, jobID: jobId, locationId: self.locationId ?? "", jobFilter: jobFiter ?? "1") { success, message ,statusCode in
             guard let statusCode = statusCode else {
                 LoaderManager.shared.hide()
                 AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")

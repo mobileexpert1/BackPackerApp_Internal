@@ -349,7 +349,7 @@ class JobDescriptionVC: UIViewController {
             let strtTime = self.jobDetailEmployerObj?.startTime ?? ""
             let endTime = self.jobDetailEmployerObj?.endTime ?? ""
             let req  = self.jobDetailEmployerObj?.requests
-            
+            let work = self.jobDetailEmployerObj?.jobFilter
             if let imageUrls = self.jobDetailEmployerObj?.image {
                 ImageLoader.loadImages(from: [imageUrls]) { images in
                     // here you get your [UIImage]
@@ -370,6 +370,11 @@ class JobDescriptionVC: UIViewController {
                     accVC.editStartTime = strtTime
                     accVC.editEndTime = endTime
                     accVC.locationId = self.jobDetailEmployerObj?.locationId
+                    if work == "1"{
+                        accVC.selectedWork = "Farm Work"
+                    }else{
+                        accVC.selectedWork = "Regional Work"
+                    }
                     self.navigationController?.pushViewController(accVC, animated: true)
                 }
             }
