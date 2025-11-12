@@ -72,28 +72,147 @@ class LoginVC: UIViewController {
         self.txtFld_PhoneNumber.delegate = self
         txtFld_PhoneNumber.returnKeyType = .done
         btn_countryPicker.addTarget(self, action: #selector(selectCountryAction(_:)), for: .touchUpInside)
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(termsLabelTapped))
-        lbl_temsandCondition.addGestureRecognizer(tapGesture)
-        self.lbl_temsandCondition.isUserInteractionEnabled = false
-
+     //   let tapGesture = UITapGestureRecognizer(target: self, action: #selector(termsLabelTapped))
+      //  lbl_temsandCondition.addGestureRecognizer(tapGesture)
+        self.lbl_temsandCondition.isUserInteractionEnabled = true
+        self .setupTermsLabel()
     }
+    private func setupTermsLabel() {
+         let text = "I have read and agree to the Privacy Policy and Terms & Conditions"
+
+         let attributedText = NSMutableAttributedString(string: text)
+         let fullRange = (text as NSString)
+
+         // Define the tap targets
+         let privacyRange = fullRange.range(of: "Privacy Policy")
+         let termsRange = fullRange.range(of: "Terms & Conditions")
+         let eulaRange = fullRange.range(of: "EULA")
+
+         // Apply link styling (blue + underline)
+         let linkAttributes: [NSAttributedString.Key: Any] = [
+             .foregroundColor: UIColor.systemBlue,
+             .underlineStyle: NSUnderlineStyle.single.rawValue
+         ]
+
+         attributedText.addAttributes(linkAttributes, range: privacyRange)
+         attributedText.addAttributes(linkAttributes, range: termsRange)
+         attributedText.addAttributes(linkAttributes, range: eulaRange)
+
+         // Assign to label
+        lbl_temsandCondition.attributedText = attributedText
+        lbl_temsandCondition.numberOfLines = 0
+        lbl_temsandCondition.isUserInteractionEnabled = true
+     
+
+         // Add tap gesture recognizer
+         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapOnLabel(_:)))
+        lbl_temsandCondition.addGestureRecognizer(tapGesture)
+     }
+    @objc private func handleTapOnLabel(_ gesture: UITapGestureRecognizer) {
+        guard let label = gesture.view as? UILabel,
+              let attributedText = label.attributedText else { return }
+
+        // Prepare text layout manager
+        let textStorage = NSTextStorage(attributedString: attributedText)
+        let layoutManager = NSLayoutManager()
+        let textContainer = NSTextContainer(size: label.bounds.size)
+        textContainer.lineFragmentPadding = 0
+        textContainer.maximumNumberOfLines = label.numberOfLines
+        textContainer.lineBreakMode = label.lineBreakMode
+        layoutManager.addTextContainer(textContainer)
+        textStorage.addLayoutManager(layoutManager)
+
+        // Tap location
+        var tapLocation = gesture.location(in: label)
+
+        // Compute used rect (actual text area)
+        let usedRect = layoutManager.usedRect(for: textContainer)
+        // Adjust tap point for top/left alignment (UILabel typically centers vertically)
+        tapLocation.y -= (label.bounds.size.height - usedRect.size.height) / 10
+
+        // Get character index at tap
+        let index = layoutManager.characterIndex(
+            for: tapLocation,
+            in: textContainer,
+            fractionOfDistanceBetweenInsertionPoints: nil
+        )
+
+        let text = attributedText.string
+        let privacyRange = (text as NSString).range(of: "Privacy Policy")
+        let termsRange = (text as NSString).range(of: "Terms & Conditions")
+    //    let eulaRange = (text as NSString).range(of: "EULA")
+
+        // Match and open appropriate URL
+        if NSLocationInRange(index, privacyRange) {
+    #if BackpackerHire
+            openURL("https://backpacker.csdevhub.com/privacy-policy/employer")
+    #else
+            openURL("https://backpacker.csdevhub.com/privacy-policy/backpacker")
+    #endif
+        } else if NSLocationInRange(index, termsRange) {
+#if BackpackerHire
+            openURL("https://backpacker.csdevhub.com/terms-condition/employer")
+#else
+            openURL("https://backpacker.csdevhub.com/terms-condition/backpacker")
+#endif
+        }
+//        } else if NSLocationInRange(index, eulaRange) {
+//    #if BackpackerHire
+//            openURL("https://backpacker.csdevhub.com/eula/employer")
+//    #else
+//            openURL("https://backpacker.csdevhub.com/eula/backpacker")
+//    #endif
+//        }
+    }
+
+
+      private func openURL(_ urlString: String) {
+          if let url = URL(string: urlString) {
+              UIApplication.shared.open(url)
+          }
+      }
+
+      /// Helper: Detect which text index was tapped
+      private func characterRange(at point: CGPoint, in label: UILabel) -> NSRange? {
+          guard let attributedText = label.attributedText else { return nil }
+          let textStorage = NSTextStorage(attributedString: attributedText)
+          let layoutManager = NSLayoutManager()
+          let textContainer = NSTextContainer(size: label.bounds.size)
+          textContainer.lineFragmentPadding = 0.0
+          textContainer.maximumNumberOfLines = label.numberOfLines
+          textContainer.lineBreakMode = label.lineBreakMode
+
+          layoutManager.addTextContainer(textContainer)
+          textStorage.addLayoutManager(layoutManager)
+
+          let location = CGPoint(x: point.x, y: point.y)
+          let index = layoutManager.characterIndex(for: location, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+          return NSRange(location: index, length: 1)
+      }
     @objc func termsLabelTapped() {
-        if let url = URL(string: "https://backpacker.csdevhub.com/terms-condition") {
+#if BackpackerHire
+        if let url = URL(string: "https://backpacker.csdevhub.com/terms-condition/employer") {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
+        #else
+        if let url = URL(string: "https://backpacker.csdevhub.com/terms-condition/backpacker") {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        }
+#endif
+        
     }
 
     private func handleTermConditionBtn(){
         if self.btn_trmcondition.tag == 0{
             self.btn_trmcondition.tag = 1
             self.btn_trmcondition.setImage(UIImage(named: "Checkbox2"), for: .normal)
-            self.lbl_temsandCondition.textColor = UIColor(named: "themeColor")
-            self.lbl_temsandCondition.isUserInteractionEnabled = true
+           // self.lbl_temsandCondition.textColor = UIColor(named: "themeColor")
+         //   self.lbl_temsandCondition.isUserInteractionEnabled = true
         }else{
             self.btn_trmcondition.tag = 0
             self.btn_trmcondition.setImage(UIImage(named: "Checkbox"), for: .normal)
-            self.lbl_temsandCondition.textColor = UIColor(named: "subTitleColor")
-            self.lbl_temsandCondition.isUserInteractionEnabled = false
+         //   self.lbl_temsandCondition.textColor = UIColor(named: "subTitleColor")
+         //   self.lbl_temsandCondition.isUserInteractionEnabled = false
         }
     }
     @objc func selectCountryAction(_ sender: Any) {

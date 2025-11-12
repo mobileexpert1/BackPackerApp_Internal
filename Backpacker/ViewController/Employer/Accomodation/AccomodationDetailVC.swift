@@ -223,7 +223,7 @@ class AccomodationDetailVC: UIViewController {
                     accVC.editPrice = "\(price)"
                     accVC.editFacilities = self.accomodationDetailObj?.accommodation.facilities ?? []
                     accVC.editedimageStrings = self.accomodationDetailObj?.accommodation.image ?? []
-                    accVC.locationId = self.accomodationDetailObj?.accommodation.locationId ?? ""
+          //          accVC.locationId = self.accomodationDetailObj?.accommodation.locationId ?? ""
                     self.navigationController?.pushViewController(accVC, animated: true)
                 }
                 

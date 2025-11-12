@@ -493,6 +493,7 @@ extension AccountDetailVC : UITableViewDelegate,UITableViewDataSource{
     
 }
 extension AccountDetailVC {
+    
     func getProfileInfo(isComeFromUpdate:Bool = false) {
             LoaderManager.shared.show()
             
