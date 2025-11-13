@@ -21,29 +21,46 @@ class MediaPickerManager: NSObject {
         self.presentingVC = presentingVC
     }
     
-    func showMediaOptions(isFromNewAccommodation: Bool, singleImageHandler: @escaping (UIImage) -> Void, multipleImagesHandler: (([UIImage]) -> Void)? = nil) {
+    func showMediaOptions(
+        isFromNewAccommodation: Bool,
+        singleImageHandler: @escaping (UIImage) -> Void,
+        multipleImagesHandler: (([UIImage]) -> Void)? = nil
+    ) {
         self.isComeFromNewAccommodation = isFromNewAccommodation
         self.imagePickedHandler = singleImageHandler
         self.multipleImagesPickedHandler = multipleImagesHandler
-        
+
         let alert = UIAlertController(title: "Select Media", message: nil, preferredStyle: .actionSheet)
-        
-        alert.addAction(UIAlertAction(title: "Camera", style: .default, handler: { _ in
+
+        alert.addAction(UIAlertAction(title: "Camera", style: .default) { _ in
             self.openCamera()
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Gallery", style: .default, handler: { _ in
+        })
+
+        alert.addAction(UIAlertAction(title: "Gallery", style: .default) { _ in
             if isFromNewAccommodation {
                 self.openMultipleGalleryPicker()
             } else {
                 self.openGallery()
             }
-        }))
-        
+        })
+
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
+
+        // ✅ Prevent crash on iPad
+        if let popover = alert.popoverPresentationController {
+            popover.sourceView = presentingVC?.view
+            popover.sourceRect = CGRect(
+                x: presentingVC?.view.bounds.midX ?? 0,
+                y: presentingVC?.view.bounds.midY ?? 0,
+                width: 0,
+                height: 0
+            )
+            popover.permittedArrowDirections = []
+        }
+
         presentingVC?.present(alert, animated: true)
     }
+
 
     
     private func openCamera() {
