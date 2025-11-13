@@ -174,7 +174,7 @@ class EmployerHomeVC: UIViewController {
 extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         if isLoading == true {
-            return 4
+            return 1
         }else{
             //            return sectionTitles.count
             let count = activeSections.count
@@ -190,7 +190,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isLoading == true {
             
-            return 1
+            return 15
         }else{
             
             let sectionType = activeSections[section]
@@ -217,18 +217,18 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if isLoading {
-            if indexPath.section == 0{
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonTVC", for: indexPath) as? SkeltonTVC else {
-                    return UITableViewCell()
-                }
-                return cell
-            }else{
+//            if indexPath.section == 0{
+//                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonTVC", for: indexPath) as? SkeltonTVC else {
+//                    return UITableViewCell()
+//                }
+//                return cell
+//            }else{
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonCollectionTVC", for: indexPath) as? SkeltonCollectionTVC else {
                     return UITableViewCell()
                 }
                 return cell
                 
-            }
+//            }
             
             
         }else{

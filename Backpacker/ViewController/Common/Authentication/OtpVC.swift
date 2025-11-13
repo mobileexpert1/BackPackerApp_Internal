@@ -43,14 +43,14 @@ class OtpVC: UIViewController {
         super.viewDidLoad()
         otpTextFields = [txt1, txt2, txt3, txt4, txt5, txt6]
         self.setUpUI()
-        
+        applyGradientButtonStyle(to: btn_verify, opacity: 0.4, isUserInteractionEnabled: false)
+        self.btn_verify.isUserInteractionEnabled = false
         // Do any additional setup after loading the view.
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         self.btn_verifyHeight.constant = 50.0
-        applyGradientButtonStyle(to: btn_verify, opacity: 0.4, isUserInteractionEnabled: false)
-        self.btn_verify.isUserInteractionEnabled = false
+      
         
     }
     private func setUpUI(){
@@ -129,53 +129,104 @@ class OtpVC: UIViewController {
     
 }
 extension OtpVC : UITextFieldDelegate{
+    func updateVerifyButtonState() {
+        if checkIfAllFieldsFilled() {
+            // All fields filled
+            btn_verify.isUserInteractionEnabled = true
+            lbl_Error.isHidden = true
+            btn_verifyHeight.constant = 50.0
+
+            // Optional: apply gradient
+             applyGradientButtonStyle(to: btn_verify)
+            
+        } else {
+            // Not all fields filled
+            btn_verify.isUserInteractionEnabled = false
+            lbl_Error.isHidden = false
+            lbl_Error.text = "Please Enter All Fields."
+            btn_verifyHeight.constant = 0.0
+        }
+    }
+
+//    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+//        guard let text = textField.text else { return false }
+//        
+//        let newLength = text.count + string.count - range.length
+//        
+//        if newLength <= 1 {
+//            if string.count > 0 {
+//                // Set text manually
+//                textField.text = string
+//                
+//                // Move to the next field
+//                if let index = otpTextFields.firstIndex(of: textField), index < otpTextFields.count - 1 {
+//                    otpTextFields[index + 1].becomeFirstResponder()
+//                } else {
+//                    textField.resignFirstResponder()
+//                }
+//            } else {
+//                // Handle backspace
+//                textField.text = ""
+//                if let index = otpTextFields.firstIndex(of: textField), index > 0 {
+//                    otpTextFields[index - 1].becomeFirstResponder()
+//                }
+//            }
+//            
+//            // -Call continuous validation after change
+//            let val =  checkIfAllFieldsFilled()
+//            if val == true{
+//                DispatchQueue.main.async{ [self] in
+//                    self.btn_verify.isUserInteractionEnabled = true
+//                    self.lbl_Error.isHidden = true
+//                    self.btn_verifyHeight.constant = 50.0
+//                   // applyGradientButtonStyle(to: btn_verify)
+//                }
+//            }else{
+//                
+//                self.btn_verify.isUserInteractionEnabled = true
+//                self.lbl_Error.isHidden = false
+//                self.lbl_Error.text = "Please Enter All Fields."
+//                self.btn_verifyHeight.constant = 0.0
+//                //applyGradientButtonStyle(to: btn_verify)
+//            }
+//            return false
+//        }
+//        
+//        return false
+//    }
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard let text = textField.text else { return false }
-        
+
         let newLength = text.count + string.count - range.length
-        
+
         if newLength <= 1 {
             if string.count > 0 {
                 // Set text manually
                 textField.text = string
-                
-                // Move to the next field
+
+                // Move to next field
                 if let index = otpTextFields.firstIndex(of: textField), index < otpTextFields.count - 1 {
                     otpTextFields[index + 1].becomeFirstResponder()
                 } else {
                     textField.resignFirstResponder()
                 }
             } else {
-                // Handle backspace
+                // Backspace
                 textField.text = ""
                 if let index = otpTextFields.firstIndex(of: textField), index > 0 {
                     otpTextFields[index - 1].becomeFirstResponder()
                 }
             }
-            
-            // -Call continuous validation after change
-            let val =  checkIfAllFieldsFilled()
-            if val == true{
-                DispatchQueue.main.async{ [self] in
-                    self.btn_verify.isUserInteractionEnabled = true
-                    self.lbl_Error.isHidden = true
-                    self.btn_verifyHeight.constant = 50.0
-                    applyGradientButtonStyle(to: btn_verify)
-                }
-            }else{
-                
-                self.btn_verify.isUserInteractionEnabled = true
-                self.lbl_Error.isHidden = false
-                self.lbl_Error.text = "Please Enter All Fields."
-                self.btn_verifyHeight.constant = 0.0
-                applyGradientButtonStyle(to: btn_verify)
-            }
+
+            // Update button color and state
+            updateVerifyButtonState()
+
             return false
         }
-        
+
         return false
     }
-    
+
     func getOTP() -> String {
         return otpTextFields.compactMap { $0.text }.joined()
     }

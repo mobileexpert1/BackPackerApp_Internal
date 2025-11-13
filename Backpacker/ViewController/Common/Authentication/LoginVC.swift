@@ -36,11 +36,12 @@ class LoginVC: UIViewController {
         self.setUI()
         self.setupRoundedBorder(for: vwTxtFld)
         self.setupRoundedBorder(for: phoneNumberVw)
+        applyGradientButtonStyle(to: btn_Continue)
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        applyGradientButtonStyle(to: btn_Continue)
+        
     }
     private func setUI(){
         self.btn_term_Topconstraint.constant = 0.0

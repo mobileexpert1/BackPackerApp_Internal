@@ -27,6 +27,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let center = UNUserNotificationCenter.current()
         center.delegate = self
         
+        
         // Request notification permission
         requestNotificationPermission()    //com.Backpacker
         

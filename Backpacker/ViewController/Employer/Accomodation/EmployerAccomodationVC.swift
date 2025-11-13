@@ -220,7 +220,7 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if isLoading ==  true{
-            return 8
+            return 15
         }else{
             return accommodationList.count
         }
@@ -321,21 +321,34 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
         
         return footer
     }
-    
-    
-    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
-        
-    
+    /*
+         func collectionView(_ collectionView: UICollectionView,
+                             layout collectionViewLayout: UICollectionViewLayout,
+                             sizeForItemAt indexPath: IndexPath) -> CGSize {
+             return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 225) // Adjust height based on content
      
-    }
+         }
+     */
+
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 225) // Adjust height based on content
+
+        let spacing: CGFloat = 10 // horizontal spacing between items
+        let sectionInsets: CGFloat = 10 // left + right combined
+        let columns: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? 3 : 2 // 3 columns for iPad
+
+        let totalSpacing = (columns - 1) * spacing + sectionInsets
+        let width = (collectionView.bounds.width - totalSpacing) / columns
+        if isLoading {
+            return CGSize(width: width, height: 225) // height as per your content
+        }else{
+            return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 225) // Adjust height based on content
+        }
+      
     }
-    
-    
+
     
     // Horizontal spacing between items
     func collectionView(_ collectionView: UICollectionView,
