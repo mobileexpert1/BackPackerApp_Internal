@@ -77,7 +77,7 @@ struct HangoutDetailResponse: Codable {
     let success: Bool
     let message: String
     let data: HangoutData
-    let errors: [String]
+    let errors: [String]?
 }
 
 struct HangoutData: Codable {
@@ -91,7 +91,7 @@ struct Hangout: Codable {
     let address: String
     let lat: Double
     let long: Double
-    let locationId : String
+  //  let locationId : String
     let locationText: String
     let description: String
     let image: [String]
@@ -100,7 +100,7 @@ struct Hangout: Codable {
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
-        case name, address, lat, long, locationText, description, image, locationId//, favoriteStatus
+        case name, address, lat, long, locationText, description, image//, locationId//, favoriteStatus
         case v = "__v"
     }
 }

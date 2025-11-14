@@ -92,7 +92,7 @@ struct EmployerJobDetail: Codable {
     let v: Int
     let jobAcceptStatus: Int
     let completedJobsCount: Int
-    let jobFilter : String
+    let jobFilter : String?
     let requests: [JobRequest]
 
     enum CodingKeys: String, CodingKey {

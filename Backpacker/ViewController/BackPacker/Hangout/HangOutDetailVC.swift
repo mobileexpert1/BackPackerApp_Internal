@@ -178,7 +178,7 @@ class HangOutDetailVC: UIViewController {
                     jobDescriptionVC.editLat = lat
                     jobDescriptionVC.editLongitude = long
                     jobDescriptionVC.editedimageStrings = self.hangoutDetailObj?.hangout.image ?? []
-                    jobDescriptionVC.locationId = self.hangoutDetailObj?.hangout.locationId ?? ""
+                 //   jobDescriptionVC.locationId = self.hangoutDetailObj?.hangout.locationId ?? ""
                     self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
                 }
                 

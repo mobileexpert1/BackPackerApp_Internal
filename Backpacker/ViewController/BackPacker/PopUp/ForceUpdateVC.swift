@@ -203,30 +203,48 @@ class ForceUpdateVC: UIViewController {
         
     }
     func showDatePicker() {
-        let alert = UIAlertController(title: "Select DOB", message: "\n\n\n\n\n\n\n\n", preferredStyle: .actionSheet)
-                
-                DOBPicker = UIDatePicker(frame: CGRect(x: 0, y: 20, width: alert.view.bounds.width - 20, height: 200))
-                DOBPicker?.datePickerMode = .date
-                DOBPicker?.maximumDate = Date()
-                if #available(iOS 14.0, *) {
-                    DOBPicker?.preferredDatePickerStyle = .wheels
-                }
-                
-                alert.view.addSubview(DOBPicker!)
-                
-                let doneAction = UIAlertAction(title: "Done", style: .default) { _ in
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "dd/MM/yyyy"
-                    if let date = self.DOBPicker?.date {
-                        self.lbl_avlDob.text = formatter.string(from: date)
-                        self.lbl_dobError.isHidden = true
-                     
-                        self.lbl_avlDob.textColor = UIColor(named: "blackColor")
-                    }
-                }
-                alert.addAction(doneAction)
-                
-                present(alert, animated: true, completion: nil)
+        let alert = UIAlertController(title: "Select DOB",
+                                        message: "\n\n\n\n\n\n\n\n",
+                                        preferredStyle: .actionSheet)
+          
+          DOBPicker = UIDatePicker(frame: CGRect(x: 0, y: 20,
+                                                 width: alert.view.bounds.width - 20,
+                                                 height: 200))
+          DOBPicker?.datePickerMode = .date
+          DOBPicker?.maximumDate = Date()
+
+          if #available(iOS 14.0, *) {
+              DOBPicker?.preferredDatePickerStyle = .wheels
+          }
+
+          alert.view.addSubview(DOBPicker!)
+          
+          let doneAction = UIAlertAction(title: "Done", style: .default) { _ in
+              let formatter = DateFormatter()
+              formatter.dateFormat = "dd/MM/yyyy"
+              
+              if let date = self.DOBPicker?.date {
+                  self.lbl_avlDob.text = formatter.string(from: date)
+                  self.lbl_dobError.isHidden = true
+                  self.lbl_avlDob.textColor = UIColor(named: "blackColor")
+              }
+          }
+          
+          alert.addAction(doneAction)
+
+          // 🟢 THIS MAKES IT APPEAR AT BOTTOM ON iPAD
+          if let popover = alert.popoverPresentationController {
+              popover.sourceView = self.view
+              popover.sourceRect = CGRect(
+                  x: self.view.bounds.midX,
+                  y: self.view.bounds.maxY - 10,   // bottom of screen
+                  width: 0,
+                  height: 0
+              )
+              popover.permittedArrowDirections = []   // no arrow → appears like bottom sheet
+          }
+
+          present(alert, animated: true)
         }
     @objc func endDateChanged() {
            let formatter = DateFormatter()

@@ -282,31 +282,47 @@ class AccountDetailVC: UIViewController {
         }
     }
     func showDatePicker() {
-        let alert = UIAlertController(title: "Select DOB", message: "\n\n\n\n\n\n\n\n", preferredStyle: .actionSheet)
-                
-                DOBPicker = UIDatePicker(frame: CGRect(x: 0, y: 20, width: alert.view.bounds.width - 20, height: 200))
-                DOBPicker?.datePickerMode = .date
-                DOBPicker?.maximumDate = Date()
-                if #available(iOS 14.0, *) {
-                    DOBPicker?.preferredDatePickerStyle = .wheels
-                }
-                
-                alert.view.addSubview(DOBPicker!)
-                
-                let doneAction = UIAlertAction(title: "Done", style: .default) { _ in
-                    let formatter = DateFormatter()
-                    formatter.dateFormat = "dd/MM/yyyy"
-                    if let date = self.DOBPicker?.date {
-                        self.lbl_avlDob.text = formatter.string(from: date)
-                        self.lbl_dobError.isHidden = true
-                     
-                        self.lbl_avlDob.textColor = UIColor(named: "blackColor")
-                    }
-                }
-                alert.addAction(doneAction)
-                
-                present(alert, animated: true, completion: nil)
+        let alert = UIAlertController(title: "Select DOB",
+                                      message: "\n\n\n\n\n\n\n\n",
+                                      preferredStyle: .actionSheet)
+        
+        DOBPicker = UIDatePicker(frame: CGRect(x: 0, y: 20,
+                                               width: alert.view.bounds.width - 20,
+                                               height: 200))
+        DOBPicker?.datePickerMode = .date
+        DOBPicker?.maximumDate = Date()
+        
+        if #available(iOS 14.0, *) {
+            DOBPicker?.preferredDatePickerStyle = .wheels
         }
+        
+        alert.view.addSubview(DOBPicker!)
+        
+        let doneAction = UIAlertAction(title: "Done", style: .default) { _ in
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy/MM/dd"  //"dd/MM/yyyy"
+            
+            if let date = self.DOBPicker?.date {
+                self.lbl_avlDob.text = formatter.string(from: date)
+                self.lbl_dobError.isHidden = true
+                self.lbl_avlDob.textColor = UIColor(named: "blackColor")
+            }
+        }
+        
+        alert.addAction(doneAction)
+
+        // IMPORTANT: Fix crash on iPad
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = self.view
+            popoverController.sourceRect = CGRect(x: self.view.bounds.midX,
+                                                  y: self.view.bounds.midY,
+                                                  width: 0, height: 0)
+            popoverController.permittedArrowDirections = []
+        }
+        
+        present(alert, animated: true)
+    }
+
     @IBAction func action_chosseDob(_ sender: Any) {
         self.showDatePicker()
     }
@@ -324,6 +340,7 @@ class AccountDetailVC: UIViewController {
                 self.AreaVW.txtFld.isUserInteractionEnabled = true
             }
             self.stckBotmHeight.constant = 50.0
+            applyGradientButtonStyle(to: self.btn_Save)
         }else{
             self.isComeFromUpdate = false
             self.stckBotmHeight.constant = 0.0
@@ -359,7 +376,10 @@ class AccountDetailVC: UIViewController {
             self.stckBotmHeight.constant = 0.0
         }else{
             self.stckBotmHeight.constant = 50.0
-            applyGradientButtonStyle(to: btn_Save)
+            DispatchQueue.main.async{
+                applyGradientButtonStyle(to: self.btn_Save)
+            }
+            
         }
     }
     @IBAction func actionSave(_ sender: Any) {
@@ -597,7 +617,7 @@ extension AccountDetailVC {
             if let date = isoFormatter.date(from: isoDate) ?? ISO8601DateFormatter().date(from: isoDate.replacingOccurrences(of: ".000Z", with: "Z")) {
                 
                 let displayFormatter = DateFormatter()
-                displayFormatter.dateFormat = "MM/dd/yyyy"
+                displayFormatter.dateFormat = "yyyy/MM/dd" //"MM/dd/yyyy"
                 displayFormatter.timeZone = .current // converts to local
                 
                 let formattedDate = displayFormatter.string(from: date)
