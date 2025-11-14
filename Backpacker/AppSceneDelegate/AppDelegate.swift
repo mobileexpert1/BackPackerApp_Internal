@@ -20,6 +20,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var pendingNotificationType: Int?
     var userInfo: [AnyHashable: Any]?
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        if #available(iOS 13.0, *) {
+            UIWindow.appearance().overrideUserInterfaceStyle = .light
+        }
+
         self.configureGoogleInfoPlist()
         
         // Set delegates BEFORE requesting permissions

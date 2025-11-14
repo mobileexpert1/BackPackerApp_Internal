@@ -90,7 +90,7 @@ class AccountDetailVC: UIViewController {
         self.Vw_DobMini.addShadowAllSides(radius: 2.0)
         
         
-        self.setUpButtons()
+       
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
         self.setUpFonts()
         let nib = UINib(nibName: "ReportIssueTVC", bundle: nil)
@@ -128,6 +128,7 @@ class AccountDetailVC: UIViewController {
         stackVw_VisaDateHeight.constant = 85.0
         
 #endif
+        self.setUpButtons()
     }
     
     private func setUpFonts(){
@@ -244,13 +245,14 @@ class AccountDetailVC: UIViewController {
            self.view.endEditing(true)
        }
     private func setUpButtons(){
+        
         self.btn_drpdwn.tag = 0
         self.manageHeightOfTable()
         btn_Cancel.titleLabel?.font = FontManager.inter(.semiBold, size: 14.0)
         btn_Save.titleLabel?.font = FontManager.inter(.semiBold, size: 14.0)
         
         // Corner Radius
-        btn_Save.layer.cornerRadius = 10.0
+      //  btn_Save.layer.cornerRadius = 10.0
         // Border
         applyGradientButtonStyle(to: btn_Save)
         // Optional: Clip to bounds for corner radius to work
@@ -357,6 +359,7 @@ class AccountDetailVC: UIViewController {
             self.stckBotmHeight.constant = 0.0
         }else{
             self.stckBotmHeight.constant = 50.0
+            applyGradientButtonStyle(to: btn_Save)
         }
     }
     @IBAction func actionSave(_ sender: Any) {
