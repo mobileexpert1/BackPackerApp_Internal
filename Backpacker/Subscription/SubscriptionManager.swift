@@ -231,16 +231,7 @@ final class SubscriptionManager {
         }
     }
     
-    // MARK: - Verify transactions
-    private func checkVerified(_ result: VerificationResult<Transaction>) throws -> Transaction {
-        switch result {
-        case .unverified(_, let error):
-            throw error
-        case .verified(let transaction):
-            return transaction
-        }
-    }
-
+   
     
     // MARK: - Handle verified transaction
     private func handle(_ transaction: Transaction) async {
@@ -254,17 +245,34 @@ final class SubscriptionManager {
     }
     
     // MARK: - Restore Purchases
-    func restorePurchases() async {
+    func restorePurchases() async -> Bool {
+        var restored = false
+        
         for await result in Transaction.currentEntitlements {
             do {
                 let transaction = try checkVerified(result)
                 await handle(transaction)
+                restored = true
             } catch {
-                print("Restore failed: \(error.localizedDescription)")
+                print("Restore failed for a transaction: \(error.localizedDescription)")
             }
         }
+        
+        return restored
     }
-    
+
+    // MARK: - Verify transactions
+    private func checkVerified(_ result: VerificationResult<Transaction>) throws -> Transaction {
+        switch result {
+        case .unverified(_, let error):
+            throw error
+        case .verified(let transaction):
+            return transaction
+        }
+    }
+
+ 
+
     // MARK: - Tier Access Control
     func canAccessFeature(requiredTier: SubscriptionTier) -> Bool {
         let tiers = SubscriptionTier.allCases

@@ -9,6 +9,7 @@ import UIKit
 
 class SubscriptionTVC: UITableViewCell {
 
+    @IBOutlet weak var lbl_billed_Monthly: UILabel!
     @IBOutlet weak var bgVw: UIView!
     @IBOutlet weak var imgVw: UIImageView!
     @IBOutlet weak var lbl_description: UILabel!
@@ -37,8 +38,9 @@ class SubscriptionTVC: UITableViewCell {
     }
     func setupUi(){
         self.bgVw.addShadowAllSides(radius: 2.0)
-        self.lbl_header.font = FontManager.inter(.medium, size: 16.0)
-        self.lbl_price.font = FontManager.inter(.medium, size: 14.0)
+        self.lbl_header.font = FontManager.inter(.medium, size: 14.0)
+        self.lbl_price.font = FontManager.inter(.semiBold, size: 18.0)
+        self.lbl_billed_Monthly.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_description.font = FontManager.inter(.regular, size: 14.0)
         self.lbl_feature1.font = FontManager.inter(.regular, size: 12.0)
         self.lbl_feature2.font = FontManager.inter(.regular, size: 12.0)

@@ -233,7 +233,7 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
         
         let title = colArray[indexPath.item]
         let font = FontManager.inter(.medium, size: 12.0) // Adjust if you use custom font
-        let padding: CGFloat = 12 // Add padding for horizontal margins
+        let padding: CGFloat = 16 // Add padding for horizontal margins
         
         let textWidth = title.size(withAttributes: [.font: font]).width
         

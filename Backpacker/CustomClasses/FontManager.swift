@@ -27,10 +27,32 @@ final class FontManager {
     }
     
     static func poppins(_ weight: PoppinsWeight, size: CGFloat) -> UIFont {
-        return UIFont(name: weight.rawValue, size: size) ?? UIFont.systemFont(ofSize: size)
+   //     return UIFont(name: weight.rawValue, size: size) ?? UIFont.systemFont(ofSize: size)
+        var adjustedSize = size
+
+            // Increase fonts for iPad & larger devices
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                adjustedSize = size * 1.2   // Increase by 20%
+            }
+
+            let font = UIFont(name: weight.rawValue, size: adjustedSize)
+                ?? UIFont.systemFont(ofSize: adjustedSize)
+
+            return UIFontMetrics.default.scaledFont(for: font) // Ensure dynamic scaling
     }
     static func inter(_ weight: InterWeight, size: CGFloat) -> UIFont {
-        return UIFont(name: weight.rawValue, size: size) ?? UIFont.systemFont(ofSize: size)
+      //  return UIFont(name: weight.rawValue, size: size) ?? UIFont.systemFont(ofSize: size)
+        var adjustedSize = size
+
+            // Increase fonts for iPad & larger devices
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                adjustedSize = size * 1.3   // Increase by 20%
+            }
+
+            let font = UIFont(name: weight.rawValue, size: adjustedSize)
+                ?? UIFont.systemFont(ofSize: adjustedSize)
+
+            return UIFontMetrics.default.scaledFont(for: font) // Ensure dynamic scaling
     }
     
     

@@ -10,6 +10,8 @@ import StoreKit
 class SubscriptionVC: UIViewController {
     @IBOutlet weak var lbl_MainHeader: UILabel!
     
+    @IBOutlet weak var lblTermaprivacy: UILabel!
+    @IBOutlet weak var lbl_patymentDescription: UILabel!
     @IBOutlet weak var tblVw: UITableView!
     @IBOutlet weak var main_scrollVw: UIScrollView!
     @IBOutlet weak var lbl_ChoosePlan: UILabel!
@@ -17,6 +19,7 @@ class SubscriptionVC: UIViewController {
     
     @IBOutlet weak var btnProceed: UIButton!
     
+    @IBOutlet weak var btn_restorePurchase: UIButton!
     @IBOutlet weak var tblHeght: NSLayoutConstraint!
     @IBOutlet weak var btn_Cancle: UIButton!
     let viewModel = SubscriptionViewModel()
@@ -34,6 +37,12 @@ class SubscriptionVC: UIViewController {
     let arrayOfPrducts = ["com.shiftly.app.subscription.basic","com.shiftly.app.subscription.growth","com.shiftly.app.subscription.pro","com.shiftly.app.subscription.headOffice"]
     override func viewDidLoad() {
         super.viewDidLoad()
+        /*
+         self.lbl_patymentDescription.text = "If you choose to subscribe, payment will be charged to your iTunes account, and your subscription will automatically renew 24 hours before the end of the current period. You can turn off auto-renewal at any time in your iTunes account settings. If you don’t subscribe, you can continue using the app for free."
+         */
+     
+        self.lbl_patymentDescription.text = "Payment will be charged to your iTunes account. Your subscription will automatically renew 24 hours before the end of the current period. The price may vary depending on your country or region. You can turn off auto-renewal in your iTunes account settings. You can continue using the app for free without subscribing."
+
         self.getListOfAllSubscriptions()
         tblVw.isScrollEnabled = false
 
@@ -45,7 +54,9 @@ class SubscriptionVC: UIViewController {
         manageHeight()
 
         applyGradientButtonStyle(to: self.btnProceed)
-        
+        self.btn_restorePurchase.titleLabel?.font = FontManager.inter(.medium, size: 12.0)
+        self.lbl_patymentDescription.font = FontManager.inter(.medium, size: 12.0)
+        self.lblTermaprivacy.font = FontManager.inter(.medium, size: 12.0)
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
         self.lbl_ChoosePlan.font = FontManager.inter(.semiBold, size: 20.0)
         self.lbl_SubTitle.font = FontManager.inter(.regular, size: 14.0)
@@ -59,11 +70,92 @@ class SubscriptionVC: UIViewController {
                 
                 refreshControl.addTarget(self, action: #selector(refreshScrollView), for: .valueChanged)
         self.handleAppearanceFrBottomBtns()
+        // Text with highlighted parts
+                let text = "For more information, please visit our Terms of Use and Privacy Policy."
+                let attributedString = NSMutableAttributedString(string: text)
+                
+                // Highlight "Terms of Use"
+                let termsRange = (text as NSString).range(of: "Terms of Use")
+                attributedString.addAttribute(.foregroundColor, value: UIColor.systemBlue, range: termsRange)
+                attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: termsRange)
+                
+                // Highlight "Privacy Policy"
+                let privacyRange = (text as NSString).range(of: "Privacy Policy")
+                attributedString.addAttribute(.foregroundColor, value: UIColor.systemBlue, range: privacyRange)
+                attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: privacyRange)
+                
+        lblTermaprivacy.attributedText = attributedString
+        lblTermaprivacy.isUserInteractionEnabled = true
+                
+                // Tap gesture
+                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(labelTapped(_:)))
+        lblTermaprivacy.addGestureRecognizer(tapGesture)
+                
+                // Constraints
+//
+        
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         SubscriptionManager.shared.controller = self
     }
+    
+    @IBAction func action_btnRestore(_ sender: Any) {
+       
+        LoaderManager.shared.show()
+
+            Task {
+                let restored = await SubscriptionManager.shared.restorePurchases()
+                
+                // Hide loader
+                LoaderManager.shared.hide()
+                
+                if restored {
+                    AlertManager.showAlert(on: self, title: "Success", message: "Your purchases have been restored.")
+                } else {
+                    AlertManager.showAlert(on: self, title: "Info", message: "No purchases to restore.")
+                }
+            }
+    }
+    
+    @objc func labelTapped(_ gesture: UITapGestureRecognizer) {
+            guard let label = gesture.view as? UILabel else { return }
+            let text = label.text! as NSString
+            let termsRange = text.range(of: "Terms of Use")
+            let privacyRange = text.range(of: "Privacy Policy")
+            
+            let tapLocation = gesture.location(in: label)
+            let index = indexOfCharacter(at: tapLocation, in: label)
+            
+            if NSLocationInRange(index, termsRange) {
+                openURL("https://backpacker.csdevhub.com/terms-condition/employer")
+            } else if NSLocationInRange(index, privacyRange) {
+                openURL("https://backpacker.csdevhub.com/privacy-policy/employer")
+            }
+        }
+        
+        func openURL(_ urlString: String) {
+            if let url = URL(string: urlString) {
+                UIApplication.shared.open(url)
+            }
+        }
+        
+        func indexOfCharacter(at point: CGPoint, in label: UILabel) -> Int {
+            guard let attributedText = label.attributedText else { return NSNotFound }
+            
+            let textStorage = NSTextStorage(attributedString: attributedText)
+            let layoutManager = NSLayoutManager()
+            textStorage.addLayoutManager(layoutManager)
+            
+            let textContainer = NSTextContainer(size: label.bounds.size)
+            textContainer.lineFragmentPadding = 0
+            textContainer.maximumNumberOfLines = label.numberOfLines
+            textContainer.lineBreakMode = label.lineBreakMode
+            layoutManager.addTextContainer(textContainer)
+            
+            let index = layoutManager.characterIndex(for: point, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
+            return index
+        }
     @objc func refreshScrollView() {
            print("ScrollView pulled to refresh")
 
@@ -126,7 +218,7 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
         
         if let plan = plans?[indexPath.row] {
             cell.lbl_header.text = plan.name ?? ""
-            cell.lbl_price.text = "$\(plan.price ?? 0.0) per month"
+            cell.lbl_price.text = "$\(plan.price ?? 0.0)/month"
             cell.lbl_description.text = plan.desc  ?? ""
             cell.indexPath = indexPath
             cell.lbl_feature1.text = plan.feature?[0] ?? ""
@@ -174,7 +266,15 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
     
     func manageHeight() {
         tblVw.layoutIfNeeded()
-        tblHeght.constant =  CGFloat(((self.plans?.count ?? 0) * 205))
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let count = (self.plans?.count ?? 0 + 1 )
+            tblHeght.constant =  CGFloat(((count) * 260))
+        }else{
+            let count = (self.plans?.count ?? 0 + 1 )
+            tblHeght.constant =  CGFloat(((count) * 230))
+        }
+        
+        tblVw.layoutIfNeeded()
     }
 
 }

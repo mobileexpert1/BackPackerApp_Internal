@@ -2129,10 +2129,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Q9-KY-Hf0">
-                                <rect key="frame" x="0.0" y="106.66666666666669" width="393" height="711.33333333333326"/>
+                                <rect key="frame" x="0.0" y="106.66666666666669" width="393" height="701.33333333333326"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NOs-xd-3qG">
-                                        <rect key="frame" x="0.0" y="0.0" width="393" height="201"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="484.33333333333331"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Choose your plan" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cHt-qr-Elb">
                                                 <rect key="frame" x="20" y="9.9999999999999982" width="353" height="20.333333333333329"/>
@@ -2194,19 +2194,54 @@ the payment </string>
                                                     <constraint firstAttribute="height" constant="50" id="oCe-KB-LwC"/>
                                                 </constraints>
                                             </stackView>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dZS-HG-1oc">
+                                                <rect key="frame" x="20" y="191" width="353" height="30"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="30" id="YMY-5L-38g"/>
+                                                </constraints>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="Restore purchase"/>
+                                                <connections>
+                                                    <action selector="action_btnRestore:" destination="RpD-qP-PiI" eventType="touchUpInside" id="BfB-r1-ykI"/>
+                                                </connections>
+                                            </button>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ey6-4B-EA9">
+                                                <rect key="frame" x="20" y="231" width="353" height="162.33333333333337"/>
+                                                <string key="text">If you choose to subscribe, payment will be charged to your iTunes account, and your subscription will automatically renew 24 hours before the end of the current period. You can turn off auto-renewal at any time in your iTunes account settings. If you don’t subscribe, you can continue using the app for free.</string>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" name="subTitleColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fh7-3r-79c">
+                                                <rect key="frame" x="20" y="403.33333333333331" width="353" height="61"/>
+                                                <string key="text">For more information, please visit our Terms of Use and
+Privacy Policy.</string>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <color key="textColor" name="subTitleColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstAttribute="bottom" secondItem="aGL-69-XYG" secondAttribute="bottom" constant="30" id="5yF-K6-gUw"/>
+                                            <constraint firstAttribute="bottom" secondItem="Fh7-3r-79c" secondAttribute="bottom" constant="20" id="AxX-Td-xDd"/>
+                                            <constraint firstItem="Fh7-3r-79c" firstAttribute="top" secondItem="ey6-4B-EA9" secondAttribute="bottom" constant="10" id="C73-hd-yHC"/>
+                                            <constraint firstItem="ey6-4B-EA9" firstAttribute="top" secondItem="dZS-HG-1oc" secondAttribute="bottom" constant="10" id="IiI-fr-3a8"/>
                                             <constraint firstAttribute="trailing" secondItem="aGL-69-XYG" secondAttribute="trailing" constant="20" id="KSk-ep-kAS"/>
                                             <constraint firstAttribute="trailing" secondItem="rSm-cK-phP" secondAttribute="trailing" constant="10" id="KqS-Zp-I0r"/>
+                                            <constraint firstAttribute="trailing" secondItem="dZS-HG-1oc" secondAttribute="trailing" constant="20" id="OoG-vq-bpy"/>
                                             <constraint firstItem="rSm-cK-phP" firstAttribute="top" secondItem="N0O-hF-xOE" secondAttribute="bottom" constant="20" id="ROw-bV-ZO8"/>
                                             <constraint firstItem="aGL-69-XYG" firstAttribute="top" secondItem="rSm-cK-phP" secondAttribute="bottom" constant="20" id="TJY-P3-Ylq"/>
                                             <constraint firstAttribute="trailing" secondItem="cHt-qr-Elb" secondAttribute="trailing" constant="20" id="c5m-bV-2Wl"/>
+                                            <constraint firstItem="dZS-HG-1oc" firstAttribute="leading" secondItem="NOs-xd-3qG" secondAttribute="leading" constant="20" id="cSS-jB-fiB"/>
                                             <constraint firstItem="rSm-cK-phP" firstAttribute="leading" secondItem="NOs-xd-3qG" secondAttribute="leading" constant="10" id="cig-Nz-sgS"/>
                                             <constraint firstItem="aGL-69-XYG" firstAttribute="leading" secondItem="NOs-xd-3qG" secondAttribute="leading" constant="20" id="ffD-KL-cAr"/>
+                                            <constraint firstItem="Fh7-3r-79c" firstAttribute="leading" secondItem="NOs-xd-3qG" secondAttribute="leading" constant="20" id="gJz-iX-K98"/>
+                                            <constraint firstAttribute="trailing" secondItem="Fh7-3r-79c" secondAttribute="trailing" constant="20" id="h9G-FW-wd3"/>
+                                            <constraint firstAttribute="trailing" secondItem="ey6-4B-EA9" secondAttribute="trailing" constant="20" id="id6-mo-pjq"/>
                                             <constraint firstItem="N0O-hF-xOE" firstAttribute="trailing" secondItem="cHt-qr-Elb" secondAttribute="trailing" id="qLr-tH-bHg"/>
+                                            <constraint firstItem="dZS-HG-1oc" firstAttribute="top" secondItem="aGL-69-XYG" secondAttribute="bottom" constant="20" id="qtx-2l-6sX"/>
                                             <constraint firstItem="cHt-qr-Elb" firstAttribute="leading" secondItem="NOs-xd-3qG" secondAttribute="leading" constant="20" id="s6c-1a-aah"/>
+                                            <constraint firstItem="ey6-4B-EA9" firstAttribute="leading" secondItem="NOs-xd-3qG" secondAttribute="leading" constant="20" id="sVQ-LC-H3I"/>
                                             <constraint firstItem="cHt-qr-Elb" firstAttribute="top" secondItem="NOs-xd-3qG" secondAttribute="top" constant="10" id="tZs-oe-LoF"/>
                                             <constraint firstItem="N0O-hF-xOE" firstAttribute="leading" secondItem="cHt-qr-Elb" secondAttribute="leading" id="yNb-kE-YEv"/>
                                             <constraint firstItem="N0O-hF-xOE" firstAttribute="top" secondItem="cHt-qr-Elb" secondAttribute="bottom" constant="10" id="yZE-FN-7n0"/>
@@ -2229,7 +2264,7 @@ the payment </string>
                         <constraints>
                             <constraint firstItem="xyn-pm-Vac" firstAttribute="trailing" secondItem="9Q9-KY-Hf0" secondAttribute="trailing" id="3As-Oi-k70"/>
                             <constraint firstItem="9Q9-KY-Hf0" firstAttribute="top" secondItem="Bjf-TY-Ura" secondAttribute="bottom" constant="20" id="70a-h1-ofO"/>
-                            <constraint firstItem="xyn-pm-Vac" firstAttribute="bottom" secondItem="9Q9-KY-Hf0" secondAttribute="bottom" id="DLC-5v-Rcm"/>
+                            <constraint firstItem="xyn-pm-Vac" firstAttribute="bottom" secondItem="9Q9-KY-Hf0" secondAttribute="bottom" constant="10" id="BjG-N7-F2r"/>
                             <constraint firstItem="yQM-kn-AzH" firstAttribute="leading" secondItem="xyn-pm-Vac" secondAttribute="leading" constant="10" id="TbZ-P8-eAs"/>
                             <constraint firstItem="9Q9-KY-Hf0" firstAttribute="leading" secondItem="xyn-pm-Vac" secondAttribute="leading" id="fde-JR-jmd"/>
                             <constraint firstItem="Bjf-TY-Ura" firstAttribute="centerY" secondItem="yQM-kn-AzH" secondAttribute="centerY" id="khJ-3k-J3V"/>
@@ -2240,9 +2275,12 @@ the payment </string>
                     <connections>
                         <outlet property="btnProceed" destination="kJT-EF-USu" id="nRX-RZ-SbE"/>
                         <outlet property="btn_Cancle" destination="jTs-3F-TJc" id="Hog-jV-OFt"/>
+                        <outlet property="btn_restorePurchase" destination="dZS-HG-1oc" id="VJu-ON-2gW"/>
+                        <outlet property="lblTermaprivacy" destination="Fh7-3r-79c" id="qEi-d2-dQl"/>
                         <outlet property="lbl_ChoosePlan" destination="cHt-qr-Elb" id="AmS-7Q-eJ0"/>
                         <outlet property="lbl_MainHeader" destination="Bjf-TY-Ura" id="Qbs-WC-MBj"/>
                         <outlet property="lbl_SubTitle" destination="N0O-hF-xOE" id="hft-de-JOT"/>
+                        <outlet property="lbl_patymentDescription" destination="ey6-4B-EA9" id="Fpy-8r-7hQ"/>
                         <outlet property="main_scrollVw" destination="9Q9-KY-Hf0" id="CT5-oD-Kx1"/>
                         <outlet property="tblHeght" destination="Ryb-aj-Wpk" id="we3-uT-gqz"/>
                         <outlet property="tblVw" destination="rSm-cK-phP" id="mOD-yv-0ZT"/>
@@ -2250,7 +2288,7 @@ the payment </string>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WZ8-j7-bff" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1827" y="698"/>
+            <point key="canvasLocation" x="1826.7175572519084" y="697.18309859154931"/>
         </scene>
         <!--Company ListVC-->
         <scene sceneID="pta-nI-7dh">
@@ -2325,7 +2363,7 @@ the payment </string>
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
