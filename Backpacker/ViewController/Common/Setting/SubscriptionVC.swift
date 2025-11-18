@@ -29,6 +29,11 @@ class SubscriptionVC: UIViewController {
     var plans : [Plan]?
     var currentPlan : Plan?
     var selectedPlanId : String?
+    var basicPlanCost : String?
+    var growthPlanCost : String?
+    var proPlanCost : String?
+    var headOfficePlanCost : String?
+    
     var selectedIndex: IndexPath? {
             didSet {
                 tblVw.reloadData() // Reload table to update images
@@ -98,8 +103,40 @@ class SubscriptionVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         SubscriptionManager.shared.controller = self
+  
+
     }
     
+    func getPriceFormStore(){
+        LoaderManager.shared.show()
+        Task {
+            let prices = await SubscriptionManager.shared.fetchLocalizedPricesForAllPlans()
+            
+            // Example output
+            for (productID, price) in prices {
+                print("\(productID) - \(price)")
+                if productID == "com.shiftly.app.subscription.basic"{
+                    self.basicPlanCost = price
+                }else if productID == "com.shiftly.app.subscription.growth"{
+                    self.growthPlanCost = price
+                }else if productID == "com.shiftly.app.subscription.pro"{
+                    self.proPlanCost = price
+                }else{
+                    self.headOfficePlanCost = price
+                }
+            }
+            LoaderManager.shared.hide()
+            self.tblVw.reloadData()
+            /*
+             com.shiftly.app.subscription.pro - $149.00
+             com.shiftly.app.subscription.basic - $19.00
+             com.shiftly.app.subscription.growth - $49.00
+             com.shiftly.app.subscription.headOffice - $299.00
+             */
+            // Update your UI labels dynamically
+            // e.g., Basic: prices["com.shiftly.app.subscription.basic"]
+        }
+    }
     @IBAction func action_btnRestore(_ sender: Any) {
        
         LoaderManager.shared.show()
@@ -218,7 +255,18 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
         
         if let plan = plans?[indexPath.row] {
             cell.lbl_header.text = plan.name ?? ""
-            cell.lbl_price.text = "$\(plan.price ?? 0.0)/month"
+         ///   cell.lbl_price.text = "$\(plan.price ?? 0.0)/month"
+            if indexPath.row == 0 {
+                cell.lbl_price.text = "\(basicPlanCost ?? "")/month"
+            }else if indexPath.row == 1{
+                cell.lbl_price.text = "\(growthPlanCost ?? "")/month"
+            } else if indexPath.row == 2 {
+                cell.lbl_price.text = "\(proPlanCost ?? "")/month"
+            }else  if indexPath.row == 3{
+                cell.lbl_price.text = "\(headOfficePlanCost ?? "")/month"
+            }else{
+                cell.lbl_price.text = "$0/month"
+            }
             cell.lbl_description.text = plan.desc  ?? ""
             cell.indexPath = indexPath
             cell.lbl_feature1.text = plan.feature?[0] ?? ""
@@ -303,6 +351,7 @@ extension SubscriptionVC {
                                     self.isLoading = false
                                     self.plans?.removeAll()
                                     self.plans = result?.data ?? []
+                                    self.getPriceFormStore()
 //                                    if let plan =  result?.data?.currentPlan{
 //                                        self.currentPlan = plan
 //                                    }

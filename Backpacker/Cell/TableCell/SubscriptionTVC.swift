@@ -45,7 +45,7 @@ class SubscriptionTVC: UITableViewCell {
         self.lbl_feature1.font = FontManager.inter(.regular, size: 12.0)
         self.lbl_feature2.font = FontManager.inter(.regular, size: 12.0)
         self.lbl_feature3.font = FontManager.inter(.regular, size: 12.0)
- //       self.lbl_feature4.font = FontManager.inter(.regular, size: 12.0)
+ //     self.lbl_feature4.font = FontManager.inter(.regular, size: 12.0)
     }
     @IBAction func action_cellTapped(_ sender: Any) {
         

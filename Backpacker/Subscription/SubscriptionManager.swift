@@ -132,7 +132,35 @@ final class SubscriptionManager {
             )
         ]
     }
-    
+    /*
+     productID: "com.shiftly.app.subscription.headOffice"
+     productID: "com.shiftly.app.subscription.pro",
+     productID: "com.shiftly.app.subscription.growth",
+     productID: "com.shiftly.app.subscription.basic",
+     */
+    func fetchLocalizedPricesForAllPlans() async -> [String: String] {
+        // Dictionary to store productID -> localized price
+        var priceMap: [String: String] = [:]
+        
+        // Collect all product IDs from your paid plans
+        let productIDs = getAllPlans()
+            .compactMap { $0.productID }
+        
+        do {
+            // Fetch Product objects from the App Store
+            let products = try await Product.products(for: productIDs)
+            
+            for product in products {
+                // product.id is the productID
+                priceMap[product.id] = product.displayPrice
+            }
+        } catch {
+            print("Failed to fetch localized prices: \(error)")
+        }
+        
+        return priceMap
+    }
+
     // MARK: - Get plan by tier
     func getPlan(for tier: SubscriptionTier) -> SubscriptionPlan? {
         getAllPlans().first { $0.tier == tier }
