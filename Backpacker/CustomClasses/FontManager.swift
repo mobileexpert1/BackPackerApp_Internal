@@ -46,7 +46,7 @@ final class FontManager {
 
             // Increase fonts for iPad & larger devices
             if UIDevice.current.userInterfaceIdiom == .pad {
-                adjustedSize = size * 1.3   // Increase by 20%
+                adjustedSize = size * 1.2   // Increase by 20%
             }
 
             let font = UIFont(name: weight.rawValue, size: adjustedSize)

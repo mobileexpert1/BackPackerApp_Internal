@@ -153,15 +153,29 @@ struct CompletedJobsData: Codable {
       let total: Int
 }
 struct CompletedJob: Codable {
-    let _id: String
-    let name: String
-    let address: String
-    let description: String
-    let image: String
-    let startDate: String   
-    let endDate: String
-    let startTime: String
-    let endTime: String
-    let price: Int
-    let favoriteStatus: Int
+    let id: String
+      let name: String
+      let address: String
+      let description: String
+      let image: String
+      let startDate: String       
+      let endDate: String
+      let startTime: String
+      let endTime: String
+      let price: Double
+      let favoriteStatus: Int
+
+      enum CodingKeys: String, CodingKey {
+          case id = "_id"
+          case name
+          case address
+          case description
+          case image
+          case startDate
+          case endDate
+          case startTime
+          case endTime
+          case price
+          case favoriteStatus
+      }
 }

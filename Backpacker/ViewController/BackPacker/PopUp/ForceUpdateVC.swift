@@ -221,7 +221,7 @@ class ForceUpdateVC: UIViewController {
           
           let doneAction = UIAlertAction(title: "Done", style: .default) { _ in
               let formatter = DateFormatter()
-              formatter.dateFormat = "dd/MM/yyyy"
+              formatter.dateFormat = "yyyy/MM/dd" //"dd/MM/yyyy"
               
               if let date = self.DOBPicker?.date {
                   self.lbl_avlDob.text = formatter.string(from: date)
