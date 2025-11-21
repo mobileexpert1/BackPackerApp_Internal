@@ -16,7 +16,7 @@ class SettingVC: UIViewController {
 #if BackpackerHire
     var menuItems: [MenuItem] = [
         MenuItem(iconName: "Profile1", title: "Profile"),
-        MenuItem(iconName: "user-setting 1", title: "Subscription Plan"),
+        MenuItem(iconName: "Subscription", title: "Subscription Plan"),
         MenuItem(iconName: "Terms and Conditions", title: "History"),
         MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
      //   MenuItem(iconName: "Heart", title: "Favorite Jobs"),
@@ -49,7 +49,7 @@ class SettingVC: UIViewController {
             menuItems = [
                 MenuItem(iconName: "Profile1", title: "Profile"),
             //    MenuItem(iconName: "Heart", title: "Favorite Hangout"),
-                MenuItem(iconName: "Heart", title: "Switch Account"),
+                MenuItem(iconName: "switchAcc", title: "Switch Account"),
                 MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
                 MenuItem(iconName: "Error", title: "Report Issue"),
                 MenuItem(iconName: "User Shield", title: "Privacy Policy"),
@@ -60,7 +60,7 @@ class SettingVC: UIViewController {
             menuItems = [
                 MenuItem(iconName: "Profile1", title: "Profile"),
             //    MenuItem(iconName: "Heart", title: "Favorite Accomodations"),
-                MenuItem(iconName: "Heart", title: "Switch Account"),
+                MenuItem(iconName: "switchAcc", title: "Switch Account"),
                 MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
                 MenuItem(iconName: "Error", title: "Report Issue"),
                 MenuItem(iconName: "User Shield", title: "Privacy Policy"),
@@ -70,10 +70,10 @@ class SettingVC: UIViewController {
         }else if role == "2"{
             menuItems = [
                 MenuItem(iconName: "Profile1", title: "Profile"),
-                MenuItem(iconName: "user-setting 1", title: "Subscription Plan"),
+                MenuItem(iconName: "Subscription", title: "Subscription Plan"),
                 MenuItem(iconName: "Terms and Conditions", title: "History"),
              //   MenuItem(iconName: "Heart", title: "Favorite Jobs"),
-                MenuItem(iconName: "Heart", title: "Switch Account"),
+                MenuItem(iconName: "switchAcc", title: "Switch Account"),
                 MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
                 MenuItem(iconName: "Error", title: "Report Issue"),
                 MenuItem(iconName: "User Shield", title: "Privacy Policy"),
@@ -163,21 +163,22 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                 }
                 
             case 2:
-                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                    vc.isComeFromPrivacy = false
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
+//                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+//                    vc.isComeFromPrivacy = false
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+                self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/terms-condition/employer")
             case 3:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
             case 4:
-                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                    vc.isComeFromPrivacy = true
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-
+//                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+//                    vc.isComeFromPrivacy = true
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+                self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/privacy-policy/employer")
             case 5:
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Delete Account",
@@ -231,21 +232,22 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                 }
                 
             case 2:
-                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                    vc.isComeFromPrivacy = false
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
+//                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+//                    vc.isComeFromPrivacy = false
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+                self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/terms-condition/employer")
             case 3:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
             case 4:
-                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                    vc.isComeFromPrivacy = true
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-
+//                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+//                    vc.isComeFromPrivacy = true
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+                self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/privacy-policy/employer")
             case 5:
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Delete Account",
@@ -313,21 +315,22 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                 }
                 
             case 4:
-                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                    vc.isComeFromPrivacy = false
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
+//                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+//                    vc.isComeFromPrivacy = false
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+                self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/terms-condition/employer")
             case 5:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
             case 6:
-                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                    vc.isComeFromPrivacy = true
-                    self.navigationController?.pushViewController(vc, animated: true)
-                }
-
+//                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+//                    vc.isComeFromPrivacy = true
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+                self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/privacy-policy/employer")
             case 7:
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Delete Account",
@@ -386,10 +389,11 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                 print("- Could not instantiate SettingVC")
             }
         case 2:
-            if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                vc.isComeFromPrivacy = false
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
+//            if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+//                vc.isComeFromPrivacy = false
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            }
+            self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/terms-condition/backpacker")
         case 3:
             if let vc = storyboard.instantiateViewController(withIdentifier: "FavourateJobVC") as? FavourateJobVC {
                 self.navigationController?.pushViewController(vc, animated: true)
@@ -400,11 +404,11 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
             }
 
         case 5:
-            if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
-                vc.isComeFromPrivacy = true
-                self.navigationController?.pushViewController(vc, animated: true)
-            }
-
+//            if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
+//                vc.isComeFromPrivacy = true
+//                self.navigationController?.pushViewController(vc, animated: true)
+//            }
+            self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/privacy-policy/backpacker")
         case 6:
             AlertManager.showConfirmationAlert(on: self,
                                                title: "Delete Account",
@@ -445,6 +449,29 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 52
     }
+    
+
+    func openURLInSafari(urlString: String) {
+        // Convert the string to a URL
+        guard let url = URL(string: urlString) else {
+            print("Invalid URL string")
+            return
+        }
+        
+        // Check if the URL can be opened
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: { success in
+                if success {
+                    print("URL opened successfully")
+                } else {
+                    print("Failed to open URL")
+                }
+            })
+        } else {
+            print("Cannot open URL")
+        }
+    }
+
 }
 struct MenuItem {
     let iconName: String
