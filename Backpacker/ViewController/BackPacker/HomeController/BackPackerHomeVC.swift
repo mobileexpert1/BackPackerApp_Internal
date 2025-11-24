@@ -758,6 +758,12 @@ extension BackPackerHomeVC {
                     case .ok, .created:
                         if success == true {
                             self.homeData = data
+#if Backapacker
+                           // self.homeData?.banners.removeAll()
+#else
+                            
+#endif
+                            
                             if self.homeData?.name.isEmpty == true && self.homeData?.email.isEmpty == true{
                                 self.showForceUpdatePopUp()
                             }

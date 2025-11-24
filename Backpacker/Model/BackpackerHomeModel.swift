@@ -11,7 +11,7 @@ struct BackpackerHomeResponseModel: Codable {
     let jobslist: [JobItem]
     let hangoutList: [HangoutItem]
     let accommodationList: [AccommodationItem]
-    let banners: [BannerItem]
+    var banners: [BannerItem]
     let name : String
     let email : String
     let notificationCount : Int

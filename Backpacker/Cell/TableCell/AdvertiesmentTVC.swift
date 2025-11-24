@@ -83,24 +83,24 @@ extension AdvertiesmentTVC: UICollectionViewDelegate, UICollectionViewDataSource
             cell.imageVw.image = nil
         } else {
             let ad = ads[indexPath.item]
-            cell.lbl_Name.text = ad.description
+            cell.lbl_Name.text =  "" //ad.description
             let baseURL1 = ApiConstants.API.API_IMAGEURL
             let baseURL2 = ApiConstants.API.API_IMAGEURL
 
             let imageURLString = ad.image.hasPrefix("http") ? ad.image : baseURL1 + ad.image
-            ApiConstants.API.API_IMAGEURL
-            cell.imageVw.sd_setImage(
-                with: URL(string: imageURLString),
-                placeholderImage: UIImage(named: "img_Placehodler")
-            ) { image, _, _, _ in
-                if image == nil { // First attempt failed
-                    let fallbackURL = ad.image.hasPrefix("http") ? ad.image : baseURL2 + ad.image
-                    cell.imageVw.sd_setImage(
-                        with: URL(string: fallbackURL),
-                        placeholderImage: UIImage(named: "img_Placehodler")
-                    )
-                }
-            }
+            cell.imageVw.image = UIImage(named: "advertiesment")
+//            cell.imageVw.sd_setImage(
+//                with: URL(string: imageURLString),
+//                placeholderImage: UIImage(named: "img_Placehodler")
+//            ) { image, _, _, _ in
+//                if image == nil { // First attempt failed
+//                    let fallbackURL = ad.image.hasPrefix("http") ? ad.image : baseURL2 + ad.image
+//                    cell.imageVw.sd_setImage(
+//                        with: URL(string: fallbackURL),
+//                        placeholderImage: UIImage(named: "img_Placehodler")
+//                    )
+//                }
+//            }
 
         }
 

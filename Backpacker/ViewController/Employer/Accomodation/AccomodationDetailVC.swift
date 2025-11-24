@@ -70,7 +70,7 @@ class AccomodationDetailVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-
+        self.btn_Availbility.isHidden = true
         self.setUpUI()
         self.setupPullToRefresh()
     }

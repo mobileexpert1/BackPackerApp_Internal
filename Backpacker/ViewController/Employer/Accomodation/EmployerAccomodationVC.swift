@@ -224,8 +224,6 @@ extension EmployerAccomodationVC: UICollectionViewDelegate, UICollectionViewData
         }else{
             return accommodationList.count
         }
-        
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
