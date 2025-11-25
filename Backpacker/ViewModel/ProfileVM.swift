@@ -463,6 +463,24 @@ class ProfileVM {
             completion(success, result, statusCode)
         }
     }
+    
+    
+    
+    //MARK: Delet
+     func deleteProfile<T: Codable>(
+         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+     ) {
+         let url = ApiConstants.API.DELETE_PROFILEW
+         print("Delete Api url",url)
+         ServiceManager.sharedInstance.requestApi(
+             url,
+             method: .delete,
+             parameters: nil,
+             httpBody: nil
+         ) { (success: Bool, result: T?, statusCode: Int?) in
+             completion(success, result, statusCode)
+         }
+     }
 }
 struct CompanyLocationRequest: Codable {
     let name: String

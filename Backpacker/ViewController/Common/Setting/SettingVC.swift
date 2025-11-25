@@ -39,7 +39,8 @@ class SettingVC: UIViewController {
     ]
     
 #endif
- 
+    var viewMOdel = ProfileVM()
+    var viewModelAuth = LogInVM()
     override func viewDidLoad() {
         super.viewDidLoad()
         let nib = UINib(nibName: "SettingTVC", bundle: nil)
@@ -184,11 +185,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                                                    title: "Delete Account",
                                                    message: "Are you sure you want to delete the account?",
                                                    confirmAction: {
-                    if let popupVC = storyboard.instantiateViewController(withIdentifier: "DeletePopUpVC") as? DeletePopUpVC {
-                        popupVC.modalPresentationStyle = .overCurrentContext
-                        popupVC.modalTransitionStyle = .crossDissolve
-                        self.present(popupVC, animated: true, completion: nil)
-                    }
+                    self.deleteAccountAPI()
                     
                 })
             case 6:
@@ -253,11 +250,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                                                    title: "Delete Account",
                                                    message: "Are you sure you want to delete the account?",
                                                    confirmAction: {
-                    if let popupVC = storyboard.instantiateViewController(withIdentifier: "DeletePopUpVC") as? DeletePopUpVC {
-                        popupVC.modalPresentationStyle = .overCurrentContext
-                        popupVC.modalTransitionStyle = .crossDissolve
-                        self.present(popupVC, animated: true, completion: nil)
-                    }
+                    self.deleteAccountAPI()
                     
                 })
             case 6:
@@ -336,12 +329,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                                                    title: "Delete Account",
                                                    message: "Are you sure you want to delete the account?",
                                                    confirmAction: {
-                    if let popupVC = storyboard.instantiateViewController(withIdentifier: "DeletePopUpVC") as? DeletePopUpVC {
-                        popupVC.modalPresentationStyle = .overCurrentContext
-                        popupVC.modalTransitionStyle = .crossDissolve
-                        self.present(popupVC, animated: true, completion: nil)
-                    }
-                    
+                    self.deleteAccountAPI()
                 })
             case 8:
                  
@@ -410,17 +398,15 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
 //            }
             self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/privacy-policy/backpacker")
         case 6:
-            AlertManager.showConfirmationAlert(on: self,
-                                               title: "Delete Account",
-                                               message: "Are you sure you want to delete the account?",
-                                               confirmAction: {
-                if let popupVC = storyboard.instantiateViewController(withIdentifier: "DeletePopUpVC") as? DeletePopUpVC {
-                    popupVC.modalPresentationStyle = .overCurrentContext
-                    popupVC.modalTransitionStyle = .crossDissolve
-                    self.present(popupVC, animated: true, completion: nil)
-                }
-                
-            })
+            DispatchQueue.main.async {
+                AlertManager.showConfirmationAlert(on: self,
+                                                   title: "Delete Account",
+                                                   message: "Are you sure you want to delete the account?",
+                                                   confirmAction: {
+                                                       print("Delete confirmed tapped")
+                                                       self.deleteAccountAPI()
+                                                   })
+            }
         case 7:
              
             AlertManager.showConfirmationAlert(on: self,
@@ -476,4 +462,72 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
 struct MenuItem {
     let iconName: String
     let title: String
+}
+
+
+extension SettingVC {
+    
+    private func deleteAccountAPI(){
+        LoaderManager.shared.show()
+        viewMOdel.deleteProfile(){ [weak self] (success: Bool, result: DeleteProfileResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                self.dismiss(animated: true)
+                                AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Your account has been deleted successfully."){
+                                    let loginVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "LoginVC")
+                                    let nav = UINavigationController(rootViewController: loginVC)
+                                    nav.navigationBar.isHidden = true
+                                    SceneDelegate.setRootViewController(nav)
+                                }
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                
+                            }
+                            LoaderManager.shared.hide()
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        case .unauthorized :
+                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.deleteAccountAPI()
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            LoaderManager.shared.hide()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            LoaderManager.shared.hide()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+        
+    }
 }

@@ -660,6 +660,9 @@ struct ApiConstants {
             
             return url
         }
+        
+        //MARK: - Delete Profile
+        static let DELETE_PROFILEW = BASE_URL + "api/profile"
        //MARK: - Subscriptions
         
        // https://backpacker.csdevhub.com/api/admin/subscription

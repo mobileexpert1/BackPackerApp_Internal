@@ -139,3 +139,11 @@ struct DeleteJobResponse: Codable {
     let message: String
     let errors: [String]
 }
+//MARK: - Delete job response model
+struct DeleteProfileResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: EmptyData?
+    let errors: [String]
+}
+
