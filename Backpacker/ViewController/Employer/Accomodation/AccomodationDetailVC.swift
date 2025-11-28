@@ -166,7 +166,7 @@ class AccomodationDetailVC: UIViewController {
             let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
             let placemark = MKPlacemark(coordinate: coordinate)
             let mapItem = MKMapItem(placemark: placemark)
-            mapItem.name = "Accommodation Location" // 👉 Custom title on the pin
+            mapItem.name = self.lbl_LocationTitle.text//"Accommodation Location" // 👉 Custom title on the pin
             mapItem.openInMaps(launchOptions: [
                 MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: coordinate),
                 MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))

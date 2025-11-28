@@ -265,7 +265,7 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
             }else  if indexPath.row == 3{
                 cell.lbl_price.text = "\(headOfficePlanCost ?? "")/month"
             }else{
-                cell.lbl_price.text = "$0/month"
+                cell.lbl_price.text = "0/month"
             }
             cell.lbl_description.text = plan.desc  ?? ""
             cell.indexPath = indexPath
@@ -324,6 +324,14 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
         
         tblVw.layoutIfNeeded()
     }
+    
+    func getPriceWithCurrency(for product: SKProduct) -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = product.priceLocale  // Locale of App Store region for this product
+        return formatter.string(from: product.price) ?? "\(product.price)"
+    }
+
 
 }
 extension SubscriptionVC {
