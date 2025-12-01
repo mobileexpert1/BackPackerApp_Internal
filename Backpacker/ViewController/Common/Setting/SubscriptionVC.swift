@@ -126,11 +126,11 @@ class SubscriptionVC: UIViewController {
             print("REGION:", regionCode)
             
             for (productID, price) in prices {
-                    if productID == "com.shiftly.app.subscription.basic"{
+                if productID == ApiConstants.Products.product_basic{
                         self.basicPlanCost = price
-                    }else if productID == "com.shiftly.app.subscription.growth"{
+                }else if productID == ApiConstants.Products.product_growth{
                         self.growthPlanCost = price
-                    }else if productID == "com.shiftly.app.subscription.pro"{
+                }else if productID == ApiConstants.Products.product_pro{
                         self.proPlanCost = price
                     }else{
                         self.headOfficePlanCost = price
@@ -268,13 +268,13 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
             cell.lbl_header.text = plan.iosAttributes.name
             if plan.iosAttributes.productId == ""{
                 cell.lbl_price.text = "\(currencySymbol) 0/month"
-            }else if plan.iosAttributes.productId == "com.shiftly.app.subscription.basic"{
+            }else if plan.iosAttributes.productId == ApiConstants.Products.product_basic{
                 cell.lbl_price.text = "\(basicPlanCost ?? "")/month"
-            }else if plan.iosAttributes.productId == "com.shiftly.app.subscription.growth"{
+            }else if plan.iosAttributes.productId == ApiConstants.Products.product_growth{
                 cell.lbl_price.text = "\(growthPlanCost ?? "")/month"
-            }else if plan.iosAttributes.productId == "com.shiftly.app.subscription.headOffice"{
+            }else if plan.iosAttributes.productId == ApiConstants.Products.product_headOffice{
                 cell.lbl_price.text = "\(headOfficePlanCost ?? "")/month"
-            }else if plan.iosAttributes.productId == "com.shiftly.app.subscription.pro"  {
+            }else if plan.iosAttributes.productId == ApiConstants.Products.product_pro  {
                 cell.lbl_price.text = "\(proPlanCost ?? "")/month"
             }
             cell.lbl_description.text = plan.desc

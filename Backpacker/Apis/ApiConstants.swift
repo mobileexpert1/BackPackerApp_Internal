@@ -684,7 +684,13 @@ struct ApiConstants {
         }
  
     
- 
+    struct Products{
+        static let product_basic = "com.shiftly.app.subscription.basic"
+        static let product_growth = "com.shiftly.app.subscription.growth"
+        static let product_pro = "com.shiftly.app.subscription.pro"
+        static let product_headOffice = "com.shiftly.app.subscription.headOffice"
+      
+    }
     
     
     
