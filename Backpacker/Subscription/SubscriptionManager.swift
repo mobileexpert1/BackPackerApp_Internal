@@ -38,7 +38,7 @@ import StoreKit
 final class SubscriptionManager {
     
     static let shared = SubscriptionManager()
-    
+    var regionCode : String?
     private init() {
         // Start listening for ongoing or new transactions
         Task.detached { [weak self] in
@@ -138,28 +138,37 @@ final class SubscriptionManager {
      productID: "com.shiftly.app.subscription.growth",
      productID: "com.shiftly.app.subscription.basic",
      */
-    func fetchLocalizedPricesForAllPlans() async -> [String: String] {
-        // Dictionary to store productID -> localized price
+    func fetchLocalizedPricesForAllPlans() async -> (prices: [String: String], region: String) {
         var priceMap: [String: String] = [:]
-        
-        // Collect all product IDs from your paid plans
-        let productIDs = getAllPlans()
-            .compactMap { $0.productID }
-        
+
+        LoaderManager.shared.show()
+
+        let productIDs = getAllPlans().compactMap { $0.productID }
+
         do {
-            // Fetch Product objects from the App Store
             let products = try await Product.products(for: productIDs)
-            
+            let regionCode = SKPaymentQueue.default().storefront?.countryCode ?? ""
+
             for product in products {
-                // product.id is the productID
                 priceMap[product.id] = product.displayPrice
             }
+
+            return (priceMap, regionCode)
+
         } catch {
-            print("Failed to fetch localized prices: \(error)")
+            print("Error: \(error)")
+            return ([:], "Unknown")
         }
-        
-        return priceMap
     }
+
+
+    func getAppStoreRegion() -> String? {
+        if let storefront = SKPaymentQueue.default().storefront {
+            return storefront.countryCode // Example: "US", "IN", "AE"
+        }
+        return nil
+    }
+
 
     // MARK: - Get plan by tier
     func getPlan(for tier: SubscriptionTier) -> SubscriptionPlan? {

@@ -11,10 +11,10 @@ import Alamofire
 class SubscriptionViewModel {
     
     
-    func getlistOfSubscriptions<T: Codable>(
+    func getlistOfSubscriptions<T: Codable>(regionCode:String,
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
     ) {
-        let url = ApiConstants.API.GET_LISTOF_SUBSCRIPTIONS
+        let url = ApiConstants.API.GET_LISTOF_SUBSCRIPTIONSNEW(platform: "ios", country: regionCode)
    
         ServiceManager.sharedInstance.requestApi(
             url,

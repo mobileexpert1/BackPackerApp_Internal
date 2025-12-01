@@ -667,8 +667,20 @@ struct ApiConstants {
         
        // https://backpacker.csdevhub.com/api/admin/subscription
         static let GET_LISTOF_SUBSCRIPTIONS = BASE_URL + "api/subscription"
+        static func GET_LISTOF_SUBSCRIPTIONSNEW(
+            platform: String, country: String
+        ) -> String {
+            let url =
+            "\(BASE_URL)api/subscription?platform=\(platform)&country=\(country)"
+            
+            return url
+        }
         
         static let CREATE_NEW_USER_PLAN = BASE_URL + "api/backpackers/userPlan"
+        
+        
+        //MARK:  -  PRivay URLS
+        static let PRIVACY_URL = BASE_URL + "privacy-policy/backpacker"
         }
  
     

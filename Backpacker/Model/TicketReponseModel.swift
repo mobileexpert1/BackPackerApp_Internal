@@ -14,17 +14,17 @@ struct TicketResponse: Codable {
 }
 
 struct TicketData: Codable {
-    let userId: String
-    let ticketId: String
-    let title: String
-    let desc: String
-    let userType: Int
-    let ticketStatus: Int
-    let reason: String
-    let id: String
-    let createdAt: String
-    let updatedAt: String
-    let v: Int
+    let userId: String?
+    let ticketId: String?
+    let title: String?
+    let desc: String?
+    let userType: Int?
+    let ticketStatus: Int?
+    let reason: String?
+    let id: String?
+    let createdAt: String?
+    let updatedAt: String?
+    let v: Int?
 
     enum CodingKeys: String, CodingKey {
         case userId

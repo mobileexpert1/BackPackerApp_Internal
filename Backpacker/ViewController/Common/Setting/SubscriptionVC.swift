@@ -27,13 +27,15 @@ class SubscriptionVC: UIViewController {
     var isLoading : Bool = true
     let refreshControl = UIRefreshControl()
     var plans : [Plan]?
+    var plansN : [PlanS]?
     var currentPlan : Plan?
     var selectedPlanId : String?
     var basicPlanCost : String?
     var growthPlanCost : String?
     var proPlanCost : String?
     var headOfficePlanCost : String?
-    
+    var regionCode: String?
+    var currencySymbol = String()
     var selectedIndex: IndexPath? {
             didSet {
                 tblVw.reloadData() // Reload table to update images
@@ -42,13 +44,18 @@ class SubscriptionVC: UIViewController {
     let arrayOfPrducts = ["com.shiftly.app.subscription.basic","com.shiftly.app.subscription.growth","com.shiftly.app.subscription.pro","com.shiftly.app.subscription.headOffice"]
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.getPriceFormStore()
         /*
          self.lbl_patymentDescription.text = "If you choose to subscribe, payment will be charged to your iTunes account, and your subscription will automatically renew 24 hours before the end of the current period. You can turn off auto-renewal at any time in your iTunes account settings. If you don’t subscribe, you can continue using the app for free."
          */
      
         self.lbl_patymentDescription.text = "Payment will be charged to your iTunes account. Your subscription will automatically renew 24 hours before the end of the current period. The price may vary depending on your country or region. You can turn off auto-renewal in your iTunes account settings. You can continue using the app for free without subscribing."
+        
+       
+        print("Region Code:", regionCode ?? "Unknown")
 
-        self.getListOfAllSubscriptions()
+
+       
         tblVw.isScrollEnabled = false
 
         let nib = UINib(nibName: "SubscriptionTVC", bundle: nil)
@@ -107,36 +114,39 @@ class SubscriptionVC: UIViewController {
 
     }
     
-    func getPriceFormStore(){
+    func getPriceFormStore() {
         LoaderManager.shared.show()
+        
         Task {
-            let prices = await SubscriptionManager.shared.fetchLocalizedPricesForAllPlans()
+            let result = await SubscriptionManager.shared.fetchLocalizedPricesForAllPlans()
             
-            // Example output
+            let prices = result.prices
+            let regionCode = result.region
+            
+            print("REGION:", regionCode)
+            
             for (productID, price) in prices {
-                print("\(productID) - \(price)")
-                if productID == "com.shiftly.app.subscription.basic"{
-                    self.basicPlanCost = price
-                }else if productID == "com.shiftly.app.subscription.growth"{
-                    self.growthPlanCost = price
-                }else if productID == "com.shiftly.app.subscription.pro"{
-                    self.proPlanCost = price
-                }else{
-                    self.headOfficePlanCost = price
+                    if productID == "com.shiftly.app.subscription.basic"{
+                        self.basicPlanCost = price
+                    }else if productID == "com.shiftly.app.subscription.growth"{
+                        self.growthPlanCost = price
+                    }else if productID == "com.shiftly.app.subscription.pro"{
+                        self.proPlanCost = price
+                    }else{
+                        self.headOfficePlanCost = price
+                    }
+                if let symbol = price.first(where: { !$0.isNumber && !$0.isWhitespace && $0 != "," }) {
+                    print("Currency symbol:", symbol)  // Output: "₹"
+                    self.currencySymbol = String(symbol)
                 }
             }
-            LoaderManager.shared.hide()
-            self.tblVw.reloadData()
-            /*
-             com.shiftly.app.subscription.pro - $149.00
-             com.shiftly.app.subscription.basic - $19.00
-             com.shiftly.app.subscription.growth - $49.00
-             com.shiftly.app.subscription.headOffice - $299.00
-             */
-            // Update your UI labels dynamically
-            // e.g., Basic: prices["com.shiftly.app.subscription.basic"]
+            self.regionCode = regionCode
+            
+            // 🎉 NOW YOU CAN CALL YOUR NEXT API
+            self.getListOfAllSubscriptions(regionCode: self.regionCode ?? "")
         }
     }
+
     @IBAction func action_btnRestore(_ sender: Any) {
        
         LoaderManager.shared.show()
@@ -197,7 +207,7 @@ class SubscriptionVC: UIViewController {
            print("ScrollView pulled to refresh")
 
            // Call your data reload function here
-        self.getListOfAllSubscriptions()
+        self.getListOfAllSubscriptions(regionCode: regionCode ?? "")
 
            // End refreshing after reload
        }
@@ -247,63 +257,68 @@ class SubscriptionVC: UIViewController {
 
 extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.plans?.count ?? 0
+        return self.plansN?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = self.tblVw.dequeueReusableCell(withIdentifier: "SubscriptionTVC", for: indexPath) as! SubscriptionTVC
         
-        if let plan = plans?[indexPath.row] {
-            cell.lbl_header.text = plan.name ?? ""
-         ///   cell.lbl_price.text = "$\(plan.price ?? 0.0)/month"
-            if indexPath.row == 0 {
+        if let plan = plansN?[indexPath.row] {
+          //  self.selectedIndex = indexPath
+            cell.lbl_header.text = plan.iosAttributes.name
+            if plan.iosAttributes.productId == ""{
+                cell.lbl_price.text = "\(currencySymbol) 0/month"
+            }else if plan.iosAttributes.productId == "com.shiftly.app.subscription.basic"{
                 cell.lbl_price.text = "\(basicPlanCost ?? "")/month"
-            }else if indexPath.row == 1{
+            }else if plan.iosAttributes.productId == "com.shiftly.app.subscription.growth"{
                 cell.lbl_price.text = "\(growthPlanCost ?? "")/month"
-            } else if indexPath.row == 2 {
-                cell.lbl_price.text = "\(proPlanCost ?? "")/month"
-            }else  if indexPath.row == 3{
+            }else if plan.iosAttributes.productId == "com.shiftly.app.subscription.headOffice"{
                 cell.lbl_price.text = "\(headOfficePlanCost ?? "")/month"
-            }else{
-                cell.lbl_price.text = "0/month"
+            }else if plan.iosAttributes.productId == "com.shiftly.app.subscription.pro"  {
+                cell.lbl_price.text = "\(proPlanCost ?? "")/month"
             }
-            cell.lbl_description.text = plan.desc  ?? ""
+            cell.lbl_description.text = plan.desc
             cell.indexPath = indexPath
-            cell.lbl_feature1.text = plan.feature?[0] ?? ""
-            cell.lbl_feature2.text = plan.feature?[1] ?? ""
-            cell.lbl_feature3.text = plan.feature?[2] ?? ""
-          //  cell.lbl_feature4.text = plan.feature?[3]
-//                    }
+            cell.lbl_feature1.text = plan.feature[0]
+            cell.lbl_feature2.text = plan.feature[1]
+            cell.lbl_feature3.text = plan.feature[2]
             cell.onCellTapped = { [weak self] tappedIndex in
-                        guard let self = self,
-                              let tappedPlan = self.plans?[tappedIndex.row],
-                              let planName = tappedPlan.name,
-                              let selectedTier = SubscriptionTier.allCases.first(where: { $0.rawValue == planName }) else {
-                            print("No matching tier found for tapped plan")
-                            SubscriptionManager.shared.selectedPlan = .free
-                                    // Update selected index for UI highlighting
-                            self?.selectedIndex = tappedIndex
-                            self?.selectedPlanId = self?.plans?[self?.selectedIndex?.row ?? 0].id ?? ""
-                            self?.tblVw.reloadData()
-                            
-                            self?.handleAppearanceFrBottomBtns()
-                            return
-                        }
+                guard let self = self,
+                      let tappedPlan = self.plansN?[tappedIndex.row] else {
+                    return
+                }
 
-                        print("Cell tapped: \(tappedIndex.row)")
-                        print("Selected Tier: \(selectedTier.rawValue)")
+                let planName = tappedPlan.iosAttributes.name   // if name is non-optional
+                let selectedTier = SubscriptionTier.allCases.first(where: { $0.rawValue == planName })
+
+                guard let selectedTier = selectedTier else {
+                    print("No matching tier found for tapped plan")
+                    SubscriptionManager.shared.selectedPlan = .free
+
+                    // Update selected index for UI highlighting
+                    self.selectedIndex = tappedIndex
+                    self.selectedPlanId = self.plansN?[self.selectedIndex?.row ?? 0].iosAttributes.productId ?? ""
+                    self.tblVw.reloadData()
+                    self.handleAppearanceFrBottomBtns()
+                    return
+                }
+
+                print("Cell tapped: \(tappedIndex.row)")
+                print("Selected Tier: \(selectedTier.rawValue)")
+
                 SubscriptionManager.shared.selectedPlan = selectedTier
-                        // Update selected index for UI highlighting
-                        self.selectedIndex = tappedIndex
-                self.selectedPlanId = self.plans?[self.selectedIndex?.row ?? 0].id ?? ""
-                        self.tblVw.reloadData()
-
-                    }
+                // Update selected index for UI highlighting
+                self.selectedIndex = tappedIndex
+                self.selectedPlanId = self.plansN?[self.selectedIndex?.row ?? 0].iosAttributes.productId ?? ""
+                self.tblVw.reloadData()
+            }
             
             self.handleAppearanceFrBottomBtns()
                     // Update cell image based on selectedIndex
-                    let isSelected = (indexPath == selectedIndex)
-                    cell.updateImage(isSelected: isSelected)
+                 //   let isSelected = (indexPath == selectedIndex)
+            let isSelected = (indexPath == selectedIndex)
+            cell.updateImage(isSelected: isSelected)
+
             
         }
      
@@ -315,10 +330,10 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
     func manageHeight() {
         tblVw.layoutIfNeeded()
         if UIDevice.current.userInterfaceIdiom == .pad {
-            let count = (self.plans?.count ?? 0 + 1 )
+            let count = (self.plansN?.count ?? 0 + 1 )
             tblHeght.constant =  CGFloat(((count) * 260))
         }else{
-            let count = (self.plans?.count ?? 0 + 1 )
+            let count = (self.plansN?.count ?? 0 + 1 )
             tblHeght.constant =  CGFloat(((count) * 230))
         }
         
@@ -333,13 +348,17 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
     }
 
 
+  
+
+
+
 }
 extension SubscriptionVC {
     
-    private func getListOfAllSubscriptions()
+    private func getListOfAllSubscriptions(regionCode:String)
     {
         LoaderManager.shared.show()
-        viewModel.getlistOfSubscriptions { [weak self] (success: Bool, result: GetSubscriptionModel?, statusCode: Int?) in
+        viewModel.getlistOfSubscriptions(regionCode: regionCode) { [weak self] (success: Bool, result: SubscriptionPlansResponse?, statusCode: Int?) in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     LoaderManager.shared.hide()
@@ -357,12 +376,15 @@ extension SubscriptionVC {
                             if success == true {
                                 if result?.data != nil{
                                     self.isLoading = false
-                                    self.plans?.removeAll()
-                                    self.plans = result?.data ?? []
-                                    self.getPriceFormStore()
-//                                    if let plan =  result?.data?.currentPlan{
-//                                        self.currentPlan = plan
-//                                    }
+                                    self.plansN?.removeAll()
+                                    self.plansN = result?.data ?? []
+                                    if let plans = self.plansN, !plans.isEmpty {
+                                        if let activeIndex = plans.firstIndex(where: { $0.planStatus.lowercased() == "active" }) {
+                                            self.selectedIndex = IndexPath(row: activeIndex, section: 0)
+                                        } else {
+                                            self.selectedIndex = IndexPath(row: 0, section: 0) // default
+                                        }
+                                    }
                                 }else{
                                     AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
                                 }
@@ -379,7 +401,7 @@ extension SubscriptionVC {
                         case .unauthorized :
                             self.viewAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                                 if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                    self.getListOfAllSubscriptions()
+                                    self.getListOfAllSubscriptions(regionCode: regionCode)
                                 } else {
                                     LoaderManager.shared.hide()
                                     self.isLoading = false

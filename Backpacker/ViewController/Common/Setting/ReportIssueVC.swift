@@ -199,7 +199,7 @@ extension ReportIssueVC {
                         AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     }
                 case .badRequest:
-                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    AlertManager.showAlert(on: self, title: "Alert", message: message ?? "Something went wrong.")
                 case .unauthorized :
                     self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {

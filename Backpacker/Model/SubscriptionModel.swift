@@ -48,3 +48,80 @@ struct Plan: Codable {
         case planStatus
     }
 }
+struct SubscriptionPlansResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: [PlanS]
+    let errors: [String]?
+}
+
+// MARK: - Plan
+struct PlanS: Codable {
+    let id: String
+    let planStatus: String
+    let googlePackageName: String
+    let googleProductId: String
+    let basePlan: BasePlan
+    let iosSubId: String
+    let iosAttributes: IOSAttributes
+    let iosBasePlan: IOSBasePlan
+    let commonName: String
+    let feature: [String]
+    let desc: String
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case planStatus
+        case googlePackageName
+        case googleProductId
+        case basePlan
+        case iosSubId
+        case iosAttributes
+        case iosBasePlan
+        case commonName
+        case feature
+        case desc
+    }
+}
+
+// MARK: - BasePlan
+struct BasePlan: Codable {
+    let basePlanId: String
+    let region: Region
+}
+
+struct Region: Codable {
+    let regionCode: String
+    let newSubscriberAvailability: Bool
+    let price: RegionPrice
+}
+
+struct RegionPrice: Codable {
+    let currencyCode: String
+    let units: String
+    let nanos: Int
+}
+
+// MARK: - iOS Attributes
+struct IOSAttributes: Codable {
+    let name: String
+    let productId: String
+    let familySharable: Bool
+    let state: String
+    let subscriptionPeriod: String
+    let reviewNote: String
+    let groupLevel: Int
+}
+
+// MARK: - iOS Base Plan
+struct IOSBasePlan: Codable {
+    let country: String
+    let price: IOSPrice
+    let currency: String
+}
+
+struct IOSPrice: Codable {
+    let customerPrice: String
+    let proceeds: String
+    let proceedsYear2: String
+}

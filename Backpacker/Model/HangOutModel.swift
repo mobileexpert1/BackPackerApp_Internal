@@ -130,6 +130,7 @@ struct ApiResponseModel<T: Codable>: Codable {
 struct EmptyData: Codable {}
 
 
+
 //MARK: - Fav Hangout
 
 struct FavHangoutResponse: Codable {
