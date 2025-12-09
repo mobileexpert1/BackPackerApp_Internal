@@ -260,7 +260,7 @@ enum HTTPStatusCode: Int {
         case .unauthorized: return "Unauthorized"
         case .methodNotAllowed: return "Method Not Allowed"
         case .internalServerError: return "Internal Server Error"
-        case .unknown: return "Unknown Status Code"
+        case .unknown: return "The server is temporarily unable to service your request due to maintenance downtime or capacity problems. Please try again later."
         case .unauthorizedToken:
             return "Log Out Status Code is 403"
         }
@@ -798,11 +798,10 @@ extension ServiceManager {
         headers: [String: String]? = nil,
         showLoader: Bool = true,
         contentType: ContentType = .json,
-        retried: Bool = false, // ⬅️ New parameter to prevent infinite loop
+        retried: Bool = false, //New parameter to prevent infinite loop
         completion: @escaping (ApiResult<T, APIError>) -> Void
     ) {
-        print("📡 URL:", url)
-
+        print("URL:", url)
         guard Reachability.isConnectedToNetwork() else {
             UIApplication.showOfflineAlert()
             LoaderManager.shared.hide()

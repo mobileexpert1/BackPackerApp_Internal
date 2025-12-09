@@ -46,7 +46,6 @@ extension SkeltonCollectionTVC: UICollectionViewDelegate, UICollectionViewDataSo
         return cell
     }
 
-    // Layout: 2 cells per row, 200 height
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                            sizeForItemAt indexPath: IndexPath) -> CGSize {
            

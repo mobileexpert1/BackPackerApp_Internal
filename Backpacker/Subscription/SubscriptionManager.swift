@@ -7,7 +7,7 @@
 
 import Foundation
 import StoreKit
-
+import CryptoKit
 // MARK: - Subscription Tier Enum
 enum SubscriptionTier: String, CaseIterable {
     case free = "Free / Starter Plan"
@@ -174,7 +174,57 @@ final class SubscriptionManager {
     func getPlan(for tier: SubscriptionTier) -> SubscriptionPlan? {
         getAllPlans().first { $0.tier == tier }
     }
-    
+    func uuidFromString(_ string: String) -> UUID {
+        let data = Data(string.utf8)
+        let hash = SHA256.hash(data: data)
+        let hashBytes = [UInt8](hash)
+        
+        return UUID(uuid: (
+            hashBytes[0], hashBytes[1], hashBytes[2], hashBytes[3],
+            hashBytes[4], hashBytes[5], hashBytes[6], hashBytes[7],
+            hashBytes[8], hashBytes[9], hashBytes[10], hashBytes[11],
+            hashBytes[12], hashBytes[13], hashBytes[14], hashBytes[15]
+        ))
+    }
+    func encodeObjectIdToUUID(_ objectId: String) -> UUID? {
+
+        guard objectId.count == 24 else {
+            print("❌ Invalid ObjectId length")
+            return nil
+        }
+
+        var bytes = [UInt8]()
+        var startIndex = objectId.startIndex
+
+        for _ in 0..<12 {
+            let nextIndex = objectId.index(startIndex, offsetBy: 2)
+            let pair = objectId[startIndex..<nextIndex]
+
+            guard let byte = UInt8(pair, radix: 16) else { return nil }
+
+            bytes.append(byte)
+            startIndex = nextIndex
+        }
+
+        // pad 4 bytes for UUID (total 16 bytes)
+        bytes.append(contentsOf: [0, 0, 0, 0])
+
+        // convert to hex string
+        let hex = bytes.map { String(format: "%02x", $0) }.joined()
+
+        // break into UUID parts to avoid compiler error
+        let part1 = String(hex.prefix(8))
+        let part2 = String(hex.dropFirst(8).prefix(4))
+        let part3 = String(hex.dropFirst(12).prefix(4))
+        let part4 = String(hex.dropFirst(16).prefix(4))
+        let part5 = String(hex.dropFirst(20))
+
+        let uuidString = "\(part1)-\(part2)-\(part3)-\(part4)-\(part5)"
+
+        return UUID(uuidString: uuidString.uppercased())
+    }
+
+
     // MARK: - Purchase Plan
     func purchasePlan(tier: SubscriptionTier) async {
         guard let plan = getPlan(for: tier),
@@ -189,9 +239,23 @@ final class SubscriptionManager {
                 print(" Product not found on App Store")
                 return
             }
-            
-            let result = try await product.purchase()
-            
+            /*
+             let options: Set<Product.PurchaseOption> = [
+                    // .custom(key: "internal_user_id", value: "avinash Purchase key")
+                 .appAccountToken(UUID())
+                 ]
+             */
+            print("Employer Di",UserDefaultsManager.shared.employeruserId)
+            var udisd = encodeObjectIdToUUID(UserDefaultsManager.shared.employeruserId!)//uuidFromString(UserDefaultsManager.shared.employeruserId!)
+
+            print("UerId",udisd)
+            let options: Set<Product.PurchaseOption> = [
+                .appAccountToken(udisd!)
+            ]
+            print("Otions---------",options)
+            let result = try await product.purchase(options: options)
+           
+
             switch result {
             case .success(let verification):
                 let transaction = try checkVerified(verification)
@@ -207,7 +271,7 @@ final class SubscriptionManager {
                                message: "Your \(tier.rawValue) subscription has been successfully activated. Enjoy your premium features!"
                            )
                 }
-                // ✅ Create backend request from transaction
+                //  Create backend request from transaction
                     let purchaseRequest = createUserPlanRequest(from: transaction)
                 self.purchasePlanDetail = purchaseRequest
                 if let vc = self.controller as? SubscriptionVC{
@@ -268,7 +332,20 @@ final class SubscriptionManager {
         }
     }
     
-   
+  
+
+//    func uuidFromString(_ string: String) -> UUID {
+//        let data = Data(string.utf8)
+//        let hash = SHA256.hash(data: data)
+//        return UUID(uuid: (
+//            hash[0], hash[1], hash[2], hash[3],
+//            hash[4], hash[5], hash[6], hash[7],
+//            hash[8], hash[9], hash[10], hash[11],
+//            hash[12], hash[13], hash[14], hash[15]
+//        ))
+//    }
+
+
     
     // MARK: - Handle verified transaction
     private func handle(_ transaction: Transaction) async {

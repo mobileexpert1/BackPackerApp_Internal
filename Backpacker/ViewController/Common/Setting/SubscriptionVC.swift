@@ -142,7 +142,6 @@ class SubscriptionVC: UIViewController {
             }
             self.regionCode = regionCode
             
-            // 🎉 NOW YOU CAN CALL YOUR NEXT API
             self.getListOfAllSubscriptions(regionCode: self.regionCode ?? "")
         }
     }
@@ -395,6 +394,7 @@ extension SubscriptionVC {
                             self.refreshControl.endRefreshing()
                             self.tblVw.reloadData()
                             self.manageHeight()
+                            self.handleAppearanceFrBottomBtns()
                         case .badRequest:
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                             self.refreshControl.endRefreshing()
