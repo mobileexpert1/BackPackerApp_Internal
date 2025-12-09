@@ -105,7 +105,7 @@ class SubscriptionVC: UIViewController {
                 
                 // Constraints
 //
-        
+        self.handleAppearanceFrBottomBtns()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -338,18 +338,7 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
         
         tblVw.layoutIfNeeded()
     }
-    
-    func getPriceWithCurrency(for product: SKProduct) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = product.priceLocale  // Locale of App Store region for this product
-        return formatter.string(from: product.price) ?? "\(product.price)"
-    }
-
-
   
-
-
 
 }
 extension SubscriptionVC {

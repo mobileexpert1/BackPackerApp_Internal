@@ -140,36 +140,36 @@ final class SubscriptionManager {
      */
     func fetchLocalizedPricesForAllPlans() async -> (prices: [String: String], region: String) {
         var priceMap: [String: String] = [:]
-
+        
         LoaderManager.shared.show()
-
+        
         let productIDs = getAllPlans().compactMap { $0.productID }
-
+        
         do {
             let products = try await Product.products(for: productIDs)
             let regionCode = SKPaymentQueue.default().storefront?.countryCode ?? ""
-
+            
             for product in products {
                 priceMap[product.id] = product.displayPrice
             }
-
+            
             return (priceMap, regionCode)
-
+            
         } catch {
             print("Error: \(error)")
             return ([:], "Unknown")
         }
     }
-
-
+    
+    
     func getAppStoreRegion() -> String? {
         if let storefront = SKPaymentQueue.default().storefront {
             return storefront.countryCode // Example: "US", "IN", "AE"
         }
         return nil
     }
-
-
+    
+    
     // MARK: - Get plan by tier
     func getPlan(for tier: SubscriptionTier) -> SubscriptionPlan? {
         getAllPlans().first { $0.tier == tier }
@@ -186,45 +186,47 @@ final class SubscriptionManager {
             hashBytes[12], hashBytes[13], hashBytes[14], hashBytes[15]
         ))
     }
+    
+    //----------: -  This method is used to convert USerID to UUID format becasue in backend for webhooke we have to establish the connecton which user i purchased so we can pass it   "appAccountToken" , so they will decod UUID to userid in nodeJS, so They can mainteni weghooke for both platform iOS and android -----------------
     func encodeObjectIdToUUID(_ objectId: String) -> UUID? {
-
+        
         guard objectId.count == 24 else {
             print("❌ Invalid ObjectId length")
             return nil
         }
-
+        
         var bytes = [UInt8]()
         var startIndex = objectId.startIndex
-
+        
         for _ in 0..<12 {
             let nextIndex = objectId.index(startIndex, offsetBy: 2)
             let pair = objectId[startIndex..<nextIndex]
-
+            
             guard let byte = UInt8(pair, radix: 16) else { return nil }
-
+            
             bytes.append(byte)
             startIndex = nextIndex
         }
-
+        
         // pad 4 bytes for UUID (total 16 bytes)
         bytes.append(contentsOf: [0, 0, 0, 0])
-
+        
         // convert to hex string
         let hex = bytes.map { String(format: "%02x", $0) }.joined()
-
+        
         // break into UUID parts to avoid compiler error
         let part1 = String(hex.prefix(8))
         let part2 = String(hex.dropFirst(8).prefix(4))
         let part3 = String(hex.dropFirst(12).prefix(4))
         let part4 = String(hex.dropFirst(16).prefix(4))
         let part5 = String(hex.dropFirst(20))
-
+        
         let uuidString = "\(part1)-\(part2)-\(part3)-\(part4)-\(part5)"
-
+        
         return UUID(uuidString: uuidString.uppercased())
     }
-
-
+    
+    
     // MARK: - Purchase Plan
     func purchasePlan(tier: SubscriptionTier) async {
         guard let plan = getPlan(for: tier),
@@ -239,23 +241,11 @@ final class SubscriptionManager {
                 print(" Product not found on App Store")
                 return
             }
-            /*
-             let options: Set<Product.PurchaseOption> = [
-                    // .custom(key: "internal_user_id", value: "avinash Purchase key")
-                 .appAccountToken(UUID())
-                 ]
-             */
-            print("Employer Di",UserDefaultsManager.shared.employeruserId)
-            var udisd = encodeObjectIdToUUID(UserDefaultsManager.shared.employeruserId!)//uuidFromString(UserDefaultsManager.shared.employeruserId!)
-
-            print("UerId",udisd)
+            let udisd = encodeObjectIdToUUID(UserDefaultsManager.shared.employeruserId!)
             let options: Set<Product.PurchaseOption> = [
                 .appAccountToken(udisd!)
             ]
-            print("Otions---------",options)
             let result = try await product.purchase(options: options)
-           
-
             switch result {
             case .success(let verification):
                 let transaction = try checkVerified(verification)
@@ -266,18 +256,13 @@ final class SubscriptionManager {
                 print(" Purchase successful for \(tier.rawValue)")
                 if let vc = self.controller{
                     AlertManager.showAlert(
-                               on: vc,
-                               title: "Purchase Successful",
-                               message: "Your \(tier.rawValue) subscription has been successfully activated. Enjoy your premium features!"
-                           )
+                        on: vc,
+                        title: "Purchase Successful",
+                        message: "Your \(tier.rawValue) subscription has been successfully activated. Enjoy your premium features!"
+                    )
                 }
-                //  Create backend request from transaction
-                    let purchaseRequest = createUserPlanRequest(from: transaction)
+                let purchaseRequest = createUserPlanRequest(from: transaction)
                 self.purchasePlanDetail = purchaseRequest
-                if let vc = self.controller as? SubscriptionVC{
-                 //   vc.createNewUserPlan()
-                }
-
             case .userCancelled:
                 print("User cancelled purchase")
                 if let vc = self.controller{
@@ -296,15 +281,15 @@ final class SubscriptionManager {
                         message: "Your purchase is currently pending. Please wait for the transaction to complete or check your App Store account for updates."
                     )
                 }
-               
+                
                 
             @unknown default:
-                print("❓ Unknown purchase result")
+                print("Unknown purchase result")
                 guard let controllers = self.controller else {
-                        print("No controller available to show alerts or loader.")
+                    print("No controller available to show alerts or loader.")
                     return
                     
-                    }
+                }
                 if let vc = self.controller{
                     AlertManager.showAlert(
                         on: vc,
@@ -312,7 +297,7 @@ final class SubscriptionManager {
                         message: "An unexpected issue occurred during the purchase process. Please try again later."
                     )
                 }
-               
+                
             }
         } catch {
             print("Purchase failed: \(error.localizedDescription)")
@@ -331,22 +316,6 @@ final class SubscriptionManager {
             }
         }
     }
-    
-  
-
-//    func uuidFromString(_ string: String) -> UUID {
-//        let data = Data(string.utf8)
-//        let hash = SHA256.hash(data: data)
-//        return UUID(uuid: (
-//            hash[0], hash[1], hash[2], hash[3],
-//            hash[4], hash[5], hash[6], hash[7],
-//            hash[8], hash[9], hash[10], hash[11],
-//            hash[12], hash[13], hash[14], hash[15]
-//        ))
-//    }
-
-
-    
     // MARK: - Handle verified transaction
     private func handle(_ transaction: Transaction) async {
         guard let plan = getAllPlans().first(where: { $0.productID == transaction.productID }) else { return }
@@ -374,7 +343,7 @@ final class SubscriptionManager {
         
         return restored
     }
-
+    
     // MARK: - Verify transactions
     private func checkVerified(_ result: VerificationResult<Transaction>) throws -> Transaction {
         switch result {
@@ -384,9 +353,9 @@ final class SubscriptionManager {
             return transaction
         }
     }
-
- 
-
+    
+    
+    
     // MARK: - Tier Access Control
     func canAccessFeature(requiredTier: SubscriptionTier) -> Bool {
         let tiers = SubscriptionTier.allCases
@@ -428,6 +397,6 @@ final class SubscriptionManager {
             subscriptionId: UUID().uuidString
         )
     }
-
+    
 }
 
