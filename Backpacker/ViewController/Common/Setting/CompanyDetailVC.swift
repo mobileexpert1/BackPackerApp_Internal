@@ -72,6 +72,13 @@ class CompanyDetailVC: UIViewController {
            rc.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
            return rc
        }()
+    let viewModel = SubscriptionViewModel()
+    let viewAuth = LogInVM()
+    var plansN : [PlanS]?
+    var regionCode: String?
+    var activePlanLocationCount : Int?
+    var activePlanJobCount: Int?
+    var totalLocation : Int?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.attachRefreshControl()
@@ -79,6 +86,7 @@ class CompanyDetailVC: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.getPriceFormStore()
         print("ComanyObj",companyObj)
         self.btn_edit.isHidden = true
         self.btn_edit.isUserInteractionEnabled = true
@@ -92,6 +100,22 @@ class CompanyDetailVC: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
        /// jobs_Tble_Height.constant = CGFloat(locations?.count ?? 0) * (100 + 10)
+    }
+    func getPriceFormStore() {
+     //   LoaderManager.shared.show()
+        
+        Task {
+            let result = await SubscriptionManager.shared.fetchLocalizedPricesForAllPlans()
+            
+            let prices = result.prices
+            let regionCode = result.region
+            
+            print("REGION:", regionCode)
+            
+            self.regionCode = regionCode
+            
+            self.getListOfAllSubscriptions(regionCode: self.regionCode ?? "")
+        }
     }
     private func setupData(){
         if isComeFromUpdate == true{
@@ -410,22 +434,37 @@ class CompanyDetailVC: UIViewController {
         }
     }
     @IBAction func actio_addLocation(_ sender: Any) {
-        if  self.objComapny?.id != nil{
-            let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-               if let locationVC = storyboard.instantiateViewController(withIdentifier: "CompanyLocationVC") as? CompanyLocationVC {
-                   locationVC.companyID = self.objComapny?.id
-                   locationVC.modalPresentationStyle = .overFullScreen
-                      locationVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.2) // dim effect
-                   locationVC.delegate = self
-                      let nav = UINavigationController(rootViewController: locationVC)
-                      nav.navigationBar.isHidden = true
-                      nav.modalPresentationStyle = .overFullScreen   // 👈 keeps transparency
-                      
-                      self.present(nav, animated: true)
-               }
+        if (self.totalLocation ?? 0) < (self.activePlanLocationCount ?? 0)  {
+            if  self.objComapny?.id != nil{
+                let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+                   if let locationVC = storyboard.instantiateViewController(withIdentifier: "CompanyLocationVC") as? CompanyLocationVC {
+                       locationVC.companyID = self.objComapny?.id
+                       locationVC.modalPresentationStyle = .overFullScreen
+                          locationVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.2) // dim effect
+                       locationVC.delegate = self
+                          let nav = UINavigationController(rootViewController: locationVC)
+                          nav.navigationBar.isHidden = true
+                          nav.modalPresentationStyle = .overFullScreen   // 👈 keeps transparency
+                          
+                          self.present(nav, animated: true)
+                   }
+            }else{
+                AlertManager.showAlert(on: self, title: "Error", message: "Please add company first.")
+            }
         }else{
-            AlertManager.showAlert(on: self, title: "Error", message: "Please add company first.")
+                AlertManager.showAlert(
+                        on: self,
+                        title: "Plan Limit Reached",
+                        message: "Please update your plan to add more locations."
+                ){
+                    let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+                    if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    }
+                }
+            
         }
+       
        
     }
 }
@@ -875,7 +914,7 @@ extension CompanyDetailVC{
                     case .ok, .created:
                         if success == true {
                             let newLocations = result?.data.locations
-                            
+                            self.totalLocation = result?.data.total
                             if self.page == 1 {
                                 if newLocations?.count == 0 {
                                     self.locations?.removeAll()
@@ -1082,5 +1121,84 @@ extension CompanyDetailVC : CompanyLocationVCDelegate {
             self.getListOfLocationAll()
         }
     }
+    private func getListOfAllSubscriptions(regionCode:String)
+    {
+        //LoaderManager.shared.show()
+        viewModel.getlistOfSubscriptions(regionCode: regionCode) { [weak self] (success: Bool, result: SubscriptionPlansResponse?, statusCode: Int?) in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    LoaderManager.shared.hide()
+                    guard let statusCode = statusCode else {
+                        LoaderManager.shared.hide()
+                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                        return
+                    }
+                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    
+                    DispatchQueue.main.async {
+                        
+                        switch httpStatus {
+                        case .ok, .created:
+                            if success == true {
+                                if result?.data != nil{
+                                    self.isLoading = false
+                                    self.plansN?.removeAll()
+                                    self.plansN = result?.data ?? []
+                                    guard let plans = self.plansN else { return }
 
+                                    let activePlan = plans.first { $0.planStatus.lowercased() == "active" }
+                                    let locationCount = activePlan?.locationCount ?? 0
+                                    let jobCount = activePlan?.jobCount ?? 0
+                                    print("active plan",activePlan)
+                                    print("Location Count:", locationCount)
+                                    print("Job Count:", jobCount)
+                                    self.activePlanJobCount = jobCount
+                                    self.activePlanLocationCount = locationCount
+
+                                }else{
+                                    AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
+                                }
+                            } else {
+                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                LoaderManager.shared.hide()
+                            }
+                        case .badRequest:
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            
+                        case .unauthorized :
+                            self.viewAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                    self.getListOfAllSubscriptions(regionCode: regionCode)
+                                } else {
+                                    LoaderManager.shared.hide()
+                                    self.isLoading = false
+                                    self.refreshControl.endRefreshing()
+                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                                }
+                            }
+                            
+                        case .unauthorizedToken:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        case .unknown:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                                self.navigationController?.popViewController(animated: true)
+                            }
+                        case .methodNotAllowed:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        case .internalServerError:
+                            LoaderManager.shared.hide()
+                            self.refreshControl.endRefreshing()
+                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                            
+                        }
+                    }
+                }
+            }
+    }
 }

@@ -12,9 +12,9 @@ struct ApiConstants {
         static let DEBUG_MODE_ON = true
         private static let BASE_URL: String = {
             if DEBUG_MODE_ON {
-                return "https://backpacker.csdevhub.com/"//"https://backpacker.csdevhub.com/"//"http://http://192.168.11.4:3003/"
+                return "https://backpacker.csdevhub.com/"//"https://backpacker.csdevhub.com/"//"https://backpacker.csdevhub.com/"//"http://http://192.168.11.4:3003/"
             } else {
-                return "https://backpacker.csdevhub.com/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"
+                return "https://backpacker.csdevhub.com/"//"https://backpacker.csdevhub.com/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"
             }
         }()
         
@@ -681,15 +681,24 @@ struct ApiConstants {
         
         //MARK:  -  PRivay URLS
         static let PRIVACY_URL = BASE_URL + "privacy-policy/backpacker"
+        
+        //MARK:  - Current Plan
+        static let CURRENT_PLAN = BASE_URL + "api/subscription/currentPlan/check"
+        static func CURRENT_PLAN_WITH_LOC(locID: String) -> String {
+            let url = "\(BASE_URL)api/subscription/currentPlan/check?locID=\(locID)"
+            return url
+        }
         }
  
-    
+ 
     struct Products{
         static let product_basic = "com.shiftly.app.subscription.basic"
         static let product_growth = "com.shiftly.app.subscription.growth"
         static let product_pro = "com.shiftly.app.subscription.pro"
         static let product_headOffice = "com.shiftly.app.subscription.headOffice"
       
+        
+        static let defaultFreePlan = "Free/Starter Plan"
     }
     
     

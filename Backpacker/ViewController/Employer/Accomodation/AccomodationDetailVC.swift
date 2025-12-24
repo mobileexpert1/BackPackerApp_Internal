@@ -1,9 +1,7 @@
 //
 //  AccomodationDetailVC.swift
 //  BackpackerHire
-//
 //  Created by Mobile on 23/07/25.
-//
 
 import UIKit
 import Cosmos
@@ -79,7 +77,7 @@ class AccomodationDetailVC: UIViewController {
 #if BackpackerHire
         self.btn_edit.isHidden = false
         self.getDetailOfAccomodationEmployer()
-        #else
+#else
         self.btn_edit.isHidden = true
         self.btn_delete.isHidden = true
         self.getDetailOfAccomodation()
@@ -94,17 +92,17 @@ class AccomodationDetailVC: UIViewController {
     
     @objc private func refreshCollectionData() {
         // Reset pagination and loading flags
-
+        
         // Fetch data
         LoaderManager.shared.show()
         self.refreshControl.beginRefreshing()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
 #if BackpackerHire
-        
-        self.getDetailOfAccomodationEmployer()
-        #else
-        
-        self.getDetailOfAccomodation()
+            
+            self.getDetailOfAccomodationEmployer()
+#else
+            
+            self.getDetailOfAccomodation()
 #endif
         }
         
@@ -141,14 +139,13 @@ class AccomodationDetailVC: UIViewController {
         page_Controller.currentPage = 0
         page_Controller.currentPageIndicatorTintColor = UIColor(hex: "#299EF5") // ← Your highlight color
         page_Controller.pageIndicatorTintColor =  UIColor(hex: "#D9D9D9")
-     
+        
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 0
         layout.itemSize = CGSize(width: img_Collection_Vw.frame.width, height: img_Collection_Vw.frame.height)
         img_Collection_Vw.collectionViewLayout = layout
         self.mapVw.delegate = self
-
     }
     
     @IBAction func action_Back(_ sender: Any) {
@@ -159,21 +156,17 @@ class AccomodationDetailVC: UIViewController {
     }
     
     @IBAction func action_VwOnmPA(_ sender: Any) {
-        
         if let lat = self.accomodationDetailObj?.accommodation.lat,
            let long = self.accomodationDetailObj?.accommodation.long {
-
             let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
             let placemark = MKPlacemark(coordinate: coordinate)
             let mapItem = MKMapItem(placemark: placemark)
-            mapItem.name = self.lbl_LocationTitle.text//"Accommodation Location" // 👉 Custom title on the pin
+            mapItem.name = self.lbl_LocationTitle.text//"Accommodation Location" //  Custom title on the pin
             mapItem.openInMaps(launchOptions: [
                 MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: coordinate),
                 MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
             ])
         }
-
-
     }
     @IBAction func action_delete(_ sender: Any) {
         
@@ -187,11 +180,12 @@ class AccomodationDetailVC: UIViewController {
             }else{
                 AlertManager.showAlert(on: self, title: "Missing", message: "Accommodation Id Is Missing")
             }
-           
+            
             
         })
+        
 #endif
-      
+        
         
     }
     @IBAction func action_Edit(_ sender: Any) {
@@ -213,7 +207,6 @@ class AccomodationDetailVC: UIViewController {
                 ImageLoader.loadImages(from: imageUrls) { images in
                     // here you get your [UIImage]
                     accVC.editImages = images
-                    
                     accVC.editName = name
                     accVC.editAddress = addres
                     accVC.editDescription = description
@@ -223,10 +216,8 @@ class AccomodationDetailVC: UIViewController {
                     accVC.editPrice = "\(price)"
                     accVC.editFacilities = self.accomodationDetailObj?.accommodation.facilities ?? []
                     accVC.editedimageStrings = self.accomodationDetailObj?.accommodation.image ?? []
-          //          accVC.locationId = self.accomodationDetailObj?.accommodation.locationId ?? ""
                     self.navigationController?.pushViewController(accVC, animated: true)
                 }
-                
             }
         } else {
             print("- Could not instantiate AddNewAccomodationVC")
@@ -247,9 +238,7 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
         }else{
             return 1
         }
-
         
-      
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -262,9 +251,9 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
             if let img = self.accomodationDetailObj?.accommodation.image[indexPath.item] {
                 let baseURL1 = ApiConstants.API.API_IMAGEURL
                 let baseURL2 = ApiConstants.API.API_IMAGEURL
-
+                
                 let imageURLString = img.hasPrefix("http") ? img : baseURL1 + img
-
+                
                 cell.img_Vw.sd_setImage(
                     with: URL(string: imageURLString),
                     placeholderImage: UIImage(named: "img_Placehodler")
@@ -277,18 +266,18 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
                         )
                     }
                 }
-
+                
             } else {
                 cell.img_Vw.image = UIImage(named: "img_Placehodler")
             }
             cell.img_Vw.isUserInteractionEnabled = true
             cell.img_Vw.tag = indexPath.item
-
+            
             let tap = UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:)))
             cell.img_Vw.addGestureRecognizer(tap)
 #if BackpackerHire
-        cell.Btn_Fav.isUserInteractionEnabled = false
-        cell.Btn_Fav.setImage(UIImage(named: ""), for: .normal)
+            cell.Btn_Fav.isUserInteractionEnabled = false
+            cell.Btn_Fav.setImage(UIImage(named: ""), for: .normal)
 #else
             cell.Btn_Fav.isUserInteractionEnabled = false
             cell.Btn_Fav.setImage(UIImage(named: ""), for: .normal)
@@ -311,51 +300,51 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
             
             return cell
         }
-     
+        
     }
     @objc func imageTapped(_ sender: UITapGestureRecognizer) {
         guard let tappedImageView = sender.view as? UIImageView else { return }
         let startIndex = tappedImageView.tag
-
+        
         var photos: [SKPhotoProtocol] = []
-
+        
         if let imgArr = accomodationDetailObj?.accommodation.image {
             for img in imgArr {
                 let baseURL = ApiConstants.API.API_IMAGEURL
                 let imageURLString = img.hasPrefix("http") ? img : baseURL + img
-
+                
                 let photo = SKPhoto.photoWithImageURL(imageURLString)
                 photo.shouldCachePhotoURLImage = true
                 photos.append(photo)
             }
         }
-
+        
         let browser = SKPhotoBrowser(photos: photos, initialPageIndex: startIndex)
         browser.modalPresentationStyle = .fullScreen
         present(browser, animated: true, completion: nil)
     }
-
-
+    
+    
     // Optional: Set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         if collectionView == img_Collection_Vw{
             let width = img_Collection_Vw.bounds.width
-
+            
             return CGSize(width: width, height: 186)
         }else{
             let spacing: CGFloat = 10  // inter-item spacing
             let itemsPerRow: CGFloat = 4
-
+            
             let totalSpacing = (itemsPerRow - 1) * spacing
             let availableWidth = collectionView.bounds.width - totalSpacing
             let itemWidth = availableWidth / itemsPerRow
-
+            
             return CGSize(width: itemWidth, height: 75)
         }
-
+        
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         if collectionView == img_Collection_Vw{
             return 0
@@ -363,7 +352,7 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
             return 2
         }
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         if collectionView == img_Collection_Vw{
             return 0
@@ -375,7 +364,7 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
         let page = Int(scrollView.contentOffset.x / img_Collection_Vw.frame.width)
         page_Controller.currentPage = page
     }
- 
+    
 }
 
 extension AccomodationDetailVC {
@@ -386,11 +375,11 @@ extension AccomodationDetailVC {
         isLoading = true
         if accomodationID?.isEmpty == true {
             LoaderManager.shared.hide()
-                AlertManager.showAlert(
-                    on: self,
-                    title: "Alert",
-                    message: "Accomodation ID is missing."
-                )
+            AlertManager.showAlert(
+                on: self,
+                title: "Alert",
+                message: "Accomodation ID is missing."
+            )
             
             return
         }else{
@@ -482,7 +471,7 @@ extension AccomodationDetailVC {
                     LoaderManager.shared.hide()
                     guard let statusCode = statusCode else {
                         LoaderManager.shared.hide()
-                     
+                        
                         AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
                         return
                     }
@@ -541,18 +530,18 @@ extension AccomodationDetailVC {
             }
         }
     }
-    #endif
+#endif
     
     func getDetailOfAccomodation(){
         LoaderManager.shared.show()
         isLoading = true
         if accomodationID?.isEmpty == true {
             LoaderManager.shared.hide()
-                AlertManager.showAlert(
-                    on: self,
-                    title: "Alert",
-                    message: "Accomodation ID is missing."
-                )
+            AlertManager.showAlert(
+                on: self,
+                title: "Alert",
+                message: "Accomodation ID is missing."
+            )
             
             return
         }else{
@@ -631,7 +620,7 @@ extension AccomodationDetailVC {
             self.lbl_AboutDescription.text = obj.accommodation.description
             self.lbl_HotelName.text = obj.accommodation.name
             self.lbl_ValPrice.text = "$\(obj.accommodation.price)"
-                if obj.accommodation.image.count == 1 {
+            if obj.accommodation.image.count == 1 {
                 self.page_Controller.numberOfPages = 0
                 self.page_Controller.currentPage = 0
                 self.page_Controller.isHidden = true
@@ -643,38 +632,16 @@ extension AccomodationDetailVC {
             
             self.img_Collection_Vw.reloadData()
             self.setFacilities(obj: obj)
-                
-            }
-        self.setupMapAnnotations()
+            
         }
+        self.setupMapAnnotations()
+    }
     
     
     func setFacilities(obj : AccommodationDetailData){
         let facilities = obj.accommodation.facilities
         var objPfFacilty = [Facility]()
         for facility in facilities {
-            /*
-             Swimming Pool
-             WiFi
-             Parking
-             Elevator
-             Fitness Center
-             24-hours Open
-             
-             --
-             
-             let facilities: [Facility] = [
-                 Facility(image: "pool", title: "Swimming Pool"),
-                 Facility(image: "wifi", title: "WiFi"),
-                 Facility(image: "restaurant", title: "Restaurant"),
-                 Facility(image: "parking", title: "Parking"),
-                 Facility(image: "meeting", title: "Meeting Room"),
-                 Facility(image: "elevator", title: "Elevator"),
-                 Facility(image: "open", title: "24-hours Open"),
-                 Facility(image: "fitness", title: "Fitness Center")
-             ]
-             
-             */
             if facility == "Free WiFi" || facility == "Free Wifi" {//
                 let obj = Facility(image: "wifi", title: facility)
                 objPfFacilty.append(obj)
@@ -709,10 +676,10 @@ extension AccomodationDetailVC {
             DispatchQueue.main.async{
                 self.facilityCollectionVw.reloadData()
             }
-           
-           
+            
+            
+        }
     }
-}
     func MakeJobAccomodationFav(id: String){
         LoaderManager.shared.show()
         viewModelJOb.MakeAccomodationFAVOURATE(id: id) { success, message ,statusCode in
@@ -756,7 +723,7 @@ extension AccomodationDetailVC {
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 }
             }
-               }
+        }
     }
 }
 
@@ -765,10 +732,10 @@ extension AccomodationDetailVC: MKMapViewDelegate {
     func setupMapAnnotations() {
         guard let acc = self.accomodationDetailObj?.accommodation else { return }
         
-       
+        
         let annotation = AccommodationAnnotation(accommodation: acc)
         mapVw.addAnnotation(annotation)
-
+        
         
         // Optionally zoom to show all annotations
     }
@@ -803,19 +770,6 @@ extension AccomodationDetailVC: MKMapViewDelegate {
 }
 
 
-
-
-
-
-
-
-struct Facility {
-    var image : String
-    var title : String
-    
-}
-import MapKit
-
 class AccommodationAnnotation: NSObject, MKAnnotation {
     let coordinate: CLLocationCoordinate2D
     let title: String?
@@ -826,4 +780,9 @@ class AccommodationAnnotation: NSObject, MKAnnotation {
         self.title = accommodation.name
         self.subtitle = accommodation.locationText
     }
+}
+struct Facility {
+    var image : String
+    var title : String
+    
 }

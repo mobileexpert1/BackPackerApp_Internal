@@ -178,7 +178,7 @@ class HangOutVC: UIViewController {
     @IBAction func action__Add(_ sender: Any) {
         let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
         if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "AddNewPlaceVC") as? AddNewPlaceVC {
-            
+            jobDescriptionVC.hangoutCount = self.hangOutList.count
             // Optional: pass selected job title
             self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
         }

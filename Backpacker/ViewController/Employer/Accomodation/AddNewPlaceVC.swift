@@ -70,6 +70,18 @@ class AddNewPlaceVC: UIViewController {
     var editedImages: [EditedImage] = []
     var isMediaPickerTap : Bool = false
 
+    
+    let viewModell = SubscriptionViewModel()
+    let viewAuth = LogInVM()
+    var plansN : [PlanS]?
+    var regionCode: String?
+    var activePlanLocationCount : Int?
+    var activePlanJobCount: Int?
+    var totalLocation : Int?
+    
+    var countsLoc : CountsLoc?
+    var hangoutCount : Int?
+    var activePlan = ""
     override func viewDidLoad() {
         super.viewDidLoad()
         self.SetUpUI()
@@ -78,6 +90,7 @@ class AddNewPlaceVC: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.getPriceFormStore()
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillShow(_:)),
@@ -397,11 +410,34 @@ class AddNewPlaceVC: UIViewController {
         ) else {
             return
         }
-        if isComeFromEdit == true{
-            self.editHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData, removedImages: self.removedStrings)
+        
+        if self.activePlan == ApiConstants.Products.defaultFreePlan {
+            if self.hangoutCount ?? 0 < 1 {
+                if isComeFromEdit == true{
+                    self.editHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData, removedImages: self.removedStrings)
+                }else{
+                    self.submitHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData, locationId: self.locationId ?? "")
+                }
+            }else{
+                AlertManager.showAlert(
+                    on: self,
+                    title: "Plan Limit Reached",
+                    message: "Please update your plan to add more accomodations."
+                ){
+//                        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+//                        if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+//                            self.navigationController?.pushViewController(vc, animated: true)
+//                        }
+                }
+            }
         }else{
-            self.submitHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData, locationId: self.locationId ?? "")
+            if isComeFromEdit == true{
+                self.editHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData, removedImages: self.removedStrings)
+            }else{
+                self.submitHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData, locationId: self.locationId ?? "")
+            }
         }
+        
         
     }
     
@@ -770,5 +806,105 @@ extension AddNewPlaceVC{
         let contentInsets = UIEdgeInsets.zero
         main_ScrollVw.contentInset = contentInsets
         main_ScrollVw.scrollIndicatorInsets = contentInsets
+    }
+}
+extension AddNewPlaceVC{
+    func getPriceFormStore() {
+        //   LoaderManager.shared.show()
+        
+        Task {
+            let result = await SubscriptionManager.shared.fetchLocalizedPricesForAllPlans()
+            
+            let prices = result.prices
+            let regionCode = result.region
+            
+            print("REGION:", regionCode)
+            
+            self.regionCode = regionCode
+            
+            self.getListOfAllSubscriptions(regionCode: self.regionCode ?? "")
+        }
+    }
+    private func getListOfAllSubscriptions(regionCode:String)
+    {
+        LoaderManager.shared.show()
+        viewModell.getlistOfSubscriptions(regionCode: regionCode) { [weak self] (success: Bool, result: SubscriptionPlansResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            if result?.data != nil{
+                                self.plansN?.removeAll()
+                                self.plansN = result?.data ?? []
+                                guard let plans = self.plansN else { return }
+                                
+                                let activePlans = plans.first { $0.planStatus.lowercased() == "active" }
+                                let locationCount = activePlans?.locationCount ?? 0
+                                let jobCount = activePlans?.jobCount ?? 0
+                                if activePlans == nil{
+                                    self.activePlan = ApiConstants.Products.defaultFreePlan
+                                }else{
+                                    self.activePlan = activePlans?.iosAttributes.name ?? ""
+                                }
+                                print("active plan",activePlans)
+                                print("Location Count:", locationCount)
+                                print("Job Count:", jobCount)
+                                self.activePlanJobCount = jobCount
+                                self.activePlanLocationCount = locationCount
+                                
+                            }else{
+                                AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
+                            }
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            LoaderManager.shared.hide()
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        
+                    case .unauthorized :
+                        self.viewAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getListOfAllSubscriptions(regionCode: regionCode)
+                            } else {
+                                LoaderManager.shared.hide()
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                            }
+                        }
+                        
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                      
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        LoaderManager.shared.hide()
+                        
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        LoaderManager.shared.hide()
+                      
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        
+                    }
+                }
+            }
+        }
     }
 }

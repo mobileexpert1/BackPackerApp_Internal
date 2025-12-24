@@ -73,14 +73,11 @@ class ChooseRoleTypeVC: UIViewController {
         self.BgVwEmp.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwEmp.layer.borderWidth = 1.0
         
-        
-        
     }
     @IBAction func action_Employer(_ sender: Any) {
         self.tick_Image_Hangout.isHidden = true
         self.tick_Image_Accomodation.isHidden = true
         self.Tick_Img_Emp.isHidden = false
-        
         
         self.BgVwHangout.layer.cornerRadius = 10
         self.BgVwHangout.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
@@ -93,8 +90,6 @@ class ChooseRoleTypeVC: UIViewController {
         self.BgVwEmp.layer.cornerRadius = 10
         self.BgVwEmp.layer.borderColor = UIColor(hex: "#785DC2").cgColor
         self.BgVwEmp.layer.borderWidth = 1.0
-        
-    //    saveRoleType(empRoleType)
         self.selectedRoleType = empRoleType
     }
     
@@ -114,7 +109,6 @@ class ChooseRoleTypeVC: UIViewController {
         self.BgVwEmp.layer.cornerRadius = 10
         self.BgVwEmp.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwEmp.layer.borderWidth = 1.0
-  //      saveRoleType(hangOutRoleType)
         self.selectedRoleType = hangOutRoleType
     }
     
@@ -133,14 +127,12 @@ class ChooseRoleTypeVC: UIViewController {
         self.BgVwEmp.layer.cornerRadius = 10
         self.BgVwEmp.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwEmp.layer.borderWidth = 1.0
-        
-//saveRoleType(accomodationRoleType)
         self.selectedRoleType = accomodationRoleType
     }
     
     private func saveRoleType(_ type: String) {
         UserDefaults.standard.set(type, forKey: "UserRoleType")
-        UserDefaults.standard.synchronize() // optional
+        UserDefaults.standard.synchronize()
     }
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
@@ -155,14 +147,14 @@ class ChooseRoleTypeVC: UIViewController {
         } else {
             ChooseRoleTypeApiCall()
         }
-
-       
+        
+        
     }
     
     
     private func ChooseRoleTypeApiCall() {
         LoaderManager.shared.show()
-    //    let role = UserDefaults.standard.string(forKey: "UserRoleType") ?? "2"
+        //    let role = UserDefaults.standard.string(forKey: "UserRoleType") ?? "2"
         let req = ChooseRoleTypeRequest(subRoleType: self.selectedRoleType ?? "2")
         
         viewModel.chooseRoleType(otpRequest: req) { success, result, statusCode in
@@ -186,10 +178,10 @@ class ChooseRoleTypeVC: UIViewController {
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Invalid OTP")
                     }
-
+                    
                 case .badRequest:
                     AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-
+                    
                 case .unauthorized :
                     self.viewModel.refreshToken { refreshSuccess, _, refreshStatusCode in
                         if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -209,12 +201,9 @@ class ChooseRoleTypeVC: UIViewController {
                 case .internalServerError:
                     AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                 }
-
+                
             }
         }
-        
-        
-        
         
     }
 }

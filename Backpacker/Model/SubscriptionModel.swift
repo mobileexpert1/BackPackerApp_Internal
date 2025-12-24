@@ -68,7 +68,8 @@ struct PlanS: Codable {
     let commonName: String
     let feature: [String]
     let desc: String
-
+    let locationCount:Int
+    let jobCount:Int
     enum CodingKeys: String, CodingKey {
         case id = "_id"
         case planStatus
@@ -81,6 +82,8 @@ struct PlanS: Codable {
         case commonName
         case feature
         case desc
+        case locationCount
+        case jobCount
     }
 }
 
@@ -121,6 +124,72 @@ struct IOSBasePlan: Codable {
 }
 
 struct IOSPrice: Codable {
+    let customerPrice: String
+    let proceeds: String
+    let proceedsYear2: String
+}
+
+
+//MARK:  - Cuurrent Pla n with Loc response
+
+struct CurrentPlanResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: CurrentPlanDataLoc
+}
+
+struct CurrentPlanDataLoc: Codable {
+    let counts: CountsLoc
+    let subscription: Subscription
+}
+struct CountsLoc: Codable {
+    let accommodation: Int
+    let jobs: Int
+    let hangouts: Int
+}
+struct SubscriptionLoc: Codable {
+    let id: String
+    let userId: String
+    let planId: PlanLoc
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case userId
+        case planId
+    }
+}
+struct PlanLoc: Codable {
+    let id: String
+    let iosSubId: String?
+    let desc: String
+    let feature: [String]
+    let iosAttributes: IOSAttributesLoc
+    let iosBasePlans: [IOSBasePlanLoc]
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case iosSubId
+        case desc
+        case feature
+        case iosAttributes
+        case iosBasePlans
+    }
+}
+struct IOSAttributesLoc: Codable {
+    let name: String
+    let productId: String
+    let familySharable: Bool
+    let state: String
+    let subscriptionPeriod: String
+    let reviewNote: String
+    let groupLevel: Int
+}
+struct IOSBasePlanLoc: Codable {
+    let country: String
+    let price: IOSPriceLoc
+    let currency: String
+}
+struct IOSPriceLoc: Codable {
     let customerPrice: String
     let proceeds: String
     let proceedsYear2: String

@@ -11,7 +11,7 @@ class CompanyListVC: UIViewController {
 
     @IBOutlet weak var _noCompany: UILabel!
     @IBOutlet weak var tblVw: UITableView!
-    private var companies: [CompanyList] = [] // Replace with your Company model later
+    private var companies: [CompanyList] = []
     var page = 1
     let perPage = 10
     var totalAccomodations = Int()

@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="pzq-fG-zhY">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Map view configurations" minToolsVersion="14.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
@@ -2623,7 +2622,6 @@
                     </view>
                     <size key="freeformSize" width="393" height="1400"/>
                     <connections>
-                        <outlet property="BgVwDate" destination="DiR-6E-9Ih" id="j0w-bM-z3m"/>
                         <outlet property="BgVwDescription" destination="3kA-hu-53Q" id="w2X-ai-1IR"/>
                         <outlet property="BgVwEndTime" destination="Rkb-oQ-cN0" id="wnZ-YK-YBC"/>
                         <outlet property="BgVwLocation" destination="g3M-2O-aVJ" id="641-Ys-YNH"/>
@@ -2632,6 +2630,7 @@
                         <outlet property="BgVwStatrTime" destination="VJV-xo-xsM" id="93Z-Ud-NfE"/>
                         <outlet property="BgVw_Address" destination="7Yv-m8-FSL" id="x9w-lP-Sut"/>
                         <outlet property="BgVw_AssignBackPacker" destination="a63-gd-aoR" id="sVA-bf-i69"/>
+                        <outlet property="BgVw_Date" destination="DiR-6E-9Ih" id="3Ws-CO-e7S"/>
                         <outlet property="BgVw_Reqirment" destination="B6W-cd-GhA" id="Iop-XQ-sxH"/>
                         <outlet property="BgVw_listTable" destination="LWM-8h-6wY" id="jA9-eG-KAB"/>
                         <outlet property="BgVwlistHeight" destination="CuR-Dh-gLt" id="0KL-Tb-t7f"/>
@@ -2652,13 +2651,13 @@
                         <outlet property="headerStartTime" destination="BhU-gn-LaW" id="zYX-rb-tAF"/>
                         <outlet property="header_Address" destination="EU3-tf-UV8" id="v16-Rs-WTe"/>
                         <outlet property="header_AssinBackpacker" destination="Qmk-dX-1wq" id="BHU-XT-xdr"/>
+                        <outlet property="header_Date" destination="O3Y-Pl-nPD" id="3wX-zj-9QQ"/>
                         <outlet property="header_EndTime" destination="EiR-q6-hBb" id="PmK-mm-81j"/>
                         <outlet property="header_Location" destination="06R-Ys-p3x" id="M27-VS-Ieu"/>
                         <outlet property="header_Name" destination="bIl-4R-BxS" id="K5x-9M-sCF"/>
                         <outlet property="header_Rate" destination="26X-Ve-Yki" id="H6b-9W-nmL"/>
                         <outlet property="header_Requirment" destination="kJG-Og-BI4" id="rgV-Hp-arP"/>
                         <outlet property="header_description" destination="nfq-mM-uWj" id="95O-88-XRc"/>
-                        <outlet property="heder_Date" destination="O3Y-Pl-nPD" id="RLx-ev-yjV"/>
                         <outlet property="imgVw_frm" destination="rDk-yo-ybv" id="JIo-vg-62c"/>
                         <outlet property="img_reginal" destination="1ZU-QM-yKQ" id="8n0-XF-1ty"/>
                         <outlet property="lbl_Location" destination="eIQ-4f-cDH" id="WRj-jd-qfV"/>
@@ -3105,7 +3104,7 @@
         <image name="mic" width="24" height="24"/>
         <image name="remove" width="6.6666665077209473" height="6.6666665077209473"/>
         <image name="search" width="14" height="14"/>
-        <image name="time" width="21.666666030883789" height="21.333333969116211"/>
+        <image name="time" width="12.666666984558105" height="12.666666984558105"/>
         <image name="uploadImga" width="18.666666030883789" height="18.666666030883789"/>
         <image name="user-setting 1" width="25" height="25"/>
         <namedColor name="Red">

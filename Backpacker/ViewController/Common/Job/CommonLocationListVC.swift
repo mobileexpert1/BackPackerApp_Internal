@@ -46,11 +46,21 @@ class CommonLocationListVC: UIViewController {
     var editLocationId : String?
     weak var delegaet : CommonLocationDelegate?
     var isComeromEdit : Bool = false
+    
+    let viewModell = SubscriptionViewModel()
+    let viewAuth = LogInVM()
+    var plansN : [PlanS]?
+    var regionCode: String?
+    var activePlanLocationCount : Int?
+    var activePlanJobCount: Int?
+    var totalLocation : Int?
+    
+    var countsLoc : CountsLoc?
     override func viewDidLoad() {
         super.viewDidLoad()
-      
+        
         self.setUpUI()
-       
+        
         self.setUpRefreshControl()
         self.getListOfLocationAll()
         // Do any additional setup after loading the view.
@@ -58,7 +68,7 @@ class CommonLocationListVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         isComeFromPullTorefresh = false
-        
+        self.getPriceFormStore()
         if isComeromEdit == true {
             self.handleEditcase()
         }
@@ -67,14 +77,30 @@ class CommonLocationListVC: UIViewController {
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         tblVw.refreshControl = refreshControl
     }
+    func getPriceFormStore() {
+        //   LoaderManager.shared.show()
+        
+        Task {
+            let result = await SubscriptionManager.shared.fetchLocalizedPricesForAllPlans()
+            
+            let prices = result.prices
+            let regionCode = result.region
+            
+            print("REGION:", regionCode)
+            
+            self.regionCode = regionCode
+            
+            self.getListOfAllSubscriptions(regionCode: self.regionCode ?? "")
+        }
+    }
     @objc func handleRefresh() {
-       
+        
         
         self.page = 1
         self.isAllDataLoaded = false
         self.isLoadingMoreData = false
         self.isLoading = true
-
+        
         // Start refreshing UI
         self.refreshControl.beginRefreshing()
         isComeFromPullTorefresh = true
@@ -83,7 +109,7 @@ class CommonLocationListVC: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
             self.getListOfLocationAll()
         }
-       
+        
     }
     func setUpUI(){
         self.btn_cross.isHidden = true
@@ -100,21 +126,46 @@ class CommonLocationListVC: UIViewController {
         self.txtFld_Search.delegate = self
         self.tblVw.delegate = self
         self.tblVw.dataSource = self
-               
+        
     }
-
+    
     @IBAction func action_txtFldClear(_ sender: Any) {
         txtFld_Search.text = ""
-            lastSearchedText = ""
-            page = 1
+        lastSearchedText = ""
+        page = 1
         txtFld_Search.resignFirstResponder()
         self.btn_cross.isHidden = true
         getListOfLocationAll()
         
     }
     @IBAction func action_Save(_ sender: Any) {
-        delegaet?.didSelectBackpacker(self.selectedData)
-           self.navigationController?.popViewController(animated: true)
+        if let id = self.selectedData.first?.id {
+            getLocationDetailOfPruchase(locID: id) { success in
+                if success {
+                    if (self.countsLoc?.jobs ?? 0) < (self.activePlanJobCount ?? 0) {
+                        self.delegaet?.didSelectBackpacker(self.selectedData)
+                        self.navigationController?.popViewController(animated: true)
+                    }else{
+                        AlertManager.showAlert(
+                            on: self,
+                            title: "Plan Limit Reached",
+                            message: "Please update your plan to add more jobs."
+                        ){
+                            let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+                            if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+                                self.navigationController?.pushViewController(vc, animated: true)
+                            }
+                        }
+                        
+                    }
+                }else{
+                    
+                }
+            }
+            
+        }
+        
+        
     }
     
     @IBAction func action_Back(_ sender: Any) {
@@ -130,49 +181,49 @@ extension CommonLocationListVC: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "FacilityTVC", for: indexPath) as? FacilityTVC else {
             return UITableViewCell()
         }
-
+        
         let data = searchData[indexPath.row]
         
         cell.lblTitle.text = data.name
         cell.lblTitle.textColor = .black
-           // -Check if the item is selected
+        // -Check if the item is selected
         
         let isSelected = selectedData.contains { $0.id == data.id }
-           cell.imgCheckBox.image = isSelected ? UIImage(named: "Checkbox2") : UIImage(named: "Checkbox")
-
-           return cell
+        cell.imgCheckBox.image = isSelected ? UIImage(named: "Checkbox2") : UIImage(named: "Checkbox")
+        
+        return cell
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let selectedItem = searchData[indexPath.row]
-//
-//        if let index = selectedData.firstIndex(where: { $0.id == selectedItem.id }) {
-//                // Already selected → remove
-//                selectedData.remove(at: index)
-//            } else {
-//                // Not selected → add
-//                selectedData.removeAll()
-//                selectedData.append(selectedItem)
-//            }
-//
-//            // Reload just the tapped row
-//            tableView.reloadRows(at: [indexPath], with: .automatic)
+        //        let selectedItem = searchData[indexPath.row]
+        //
+        //        if let index = selectedData.firstIndex(where: { $0.id == selectedItem.id }) {
+        //                // Already selected → remove
+        //                selectedData.remove(at: index)
+        //            } else {
+        //                // Not selected → add
+        //                selectedData.removeAll()
+        //                selectedData.append(selectedItem)
+        //            }
+        //
+        //            // Reload just the tapped row
+        //            tableView.reloadRows(at: [indexPath], with: .automatic)
         let selectedItem = searchData[indexPath.row]
-
-            // If the same item is tapped again, deselect it
-            if let existing = selectedData.first, existing.id == selectedItem.id {
-                selectedData.removeAll()
-            } else {
-                // Otherwise, select the new item
-                selectedData = [selectedItem]
-            }
-
-            // Reload the whole table or just visible rows (to update checkbox state)
-            tableView.reloadData()
+        
+        // If the same item is tapped again, deselect it
+        if let existing = selectedData.first, existing.id == selectedItem.id {
+            selectedData.removeAll()
+        } else {
+            // Otherwise, select the new item
+            selectedData = [selectedItem]
+        }
+        
+        // Reload the whole table or just visible rows (to update checkbox state)
+        tableView.reloadData()
     }
     
     func handleEditcase(){
@@ -201,7 +252,7 @@ extension CommonLocationListVC: UITableViewDelegate, UITableViewDataSource {
         let contentHeight = scrollView.contentSize.height
         let frameHeight = scrollView.frame.size.height
         
-
+        
         if offsetY > contentHeight - frameHeight - 300 {
             if isComeFromPullTorefresh == false{
                 if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
@@ -211,10 +262,10 @@ extension CommonLocationListVC: UITableViewDelegate, UITableViewDataSource {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5 ){
                         self.getListOfLocationAll()
                     }
-                   
+                    
                 }
             }
-          
+            
         }
     }
 }
@@ -222,43 +273,43 @@ extension CommonLocationListVC: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let currentText = textField.text ?? ""
-          
-          // Prevent leading space
-          if currentText.isEmpty && string == " " {
-              return false
-          }
-          
-          guard let stringRange = Range(range, in: currentText) else { return true }
-          let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
-          
-          let hasText = !updatedText.trimmingCharacters(in: .whitespaces).isEmpty
-         self.btn_cross.isHidden = !hasText
-
-          // Cancel existing timer
-          searchDebounceTimer?.invalidate()
-
-          // Start a new timer (debounce delay)
-          searchDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
-              guard let self = self else { return }
-              let trimmedSearch = updatedText.trimmingCharacters(in: .whitespacesAndNewlines)
-
-              if self.lastSearchedText != trimmedSearch {
-                  self.lastSearchedText = trimmedSearch
-                  self.page = 1
-                  removeTableFooterView()
-                  self.getListOfLocationAll()
-              }
-          }
-
-          return true
+        
+        // Prevent leading space
+        if currentText.isEmpty && string == " " {
+            return false
+        }
+        
+        guard let stringRange = Range(range, in: currentText) else { return true }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        
+        let hasText = !updatedText.trimmingCharacters(in: .whitespaces).isEmpty
+        self.btn_cross.isHidden = !hasText
+        
+        // Cancel existing timer
+        searchDebounceTimer?.invalidate()
+        
+        // Start a new timer (debounce delay)
+        searchDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+            guard let self = self else { return }
+            let trimmedSearch = updatedText.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            if self.lastSearchedText != trimmedSearch {
+                self.lastSearchedText = trimmedSearch
+                self.page = 1
+                removeTableFooterView()
+                self.getListOfLocationAll()
+            }
+        }
+        
+        return true
     }
-
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-       self.btn_cross.isHidden = true
+        self.btn_cross.isHidden = true
         textField.resignFirstResponder()
         return true
     }
-
+    
     func createTableFooterView() -> UIView {
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tblVw.frame.width, height: 60))
         
@@ -287,11 +338,11 @@ extension CommonLocationListVC: UITextFieldDelegate {
             // Footer bottom anchor tied to label
             label.bottomAnchor.constraint(equalTo: footerView.bottomAnchor, constant: -8)
         ])
-
+        
         
         return footerView
     }
-
+    
     func removeTableFooterView() {
         tblVw.tableFooterView = nil
     }
@@ -340,44 +391,44 @@ extension CommonLocationListVC {
                             // Pagination end check
                             self.isAllDataLoaded = newLocations?.count ?? 0 < self.perPage
                             
-                         
+                            
                             self.isLoadingMoreData = false
                             self.isComeFromPullTorefresh = false
                             self.lastContentOffset = 0.0
-                           
+                            
                             if self.searchData.count == 0 {
                                 self.showAddLocationAlert()
                                 /*
                                  AlertManager.showAlert(on: self, title: "Action Required", message: "Please Add Location"){
-                                     let role =  UserDefaults.standard.string(forKey: "UserRoleType")
-                                     if role == "2"{
-                                         self.moveToAccountScreen()
-                                     }else{
-                                         AlertManager.showAlert(on: self, title: "Alert!", message: "To add a location, please select 'Employer' as your role."){
-                                             let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
-                                             if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
-                                                 vc.isBackButtonHidden = false
-                                                 self.navigationController?.pushViewController(vc, animated: true)
-                                             }
-                                         }
-
-                                     }
-                                   
+                                 let role =  UserDefaults.standard.string(forKey: "UserRoleType")
+                                 if role == "2"{
+                                 self.moveToAccountScreen()
+                                 }else{
+                                 AlertManager.showAlert(on: self, title: "Alert!", message: "To add a location, please select 'Employer' as your role."){
+                                 let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
+                                 if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
+                                 vc.isBackButtonHidden = false
+                                 self.navigationController?.pushViewController(vc, animated: true)
+                                 }
+                                 }
+                                 
+                                 }
+                                 
                                  }
                                  */
                             }
                             self.refreshControl.endRefreshing()
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                       
+                            
                             self.isLoadingMoreData = false
                             self.isComeFromPullTorefresh = false
                             self.lastContentOffset = 0.0
                             LoaderManager.shared.hide()
                         }
                         self.tblVw.reloadData()
-//                        self.reloadTableData()
-//                        self.hideBottomLoader()
+                        //                        self.reloadTableData()
+                        //                        self.hideBottomLoader()
                         self.removeTableFooterView()
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
@@ -396,38 +447,38 @@ extension CommonLocationListVC {
                     case .unauthorizedToken:
                         LoaderManager.shared.hide()
                         self.removeTableFooterView()
-                      //  self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                        //  self.jobs_TblVw.setContentOffset(.zero, animated: true)
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
                         self.removeTableFooterView()
-                     //   self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                        //   self.jobs_TblVw.setContentOffset(.zero, animated: true)
                         AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
-                     
+                        
                     case .methodNotAllowed:
                         self.removeTableFooterView()
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                     
+                        
                     case .internalServerError:
                         self.removeTableFooterView()
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                    
+                        
                     }
                 }
             }
-            }
+        }
     }
     
     private func moveToAccountScreen(){
         let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-
+        
         if let vc = storyboard.instantiateViewController(withIdentifier: "CommonDetailVC") as? CommonDetailVC {
             vc.selectedIndex = 1
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
-   
-
+    
+    
     private func showAddLocationAlert() {
         AlertManager.showAlert(on: self, title: "Action Required", message: "Please Add Location") {
             let role = UserDefaults.standard.string(forKey: "UserRoleType")
@@ -439,7 +490,7 @@ extension CommonLocationListVC {
             }
         }
     }
-
+    
     private func showRoleSelectionAlert() {
         AlertManager.showAlert(on: self, title: "Alert!", message: "To add a location, please select 'Employer' as your role.") {
             let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
@@ -449,5 +500,185 @@ extension CommonLocationListVC {
             }
         }
     }
-
+    
+}
+extension CommonLocationListVC{
+    private func getListOfAllSubscriptions(regionCode:String)
+    {
+        //LoaderManager.shared.show()
+        viewModell.getlistOfSubscriptions(regionCode: regionCode) { [weak self] (success: Bool, result: SubscriptionPlansResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            if result?.data != nil{
+                                self.isLoading = false
+                                self.plansN?.removeAll()
+                                self.plansN = result?.data ?? []
+                                guard let plans = self.plansN else { return }
+                                
+                                let activePlan = plans.first { $0.planStatus.lowercased() == "active" }
+                                let locationCount = activePlan?.locationCount ?? 0
+                                let jobCount = activePlan?.jobCount ?? 0
+                                print("active plan",activePlan)
+                                print("Location Count:", locationCount)
+                                print("Job Count:", jobCount)
+                                self.activePlanJobCount = jobCount
+                                self.activePlanLocationCount = locationCount
+                                
+                            }else{
+                                AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
+                            }
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            LoaderManager.shared.hide()
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        
+                    case .unauthorized :
+                        self.viewAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getListOfAllSubscriptions(regionCode: regionCode)
+                            } else {
+                                LoaderManager.shared.hide()
+                                self.isLoading = false
+                                self.refreshControl.endRefreshing()
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                            }
+                        }
+                        
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        
+                    }
+                }
+            }
+        }
+    }
+    
+    private func getLocationDetailOfPruchase(locID:String,
+                                             completion: @escaping (_ success: Bool) -> Void)
+    {
+        LoaderManager.shared.show()
+        viewModell.currentPlanWithLoc(locID: locID) { [weak self] (success: Bool, result: CurrentPlanResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            if let data = result?.data {
+                                
+                                self.isLoading = false
+                                self.plansN?.removeAll()
+                                self.countsLoc = data.counts
+                                
+                                // ✅ SUCCESS CALLBACK
+                                completion(true)
+                                
+                            } else {
+                                AlertManager.showAlert(
+                                    on: self,
+                                    title: "Success",
+                                    message: result?.message ?? "Completed successfully."
+                                )
+                                completion(false)
+                            }
+                        } else {
+                            AlertManager.showAlert(
+                                on: self,
+                                title: "Error",
+                                message: result?.message ?? "Something went wrong."
+                            )
+                            completion(false)
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        completion(false)
+                    case .unauthorized :
+                        self.viewAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getLocationDetailOfPruchase(locID: locID) { success in
+                                    if success {
+                                        AlertManager.showAlert(
+                                            on: self,
+                                            title: "Success",
+                                            message: "Location details updated successfully."
+                                        ) {
+                                            // ✅ Perform action after alert
+                                            self.navigationController?.popViewController(animated: true)
+                                        }
+                                    }
+                                }
+                                
+                            } else {
+                                LoaderManager.shared.hide()
+                                self.isLoading = false
+                                self.refreshControl.endRefreshing()
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                            }
+                        }
+                        
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                        completion(false)
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        
+                    }
+                }
+            }
+        }
+    }
 }

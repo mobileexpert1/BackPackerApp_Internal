@@ -166,3 +166,80 @@ struct FavHangout: Codable {
 
 
 
+//MARK: - Fetch Current Prucahae plan User
+
+
+struct SubscriptionResponse: Codable {
+    let success: Bool
+    let message: String
+    let data: SubscriptionData
+    let errors: [String]
+}
+struct SubscriptionData: Codable {
+    let counts: Counts
+    let subscription: Subscription?
+    let subscriptionStatus: String
+}
+struct Counts: Codable {
+    let accommodation: Int
+    let jobs: Int
+    let hangouts: Int
+}
+struct Subscription: Codable {
+    let id: String??
+    let userId: String??
+    let planId: PlanJob??
+    let platform: String??
+    let startDate: String??
+    let endDate: String??
+    let status: String??
+    let createdAt: String??
+    let updatedAt: String??
+    let transactionId: String??
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case userId
+        case planId
+        case platform
+        case startDate
+        case endDate
+        case status
+        case createdAt
+        case updatedAt
+        case transactionId
+    }
+}
+struct PlanJob: Codable {
+    let id: String?
+    let name: String?
+    let price: String?
+    let desc: String?
+    let feature: [String]?
+    let image: String?
+    let status: String?
+    let commonName: String?
+    let googleProductId: String?
+    let iosAttributes: IOSAttributesNewJOb
+
+    enum CodingKeys: String, CodingKey {
+        case id = "_id"
+        case name
+        case price
+        case desc
+        case feature
+        case image
+        case status
+        case commonName
+        case googleProductId
+        case iosAttributes
+    }
+}
+
+struct IOSAttributesNewJOb: Codable {
+    let productId: String
+}
+
+struct Reminder: Codable {
+    let productId: String
+}

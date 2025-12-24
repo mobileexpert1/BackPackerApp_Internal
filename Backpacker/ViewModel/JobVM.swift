@@ -513,5 +513,23 @@ class JobVM {
             completion(success, result, statusCode)
         }
     }
+    
+    //MARK: - Get Current Plan User
+    
+    
+    func getCurrentPlan<T: Codable>(
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.CURRENT_PLAN
+
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 

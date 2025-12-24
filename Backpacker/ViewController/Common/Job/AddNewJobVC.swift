@@ -69,7 +69,7 @@ class AddNewJobVC: UIViewController {
     @IBOutlet weak var txtVw_Description: UITextView!
     @IBOutlet weak var tblVw: UITableView!
     @IBOutlet weak var BgVwDescription: UIView!
-    @IBOutlet weak var BgVwDate: UIView!
+   // @IBOutlet weak var BgVwDate: UIView!
     @IBOutlet weak var txtFld_Backpacker: UITextField!
     private var datePicker: UIDatePicker!
     let BackPackerList = [
@@ -149,8 +149,13 @@ class AddNewJobVC: UIViewController {
     var lastContentOffset: CGFloat = 0
     var locationId : String?
     var selectedWork : String?
+    
+    var currentPlanOfUser : SubscriptionData?
+    var subscriptionStatus : String?
+    let message = "Your subscription is currently inactive. Please upgrade your plan to continue using all features."
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.setUpUI()
         self.setupSpeechCallbacks()
         setupTimePicker()
@@ -176,6 +181,9 @@ class AddNewJobVC: UIViewController {
             name: UIResponder.keyboardWillHideNotification,
             object: nil
         )
+        if isComeFromEdit == false{
+            self.getCurrentPlanOfUser()
+        }
     }
 
 
@@ -512,7 +520,18 @@ class AddNewJobVC: UIViewController {
             if isComeFromEdit == true {
                 self.EditJob(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDate, endDate: endDate, startTime: startTime, endTime: endTime, image: imageData, latitude:  self.latitude, longitude: self.longitude,jobId: self.jobID ?? "")
             }else{
-                self.AddNewJob(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDate, endDate: endDate, startTime: startTime, endTime: endTime, request: [], image: imageData, latitude:  self.latitude, longitude: self.longitude, locationID: self.locationId ?? "")
+                if subscriptionStatus == "inactive"{
+                    AlertManager.showConfirmationAlert(on: self, title: "Upgrade Required", message: "Your current plan is inactive. Please upgrade your subscription to continue using all features.") {
+                        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+                        if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+                            self.navigationController?.pushViewController(vc, animated: true)
+                        }
+                    }
+                }else{
+                    self.AddNewJob(name: trimmedName, address: trimmedAddress, locationText: trimmedLocationText, description: trimmedDescription, requirment: requiremt, price: trimmedPrice, strtDate: startDate, endDate: endDate, startTime: startTime, endTime: endTime, request: [], image: imageData, latitude:  self.latitude, longitude: self.longitude, locationID: self.locationId ?? "")
+                }
+                
+              
             }
            
         }else{
@@ -860,7 +879,6 @@ extension AddNewJobVC {
         self.lbl_frmWrk.textColor = UIColor(named: "subTitleColor")
         self.lbl_frmWrk.font = FontManager.inter(.medium, size: 12.0)
         self.lbl_regional.font = FontManager.inter(.medium, size: 12.0)
-        
         self.main_ImgVw.image = UIImage(named: "BgUploadImage")
         self.setUpImagePlacehoder()
         self.Main_Header.font = FontManager.inter(.semiBold, size: 16.0)
@@ -907,6 +925,8 @@ extension AddNewJobVC {
         
         
         self.header_Location.font = FontManager.inter(.medium, size: 14.0)
+        
+        self.header_Date.font = FontManager.inter(.medium, size: 14.0)
         self.BgVwLocation.layer.cornerRadius = 10.0
         self.BgVwLocation.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
         self.BgVwLocation.layer.borderWidth = 1.0
@@ -919,9 +939,9 @@ extension AddNewJobVC {
         
         lbl_UploadImage.font = FontManager.inter(.medium, size: 13.0)
         applyGradientButtonStyle(to: self.btn_Save)
-        self.BgVwDate.layer.cornerRadius = 10.0
-        self.BgVwDate.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        self.BgVwDate.layer.borderWidth = 1.0
+        self.BgVw_Date.layer.cornerRadius = 10.0
+        self.BgVw_Date.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        self.BgVw_Date.layer.borderWidth = 1.0
         self.btn_Save.titleLabel?.font = FontManager.inter(.semiBold, size: 16)
         self.Btn_Cancle.titleLabel?.font = FontManager.inter(.medium, size: 16)
         self.ManageTableHeight()
@@ -1483,6 +1503,74 @@ extension AddNewJobVC {
                 }
             }
             }
+    }
+    func getCurrentPlanOfUser(){
+            self.isLoading = true
+        viewModel.getCurrentPlan { [weak self] (success: Bool, result: SubscriptionResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            self.currentPlanOfUser = result?.data
+                            if self.currentPlanOfUser?.subscriptionStatus == "inactive"{
+                                self.subscriptionStatus = "inactive"
+                               
+                            }else{
+                                self.subscriptionStatus = "active"
+                            }
+                            print("Current rchase Plan of use",self.currentPlanOfUser)
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                       
+                            self.isLoadingMoreData = false
+                            self.isComeFromPullTorefresh = false
+                            self.lastContentOffset = 0.0
+                            LoaderManager.shared.hide()
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                     
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getCurrentPlanOfUser()
+                            } else {
+                                LoaderManager.shared.hide()
+                                //self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                                NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
+                                
+                            }
+                        }
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                      //  self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                     //   self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
+                     
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                     
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    
+                    }
+                }
+            }
+        }
     }
 }
 extension AddNewJobVC {

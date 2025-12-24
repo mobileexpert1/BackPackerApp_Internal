@@ -254,13 +254,18 @@ final class SubscriptionManager {
                 print("Transcation",transaction)
                 print("Verification",verification)
                 print(" Purchase successful for \(tier.rawValue)")
-                if let vc = self.controller{
+                if let vc = self.controller {
                     AlertManager.showAlert(
                         on: vc,
                         title: "Purchase Successful",
-                        message: "Your \(tier.rawValue) subscription has been successfully activated. Enjoy your premium features!"
+                        message: """
+                        Your \(tier.rawValue) subscription has been successfully activated.
+
+                        Please note: It may take up to 1 minute for your plan to reflect in the app.
+                        """
                     )
                 }
+
                 let purchaseRequest = createUserPlanRequest(from: transaction)
                 self.purchasePlanDetail = purchaseRequest
             case .userCancelled:

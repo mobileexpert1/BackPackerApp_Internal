@@ -72,7 +72,20 @@ class SubscriptionViewModel {
             }
         }
     }
-
+    func currentPlanWithLoc<T: Codable>(locID:String,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        let url = ApiConstants.API.CURRENT_PLAN_WITH_LOC(locID: locID)
+   
+        ServiceManager.sharedInstance.requestApi(
+            url,
+            method: .get,
+            parameters: nil,
+            httpBody: nil
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
 }
 struct CreateUserPlanRequest: Codable {
     let appTransactionId: String

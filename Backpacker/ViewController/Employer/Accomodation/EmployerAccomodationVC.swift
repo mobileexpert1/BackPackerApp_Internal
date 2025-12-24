@@ -164,6 +164,7 @@ class EmployerAccomodationVC: UIViewController {
     @IBAction func action_AdddNewAccomodation(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewAccomodationVC") as? AddNewAccomodationVC {
+            accVC.accCount = self.accommodationList.count
             self.navigationController?.pushViewController(accVC, animated: true)
         } else {
             print("- Could not instantiate AddNewAccomodationVC")

@@ -293,7 +293,6 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
                 guard let selectedTier = selectedTier else {
                     print("No matching tier found for tapped plan")
                     SubscriptionManager.shared.selectedPlan = .free
-
                     // Update selected index for UI highlighting
                     self.selectedIndex = tappedIndex
                     self.selectedPlanId = self.plansN?[self.selectedIndex?.row ?? 0].iosAttributes.productId ?? ""

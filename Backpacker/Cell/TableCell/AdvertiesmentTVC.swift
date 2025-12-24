@@ -89,19 +89,6 @@ extension AdvertiesmentTVC: UICollectionViewDelegate, UICollectionViewDataSource
 
             let imageURLString = ad.image.hasPrefix("http") ? ad.image : baseURL1 + ad.image
             cell.imageVw.image = UIImage(named: "advertiesment")
-//            cell.imageVw.sd_setImage(
-//                with: URL(string: imageURLString),
-//                placeholderImage: UIImage(named: "img_Placehodler")
-//            ) { image, _, _, _ in
-//                if image == nil { // First attempt failed
-//                    let fallbackURL = ad.image.hasPrefix("http") ? ad.image : baseURL2 + ad.image
-//                    cell.imageVw.sd_setImage(
-//                        with: URL(string: fallbackURL),
-//                        placeholderImage: UIImage(named: "img_Placehodler")
-//                    )
-//                }
-//            }
-
         }
 
      
