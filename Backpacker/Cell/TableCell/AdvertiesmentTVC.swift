@@ -42,7 +42,7 @@ class AdvertiesmentTVC: UITableViewCell {
                 collectionViw.isPagingEnabled = true
                 collectionViw.showsHorizontalScrollIndicator = false
 
-                pageController.currentPageIndicatorTintColor = UIColor(hex: "#299EF5")
+                pageController.currentPageIndicatorTintColor = UIColor(hex: "#7EB268")
                 pageController.pageIndicatorTintColor = UIColor(hex:"#D9D9D9")
                 pageController.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
                 

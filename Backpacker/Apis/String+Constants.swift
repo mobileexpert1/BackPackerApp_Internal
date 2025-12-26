@@ -52,7 +52,7 @@ struct Constants{
         static let screen4Image = "walkthrough_4"
         static let screen5Image = "walkthrough_5"
         static let screen6Image = "walkthrough_6"
-        static let screen7Image = "walkthrough_5"
+        static let screen7Image = "walkthrough_7"
         #else
         static let screen1Title = "Welcome to\nBackpackers"
         static let screen2Title = "Discover What's\nAround You"

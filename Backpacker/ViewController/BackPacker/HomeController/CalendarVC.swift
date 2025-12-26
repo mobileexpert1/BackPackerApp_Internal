@@ -140,6 +140,9 @@ class CalendarVC: UIViewController {
             bottomLine.trailingAnchor.constraint(equalTo: calendarVw.trailingAnchor),
             bottomLine.heightAnchor.constraint(lessThanOrEqualToConstant: 1)
         ])
+        calendarVw.appearance.selectionColor = UIColor(hex: "#7EB268")
+        calendarVw.appearance.todaySelectionColor = UIColor(hex: "#7EB268")
+        calendarVw.appearance.borderSelectionColor = UIColor.clear
     }
     
     private func setUpFonts(){
@@ -335,7 +338,10 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
         self.selectedDay = weekdayName
         // Combine date and time (10:15 AM as example)
         let selectedDateWithTime = CalendarEventManager.combine(date: date, hour: 9, minute: 0)!
+        
         // self.showEventEditUI(with: selectedDateWithTime)
+    
+
         self.getUserAvailabilityApiCall()
     }
     func promptCalendarAccess() {

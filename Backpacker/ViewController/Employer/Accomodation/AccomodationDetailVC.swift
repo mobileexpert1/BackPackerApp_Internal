@@ -137,7 +137,7 @@ class AccomodationDetailVC: UIViewController {
         
         page_Controller.numberOfPages = 10
         page_Controller.currentPage = 0
-        page_Controller.currentPageIndicatorTintColor = UIColor(hex: "#299EF5") // ← Your highlight color
+        page_Controller.currentPageIndicatorTintColor = UIColor(hex: "#7EB268") // ← Your highlight color
         page_Controller.pageIndicatorTintColor =  UIColor(hex: "#D9D9D9")
         
         let layout = UICollectionViewFlowLayout()

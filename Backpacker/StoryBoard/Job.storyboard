@@ -3094,8 +3094,8 @@
         <image name="Close" width="19" height="21"/>
         <image name="Delete" width="25" height="25"/>
         <image name="Setting" width="26" height="26"/>
-        <image name="address" width="10.666666984558105" height="14"/>
-        <image name="calendar2" width="78" height="78"/>
+        <image name="address" width="15" height="15"/>
+        <image name="calendar2" width="26" height="26"/>
         <image name="currentLoc" width="20" height="20"/>
         <image name="edit" width="24" height="24"/>
         <image name="filter" width="28" height="28"/>
@@ -3104,7 +3104,7 @@
         <image name="mic" width="24" height="24"/>
         <image name="remove" width="6.6666665077209473" height="6.6666665077209473"/>
         <image name="search" width="14" height="14"/>
-        <image name="time" width="12.666666984558105" height="12.666666984558105"/>
+        <image name="time" width="26" height="26"/>
         <image name="uploadImga" width="18.666666030883789" height="18.666666030883789"/>
         <image name="user-setting 1" width="25" height="25"/>
         <namedColor name="Red">

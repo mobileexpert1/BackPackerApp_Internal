@@ -91,10 +91,10 @@ class AvailibilityTVC: UITableViewCell {
             self.table_VW.delegate = self
             self.table_VW.dataSource = self
             let isOn = btn_Switch.isOn
-            BgVw_Day.backgroundColor = isOn ? UIColor(hex: "#D8EEFF") : UIColor(hex: "#EAEAEA")
-            BgVw_Day.layer.borderColor = isOn ? UIColor(hex: "#299EF5").cgColor : UIColor.clear.cgColor
+            BgVw_Day.backgroundColor = isOn ? UIColor(hex: "#DCEBD5") : UIColor(hex: "#EAEAEA")
+            BgVw_Day.layer.borderColor = isOn ? UIColor(hex: "#DCEBD5").cgColor : UIColor.clear.cgColor
             BgVw_Day.layer.borderWidth = isOn ? 0.5 : 0.0
-            self.lbl_ShortDay.textColor = isOn ? UIColor(hex: "#299EF5"): UIColor(hex: "#B3B3B3")
+            self.lbl_ShortDay.textColor = isOn ? UIColor(hex: "#7EB268"): UIColor(hex: "#B3B3B3")
             self.lbl_ShortDay.font = isOn ? FontManager.inter(.semiBold, size: 10): FontManager.inter(.semiBold, size: 9)
             self.VwAnotherSlot_Height.constant = isOn ? 45 : 0.0
             self.btn_AnotherSlot.isHidden = isOn ? false : true
@@ -144,10 +144,10 @@ class AvailibilityTVC: UITableViewCell {
     
     func SetUpToggleAction(){
         let isOn = btn_Switch.isOn
-        BgVw_Day.backgroundColor = isOn ? UIColor(hex: "#D8EEFF") : UIColor(hex: "#EAEAEA")
-        BgVw_Day.layer.borderColor = isOn ? UIColor(hex: "#299EF5").cgColor : UIColor.clear.cgColor
+        BgVw_Day.backgroundColor = isOn ? UIColor(hex: "#DCEBD5") : UIColor(hex: "#EAEAEA")
+        BgVw_Day.layer.borderColor = isOn ? UIColor(hex: "#DCEBD5").cgColor : UIColor.clear.cgColor
         BgVw_Day.layer.borderWidth = isOn ? 0.5 : 0.0
-        self.lbl_ShortDay.textColor = isOn ? UIColor(hex: "#299EF5"): UIColor(hex: "#B3B3B3")
+        self.lbl_ShortDay.textColor = isOn ? UIColor(hex: "#7EB268"): UIColor(hex: "#B3B3B3")
         self.lbl_ShortDay.font = isOn ? FontManager.inter(.semiBold, size: 10): FontManager.inter(.semiBold, size: 9)
         self.VwAnotherSlot_Height.constant = isOn ? 45 : 0.0
         self.btn_AnotherSlot.isHidden = isOn ? false : true
@@ -159,10 +159,10 @@ class AvailibilityTVC: UITableViewCell {
     
     
     func setUpBgColor(){
-        BgVw_Day.backgroundColor = UIColor(hex: "#D8EEFF")
-        BgVw_Day.layer.borderColor = UIColor(hex: "#299EF5").cgColor
+        BgVw_Day.backgroundColor = UIColor(hex: "#DCEBD5")
+        BgVw_Day.layer.borderColor = UIColor(hex: "#DCEBD5").cgColor
         BgVw_Day.layer.borderWidth = 0.5
-        self.lbl_ShortDay.textColor = UIColor(hex: "#299EF5")
+        self.lbl_ShortDay.textColor = UIColor(hex: "#7EB268")
         self.lbl_ShortDay.font = FontManager.inter(.semiBold, size: 10)
     }
     @IBAction func action_AddAnotherSlot(_ sender: Any) {
@@ -185,10 +185,10 @@ class AvailibilityTVC: UITableViewCell {
            VwAnotherSlot_Height.constant = 45// Or your desired height
 
            // Update day background just like switch
-           BgVw_Day.backgroundColor = UIColor(hex: "#D8EEFF")
-           BgVw_Day.layer.borderColor = UIColor(hex: "#299EF5").cgColor
+           BgVw_Day.backgroundColor = UIColor(hex: "#DCEBD5")
+           BgVw_Day.layer.borderColor = UIColor(hex: "#DCEBD5").cgColor
            BgVw_Day.layer.borderWidth = 0.5
-           self.lbl_ShortDay.textColor = UIColor(hex: "#299EF5")
+           self.lbl_ShortDay.textColor = UIColor(hex: "#7EB268")
            self.lbl_ShortDay.font = FontManager.inter(.semiBold, size: 10)
 
            // Show the time table

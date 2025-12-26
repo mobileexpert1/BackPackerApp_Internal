@@ -80,24 +80,29 @@ class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = .white
         appearance.selectionIndicatorImage = pillImage
-
+        let selectedColor = UIColor(
+            red: 126.0/255.0,
+            green: 178.0/255.0,
+            blue: 104.0/255.0,
+            alpha: 1.0
+        )
         appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
             .font: FontManager.inter(.regular, size: 10.0),
             .foregroundColor: UIColor.black
         ]
         appearance.stackedLayoutAppearance.selected.titleTextAttributes = [
             .font: FontManager.inter(.regular, size: 10.0),
-            .foregroundColor: UIColor(red: 0, green: 0.71, blue: 0.83, alpha: 1)
+            .foregroundColor: selectedColor
         ]
         appearance.stackedLayoutAppearance.normal.iconColor = .black
-        appearance.stackedLayoutAppearance.selected.iconColor = UIColor(red: 0, green: 0.71, blue: 0.83, alpha: 1)
+        appearance.stackedLayoutAppearance.selected.iconColor = selectedColor
 
         tabBar.standardAppearance = appearance
         if #available(iOS 15.0, *) {
             tabBar.scrollEdgeAppearance = appearance
         }
 
-        tabBar.tintColor = UIColor(red: 0, green: 0.71, blue: 0.83, alpha: 1)
+        tabBar.tintColor = selectedColor
         tabBar.unselectedItemTintColor = .black
     }
 

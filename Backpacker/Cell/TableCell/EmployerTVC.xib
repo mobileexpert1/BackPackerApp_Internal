@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -32,7 +31,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" red="0.18823529411764706" green="0.69019607843137254" blue="0.7803921568627451" alpha="0.27899937913907286" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.49411764705882355" green="0.69803921568627447" blue="0.40784313725490196" alpha="0.29578849337748342" colorSpace="custom" customColorSpace="sRGB"/>
                                 <color key="tintColor" red="0.18823529411764706" green="0.69019607843137254" blue="0.7803921568627451" alpha="0.28505277317880795" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="djY-1E-SwN" secondAttribute="bottom" constant="3" id="Ktp-eS-DpZ"/>

@@ -99,7 +99,7 @@ class ChooseRoleTypeVC: UIViewController {
         self.Tick_Img_Emp.isHidden = true
         
         self.BgVwHangout.layer.cornerRadius = 10
-        self.BgVwHangout.layer.borderColor = UIColor(hex: "#29A1F8").cgColor
+        self.BgVwHangout.layer.borderColor = UIColor(hex: "#7EB268").cgColor
         self.BgVwHangout.layer.borderWidth = 1.0
         
         self.BgVwAccomodation.layer.cornerRadius = 10

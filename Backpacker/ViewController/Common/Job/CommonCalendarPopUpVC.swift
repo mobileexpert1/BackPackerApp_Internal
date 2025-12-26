@@ -109,9 +109,10 @@ class CommonCalendarPopUpVC: UIViewController {
         calendarView.appearance.eventSelectionColor = UIColor.black
         self.calendarView.appearance.headerMinimumDissolvedAlpha = 0.0
         calendarView.appearance.headerDateFormat = "MMMM"
-        calendarView.appearance.selectionColor = UIColor(red: 41/255, green: 158/255, blue: 245/255, alpha: 1)
+        calendarView.appearance.selectionColor = UIColor(red: 126/255, green: 178/255, blue: 104/255, alpha: 1)
+        
         calendarView.firstWeekday = 1
-        calendarView.appearance.todayColor = UIColor(red: 41/255, green: 158/255, blue: 245/255, alpha: 1)
+        calendarView.appearance.todayColor = UIColor(red: 126/255, green: 178/255, blue: 104/255, alpha: 1)
         calendarView.appearance.titleDefaultColor = .black
         calendarView.appearance.headerMinimumDissolvedAlpha = 0.0
         calendarView.headerHeight = 50
@@ -196,12 +197,12 @@ extension CommonCalendarPopUpVC: FSCalendarDelegate, FSCalendarDataSource,FSCale
             if (cal.compare(date, to: rangeStart, toGranularity: .day) != .orderedAscending) &&
                 (cal.compare(date, to: rangeEnd, toGranularity: .day) != .orderedDescending) {
                 
-                return UIColor(red: 41/255, green: 158/255, blue: 245/255, alpha: 1)
+                return UIColor(red: 126/255, green: 178/255, blue: 104/255, alpha: 1)
             }
         }
         
         if let only = selectedDate, cal.isDate(date, inSameDayAs: only) {
-            return UIColor(red: 41/255, green: 158/255, blue: 245/255, alpha: 1)
+            return UIColor(red: 126/255, green: 178/255, blue: 104/255, alpha: 1)
         }
         
         return nil

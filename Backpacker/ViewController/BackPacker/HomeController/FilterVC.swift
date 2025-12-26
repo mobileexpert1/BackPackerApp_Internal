@@ -119,7 +119,7 @@ class FilterVC: UIViewController {
         }
          
         slider.setThumbImage(UIImage(named: "sliderThumb"), for: .normal)
-            slider.minimumTrackTintColor = UIColor(hex: "#299EF5") // Start color"#299EF5"
+            slider.minimumTrackTintColor = UIColor(hex: "#7EB268") // Start color"#7EB268"#7EB268
             slider.maximumTrackTintColor = UIColor(hex: "#E8EDF0") // End color
         self.btn_Submit.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
         slider.minimumValue = 100

@@ -179,9 +179,9 @@ class EmployerCalendarVC: UIViewController {
         calendarVw.appearance.eventSelectionColor = UIColor.black
         self.calendarVw.appearance.headerMinimumDissolvedAlpha = 0.0
         calendarVw.appearance.headerDateFormat = "MMMM"
-        calendarVw.appearance.selectionColor = UIColor(red: 41/255, green: 158/255, blue: 245/255, alpha: 1)
+        calendarVw.appearance.selectionColor = UIColor(red: 126/255, green: 178/255, blue: 104/255, alpha: 1)
         calendarVw.firstWeekday = 1
-        calendarVw.appearance.todayColor = UIColor(red: 41/255, green: 158/255, blue: 245/255, alpha: 1)
+        calendarVw.appearance.todayColor = UIColor(red: 126/255, green: 178/255, blue: 104/255, alpha: 1)
         calendarVw.appearance.titleDefaultColor = .black
         calendarVw.appearance.headerMinimumDissolvedAlpha = 0.0
         calendarVw.headerHeight = 50

@@ -43,8 +43,8 @@ import UIKit
 
 func applyGradientButtonStyle(
     to button: UIButton,
-    startColor: UIColor = UIColor(hex: "#29A1F8"),
-    endColor: UIColor = UIColor(hex: "#2F7AD1"),
+    startColor: UIColor = UIColor(hex: "#7EB268"),
+    endColor: UIColor = UIColor(hex: "#7EB268"),
     cornerRadius: CGFloat = 10,
     borderColor: UIColor = .white,
     borderWidth: CGFloat = 1.0,
@@ -52,29 +52,39 @@ func applyGradientButtonStyle(
     isUserInteractionEnabled: Bool = true
 ) {
     // Remove old gradient layers
-    button.layer.sublayers?.removeAll(where: { $0.name == "gradientLayer" })
+//    button.layer.sublayers?.removeAll(where: { $0.name == "gradientLayer" })
+//
+//    // Wait until layout is finalized (works for both iPhone & iPad)
+//    DispatchQueue.main.async {
+//        button.layoutIfNeeded()
+//
+//        let gradientLayer = CAGradientLayer()
+//        gradientLayer.name = "gradientLayer"
+//        gradientLayer.frame = button.bounds
+//        gradientLayer.colors = [startColor.cgColor, endColor.cgColor]
+//        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+//        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+//        gradientLayer.cornerRadius = cornerRadius
+//        gradientLayer.opacity = opacity
+//
+//        button.layer.cornerRadius = cornerRadius
+//        button.clipsToBounds = true
+//        button.layer.borderColor = borderColor.cgColor
+//        button.layer.borderWidth = borderWidth
+//        button.isUserInteractionEnabled = isUserInteractionEnabled
+//
+//        button.layer.insertSublayer(gradientLayer, at: 0)
+//    }
+    button.layer.sublayers?
+          .filter { $0.name == "gradientLayer" }
+          .forEach { $0.removeFromSuperlayer() }
 
-    // Wait until layout is finalized (works for both iPhone & iPad)
-    DispatchQueue.main.async {
-        button.layoutIfNeeded()
-
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.name = "gradientLayer"
-        gradientLayer.frame = button.bounds
-        gradientLayer.colors = [startColor.cgColor, endColor.cgColor]
-        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
-        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
-        gradientLayer.cornerRadius = cornerRadius
-        gradientLayer.opacity = opacity
-
-        button.layer.cornerRadius = cornerRadius
-        button.clipsToBounds = true
-        button.layer.borderColor = borderColor.cgColor
-        button.layer.borderWidth = borderWidth
-        button.isUserInteractionEnabled = isUserInteractionEnabled
-
-        button.layer.insertSublayer(gradientLayer, at: 0)
-    }
+      button.backgroundColor = startColor//.withAlphaComponent(CGFloat(opacity))
+      button.layer.cornerRadius = cornerRadius
+      button.layer.borderColor = borderColor.cgColor
+      button.layer.borderWidth = borderWidth
+      button.clipsToBounds = true
+      button.isUserInteractionEnabled = isUserInteractionEnabled
 }
 
 extension UIView {

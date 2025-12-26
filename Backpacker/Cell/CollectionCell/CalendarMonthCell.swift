@@ -19,7 +19,7 @@ class CalendarMonthCell: UICollectionViewCell {
 
        func configure(month: String, isSelected: Bool) {
            lbl_Month.text = month
-           bgVw.backgroundColor = isSelected ? UIColor(hex: "#299EF5") : UIColor(hex: "#F0F7FB")
+           bgVw.backgroundColor = isSelected ? UIColor(hex: "#7EB268") : UIColor(hex: "#F6FAF5")
            lbl_Month.textColor = isSelected ? .white : .black
            lbl_Month.font = FontManager.inter(.semiBold, size: 25.0) 
        }

@@ -91,7 +91,7 @@ class LoginVC: UIViewController {
         
         // Apply link styling (blue + underline)
         let linkAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.systemBlue,
+            .foregroundColor: UIColor(named: "themeColor"),
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
         

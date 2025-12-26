@@ -67,6 +67,7 @@ class SubscriptionVC: UIViewController {
 
         applyGradientButtonStyle(to: self.btnProceed)
         self.btn_restorePurchase.titleLabel?.font = FontManager.inter(.medium, size: 12.0)
+        self.btn_restorePurchase.titleLabel?.textColor = UIColor(named: "themeColor")
         self.lbl_patymentDescription.font = FontManager.inter(.medium, size: 12.0)
         self.lblTermaprivacy.font = FontManager.inter(.medium, size: 12.0)
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
@@ -88,12 +89,12 @@ class SubscriptionVC: UIViewController {
                 
                 // Highlight "Terms of Use"
                 let termsRange = (text as NSString).range(of: "Terms of Use")
-                attributedString.addAttribute(.foregroundColor, value: UIColor.systemBlue, range: termsRange)
+                attributedString.addAttribute(.foregroundColor, value: UIColor(named: "themeColor"), range: termsRange)
                 attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: termsRange)
                 
                 // Highlight "Privacy Policy"
                 let privacyRange = (text as NSString).range(of: "Privacy Policy")
-                attributedString.addAttribute(.foregroundColor, value: UIColor.systemBlue, range: privacyRange)
+        attributedString.addAttribute(.foregroundColor, value: UIColor(named: "themeColor"), range: privacyRange)
                 attributedString.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: privacyRange)
                 
         lblTermaprivacy.attributedText = attributedString
@@ -329,10 +330,10 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
         tblVw.layoutIfNeeded()
         if UIDevice.current.userInterfaceIdiom == .pad {
             let count = (self.plansN?.count ?? 0 + 1 )
-            tblHeght.constant =  CGFloat(((count) * 260))
+            tblHeght.constant =  CGFloat(((count) * 255))
         }else{
             let count = (self.plansN?.count ?? 0 + 1 )
-            tblHeght.constant =  CGFloat(((count) * 230))
+            tblHeght.constant =  CGFloat(((count) * 225))
         }
         
         tblVw.layoutIfNeeded()

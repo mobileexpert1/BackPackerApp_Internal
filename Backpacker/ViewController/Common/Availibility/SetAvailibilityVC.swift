@@ -167,6 +167,7 @@ extension SetAvailibilityVC: UITableViewDelegate, UITableViewDataSource {
                 self.tableView.endUpdates()
             }
         }
+        cell.BgVw_Day
         
         cell.onSlotChanged = { index in
             print("Slot at index \(index) was deleted")
