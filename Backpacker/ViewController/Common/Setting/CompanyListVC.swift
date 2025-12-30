@@ -42,7 +42,7 @@ class CompanyListVC: UIViewController {
     }
     private func setuPUI(){
         self._noCompany.isHidden = true
-        self._noCompany.text = "Please add cmpany first."
+        self._noCompany.text = "Please add company first."
         self._noCompany.font = FontManager.inter(.medium, size: 12.0)
         let nib = UINib(nibName: "CommonCompanyTVC", bundle: nil)
         tblVw.register(nib, forCellReuseIdentifier: "CommonCompanyTVC")

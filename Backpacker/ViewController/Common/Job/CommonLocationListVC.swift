@@ -603,32 +603,44 @@ extension CommonLocationListVC{
                     
                     switch httpStatus {
                     case .ok, .created:
-                        if success == true {
-                            if let data = result?.data {
-                                
-                                self.isLoading = false
-                                self.plansN?.removeAll()
-                                self.countsLoc = data.counts
-                                
-                                // ✅ SUCCESS CALLBACK
-                                completion(true)
-                                
-                            } else {
+                        guard success, let data = result?.data else {
                                 AlertManager.showAlert(
                                     on: self,
                                     title: "Success",
                                     message: result?.message ?? "Completed successfully."
                                 )
                                 completion(false)
+                                return
                             }
-                        } else {
-                            AlertManager.showAlert(
-                                on: self,
-                                title: "Error",
-                                message: result?.message ?? "Something went wrong."
-                            )
-                            completion(false)
-                        }
+
+                            self.isLoading = false
+                            self.plansN?.removeAll()
+                            self.countsLoc = data.counts
+                            completion(true)
+//                        if success == true {
+//                            if let data = result?.data {
+//                                self.isLoading = false
+//                                self.plansN?.removeAll()
+//                                self.countsLoc = data.counts
+//                                
+//                                completion(true)
+//                                
+//                            } else {
+//                                AlertManager.showAlert(
+//                                    on: self,
+//                                    title: "Success",
+//                                    message: result?.message ?? "Completed successfully."
+//                                )
+//                                completion(true)
+//                            }
+//                        } else {
+//                            AlertManager.showAlert(
+//                                on: self,
+//                                title: "Error",
+//                                message: result?.message ?? "Something went wrong."
+//                            )
+//                            completion(false)
+//                        }
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         completion(false)

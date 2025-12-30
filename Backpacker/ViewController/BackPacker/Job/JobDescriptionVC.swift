@@ -897,7 +897,7 @@ extension JobDescriptionVC {
     func setUpValues(obj : JobDetail){
         
         self.lblTitle.text = obj.name
-        self.lbl_Address.text = obj.address
+        self.lbl_Address.text = obj.locationText
         let duration = calculateDuration(startTime: obj.startTime, endTime: obj.endTime)
         self.lbl_Time.text = duration
         let imageStr = obj.image
@@ -961,7 +961,7 @@ extension JobDescriptionVC {
     func setUpValuesEmployer(obj : EmployerJobDetail){
         DispatchQueue.main.async {
             self.lblTitle.text = obj.name
-            self.lbl_Address.text = obj.address
+            self.lbl_Address.text = obj.locationText
             let duration = self.calculateDuration(startTime: obj.startTime, endTime: obj.endTime)
             self.lbl_Time.text = duration
             let imageStr = obj.image
@@ -1034,7 +1034,7 @@ extension JobDescriptionVC {
         
         guard let start = dateFormatter.date(from: startTime),
               let end = dateFormatter.date(from: endTime) else {
-            return "Invalid time"
+            return "\(startTime) - \(endTime)"
         }
         
         let diff = end.timeIntervalSince(start)

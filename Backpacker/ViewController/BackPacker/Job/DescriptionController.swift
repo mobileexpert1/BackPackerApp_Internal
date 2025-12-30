@@ -78,7 +78,7 @@ class DescriptionController: UIViewController {
         if let formatted = obj.startDate.formattedISODate() {
             self.lbl_Val_StartDate.text = formatted
         }
-        if let start = obj.startTime.toAmPmFormat(), let end = obj.endTime.toAmPmFormat() {
+        if let start = obj.startTime.toAmPmIfNeeded(), let end = obj.endTime.toAmPmIfNeeded() {
             print("Start: \(start), End: \(end)")
             self.lbl_Val_EndTime.text = end
             self.lbl_Val_StartTime.text = start
@@ -104,7 +104,7 @@ class DescriptionController: UIViewController {
         if let formatted = obj.startDate.formattedISODate() {
             self.lbl_Val_StartDate.text = formatted
         }
-        if let start = obj.startTime.toAmPmFormat(), let end = obj.endTime.toAmPmFormat() {
+        if let start = obj.startTime.toAmPmIfNeeded(), let end = obj.endTime.toAmPmIfNeeded() {
             print("Start: \(start), End: \(end)")
             self.lbl_Val_EndTime.text = end
             self.lbl_Val_StartTime.text = start
@@ -196,7 +196,7 @@ class DescriptionController: UIViewController {
         if let formatted = obj.startDate.formattedISODate() {
             self.lbl_Val_StartDate.text = formatted
         }
-        if let start = obj.startTime.toAmPmFormat(), let end = obj.endTime.toAmPmFormat() {
+        if let start = obj.startTime.toAmPmIfNeeded(), let end = obj.endTime.toAmPmIfNeeded() {
             print("Start: \(start), End: \(end)")
             self.lbl_Val_EndTime.text = end
             self.lbl_Val_StartTime.text = start
@@ -221,7 +221,7 @@ class DescriptionController: UIViewController {
         if let formatted = obj.startDate.formattedISODate() {
             self.lbl_Val_StartDate.text = formatted
         }
-        if let start = obj.startTime.toAmPmFormat(), let end = obj.endTime.toAmPmFormat() {
+        if let start = obj.startTime.toAmPmIfNeeded(), let end = obj.endTime.toAmPmIfNeeded() {
             print("Start: \(start), End: \(end)")
             self.lbl_Val_EndTime.text = end
             self.lbl_Val_StartTime.text = start

@@ -140,57 +140,80 @@ struct CurrentPlanResponse: Codable {
 
 struct CurrentPlanDataLoc: Codable {
     let counts: CountsLoc
-    let subscription: Subscription
+    let subscription: SubscriptionLoc
 }
+
 struct CountsLoc: Codable {
     let accommodation: Int
     let jobs: Int
     let hangouts: Int
 }
+
 struct SubscriptionLoc: Codable {
     let id: String
     let userId: String
     let planId: PlanLoc
+    let startDate: String
+    let endDate: String
+    let platform: String
+    let status: String
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
         case userId
         case planId
+        case startDate
+        case endDate
+        case platform
+        case status
     }
 }
+
 struct PlanLoc: Codable {
     let id: String
+    let commonName: String?
+    let desc: String?
+    let feature: [String]?
     let iosSubId: String?
-    let desc: String
-    let feature: [String]
-    let iosAttributes: IOSAttributesLoc
-    let iosBasePlans: [IOSBasePlanLoc]
+    let iosAttributes: IOSAttributesLoc?
+    let iosBasePlans: [IOSBasePlanLoc]?
+    let status: String?
+    let locationCount: Int?
+    let jobCount: Int?
 
     enum CodingKeys: String, CodingKey {
         case id = "_id"
-        case iosSubId
+        case commonName
         case desc
         case feature
+        case iosSubId
         case iosAttributes
         case iosBasePlans
+        case status
+        case locationCount
+        case jobCount
     }
 }
+
 struct IOSAttributesLoc: Codable {
-    let name: String
-    let productId: String
-    let familySharable: Bool
-    let state: String
-    let subscriptionPeriod: String
-    let reviewNote: String
-    let groupLevel: Int
+    let name: String?
+    let productId: String?
+    let familySharable: Bool?
+    let state: String?
+    let subscriptionPeriod: String?
+    let reviewNote: String?
+    let groupLevel: Int?
 }
+
 struct IOSBasePlanLoc: Codable {
-    let country: String
-    let price: IOSPriceLoc
-    let currency: String
+    let country: String?
+    let price: IOSPriceLoc?
+    let currency: String?
 }
+
 struct IOSPriceLoc: Codable {
-    let customerPrice: String
-    let proceeds: String
-    let proceedsYear2: String
+    let customerPrice: String?
+    let proceeds: String?
+    let proceedsYear2: String?
 }
+

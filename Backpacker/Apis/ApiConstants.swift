@@ -39,7 +39,6 @@ struct ApiConstants {
                     withAllowedCharacters: .urlQueryAllowed) ?? ""
                 url += "&search=\(encodedSearch)"
             }
-            
             return url
         }
         static let ADD_NEWJOB = BASE_URL + "api/employer/job"
