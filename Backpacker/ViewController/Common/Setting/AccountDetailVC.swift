@@ -123,7 +123,8 @@ class AccountDetailVC: UIViewController {
         self.getProfileInfo()
 #if BackpackerHire
         stackVw_VisaDateHeight.constant = 0.0
-        
+        self.startDateField.isHidden = true
+        self.endDateField.isHidden = true
         #else
         stackVw_VisaDateHeight.constant = 85.0
         

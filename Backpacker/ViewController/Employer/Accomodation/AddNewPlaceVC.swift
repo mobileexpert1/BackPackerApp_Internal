@@ -422,7 +422,7 @@ class AddNewPlaceVC: UIViewController {
                 AlertManager.showAlert(
                     on: self,
                     title: "Plan Limit Reached",
-                    message: "Please update your plan to add more accomodations."
+                    message: "Please update your plan to add more hangout."
                 ){
 //                        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
 //                        if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {

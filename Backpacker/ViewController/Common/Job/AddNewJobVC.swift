@@ -771,17 +771,46 @@ extension AddNewJobVC : SetLocationDelegate{
 
 
 extension AddNewJobVC {
-    
+    /*
+     func setupTimePicker() {
+         timePicker = UIDatePicker()
+         timePicker.datePickerMode = .time
+         timePicker.preferredDatePickerStyle = .wheels
+
+         // Force 24-hour format using a locale that defaults to 24-hour
+         timePicker.locale = Locale(identifier: "en_GB")  // UK uses 24-hour format
+         timePicker.calendar = Calendar(identifier: .gregorian)
+
+         // Optional: This ensures the picker updates immediately to 24-hour style
+         if #available(iOS 14.0, *) {
+             timePicker.preferredDatePickerStyle = .wheels
+         }
+
+         let toolbar = UIToolbar()
+         toolbar.sizeToFit()
+         
+         let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneTapped))
+         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+         toolbar.setItems([flexSpace, doneButton], animated: false)
+
+         txtFld_StartTime.inputView = timePicker
+         txtFd_EndTine.inputView = timePicker
+         txtFld_StartTime.inputAccessoryView = toolbar
+         txtFd_EndTine.inputAccessoryView = toolbar
+         txtFld_StartTime.addTarget(self, action: #selector(startTimeEditingBegan), for: .editingDidBegin)
+          txtFd_EndTine.addTarget(self, action: #selector(endTimeEditingBegan), for: .editingDidBegin)
+      }
+     */
+
     func setupTimePicker() {
         timePicker = UIDatePicker()
         timePicker.datePickerMode = .time
-        timePicker.preferredDatePickerStyle = .wheels
-
-        // Force 24-hour format using a locale that defaults to 24-hour
-        timePicker.locale = Locale(identifier: "en_GB")  // UK uses 24-hour format
         timePicker.calendar = Calendar(identifier: .gregorian)
-
-        // Optional: This ensures the picker updates immediately to 24-hour style
+        
+        // Use a locale that shows 12-hour format with AM/PM
+        timePicker.locale = Locale(identifier: "en_US") // US uses 12-hour format
+        
+        // Optional: Ensure the wheel style (like before)
         if #available(iOS 14.0, *) {
             timePicker.preferredDatePickerStyle = .wheels
         }
@@ -793,13 +822,16 @@ extension AddNewJobVC {
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         toolbar.setItems([flexSpace, doneButton], animated: false)
 
+        // Assign picker and toolbar
         txtFld_StartTime.inputView = timePicker
         txtFd_EndTine.inputView = timePicker
         txtFld_StartTime.inputAccessoryView = toolbar
         txtFd_EndTine.inputAccessoryView = toolbar
+
+        // Add editing began targets
         txtFld_StartTime.addTarget(self, action: #selector(startTimeEditingBegan), for: .editingDidBegin)
-         txtFd_EndTine.addTarget(self, action: #selector(endTimeEditingBegan), for: .editingDidBegin)
-     }
+        txtFd_EndTine.addTarget(self, action: #selector(endTimeEditingBegan), for: .editingDidBegin)
+    }
 
      @objc private func startTimeEditingBegan() {
          if let text = txtFld_StartTime.text, !text.isEmpty {

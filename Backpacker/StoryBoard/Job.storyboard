@@ -241,7 +241,7 @@
                                                 </constraints>
                                             </view>
                                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZzX-bU-6ff">
-                                                <rect key="frame" x="0.0" y="306.66666666666674" width="393" height="433.33333333333326"/>
+                                                <rect key="frame" x="0.0" y="306.66666666666674" width="393" height="403.33333333333326"/>
                                             </containerView>
                                             <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="yCG-1g-nod">
                                                 <rect key="frame" x="20" y="740" width="353" height="50"/>
@@ -293,7 +293,7 @@
                                             <constraint firstItem="yCG-1g-nod" firstAttribute="leading" secondItem="JvS-b3-qSs" secondAttribute="leading" constant="20" id="OSL-JB-DjU"/>
                                             <constraint firstAttribute="trailing" secondItem="ZzX-bU-6ff" secondAttribute="trailing" id="V8R-Kl-guD"/>
                                             <constraint firstItem="JSF-Hk-Qh9" firstAttribute="leading" secondItem="JvS-b3-qSs" secondAttribute="leading" id="bnh-BQ-5tJ"/>
-                                            <constraint firstItem="yCG-1g-nod" firstAttribute="top" secondItem="ZzX-bU-6ff" secondAttribute="bottom" id="hsp-f1-PGx"/>
+                                            <constraint firstItem="yCG-1g-nod" firstAttribute="top" secondItem="ZzX-bU-6ff" secondAttribute="bottom" constant="30" id="hsp-f1-PGx"/>
                                             <constraint firstItem="ZzX-bU-6ff" firstAttribute="leading" secondItem="JvS-b3-qSs" secondAttribute="leading" id="mIo-4Q-7Qj"/>
                                             <constraint firstAttribute="height" constant="800" id="teV-au-TlP"/>
                                             <constraint firstAttribute="bottom" secondItem="yCG-1g-nod" secondAttribute="bottom" constant="10" id="v5b-tS-WAB"/>
@@ -3105,7 +3105,7 @@
         <image name="remove" width="6.6666665077209473" height="6.6666665077209473"/>
         <image name="search" width="14" height="14"/>
         <image name="time" width="26" height="26"/>
-        <image name="uploadImga" width="18.666666030883789" height="18.666666030883789"/>
+        <image name="uploadImga" width="22" height="22"/>
         <image name="user-setting 1" width="25" height="25"/>
         <namedColor name="Red">
             <color red="0.76470588235294112" green="0.17647058823529413" blue="0.17647058823529413" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

@@ -30,27 +30,10 @@ class CommonImageCell: UICollectionViewCell {
             img_Vw.image = UIImage(named: "aCCOMODATION") // fallback
         }
         self.Bg_Vw.addShadowAllSides(radius: 0.5)
+        self.img_Vw.layer.cornerRadius = 10.0
     }
 
     func setImage(with imageURL: String, isFavorite: Bool) {
-        // Load image from URL string (you can use Kingfisher or SDWebImage)
-//        if let url = URL(string: imageURL) {
-//            // Example using native URLSession (for simplicity)
-//            DispatchQueue.global().async {
-//                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
-//                    DispatchQueue.main.async {
-//                        self.img_Vw.image = image
-//                    }
-//                }
-//            }
-//        } else {
-//            if isComeFromHangout == true{
-//                img_Vw.image = UIImage(named: "restaurantImg") // fallback
-//            }else{
-//                img_Vw.image = UIImage(named: "aCCOMODATION") // fallback
-//            }
-//           
-//        }
 
         // Set favorite heart image
         let heartImage = isFavorite ? UIImage(named: "Heart") : UIImage(named: "ic_heart_unfilled")
