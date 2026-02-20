@@ -10,6 +10,10 @@ import CountryPickerView
 
 class LoginVC: UIViewController {
     
+    @IBOutlet weak var img_logo_bottom: NSLayoutConstraint! //50
+    @IBOutlet weak var img_Logo_width: NSLayoutConstraint!//120
+    @IBOutlet weak var img_logo_Height: NSLayoutConstraint!//120
+    @IBOutlet weak var logo_Img: UIImageView!
     //Outlet
     @IBOutlet weak var btn_term_Topconstraint: NSLayoutConstraint!
     @IBOutlet weak var lbl_temsandCondition: UILabel!
@@ -73,10 +77,19 @@ class LoginVC: UIViewController {
         self.txtFld_PhoneNumber.delegate = self
         txtFld_PhoneNumber.returnKeyType = .done
         btn_countryPicker.addTarget(self, action: #selector(selectCountryAction(_:)), for: .touchUpInside)
-        //   let tapGesture = UITapGestureRecognizer(target: self, action: #selector(termsLabelTapped))
-        //  lbl_temsandCondition.addGestureRecognizer(tapGesture)
         self.lbl_temsandCondition.isUserInteractionEnabled = true
         self .setupTermsLabel()
+#if BackpackerHire
+        self.logo_Img.image = UIImage(named: "Logo2")
+        self.img_logo_bottom.constant = 0
+        self.img_Logo_width.constant = 180
+        self.img_logo_Height.constant = 180
+        #else
+        self.logo_Img.image = UIImage(named: "launchBP")
+        self.img_logo_bottom.constant = 50
+        self.img_Logo_width.constant = 120
+        self.img_logo_Height.constant = 120
+#endif
     }
     private func setupTermsLabel() {
         let text = "I have read and agree to the Privacy Policy and Terms & Conditions"

@@ -37,6 +37,19 @@ class AccountDetailVC: UIViewController {
     //heightConstraint
     @IBOutlet weak var lbl_error_VisaHeight: NSLayoutConstraint!
     @IBOutlet weak var lbl_error_SelectVisaType: UILabel!
+    
+    @IBOutlet weak var btn_frm: UIButton!
+    @IBOutlet weak var btn_regional: UIButton!
+
+    @IBOutlet weak var imgVw_frm: UIImageView!
+    @IBOutlet weak var img_reginal: UIImageView!
+
+    @IBOutlet weak var lbl_frmWrk: UILabel!
+    @IBOutlet weak var lbl_regional: UILabel!
+    
+    @IBOutlet weak var farmViwStackHeight: NSLayoutConstraint!
+    var selectedWork: String?
+    
     let profileVm = ProfileVM()
     let viewModelAuth = LogInVM()
     let visaTypes = [
@@ -80,7 +93,10 @@ class AccountDetailVC: UIViewController {
     var endDateConvertedVal : String?
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.lbl_regional.textColor = UIColor(named: "subTitleColor")
+        self.lbl_frmWrk.textColor = UIColor(named: "subTitleColor")
+        self.lbl_frmWrk.font = FontManager.inter(.medium, size: 14.0)
+        self.lbl_regional.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_dobError.isHidden = true
         self.lbl_dobError.textColor = .red
         self.lbl_avlDob.textColor = UIColor(named: "subTitleColor")
@@ -100,6 +116,7 @@ class AccountDetailVC: UIViewController {
         self.btn_Edit.tag = 0
         handleBottomBtn()
         self.setupPicker()
+        self.HideShowReginoalWorkFarmView()
         //MARK: - Unhide for when show Company Detail VC
 #if BackpackerHire
         if role == "3" || role == "4" ||  role == "2"{
@@ -132,6 +149,28 @@ class AccountDetailVC: UIViewController {
         self.setUpButtons()
     }
     
+    private func HideShowReginoalWorkFarmView(){
+#if BackpackerHire
+        self.farmViwStackHeight.constant = 0.0
+        hideShowFarmRegional(true)
+        #else
+        
+        self.farmViwStackHeight.constant = 40.0
+        hideShowFarmRegional(false)
+        #endif
+        
+    }
+    private func hideShowFarmRegional(_ shouldHide: Bool) {
+        
+        btn_frm.isHidden = shouldHide
+        btn_regional.isHidden = shouldHide
+        
+        imgVw_frm.isHidden = shouldHide
+        img_reginal.isHidden = shouldHide
+        
+        lbl_frmWrk.isHidden = shouldHide
+        lbl_regional.isHidden = shouldHide
+    }
     private func setUpFonts(){
         self.lbl_strtDate.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_expDate.font = FontManager.inter(.medium, size: 14.0)
@@ -153,7 +192,8 @@ class AccountDetailVC: UIViewController {
         
         self.startDateField.isUserInteractionEnabled = false
         self.endDateField.isUserInteractionEnabled = false
-        
+        self.btn_frm.isUserInteractionEnabled = false
+        self.btn_regional.isUserInteractionEnabled = false
         self.lbl_error_VisaHeight.constant = 0.0
         self.lbl_error_SelectVisaType.isHidden = true
         lbl_error_SelectVisaType.font = FontManager.inter(.regular, size: 8.0)
@@ -243,7 +283,47 @@ class AccountDetailVC: UIViewController {
        }
        
        @objc func donePressed() {
-           self.view.endEditing(true)
+           
+           if startDateField.isFirstResponder == true{
+               guard let date = startDatePicker?.date else { return }
+                  
+                  // 1️⃣ Visible formatted date
+                  let formatter = DateFormatter()
+                  formatter.dateStyle = .medium
+               startDateField.text = formatter.string(from: date)
+                  
+                  // 2️⃣ ISO format for backend
+                  let formatter2 = ISO8601DateFormatter()
+                  formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+                  formatter2.timeZone = TimeZone(secondsFromGMT: 0)
+                  
+               self.startDateCovertedVal = formatter2.string(from: date)
+                  
+               self.lbl_errStrtDate.isHidden = true
+                  
+                  self.view.endEditing(true)
+           }else if endDateField.isFirstResponder == true {
+               guard let date = endDatePicker?.date else { return }
+                  
+                  // 1️⃣ Visible formatted date
+                  let formatter = DateFormatter()
+                  formatter.dateStyle = .medium
+                  endDateField.text = formatter.string(from: date)
+                  
+                  // 2️⃣ ISO format for backend
+                  let formatter2 = ISO8601DateFormatter()
+                  formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+                  formatter2.timeZone = TimeZone(secondsFromGMT: 0)
+                  
+                  self.endDateConvertedVal = formatter2.string(from: date)
+                  
+                  self.lbl_errExpDate.isHidden = true
+                  
+                  self.view.endEditing(true)
+           }else{
+               self.view.endEditing(true)
+           }
+           
        }
     private func setUpButtons(){
         
@@ -359,6 +439,8 @@ class AccountDetailVC: UIViewController {
                 self.AreaVW.txtFld.isUserInteractionEnabled = true
                 self.startDateField.isUserInteractionEnabled  = true
                 self.endDateField.isUserInteractionEnabled  = true
+                self.btn_frm.isUserInteractionEnabled = true
+                self.btn_regional.isUserInteractionEnabled = true
             }
         }else{
             self.btn_Edit.tag = 0
@@ -369,6 +451,8 @@ class AccountDetailVC: UIViewController {
             self.AreaVW.txtFld.isUserInteractionEnabled = false
             self.startDateField.isUserInteractionEnabled  = false
             self.endDateField.isUserInteractionEnabled  = false
+            self.btn_frm.isUserInteractionEnabled = false
+            self.btn_regional.isUserInteractionEnabled = false
         }
         self.handleBottomBtn()
     }
@@ -465,7 +549,41 @@ class AccountDetailVC: UIViewController {
     @IBAction func action_Cancelk(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
+    @IBAction func action_farm(_ sender: Any) {
+        self.btn_regional.tag = 0
+        if self.btn_frm.tag == 0 {
+            self.btn_frm.tag = 1
+        }else{
+            self.btn_frm.tag = 0
+        }
+        self.updateFrmReginalBtn()
+    }
+    @IBAction func action_regional(_ sender: Any) {
+        self.btn_frm.tag = 0
+        if self.btn_regional.tag == 0 {
+            self.btn_regional.tag = 1
+        }else{
+            self.btn_regional.tag = 0
+        }
+        self.updateFrmReginalBtn()
+    }
     
+    
+    private func updateFrmReginalBtn(){
+        if self.btn_regional.tag == 1 {
+            self.img_reginal.image = UIImage(named: "Checkbox2")
+            self.imgVw_frm.image = UIImage(named: "Checkbox")
+            self.lbl_regional.textColor = .black
+            self.lbl_frmWrk.textColor = UIColor(named: "subTitleColor")
+            self.selectedWork = "Regional Work"
+        }else{
+            self.img_reginal.image = UIImage(named: "Checkbox")
+            self.imgVw_frm.image = UIImage(named: "Checkbox2")
+            self.lbl_frmWrk.textColor = .black
+            self.lbl_regional.textColor = UIColor(named: "subTitleColor")
+            self.selectedWork = "Farm Work"
+        }
+    }
 }
 extension AccountDetailVC: CommonDetailChildDelegate {
     func enableEditing(_ isEnabled: Bool) {

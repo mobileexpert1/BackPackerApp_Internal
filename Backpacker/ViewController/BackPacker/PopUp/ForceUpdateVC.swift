@@ -22,6 +22,9 @@ class ForceUpdateVC: UIViewController {
     @IBOutlet weak var lbl_error_VisaHeight: NSLayoutConstraint!
     @IBOutlet weak var main_Vw: UIView!
     
+    @IBOutlet weak var img_logo: UIImageView!
+    @IBOutlet weak var logo_width: NSLayoutConstraint!
+    @IBOutlet weak var logo_height: NSLayoutConstraint!
     @IBOutlet weak var mainDOBVw: UIView!
     @IBOutlet weak var imgDrpDwon: UIImageView!
     @IBOutlet weak var lbl_error_endDate: UILabel!
@@ -59,7 +62,7 @@ class ForceUpdateVC: UIViewController {
     ]
     var scrollHight : CGFloat?
     private var startDatePicker: UIDatePicker?
-        private var endDatePicker: UIDatePicker?
+    private var endDatePicker: UIDatePicker?
     
     var startDateCovertedVal : String?
     @IBOutlet weak var Vw_DobMini: UIView!
@@ -68,8 +71,25 @@ class ForceUpdateVC: UIViewController {
     @IBOutlet weak var lbl_dob: UILabel!
     var DOBPicker: UIDatePicker?
     @IBOutlet weak var lbl_avlDob: UILabel!
+    
+    @IBOutlet weak var btn_frm: UIButton!
+    @IBOutlet weak var btn_regional: UIButton!
+    
+    @IBOutlet weak var imgVw_frm: UIImageView!
+    @IBOutlet weak var img_reginal: UIImageView!
+    
+    @IBOutlet weak var lbl_frmWrk: UILabel!
+    @IBOutlet weak var lbl_regional: UILabel!
+    
+    @IBOutlet weak var lbl_error_work: UILabel!
+    @IBOutlet weak var farmViwStackHeight: NSLayoutConstraint!
+    var selectedWork: String?
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.lbl_regional.textColor = UIColor(named: "subTitleColor")
+        self.lbl_frmWrk.textColor = UIColor(named: "subTitleColor")
+        self.lbl_frmWrk.font = FontManager.inter(.medium, size: 14.0)
+        self.lbl_regional.font = FontManager.inter(.medium, size: 14.0)
         self.setUpUI()
         self.lbl_dobError.isHidden = true
         self.lbl_dobError.textColor = .red
@@ -79,7 +99,7 @@ class ForceUpdateVC: UIViewController {
         self.lbl_avlDob.font = FontManager.inter(.regular, size: 12.0)
         self.Vw_DobMini.addShadowAllSides(radius: 2.0)
         // Do any additional setup after loading the view.
-        
+        self.HideShowReginoalWorkFarmView()
 #if Backapacker
         let nib = UINib(nibName: "ReportIssueTVC", bundle: nil)
         self.tblVw.register(nib, forCellReuseIdentifier: "ReportIssueTVC")
@@ -93,7 +113,12 @@ class ForceUpdateVC: UIViewController {
         self.main_visaTypeHeight.constant = 70.0
         self.imgDrpDwon.isHidden = false
         self.lbl_error_SelectVisaType.isHidden = false
+        self.logo_width.constant = 55.0
+        self.logo_height.constant = 55.0
 #else
+        self.img_logo.image = UIImage(named: "Logo1")
+        self.logo_width.constant = 65.0
+        self.logo_height.constant = 65.0
         self.date_stackHeight.constant = 0.0
         self.tbl_height.constant = 0
         self.vWHeightContraint.constant = 0
@@ -101,12 +126,16 @@ class ForceUpdateVC: UIViewController {
         self.imgDrpDwon.isHidden = true
         self.lbl_error_VisaHeight.constant = 0.0
         self.lbl_error_SelectVisaType.isHidden = true
+        self.lbl_error_work.isHidden = true
 #endif
     }
     private func setUpUIForDate(){
         self.lbl_error_startDate.isHidden = true
         self.lbl_error_endDate.isHidden = true
+        self.lbl_error_work.isHidden = true
+        self.lbl_error_work.font = FontManager.inter(.regular, size: 8.0)
         self.lbl_error_startDate.font = FontManager.inter(.regular, size: 8.0)
+        lbl_error_work.textColor = .red
         self.lbl_error_endDate.font = FontManager.inter(.regular, size: 8.0)
         self.lbl_error_startDate.textColor = .red
         self.lbl_error_endDate.textColor = .red
@@ -115,7 +144,7 @@ class ForceUpdateVC: UIViewController {
         self.lbl_expiryDate.font = FontManager.inter(.medium, size: 14.0)
         self.startDateField.font = FontManager.inter(.regular, size: 12.0)
         
-   
+        
         
         self.endDateField.font = FontManager.inter(.regular, size: 12.0)
         self.Vw_LblExpiryDate.layer.cornerRadius = 10.0
@@ -126,6 +155,28 @@ class ForceUpdateVC: UIViewController {
         self.ve_ValsatrtDate.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
         self.ve_ValsatrtDate.layer.borderWidth = 1.0
         self.setupPicker()
+    }
+    private func HideShowReginoalWorkFarmView(){
+#if BackpackerHire
+        self.farmViwStackHeight.constant = 0.0
+        hideShowFarmRegional(true)
+#else
+        
+        self.farmViwStackHeight.constant = 40.0
+        hideShowFarmRegional(false)
+#endif
+        
+    }
+    private func hideShowFarmRegional(_ shouldHide: Bool) {
+        
+        btn_frm.isHidden = shouldHide
+        btn_regional.isHidden = shouldHide
+        
+        imgVw_frm.isHidden = shouldHide
+        img_reginal.isHidden = shouldHide
+        
+        lbl_frmWrk.isHidden = shouldHide
+        lbl_regional.isHidden = shouldHide
     }
     func setUpUI(){
         if lbl_Val_VisaType.text == "Select Visa Type" {
@@ -141,7 +192,7 @@ class ForceUpdateVC: UIViewController {
         self.lbl_main_visaType.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_Val_VisaType.font = FontManager.inter(.regular, size: 12.0)
         self.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-       // self.vw_Scroll.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        // self.vw_Scroll.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         applyGradientButtonStyle(to: btn_Save)
         self.btn_Save.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
         self.lbl_Header.font = FontManager.inter(.semiBold, size: 16.0)
@@ -159,117 +210,191 @@ class ForceUpdateVC: UIViewController {
     }
     private func setupPicker(){
         startDatePicker = UIDatePicker()
-              startDatePicker?.datePickerMode = .date
-              if #available(iOS 14.0, *) {
-                  startDatePicker?.preferredDatePickerStyle = .wheels
-              }
-              startDatePicker?.addTarget(self, action: #selector(startDateChanged), for: .valueChanged)
-              startDateField.inputView = startDatePicker
-              
-              // Setup End Date Picker
-              endDatePicker = UIDatePicker()
-              endDatePicker?.datePickerMode = .date
-              if #available(iOS 14.0, *) {
-                  endDatePicker?.preferredDatePickerStyle = .wheels
-              }
-              endDatePicker?.addTarget(self, action: #selector(endDateChanged), for: .valueChanged)
-              endDateField.inputView = endDatePicker
-              
-              // Optional: Add toolbar with Done button
-              let toolbar = UIToolbar()
-              toolbar.sizeToFit()
-              let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(donePressed))
-              toolbar.setItems([doneButton], animated: true)
-              startDateField.inputAccessoryView = toolbar
-              endDateField.inputAccessoryView = toolbar
+        startDatePicker?.datePickerMode = .date
+        if #available(iOS 14.0, *) {
+            startDatePicker?.preferredDatePickerStyle = .wheels
+        }
+        startDatePicker?.addTarget(self, action: #selector(startDateChanged), for: .valueChanged)
+        startDateField.inputView = startDatePicker
+        
+        // Setup End Date Picker
+        endDatePicker = UIDatePicker()
+        endDatePicker?.datePickerMode = .date
+        if #available(iOS 14.0, *) {
+            endDatePicker?.preferredDatePickerStyle = .wheels
+        }
+        endDatePicker?.addTarget(self, action: #selector(endDateChanged), for: .valueChanged)
+        endDateField.inputView = endDatePicker
+        
+        // Optional: Add toolbar with Done button
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(donePressed))
+        toolbar.setItems([doneButton], animated: true)
+        startDateField.inputAccessoryView = toolbar
+        endDateField.inputAccessoryView = toolbar
     }
     @objc func startDateChanged() {
-           let formatter = DateFormatter()
-           formatter.dateStyle = .medium
-           startDateField.text = formatter.string(from: startDatePicker?.date ?? Date())
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        startDateField.text = formatter.string(from: startDatePicker?.date ?? Date())
         
         guard let date = startDatePicker?.date else { return }
-
-            let formatter2 = ISO8601DateFormatter()
-            formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-            formatter2.timeZone = TimeZone(secondsFromGMT: 0) // UTC
+        
+        let formatter2 = ISO8601DateFormatter()
+        formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        formatter2.timeZone = TimeZone(secondsFromGMT: 0) // UTC
         self.startDateCovertedVal = formatter2.string(from: date)
         self.lbl_error_startDate.isHidden = true
-       }
-       
+    }
+    
     @IBAction func action_chosseDOB(_ sender: Any) {
         self.showDatePicker()
         
         
     }
+    @IBAction func action_farm(_ sender: Any) {
+        self.btn_regional.tag = 0
+        if self.btn_frm.tag == 0 {
+            self.btn_frm.tag = 1
+        }else{
+            self.btn_frm.tag = 0
+        }
+        self.updateFrmReginalBtn()
+    }
+    @IBAction func action_regional(_ sender: Any) {
+        self.btn_frm.tag = 0
+        if self.btn_regional.tag == 0 {
+            self.btn_regional.tag = 1
+        }else{
+            self.btn_regional.tag = 0
+        }
+        self.updateFrmReginalBtn()
+    }
+    private func updateFrmReginalBtn(){
+        if self.btn_regional.tag == 1 {
+            self.img_reginal.image = UIImage(named: "Checkbox2")
+            self.imgVw_frm.image = UIImage(named: "Checkbox")
+            self.lbl_regional.textColor = .black
+            self.lbl_frmWrk.textColor = UIColor(named: "subTitleColor")
+            self.selectedWork = "Regional Work"
+        }else{
+            self.img_reginal.image = UIImage(named: "Checkbox")
+            self.imgVw_frm.image = UIImage(named: "Checkbox2")
+            self.lbl_frmWrk.textColor = .black
+            self.lbl_regional.textColor = UIColor(named: "subTitleColor")
+            self.selectedWork = "Farm Work"
+        }
+        self.lbl_error_work.isHidden = true
+    }
     func showDatePicker() {
         let alert = UIAlertController(title: "Select DOB",
-                                        message: "\n\n\n\n\n\n\n\n",
-                                        preferredStyle: .actionSheet)
-          
-          DOBPicker = UIDatePicker(frame: CGRect(x: 0, y: 20,
-                                                 width: alert.view.bounds.width - 20,
-                                                 height: 200))
-          DOBPicker?.datePickerMode = .date
-          DOBPicker?.maximumDate = Date()
-
-          if #available(iOS 14.0, *) {
-              DOBPicker?.preferredDatePickerStyle = .wheels
-          }
-
-          alert.view.addSubview(DOBPicker!)
-          
-          let doneAction = UIAlertAction(title: "Done", style: .default) { _ in
-              let formatter = DateFormatter()
-              formatter.dateFormat = "yyyy/MM/dd" //"dd/MM/yyyy"
-              
-              if let date = self.DOBPicker?.date {
-                  self.lbl_avlDob.text = formatter.string(from: date)
-                  self.lbl_dobError.isHidden = true
-                  self.lbl_avlDob.textColor = UIColor(named: "blackColor")
-              }
-          }
-          
-          alert.addAction(doneAction)
-
-          // 🟢 THIS MAKES IT APPEAR AT BOTTOM ON iPAD
-          if let popover = alert.popoverPresentationController {
-              popover.sourceView = self.view
-              popover.sourceRect = CGRect(
-                  x: self.view.bounds.midX,
-                  y: self.view.bounds.maxY - 10,   // bottom of screen
-                  width: 0,
-                  height: 0
-              )
-              popover.permittedArrowDirections = []   // no arrow → appears like bottom sheet
-          }
-
-          present(alert, animated: true)
+                                      message: "\n\n\n\n\n\n\n\n",
+                                      preferredStyle: .actionSheet)
+        
+        DOBPicker = UIDatePicker(frame: CGRect(x: 0, y: 20,
+                                               width: alert.view.bounds.width - 20,
+                                               height: 200))
+        DOBPicker?.datePickerMode = .date
+        DOBPicker?.maximumDate = Date()
+        
+        if #available(iOS 14.0, *) {
+            DOBPicker?.preferredDatePickerStyle = .wheels
         }
+        
+        alert.view.addSubview(DOBPicker!)
+        
+        let doneAction = UIAlertAction(title: "Done", style: .default) { _ in
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy/MM/dd" //"dd/MM/yyyy"
+            
+            if let date = self.DOBPicker?.date {
+                self.lbl_avlDob.text = formatter.string(from: date)
+                self.lbl_dobError.isHidden = true
+                self.lbl_avlDob.textColor = UIColor(named: "blackColor")
+            }
+        }
+        
+        alert.addAction(doneAction)
+        
+        // 🟢 THIS MAKES IT APPEAR AT BOTTOM ON iPAD
+        if let popover = alert.popoverPresentationController {
+            popover.sourceView = self.view
+            popover.sourceRect = CGRect(
+                x: self.view.bounds.midX,
+                y: self.view.bounds.maxY - 10,   // bottom of screen
+                width: 0,
+                height: 0
+            )
+            popover.permittedArrowDirections = []   // no arrow → appears like bottom sheet
+        }
+        
+        present(alert, animated: true)
+    }
     @objc func endDateChanged() {
-           let formatter = DateFormatter()
-           formatter.dateStyle = .medium
-           endDateField.text = formatter.string(from: endDatePicker?.date ?? Date())
-           
-           
-           guard let date = endDatePicker?.date else { return }
-
-               let formatter2 = ISO8601DateFormatter()
-               formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-               formatter2.timeZone = TimeZone(secondsFromGMT: 0) // UTC
-           self.endDateConvertedVal = formatter2.string(from: date)
-           self.lbl_error_endDate.isHidden = true
-       }
-       
-       @objc func donePressed() {
-           self.view.endEditing(true)
-       }
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        endDateField.text = formatter.string(from: endDatePicker?.date ?? Date())
+        
+        
+        guard let date = endDatePicker?.date else { return }
+        
+        let formatter2 = ISO8601DateFormatter()
+        formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        formatter2.timeZone = TimeZone(secondsFromGMT: 0) // UTC
+        self.endDateConvertedVal = formatter2.string(from: date)
+        self.lbl_error_endDate.isHidden = true
+    }
+    
+    @objc func donePressed() {
+        
+        if startDateField.isFirstResponder == true{
+            guard let date = startDatePicker?.date else { return }
+            
+            // 1️⃣ Visible formatted date
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            startDateField.text = formatter.string(from: date)
+            
+            // 2️⃣ ISO format for backend
+            let formatter2 = ISO8601DateFormatter()
+            formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            formatter2.timeZone = TimeZone(secondsFromGMT: 0)
+            
+            self.startDateCovertedVal = formatter2.string(from: date)
+            
+            self.lbl_error_startDate.isHidden = true
+            
+            self.view.endEditing(true)
+        }else if endDateField.isFirstResponder == true {
+            guard let date = endDatePicker?.date else { return }
+            
+            // 1️⃣ Visible formatted date
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            endDateField.text = formatter.string(from: date)
+            
+            // 2️⃣ ISO format for backend
+            let formatter2 = ISO8601DateFormatter()
+            formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            formatter2.timeZone = TimeZone(secondsFromGMT: 0)
+            
+            self.endDateConvertedVal = formatter2.string(from: date)
+            
+            self.lbl_error_endDate.isHidden = true
+            
+            self.view.endEditing(true)
+        }else{
+            self.view.endEditing(true)
+        }
+        
+    }
     @IBAction func action_Continue(_ sender: Any) {
         var hasError = false
         // Name & Email validation
         let isNameValid = name_Vw.validateNotEmpty(errorMessage: "Please enter your name")
         if !isNameValid { hasError = true }
-
+        
         let isEmailValid = email_Vw.validateEmail(errorMessage: "Please enter your email")
         if lbl_avlDob.text == "DOB" || lbl_avlDob.text?.isEmpty == true {
             lbl_dobError.isHidden = false
@@ -277,19 +402,19 @@ class ForceUpdateVC: UIViewController {
         } else {
             lbl_dobError.isHidden = true
         }
-
+        
         if !isEmailValid { hasError = true }
 #if BackpackerHire
         
         
-        #else
+#else
         // Visa type validation
         if lbl_Val_VisaType.text == "Select Visa Type" {
             lbl_error_VisaHeight.constant = 20
             lbl_error_SelectVisaType.text = "Please select visa type"
             hasError = true
         }
-
+        
         // Start date validation
         if startDateField.text?.isEmpty == true {
             lbl_error_startDate.isHidden = false
@@ -297,7 +422,7 @@ class ForceUpdateVC: UIViewController {
         }else{
             lbl_error_startDate.isHidden = true
         }
-
+        
         // End date validation
         if endDateField.text?.isEmpty == true {
             lbl_error_endDate.isHidden = false
@@ -305,7 +430,7 @@ class ForceUpdateVC: UIViewController {
         }else{
             lbl_error_endDate.isHidden = true
         }
-
+        
         // Check if end date is after start date
         if let startText = startDateField.text, let endText = endDateField.text,
            let formatter = DateFormatter() as DateFormatter?,
@@ -319,7 +444,12 @@ class ForceUpdateVC: UIViewController {
                 hasError = true
             }
         }
-        
+        if selectedWork == "" || selectedWork?.isEmpty == true || selectedWork == nil{
+            self.lbl_error_work.isHidden = false
+            hasError = true
+        }else{
+            self.lbl_error_work.isHidden = true
+        }
         
 #endif
             // If no errors, update profile

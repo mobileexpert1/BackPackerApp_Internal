@@ -78,6 +78,8 @@ class FavourateJobVC: UIViewController {
     var favAccommodationList : [FavAccommodation]?
     var favHangoutList : [FavHangout]?
     let refreshControl = UIRefreshControl()
+    private let viewModelJOb = JobVM()
+    var onFavTap: ((Int) -> Void)?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lbl_No_AccomdodationFound.font = FontManager.inter(.medium, size: 14.0)
@@ -394,9 +396,12 @@ extension FavourateJobVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                             let id = self?.favAccommodationList?[indexPath.item].id
                             self?.moveToDetail(id: id ?? "")
                         }
-    //                    cell.onHeartTapped = { [weak self]  index in
-    //                        self?.onFavTap?(indexPath.item)
-    //                    }
+                        cell.onHeartTapped = { [weak self]  index in
+                            print("Hangout Item",index)
+                            if let id = self?.favAccommodationList?[index].id{
+                                self?.MakeJobAccomodationFav(id: id)
+                            }
+                        }
                         if accommodation.favoriteStatus == 1 {
                             cell.imgHeart.image = UIImage(named: "red_heart")
                         }else{
@@ -443,12 +448,12 @@ extension FavourateJobVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                             self?.moveToHangoutDetail(id: id ?? "")
                             
                         }
-    //                    cell.onHeartTapped = { [weak self] val in
-    //                        if let id = self?.hangOutList[indexPath.item].id {
-    //                            self?.MakeJobHangOutFav(id: id)
-    //                        }
-    //
-    //                    }
+                        cell.onHeartTapped = { [weak self] val in
+                            if let id = self?.favHangoutList?[val].id {
+                                self?.MakeJobHangOutFav(id: id)
+                            }
+    
+                        }
                         if hangOut.favoriteStatus == 1 {
                             cell.imgHeart.image = UIImage(named: "red_heart")
                         }else{
@@ -474,8 +479,9 @@ extension FavourateJobVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                         cell.onFavTap = { [weak self]  index in
                             guard let self = self else { return }
                             print("Cell Fav tapped at index: \(indexPath.item)")
-                            // Navigate or perform any action
-                            //self.onFavTap?(indexPath.item)
+                            if let id = self.favJobList?[index].id {
+                                self.MakeJobFavorate(jobId: id)
+                            }
                         }
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
@@ -1077,6 +1083,142 @@ extension FavourateJobVC {
                 }
             }
             
+    }
+    func MakeJobAccomodationFav(id: String){
+        LoaderManager.shared.show()
+        viewModelJOb.MakeAccomodationFAVOURATE(id: id) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Job added to favorites"){
+                            self.getListOfFavourateAccommodation()
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.MakeJobAccomodationFav(id: id)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+        }
+    }
+    
+    func MakeJobHangOutFav(id:String){
+        LoaderManager.shared.show()
+        viewModelJOb.MakeHangoutFAVOURATE(id: id) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Job added to favorites"){
+                            self.getListOfFavourateHangOut()
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.MakeJobHangOutFav(id: id)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+               }
+    }
+    func MakeJobFavorate(jobId:String){
+        LoaderManager.shared.show()
+        viewModelJOb.MakeJOBFAVOURATE(id: jobId) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Job added to favorites"){
+                            self.getListOfFavourateJobs()
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.MakeJobFavorate(jobId: jobId)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+               }
     }
 }
     extension FavourateJobVC: SkeletonCollectionViewDataSource {

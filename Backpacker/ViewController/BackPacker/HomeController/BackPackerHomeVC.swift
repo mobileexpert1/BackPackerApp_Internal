@@ -10,6 +10,11 @@ import CoreLocation
 import SkeletonView
 class BackPackerHomeVC: UIViewController {
     
+    @IBOutlet weak var imgLogotTop: UIImageView!
+    
+    
+    @IBOutlet weak var leading_LblHeader: NSLayoutConstraint!
+    @IBOutlet weak var imgLogoHeight: NSLayoutConstraint!
     @IBOutlet weak var homeTblVw: UITableView!
     @IBOutlet weak var txtFldVw: UITextField!
     @IBOutlet weak var searchVw: UIView!
@@ -145,7 +150,7 @@ class BackPackerHomeVC: UIViewController {
         
         txtFldVw.delegate = self
         self.setUpUI()
-
+        self.setUpLogoHeader()
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -183,6 +188,21 @@ class BackPackerHomeVC: UIViewController {
         }
 #endif
         
+    }
+    
+    func setUpLogoHeader(){
+#if Backapacker
+        self.imgLogotTop.image = UIImage(named: "Home_BackPacker")
+        self.imgLogoHeight.constant = 25
+        self.mainHeaderImgWidth.constant = 25
+        self.leading_LblHeader.constant = 10
+        #else
+        
+        self.imgLogotTop.image = UIImage(named: "Logo1")
+        self.imgLogoHeight.constant = 30
+        self.mainHeaderImgWidth.constant = 30
+        self.leading_LblHeader.constant = 5
+        #endif
     }
     func showTopView(isShow : Bool = false,title : String = "Employer"){
         if isShow == true{

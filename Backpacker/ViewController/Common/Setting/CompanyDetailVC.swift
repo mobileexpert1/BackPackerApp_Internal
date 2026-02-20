@@ -79,6 +79,7 @@ class CompanyDetailVC: UIViewController {
     var activePlanLocationCount : Int?
     var activePlanJobCount: Int?
     var totalLocation : Int?
+    var iscameraOpen : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         self.attachRefreshControl()
@@ -118,7 +119,7 @@ class CompanyDetailVC: UIViewController {
         }
     }
     private func setupData(){
-        if isComeFromUpdate == true{
+        if isComeFromUpdate == true && iscameraOpen == false{
             self.bussinesName_Vw.txtFld.text = self.objComapny?.name
             self.contactNumberVw.txtFld.text = self.objComapny?.contactNumber
             self.websiteVw.txtFld.text = self.objComapny?.website
@@ -156,6 +157,7 @@ class CompanyDetailVC: UIViewController {
                                 placeholderImage: UIImage(named: "BgUploadImage")
                             )
                         }
+                        
                     }
                 }
                
@@ -166,6 +168,8 @@ class CompanyDetailVC: UIViewController {
             self.placeholde_Img.isHidden = true
             self.lbl_Placeholder.isHidden = true
             
+        }else{
+            self.iscameraOpen = false
         }
     }
     private func attachRefreshControl() {
@@ -268,6 +272,7 @@ class CompanyDetailVC: UIViewController {
         
         mediaPicker?.showMediaOptions(isFromNewAccommodation: false) { image in
             print("Selected image: \(image)")
+            self.iscameraOpen = true
             self.selected_Image.image = image
             self.placeholde_Img.isHidden = true
             self.lbl_Placeholder.isHidden = true

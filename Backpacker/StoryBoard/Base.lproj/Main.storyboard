@@ -260,12 +260,16 @@
                         <outlet property="btn_term_Topconstraint" destination="heV-yp-cYn" id="WMY-1u-oYB"/>
                         <outlet property="btn_trmcondition" destination="ABV-mv-3WN" id="hfk-cX-Q3x"/>
                         <outlet property="imgFlg" destination="uv6-vk-Y78" id="1jw-4z-chc"/>
+                        <outlet property="img_Logo_width" destination="ZnZ-pt-OxR" id="Psc-Ym-3D7"/>
+                        <outlet property="img_logo_Height" destination="RIk-Bw-6QT" id="5Ux-G5-Tvu"/>
+                        <outlet property="img_logo_bottom" destination="Fbr-LV-cYh" id="kpf-U1-fLk"/>
                         <outlet property="lblLogIn" destination="JSY-5y-TeD" id="1aZ-bJ-pTV"/>
                         <outlet property="lblSubTitle" destination="cUe-Sx-YWy" id="eZs-oZ-nVi"/>
                         <outlet property="lbl_EntrNumber" destination="xih-o2-dEn" id="BKT-cT-YjS"/>
                         <outlet property="lbl_Error" destination="k6m-Wd-UHf" id="0UZ-QX-Rus"/>
                         <outlet property="lbl_phoneCode" destination="HFt-ra-apt" id="kJb-jE-8Es"/>
                         <outlet property="lbl_temsandCondition" destination="w4m-LV-uzs" id="xel-Oz-LPS"/>
+                        <outlet property="logo_Img" destination="knM-E3-UjR" id="gPa-hC-Avh"/>
                         <outlet property="phoneNumberVw" destination="ec7-Xc-ovn" id="zcF-cZ-BMY"/>
                         <outlet property="picker_Vw" destination="3iD-Ic-I5b" id="BM9-If-y71"/>
                         <outlet property="txtFld_PhoneNumber" destination="16H-qJ-WFv" id="44L-Cr-vRF"/>
@@ -274,7 +278,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1503.0534351145038" y="-26.056338028169016"/>
+            <point key="canvasLocation" x="1341" y="-127"/>
         </scene>
         <!--OtpVC-->
         <scene sceneID="QDN-xa-YrX">

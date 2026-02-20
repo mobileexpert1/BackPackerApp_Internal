@@ -28,8 +28,8 @@
                                     <constraint firstAttribute="height" constant="25" id="S1K-Yz-FHb"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="04W-gj-bo2">
-                                <rect key="frame" x="88.666666666666671" y="110" width="42.000000000000014" height="20.333333333333343"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="04W-gj-bo2">
+                                <rect key="frame" x="1" y="110" width="217" height="20.333333333333343"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
@@ -38,7 +38,9 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="dib-kj-dMf" firstAttribute="centerY" secondItem="ecI-xP-NSU" secondAttribute="centerY" id="E8g-sG-hZj"/>
+                            <constraint firstItem="04W-gj-bo2" firstAttribute="leading" secondItem="ecI-xP-NSU" secondAttribute="leading" constant="1" id="dM7-pT-VtU"/>
                             <constraint firstItem="dib-kj-dMf" firstAttribute="centerX" secondItem="ecI-xP-NSU" secondAttribute="centerX" id="fdC-wf-qmE"/>
+                            <constraint firstAttribute="trailing" secondItem="04W-gj-bo2" secondAttribute="trailing" constant="1" id="pWO-bn-r61"/>
                             <constraint firstItem="04W-gj-bo2" firstAttribute="centerX" secondItem="dib-kj-dMf" secondAttribute="centerX" id="s2m-mJ-bQE"/>
                             <constraint firstItem="04W-gj-bo2" firstAttribute="top" secondItem="dib-kj-dMf" secondAttribute="bottom" constant="8" id="uwr-tW-jud"/>
                         </constraints>

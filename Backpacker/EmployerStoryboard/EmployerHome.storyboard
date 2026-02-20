@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Map view configurations" minToolsVersion="14.0"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
@@ -22,15 +21,15 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z7M-H9-C1b">
                                 <rect key="frame" x="0.0" y="59" width="393" height="60"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Home_BackPacker" translatesAutoresizingMaskIntoConstraints="NO" id="uMn-GE-4iz">
-                                        <rect key="frame" x="12" y="19" width="22" height="22"/>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo1" translatesAutoresizingMaskIntoConstraints="NO" id="uMn-GE-4iz">
+                                        <rect key="frame" x="12" y="15" width="30" height="30"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="22" id="Jdk-ze-528"/>
-                                            <constraint firstAttribute="height" constant="22" id="MaS-SP-fSv"/>
+                                            <constraint firstAttribute="width" constant="30" id="Jdk-ze-528"/>
+                                            <constraint firstAttribute="height" constant="30" id="MaS-SP-fSv"/>
                                         </constraints>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Employer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eFI-nu-zkc">
-                                        <rect key="frame" x="44" y="19.666666666666671" width="71" height="21"/>
+                                        <rect key="frame" x="47" y="19.666666666666671" width="71" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -139,7 +138,7 @@
                                     <constraint firstAttribute="trailing" secondItem="s6v-So-794" secondAttribute="trailing" constant="12" id="8Qq-4e-zn6"/>
                                     <constraint firstItem="BS7-Ba-0lO" firstAttribute="centerY" secondItem="eFI-nu-zkc" secondAttribute="centerY" id="Jzn-aT-h0S"/>
                                     <constraint firstItem="uMn-GE-4iz" firstAttribute="centerY" secondItem="z7M-H9-C1b" secondAttribute="centerY" id="NAu-vK-GB2"/>
-                                    <constraint firstItem="eFI-nu-zkc" firstAttribute="leading" secondItem="uMn-GE-4iz" secondAttribute="trailing" constant="10" id="bfy-Kr-WPI"/>
+                                    <constraint firstItem="eFI-nu-zkc" firstAttribute="leading" secondItem="uMn-GE-4iz" secondAttribute="trailing" constant="5" id="bfy-Kr-WPI"/>
                                     <constraint firstAttribute="height" constant="60" id="gVw-Nq-IIO"/>
                                     <constraint firstItem="s6v-So-794" firstAttribute="leading" secondItem="BS7-Ba-0lO" secondAttribute="trailing" constant="10" id="mZO-Ee-wCx"/>
                                     <constraint firstItem="s6v-So-794" firstAttribute="centerY" secondItem="BS7-Ba-0lO" secondAttribute="centerY" id="ocn-v2-BI1"/>
@@ -355,7 +354,7 @@
     </scenes>
     <resources>
         <image name="Back Arrow" width="9" height="15"/>
-        <image name="Home_BackPacker" width="22" height="24.333333969116211"/>
+        <image name="Logo1" width="1024" height="1024"/>
         <image name="chat_Icon" width="20" height="20"/>
         <image name="notification" width="74" height="74"/>
         <namedColor name="blackColor">
@@ -365,7 +364,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemPinkColor">
-            <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
