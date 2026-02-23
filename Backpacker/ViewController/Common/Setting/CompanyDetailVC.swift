@@ -66,7 +66,7 @@ class CompanyDetailVC: UIViewController {
     var lastContentOffset: CGFloat = 0
     var selectedCompanyId : String?
     var objComapny : CompanyList?
-    
+    var industryTapped : Bool = false
     private lazy var refreshControl: UIRefreshControl = {
            let rc = UIRefreshControl()
            rc.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
@@ -209,7 +209,7 @@ class CompanyDetailVC: UIViewController {
         self.MainVw_Industries.layer.borderWidth = 1.0
         self.btn_Industry.tag  = 0
         self.bussinesName_Vw.setTitleLabel("Business Name")
-        self.bussinesName_Vw.setPlaceholder("Name")
+        self.bussinesName_Vw.setPlaceholder("Business Name")
         self.bussinesName_Vw.setError("")
         
         self.contactNumberVw.setTitleLabel("Contact Number")
@@ -303,17 +303,21 @@ class CompanyDetailVC: UIViewController {
             }
             
         guard let contctNumber = contactNumberVw.txtFld.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-                  !name.isEmpty else {
+                  !contctNumber.isEmpty else {
                 AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter contact number")
                 return
             }
         
         guard let website = websiteVw.txtFld.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-                  !name.isEmpty else {
+                  !website.isEmpty else {
                 AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter website url")
                 return
             }
-        
+        guard let email = emailVw.txtFld.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !email.isEmpty else {
+                AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter your email")
+                return
+            }
         
             guard let industry = lbl_Val_SelctedIndustry.text,
                   !industry.isEmpty,
@@ -349,6 +353,7 @@ class CompanyDetailVC: UIViewController {
                     AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter email")
                     return
                 }
+           
                 let contactNumber = contctNumber
                 let website = website
             if isComeFromUpdate == true {
@@ -399,8 +404,8 @@ class CompanyDetailVC: UIViewController {
     func reloadTableData() {
         jobs_TblVw.reloadData()
         jobs_TblVw.layoutIfNeeded()
-        jobs_Tble_Height.constant = CGFloat(locations?.count ?? 0) * (100)
-        let constantHeight = CGFloat(locations?.count ?? 0) * (100)
+        jobs_Tble_Height.constant = CGFloat(locations?.count ?? 0) * (105)
+        let constantHeight = CGFloat(locations?.count ?? 0) * (105)
         let mainScrolHeight = self.scroll_Height.constant - constantHeight
         self.scroll_Height.constant = ( mainScrolHeight + jobs_Tble_Height.constant) //- 300
 
@@ -409,10 +414,13 @@ class CompanyDetailVC: UIViewController {
     @IBAction func action_IsTapppedIndustry(_ sender: Any) {
         if  self.btn_Industry.tag  == 0{
             self.btn_Industry.tag = 1
+            self.industryTapped = true
         }else{
             self.btn_Industry.tag = 0
+            self.industryTapped = false
         }
         self.manageHeight()
+       
     }
     
     func manageHeight(){
@@ -486,13 +494,6 @@ extension CompanyDetailVC: CommonDetailChildDelegate {
         self.updateAppearanceOfBottomBtns()
         }
     func updateAppearanceOfBottomBtns() {
-//        if companyDetailObj == nil {
-//            self.btn_btnHeight.constant = 50.0
-//            self.btn_Save.isHidden = false
-//            self.btn_Cancle.isHidden = false
-//            self.btn_Save.setTitle("Save", for: .normal)
-//            applyGradientButtonStyle(to: self.btn_Save)
-//        }else{
             DispatchQueue.main.async { [self] in
                 if isComeFromUpdate == true{
                     self.btn_btnHeight.constant = 50.0
@@ -501,11 +502,6 @@ extension CompanyDetailVC: CommonDetailChildDelegate {
                     self.btn_Save.setTitle("Update", for: .normal)
                     applyGradientButtonStyle(to: self.btn_Save)
                 }else{
-//                    self.btn_Save.setTitle("", for: .normal)
-//                    self.btn_Save.setTitle("", for: .normal)
-//                    self.btn_btnHeight.constant = 0.0
-//                    self.btn_Save.isHidden = true
-//                    self.btn_Cancle.isHidden = true
                                 self.btn_btnHeight.constant = 50.0
                                 self.btn_Save.isHidden = false
                                 self.btn_Cancle.isHidden = false
@@ -514,18 +510,11 @@ extension CompanyDetailVC: CommonDetailChildDelegate {
                 }
                 
             }
-          
-       // }
     }
     
     func isEditap(){
 #if BackpackerHire
         if isComeFromUpdate == true{
-            DispatchQueue.main.async {
-                //self.bussinesName_Vw.txtFld.isUserInteractionEnabled = true
-//                self.btn_Industry.isUserInteractionEnabled = false
-//                self.tapImageBtn.isUserInteractionEnabled = false
-            }
             self.btn_btnHeight.constant = 50.0
         }else{
             self.isComeFromUpdate = false
@@ -589,6 +578,7 @@ extension CompanyDetailVC : UITableViewDelegate,UITableViewDataSource{
             self.lbl_Val_SelctedIndustry.text = selectedIssue?.name
             self.industryId = selectedIssue?.id
             self.btn_Industry.tag = 0
+            self.industryTapped = false
             self.manageHeight()
             self.setUpLblIndustryColor()
         }
@@ -941,6 +931,7 @@ extension CompanyDetailVC{
                             self.isLoadingMoreData = false
                             self.isComeFromPullTorefresh = false
                             self.lastContentOffset = 0.0
+                           
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                        
@@ -1081,18 +1072,19 @@ extension CompanyDetailVC: UIScrollViewDelegate {
         // Check if near bottom (300pt threshold)
         if offsetY > contentHeight - frameHeight - 300 {
             if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
-                isLoadingMoreData = true
-                showBottomLoader()
+                    isLoadingMoreData = true
+                   // showBottomLoader()
 
-                page += 1
+                    page += 1
 
-                // Simulate data fetch or call your API
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    if self.iscomeFromCamera == false && self.isComeFromUpdate == true{
-                        self.getListOfLocationAll()
+                    // Simulate data fetch or call your API
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        if self.iscomeFromCamera == false && self.isComeFromUpdate == true{
+                            self.getListOfLocationAll()
+                        }
+                        
                     }
-                    
-                }
+              
             }
         }
     }

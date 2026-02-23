@@ -34,6 +34,7 @@ class CommonLocationListVC: UIViewController {
     var isComeFromPullTorefresh : Bool = false
     var searchDebounceTimer: Timer?
     var lastSearchedText: String = ""
+    var isComeFromSearch: Bool = false
     var lastContentOffset: CGFloat = 0
     var isComeFromEdit : Bool = false
     let profileVm = ProfileVM()
@@ -115,6 +116,7 @@ class CommonLocationListVC: UIViewController {
         self.btn_cross.isHidden = true
         applyGradientButtonStyle(to: self.Btn_Save)
         self.Btn_Save.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
+        self.lbl_No_backpacker.text = "No Location Found"
         self.lbl_No_backpacker.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_No_backpacker.isHidden = true
         let nib = UINib(nibName: "FacilityTVC", bundle: nil)
@@ -132,6 +134,7 @@ class CommonLocationListVC: UIViewController {
     @IBAction func action_txtFldClear(_ sender: Any) {
         txtFld_Search.text = ""
         lastSearchedText = ""
+        self.isComeFromSearch = false
         page = 1
         txtFld_Search.resignFirstResponder()
         self.btn_cross.isHidden = true
@@ -297,13 +300,16 @@ extension CommonLocationListVC: UITextFieldDelegate {
                 self.lastSearchedText = trimmedSearch
                 self.page = 1
                 removeTableFooterView()
+                self.isComeFromSearch = true
                 self.getListOfLocationAll()
             }
         }
         
         return true
     }
-    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+            btn_cross.isHidden = false
+        }
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.btn_cross.isHidden = true
         textField.resignFirstResponder()
@@ -356,7 +362,7 @@ extension CommonLocationListVC {
         } else {
             isLoadingMoreData = true
         }
-        profileVm.getAddJobCompanyLocationList(page: page, perPage: perPage, search: trimmedSearch)  { [weak self] (success: Bool, result: LocationResponse?, statusCode: Int?) in
+        profileVm.getAddJobCompanyLocationList(page: page, perPage: perPage, search: self.lastSearchedText)  { [weak self] (success: Bool, result: LocationResponse?, statusCode: Int?) in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 LoaderManager.shared.hide()
@@ -396,26 +402,18 @@ extension CommonLocationListVC {
                             self.isComeFromPullTorefresh = false
                             self.lastContentOffset = 0.0
                             
-                            if self.searchData.count == 0 {
-                                self.showAddLocationAlert()
-                                /*
-                                 AlertManager.showAlert(on: self, title: "Action Required", message: "Please Add Location"){
-                                 let role =  UserDefaults.standard.string(forKey: "UserRoleType")
-                                 if role == "2"{
-                                 self.moveToAccountScreen()
-                                 }else{
-                                 AlertManager.showAlert(on: self, title: "Alert!", message: "To add a location, please select 'Employer' as your role."){
-                                 let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
-                                 if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
-                                 vc.isBackButtonHidden = false
-                                 self.navigationController?.pushViewController(vc, animated: true)
-                                 }
-                                 }
-                                 
-                                 }
-                                 
-                                 }
-                                 */
+                            if self.isComeFromSearch == false{
+                                if self.searchData.count == 0 {
+                                    self.showAddLocationAlert()
+                                }else{
+                                    self.lbl_No_backpacker.isHidden = true
+                                }
+                            }else{
+                                if self.searchData.count == 0 {
+                                    self.lbl_No_backpacker.isHidden = false
+                                }else{
+                                    self.lbl_No_backpacker.isHidden = true
+                                }
                             }
                             self.refreshControl.endRefreshing()
                         } else {

@@ -21,13 +21,13 @@
                         <rect key="frame" x="10" y="10" width="293" height="198"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PDF-dR-nMu">
-                                <rect key="frame" x="136.33333333333334" y="88.666666666666671" width="20.333333333333343" height="21"/>
+                                <rect key="frame" x="136.33333333333334" y="30" width="20.333333333333343" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total Job Offer" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="apb-y3-CiW">
-                                <rect key="frame" x="10" y="119.66666666666666" width="273" height="21"/>
+                                <rect key="frame" x="10" y="61" width="273" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" name="blackColor"/>
                                 <nil key="highlightedColor"/>
@@ -36,11 +36,11 @@
                         <color key="backgroundColor" red="0.91764705882352937" green="0.96470588235294119" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="PDF-dR-nMu" firstAttribute="centerX" secondItem="DoW-O1-vW8" secondAttribute="centerX" id="Ao8-8r-sPW"/>
+                            <constraint firstItem="PDF-dR-nMu" firstAttribute="top" secondItem="DoW-O1-vW8" secondAttribute="top" constant="30" id="Fiz-FU-odV"/>
                             <constraint firstItem="apb-y3-CiW" firstAttribute="top" secondItem="PDF-dR-nMu" secondAttribute="bottom" constant="10" id="Qdi-ki-b2x"/>
                             <constraint firstItem="apb-y3-CiW" firstAttribute="centerX" secondItem="PDF-dR-nMu" secondAttribute="centerX" id="Uq9-XK-WAJ"/>
                             <constraint firstItem="apb-y3-CiW" firstAttribute="leading" secondItem="DoW-O1-vW8" secondAttribute="leading" constant="10" id="Wq1-KA-blU"/>
                             <constraint firstAttribute="trailing" secondItem="apb-y3-CiW" secondAttribute="trailing" constant="10" id="ecD-uG-Gzt"/>
-                            <constraint firstItem="PDF-dR-nMu" firstAttribute="centerY" secondItem="DoW-O1-vW8" secondAttribute="centerY" id="xEz-UX-THv"/>
                         </constraints>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">

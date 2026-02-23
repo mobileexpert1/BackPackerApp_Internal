@@ -364,7 +364,9 @@ extension FavourateJobVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                     }
                     if let accommodation = favAccommodationList?[indexPath.item] {
                         cell.lbl_Title.text = accommodation.name
-                        cell.lblAmount.isHidden = true
+                         let amount = "20"
+                        cell.lblAmount.isHidden = false
+                        cell.lblAmount.text = "From $,\(amount) per adult"
                         cell.lblRating.isHidden = true
                         cell.lbl_review.isHidden = true
                         cell.cosmosVw.isHidden = true
@@ -487,27 +489,37 @@ extension FavourateJobVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                         // cell.titleLabel.text = item
                         cell.lbl_Title.text = favJobList?[indexPath.item].name ?? "No Data"
                         if let amnt = favJobList?[indexPath.item].price {
+                            cell.lblAmount.isHidden = false
                             cell.lblAmount.text = "$\(amnt) per day"//per day
                         }
                         cell.lbl_SubTitle.text = favJobList?[indexPath.item].description ?? "No Data"
-                       
-                        if ((declineJob.image.hasPrefix("http")) != nil) {
+                    
+                            let baseURL1 = ApiConstants.API.API_IMAGEURL
+                            let baseURL2 = ApiConstants.API.API_IMAGEURL
+
+                            let imagePath = declineJob.image
+                            let imageURLString: String
+
+                            if !imagePath.isEmpty {
+                                imageURLString = imagePath.hasPrefix("http") ? imagePath : baseURL1 + imagePath
+                            } else {
+                                imageURLString = ""
+                            }
+
                             cell.imgVw.sd_setImage(
-                                with: URL(string: declineJob.image ?? ""),
-                                placeholderImage: UIImage(named: "Profile")
-                            )
-                        } else {
-                            let port3000 = "\(ApiConstants.API.API_IMAGEURL)\(declineJob.image)"
-                            let port3001 = "\(ApiConstants.API.API_IMAGEURL)\(declineJob.image)"
-                            
-                            cell.imgVw.sd_setImage(with: URL(string: port3000), placeholderImage: UIImage(named: "img_Placehodler")) { image, _, _, _ in
-                                if image == nil {
-                                    cell.imgVw.sd_setImage(with: URL(string: port3001), placeholderImage: UIImage(named: "img_Placehodler"))
+                                with: URL(string: imageURLString),
+                                placeholderImage: UIImage(named: "img_Placehodler")
+                            ) { image, _, _, _ in
+                                
+                                if image == nil && !imagePath.isEmpty {
+                                    let fallbackURL = imagePath.hasPrefix("http") ? imagePath : baseURL2 + imagePath
+                                    
+                                    cell.imgVw.sd_setImage(
+                                        with: URL(string: fallbackURL),
+                                        placeholderImage: UIImage(named: "img_Placehodler")
+                                    )
                                 }
                             }
-                           
-                           
-                        }
                         if favJobList?[indexPath.item].favoriteStatus == 1 {
                             cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
                         }else{

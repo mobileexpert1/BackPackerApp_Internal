@@ -137,9 +137,10 @@ class JobVM {
         perPage: Int,
         search:String,
         type:Int,
+        wokkType :String,
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
     ) {
-        let url = ApiConstants.API.getBACKPACKER_JOBSSEEALLURLWITHTYPE(page: page, perPage: perPage,search: search, type: type)
+        let url = ApiConstants.API.getBACKPACKER_JOBSSEEALLURLWITHTYPE(page: page, perPage: perPage,search: search, type: type,wokkType:wokkType)
 
         ServiceManager.sharedInstance.requestApi(
             url,

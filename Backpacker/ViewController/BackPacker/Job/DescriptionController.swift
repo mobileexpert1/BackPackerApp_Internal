@@ -142,7 +142,6 @@ class DescriptionController: UIViewController {
         lbl_Requirment.font = FontManager.inter(.semiBold, size: 14.0)
         lbl_JobDescription.font = FontManager.inter(.semiBold, size: 14.0)
         btn_VwOnMap.titleLabel?.font = FontManager.inter(.regular, size: 12.0)
-        
         lbl_Description_Value.font = FontManager.inter(.regular, size: 12.0)
         lbl_RequirmentValue.font = FontManager.inter(.regular, size: 12.0)
         lbl_MapLocation_Value.font = FontManager.inter(.regular, size: 12.0)
@@ -285,30 +284,32 @@ extension DescriptionController: MKMapViewDelegate {
         
         return annotationView
     }
-    
     func showMarkerOnMap(latitude: CLLocationDegrees,
                          longitude: CLLocationDegrees,
                          title: String = "Location",
                          subtitle: String? = nil) {
-        
-        // Remove previous markers (except user location)
+
+        let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+
+        // Remove old annotations except user location
         let nonUserAnnotations = mapVw.annotations.filter { !($0 is MKUserLocation) }
         mapVw.removeAnnotations(nonUserAnnotations)
-        
+
         // Create annotation
         let annotation = MKPointAnnotation()
-        annotation.coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        annotation.coordinate = coordinate
         annotation.title = title
         annotation.subtitle = subtitle
-        
-        // Add to map
         mapVw.addAnnotation(annotation)
-        
-        // Zoom in
-        let region = MKCoordinateRegion(center: annotation.coordinate,
-                                        latitudinalMeters: 5000,
-                                        longitudinalMeters: 5000)
-        mapVw.setRegion(region, animated: true)
+
+        // 🔥 Focus & Zoom Properly
+        let camera = MKMapCamera()
+        camera.centerCoordinate = coordinate
+        camera.pitch = 0
+        camera.altitude = 2000   // 👈 smaller = more zoom
+        camera.heading = 0
+
+        mapVw.setCamera(camera, animated: true)
     }
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let title = view.annotation?.title ?? nil {

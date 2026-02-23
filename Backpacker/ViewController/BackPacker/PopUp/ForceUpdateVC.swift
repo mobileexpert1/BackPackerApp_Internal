@@ -72,24 +72,8 @@ class ForceUpdateVC: UIViewController {
     var DOBPicker: UIDatePicker?
     @IBOutlet weak var lbl_avlDob: UILabel!
     
-    @IBOutlet weak var btn_frm: UIButton!
-    @IBOutlet weak var btn_regional: UIButton!
-    
-    @IBOutlet weak var imgVw_frm: UIImageView!
-    @IBOutlet weak var img_reginal: UIImageView!
-    
-    @IBOutlet weak var lbl_frmWrk: UILabel!
-    @IBOutlet weak var lbl_regional: UILabel!
-    
-    @IBOutlet weak var lbl_error_work: UILabel!
-    @IBOutlet weak var farmViwStackHeight: NSLayoutConstraint!
-    var selectedWork: String?
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.lbl_regional.textColor = UIColor(named: "subTitleColor")
-        self.lbl_frmWrk.textColor = UIColor(named: "subTitleColor")
-        self.lbl_frmWrk.font = FontManager.inter(.medium, size: 14.0)
-        self.lbl_regional.font = FontManager.inter(.medium, size: 14.0)
         self.setUpUI()
         self.lbl_dobError.isHidden = true
         self.lbl_dobError.textColor = .red
@@ -99,7 +83,6 @@ class ForceUpdateVC: UIViewController {
         self.lbl_avlDob.font = FontManager.inter(.regular, size: 12.0)
         self.Vw_DobMini.addShadowAllSides(radius: 2.0)
         // Do any additional setup after loading the view.
-        self.HideShowReginoalWorkFarmView()
 #if Backapacker
         let nib = UINib(nibName: "ReportIssueTVC", bundle: nil)
         self.tblVw.register(nib, forCellReuseIdentifier: "ReportIssueTVC")
@@ -126,16 +109,44 @@ class ForceUpdateVC: UIViewController {
         self.imgDrpDwon.isHidden = true
         self.lbl_error_VisaHeight.constant = 0.0
         self.lbl_error_SelectVisaType.isHidden = true
-        self.lbl_error_work.isHidden = true
 #endif
+        self.setUpNotificationObserver()
+    }
+    private func setUpNotificationObserver(){
+        NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(keyboardWillShow),
+                name: UIResponder.keyboardWillShowNotification,
+                object: nil)
+            
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(keyboardWillHide),
+                name: UIResponder.keyboardWillHideNotification,
+                object: nil)
+    }
+    @objc func keyboardWillShow(notification: Notification) {
+        
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+        
+        let keyboardHeight = keyboardFrame.height
+        
+        mainScrollView.contentInset.bottom = keyboardHeight
+        
+        // ✅ iOS 13+ way
+        mainScrollView.verticalScrollIndicatorInsets.bottom = keyboardHeight
+    }
+    
+    @objc func keyboardWillHide(notification: Notification) {
+        
+        mainScrollView.contentInset.bottom = 0
+        mainScrollView.verticalScrollIndicatorInsets.bottom = 0
     }
     private func setUpUIForDate(){
         self.lbl_error_startDate.isHidden = true
         self.lbl_error_endDate.isHidden = true
-        self.lbl_error_work.isHidden = true
-        self.lbl_error_work.font = FontManager.inter(.regular, size: 8.0)
         self.lbl_error_startDate.font = FontManager.inter(.regular, size: 8.0)
-        lbl_error_work.textColor = .red
         self.lbl_error_endDate.font = FontManager.inter(.regular, size: 8.0)
         self.lbl_error_startDate.textColor = .red
         self.lbl_error_endDate.textColor = .red
@@ -156,28 +167,8 @@ class ForceUpdateVC: UIViewController {
         self.ve_ValsatrtDate.layer.borderWidth = 1.0
         self.setupPicker()
     }
-    private func HideShowReginoalWorkFarmView(){
-#if BackpackerHire
-        self.farmViwStackHeight.constant = 0.0
-        hideShowFarmRegional(true)
-#else
-        
-        self.farmViwStackHeight.constant = 40.0
-        hideShowFarmRegional(false)
-#endif
-        
-    }
-    private func hideShowFarmRegional(_ shouldHide: Bool) {
-        
-        btn_frm.isHidden = shouldHide
-        btn_regional.isHidden = shouldHide
-        
-        imgVw_frm.isHidden = shouldHide
-        img_reginal.isHidden = shouldHide
-        
-        lbl_frmWrk.isHidden = shouldHide
-        lbl_regional.isHidden = shouldHide
-    }
+  
+ 
     func setUpUI(){
         if lbl_Val_VisaType.text == "Select Visa Type" {
             self.lbl_Val_VisaType.textColor = UIColor(named: "subTitleColor")
@@ -250,43 +241,8 @@ class ForceUpdateVC: UIViewController {
     
     @IBAction func action_chosseDOB(_ sender: Any) {
         self.showDatePicker()
-        
-        
     }
-    @IBAction func action_farm(_ sender: Any) {
-        self.btn_regional.tag = 0
-        if self.btn_frm.tag == 0 {
-            self.btn_frm.tag = 1
-        }else{
-            self.btn_frm.tag = 0
-        }
-        self.updateFrmReginalBtn()
-    }
-    @IBAction func action_regional(_ sender: Any) {
-        self.btn_frm.tag = 0
-        if self.btn_regional.tag == 0 {
-            self.btn_regional.tag = 1
-        }else{
-            self.btn_regional.tag = 0
-        }
-        self.updateFrmReginalBtn()
-    }
-    private func updateFrmReginalBtn(){
-        if self.btn_regional.tag == 1 {
-            self.img_reginal.image = UIImage(named: "Checkbox2")
-            self.imgVw_frm.image = UIImage(named: "Checkbox")
-            self.lbl_regional.textColor = .black
-            self.lbl_frmWrk.textColor = UIColor(named: "subTitleColor")
-            self.selectedWork = "Regional Work"
-        }else{
-            self.img_reginal.image = UIImage(named: "Checkbox")
-            self.imgVw_frm.image = UIImage(named: "Checkbox2")
-            self.lbl_frmWrk.textColor = .black
-            self.lbl_regional.textColor = UIColor(named: "subTitleColor")
-            self.selectedWork = "Farm Work"
-        }
-        self.lbl_error_work.isHidden = true
-    }
+   
     func showDatePicker() {
         let alert = UIAlertController(title: "Select DOB",
                                       message: "\n\n\n\n\n\n\n\n",
@@ -443,12 +399,6 @@ class ForceUpdateVC: UIViewController {
                 lbl_error_endDate.isHidden = false
                 hasError = true
             }
-        }
-        if selectedWork == "" || selectedWork?.isEmpty == true || selectedWork == nil{
-            self.lbl_error_work.isHidden = false
-            hasError = true
-        }else{
-            self.lbl_error_work.isHidden = true
         }
         
 #endif

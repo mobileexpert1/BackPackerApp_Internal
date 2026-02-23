@@ -642,7 +642,7 @@ phone number </string>
                                                                 <rect key="frame" x="2" y="2" width="349" height="106"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4fL-Jl-50y">
-                                                                        <rect key="frame" x="15" y="28" width="52" height="50"/>
+                                                                        <rect key="frame" x="28" y="28" width="52" height="50"/>
                                                                         <subviews>
                                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="role_Employer" translatesAutoresizingMaskIntoConstraints="NO" id="D8C-wx-KsI">
                                                                                 <rect key="frame" x="14" y="13" width="24" height="24"/>
@@ -666,13 +666,13 @@ phone number </string>
                                                                         </userDefinedRuntimeAttributes>
                                                                     </view>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Employer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OHV-mO-4nS">
-                                                                        <rect key="frame" x="82" y="26" width="257" height="20.333333333333329"/>
+                                                                        <rect key="frame" x="95" y="26" width="244" height="20.333333333333329"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Post jobs, find talent, and manage jobs" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m8w-E4-q7T">
-                                                                        <rect key="frame" x="82" y="50.333333333333343" width="257" height="40.666666666666657"/>
+                                                                        <rect key="frame" x="95" y="50.333333333333343" width="244" height="40.666666666666657"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                         <color key="textColor" red="0.36862745098039218" green="0.36862745098039218" blue="0.36862745098039218" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -703,7 +703,7 @@ phone number </string>
                                                                     <constraint firstItem="OHV-mO-4nS" firstAttribute="top" secondItem="4fL-Jl-50y" secondAttribute="top" constant="-2" id="Led-qu-DyO"/>
                                                                     <constraint firstAttribute="trailing" secondItem="SAI-aH-FCt" secondAttribute="trailing" constant="2" id="NYt-YI-J2f"/>
                                                                     <constraint firstItem="SAI-aH-FCt" firstAttribute="leading" secondItem="mEI-mb-Xig" secondAttribute="leading" constant="2" id="Rpw-pX-bFX"/>
-                                                                    <constraint firstItem="4fL-Jl-50y" firstAttribute="leading" secondItem="mEI-mb-Xig" secondAttribute="leading" constant="15" id="Rqj-hq-akV"/>
+                                                                    <constraint firstItem="4fL-Jl-50y" firstAttribute="leading" secondItem="mEI-mb-Xig" secondAttribute="leading" constant="28" id="Rqj-hq-akV"/>
                                                                     <constraint firstItem="OHV-mO-4nS" firstAttribute="leading" secondItem="4fL-Jl-50y" secondAttribute="trailing" constant="15" id="ZYn-fW-PEJ"/>
                                                                     <constraint firstItem="SAI-aH-FCt" firstAttribute="top" secondItem="mEI-mb-Xig" secondAttribute="top" constant="2" id="ajY-zE-rJO"/>
                                                                     <constraint firstAttribute="trailing" secondItem="pHd-vK-14K" secondAttribute="trailing" constant="10" id="efN-g6-PB6"/>
@@ -734,7 +734,7 @@ phone number </string>
                                                                 <rect key="frame" x="2" y="2" width="349" height="106"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ISd-yf-jBZ">
-                                                                        <rect key="frame" x="15" y="28" width="52" height="50"/>
+                                                                        <rect key="frame" x="28" y="28" width="52" height="50"/>
                                                                         <subviews>
                                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="role_Acc" translatesAutoresizingMaskIntoConstraints="NO" id="gc7-Y3-sVF">
                                                                                 <rect key="frame" x="14" y="13" width="24" height="24"/>
@@ -758,7 +758,7 @@ phone number </string>
                                                                         </userDefinedRuntimeAttributes>
                                                                     </view>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Accommodation" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="K32-Pw-hki">
-                                                                        <rect key="frame" x="82" y="26" width="257" height="20.333333333333329"/>
+                                                                        <rect key="frame" x="95" y="26" width="244" height="20.333333333333329"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
@@ -771,7 +771,7 @@ phone number </string>
                                                                         </connections>
                                                                     </button>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add, view, and manage accommodation listings." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J1G-mr-guw">
-                                                                        <rect key="frame" x="82" y="50.333333333333371" width="257" height="40.666666666666657"/>
+                                                                        <rect key="frame" x="95" y="50.333333333333371" width="244" height="40.666666666666657"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                         <color key="textColor" red="0.36862745099999999" green="0.36862745099999999" blue="0.36862745099999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -796,7 +796,7 @@ phone number </string>
                                                                     <constraint firstItem="K32-Pw-hki" firstAttribute="leading" secondItem="ISd-yf-jBZ" secondAttribute="trailing" constant="15" id="Y2S-IU-fm4"/>
                                                                     <constraint firstItem="K32-Pw-hki" firstAttribute="top" secondItem="ISd-yf-jBZ" secondAttribute="top" constant="-2" id="YYa-t5-88J"/>
                                                                     <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="J1G-mr-guw" secondAttribute="bottom" constant="10" id="jw0-Lp-KeN"/>
-                                                                    <constraint firstItem="ISd-yf-jBZ" firstAttribute="leading" secondItem="jbx-V7-qyb" secondAttribute="leading" constant="15" id="oK8-Yc-I9e"/>
+                                                                    <constraint firstItem="ISd-yf-jBZ" firstAttribute="leading" secondItem="jbx-V7-qyb" secondAttribute="leading" constant="28" id="oK8-Yc-I9e"/>
                                                                     <constraint firstItem="J1G-mr-guw" firstAttribute="leading" secondItem="K32-Pw-hki" secondAttribute="leading" id="oqn-hY-MDs"/>
                                                                     <constraint firstAttribute="bottom" secondItem="OOf-95-T7v" secondAttribute="bottom" constant="2" id="va8-Tz-864"/>
                                                                     <constraint firstAttribute="trailing" secondItem="OOf-95-T7v" secondAttribute="trailing" constant="2" id="wQb-g0-FNS"/>
@@ -826,7 +826,7 @@ phone number </string>
                                                                 <rect key="frame" x="2" y="2" width="349" height="106"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gyo-Db-Y2R">
-                                                                        <rect key="frame" x="15" y="28" width="52" height="50"/>
+                                                                        <rect key="frame" x="28" y="28" width="52" height="50"/>
                                                                         <subviews>
                                                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="role_Hangout" translatesAutoresizingMaskIntoConstraints="NO" id="Xjz-6d-Mwh">
                                                                                 <rect key="frame" x="14" y="13" width="24" height="24"/>
@@ -850,13 +850,13 @@ phone number </string>
                                                                         </userDefinedRuntimeAttributes>
                                                                     </view>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hangout" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FnD-KE-Rw8">
-                                                                        <rect key="frame" x="82" y="26" width="257" height="20.333333333333329"/>
+                                                                        <rect key="frame" x="95" y="26" width="244" height="20.333333333333329"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                         <nil key="textColor"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Hangout Places" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d6R-Z1-4MI">
-                                                                        <rect key="frame" x="82" y="50.333333333333371" width="257" height="20.333333333333329"/>
+                                                                        <rect key="frame" x="95" y="50.333333333333371" width="244" height="20.333333333333329"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                         <color key="textColor" red="0.36862745099999999" green="0.36862745099999999" blue="0.36862745099999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -883,7 +883,7 @@ phone number </string>
                                                                     <constraint firstItem="SJ4-he-qW8" firstAttribute="top" secondItem="2vx-p4-xwG" secondAttribute="top" constant="2" id="8ta-uZ-Mtb"/>
                                                                     <constraint firstItem="FnD-KE-Rw8" firstAttribute="leading" secondItem="gyo-Db-Y2R" secondAttribute="trailing" constant="15" id="9B5-ls-Kln"/>
                                                                     <constraint firstItem="d6R-Z1-4MI" firstAttribute="trailing" secondItem="FnD-KE-Rw8" secondAttribute="trailing" id="9Ll-HJ-DgZ"/>
-                                                                    <constraint firstItem="gyo-Db-Y2R" firstAttribute="leading" secondItem="2vx-p4-xwG" secondAttribute="leading" constant="15" id="NQM-II-GO5"/>
+                                                                    <constraint firstItem="gyo-Db-Y2R" firstAttribute="leading" secondItem="2vx-p4-xwG" secondAttribute="leading" constant="28" id="NQM-II-GO5"/>
                                                                     <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="d6R-Z1-4MI" secondAttribute="bottom" constant="10" id="NnI-U0-OKh"/>
                                                                     <constraint firstAttribute="trailing" secondItem="SJ4-he-qW8" secondAttribute="trailing" constant="2" id="RVW-nD-l5e"/>
                                                                     <constraint firstItem="d6R-Z1-4MI" firstAttribute="leading" secondItem="FnD-KE-Rw8" secondAttribute="leading" id="WBQ-qg-Cs6"/>

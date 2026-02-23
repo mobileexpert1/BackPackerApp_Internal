@@ -63,8 +63,8 @@ class CalendarVC: UIViewController {
                let dayName = dateFormatter.string(from: selectedDate!)
                print("Selected day name: \(dayName)")
             self.selectedDay = dayName
-            self.getUserAvailabilityApiCall()
         }
+        
         bgVwMonth.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
         bgVwAvailibility.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
        VwSetAvailibilty2.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
@@ -73,6 +73,7 @@ class CalendarVC: UIViewController {
         self.setUpFonts()
         let currentYear = Calendar.current.component(.year, from: Date())
         years = Array(currentYear...2035)
+        self.getUserAvailabilityApiCall()
         
     }
     

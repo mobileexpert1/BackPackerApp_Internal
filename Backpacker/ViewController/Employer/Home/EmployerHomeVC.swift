@@ -395,7 +395,19 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
             if isLoading {
                 return 180
             }
-            return 360
+            let sectionType = activeSections[indexPath.section]
+            
+            switch sectionType {
+            case.banner :
+                return 300
+            case .jobs:
+                return 360
+            case .hangouts:
+                return 360
+            case .accommodations:
+                return 360
+            }
+           
         }else if   indexPath.section == 1  {
             return 400
             

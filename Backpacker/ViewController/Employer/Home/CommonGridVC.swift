@@ -9,6 +9,11 @@ import UIKit
 
 class CommonGridVC: UIViewController {
     
+    @IBOutlet weak var lbl_all_Border: UILabel!
+    
+    @IBOutlet weak var lbl_FarmBorder: UILabel!
+    
+    
     @IBOutlet weak var main_Header: UILabel!
     @IBOutlet weak var collVw: UICollectionView!
     var currentPage = 1
@@ -42,11 +47,29 @@ class CommonGridVC: UIViewController {
     var searchDebounceTimer: Timer?
     var lastSearchedText: String = ""
     var jobId = String()
+    var isComeFromSeeAllBP: Bool = false
+    //  FARm/REGION WOrk UI
+    
+    @IBOutlet weak var heigtWorkVw: NSLayoutConstraint!
+    @IBOutlet weak var WorkVw: UIView!
+    
+    @IBOutlet weak var lbl_all: UILabel!
+    @IBOutlet weak var regionalVw: UIView!
+    @IBOutlet weak var farmVw: UIView!
+    @IBOutlet weak var Vw_allWork: UIView!
+    
+    @IBOutlet weak var btn_regional: UIButton!
+    @IBOutlet weak var lbl_regional: UILabel!
+    @IBOutlet weak var lbl_Farm: UILabel!
+    @IBOutlet weak var btn_Farm: UIButton!
+    var selectedWork = ""
+    @IBOutlet weak var btn_All: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Register the collection view cell
         self.setupPullToRefresh()
         self.setUpUI()
+        self.setUpVwWork()
     }
     
     
@@ -295,11 +318,101 @@ class CommonGridVC: UIViewController {
         
        
     }
+    
+    private func setUpVwWork(){
+#if Backapacker
+        self.btn_All.tag = 1
+        self.btn_Farm.tag = 0
+        self.btn_regional.tag = 0
+        self.heigtWorkVw.constant = 30.0
+        self.Vw_allWork.isHidden = false
+        self.regionalVw.isHidden = true
+        self.farmVw.isHidden = true
+        WorkVw.layer.cornerRadius = 5
+        WorkVw.layer.borderWidth = 0.5
+        WorkVw.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
+        WorkVw.clipsToBounds = true
+        self.lbl_all.font = FontManager.inter(.medium, size: 13.0)
+        self.lbl_Farm.font = FontManager.inter(.medium, size: 13.0)
+        self.lbl_regional.font = FontManager.inter(.medium, size: 13.0)
+        self.lbl_all_Border.isHidden = true
+        #else
+        self.heigtWorkVw.constant = 0.0
+        self.Vw_allWork.isHidden = true
+        self.regionalVw.isHidden = true
+        self.farmVw.isHidden = true
+        self.WorkVw.isHidden = true
+        #endif
+        
+     
+    }
+    
     @IBAction func action_back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
     
+    @IBAction func action_BtnRegional(_ sender: UIButton) {
+        self.selectedWork = "2"
+        if sender.tag == 0 {
+            sender.tag = 1
+            self.heigtWorkVw.constant = 30.0
+            self.Vw_allWork.isHidden = true
+            self.regionalVw.isHidden = false
+            self.farmVw.isHidden = true
+            self.getListOfAll()
+        }else{
+            sender.tag = 0
+            self.heigtWorkVw.constant = 90
+            self.Vw_allWork.isHidden = false
+            self.regionalVw.isHidden = false
+            self.farmVw.isHidden = false
+            
+        }
+    }
+    @IBAction func action_all(_ sender: UIButton) {
+        self.selectedWork = ""
+        if sender.tag == 0 {
+            sender.tag = 1
+            self.heigtWorkVw.constant = 30.0
+            self.Vw_allWork.isHidden = false
+            self.regionalVw.isHidden = true
+            self.farmVw.isHidden = true
+            self.lbl_all_Border.isHidden = true
+            self.getListOfAll()
+        }else{
+            sender.tag = 0
+            self.heigtWorkVw.constant = 90
+            self.Vw_allWork.isHidden = false
+            self.regionalVw.isHidden = false
+            self.farmVw.isHidden = false
+            self.lbl_all_Border.isHidden = false
+        }
+     
+        
+    }
     
+    @IBAction func action_Btn_Farm(_ sender: UIButton) {
+        self.selectedWork = "1"
+        if sender.tag == 0 {
+            sender.tag = 1
+            self.heigtWorkVw.constant = 30.0
+            self.Vw_allWork.isHidden = true
+            self.regionalVw.isHidden = true
+            self.farmVw.isHidden = false
+            self.lbl_FarmBorder.isHidden = true
+            self.getListOfAll()
+        }else{
+            sender.tag = 0
+            self.heigtWorkVw.constant = 100.0
+            self.Vw_allWork.isHidden = false
+            self.regionalVw.isHidden = false
+            self.farmVw.isHidden = false
+            self.lbl_FarmBorder.isHidden = false
+            
+            
+        }
+        
+    }
 }
 extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
@@ -590,7 +703,7 @@ extension CommonGridVC {
             isLoadingMoreData = true
             collVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
         }
-        viewModel.getJobListSeeAllWithType(page: page, perPage: perPage, search: self.lastSearchedText, type: self.type ?? 1) { [weak self] (success: Bool, result: JobsResponse?, statusCode: Int?) in
+        viewModel.getJobListSeeAllWithType(page: page, perPage: perPage, search: self.lastSearchedText, type: self.type ?? 1, wokkType: self.selectedWork) { [weak self] (success: Bool, result: JobsResponse?, statusCode: Int?) in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 LoaderManager.shared.hide()

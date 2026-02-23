@@ -642,28 +642,28 @@ extension AccomodationDetailVC {
         let facilities = obj.accommodation.facilities
         var objPfFacilty = [Facility]()
         for facility in facilities {
-            if facility == "Free WiFi" || facility == "Free Wifi" {//
-                let obj = Facility(image: "wifi", title: facility)
+            if facility == "Free WiFi" || facility == "free wifi" {//
+                let obj = Facility(image: "wifi", title: "Free WiFi")
                 objPfFacilty.append(obj)
             }
-            if facility == "Swimming Pool" {
-                let obj = Facility(image: "pool", title: facility)
+            if facility == "Swimming Pool" || facility == "swimming pool"{
+                let obj = Facility(image: "pool", title: "Swimming Pool")
                 objPfFacilty.append(obj)
             }
-            if facility == "Parking" {
-                let obj = Facility(image: "parking", title: facility)
+            if facility == "Parking" || facility == "parking" {
+                let obj = Facility(image: "parking", title: "Parking")
                 objPfFacilty.append(obj)
             }
-            if facility == "Elevator" {
-                let obj = Facility(image: "elevator", title: facility)
+            if facility == "Elevator" || facility ==  "elevator" {
+                let obj = Facility(image: "elevator", title: "Elevator")
                 objPfFacilty.append(obj)
             }
-            if facility == "Fitness Center" {
-                let obj = Facility(image: "fitness", title: facility)
+            if facility == "Fitness Center" || facility == "fitness center" {
+                let obj = Facility(image: "fitness", title: "Fitness Center")
                 objPfFacilty.append(obj)
             }
-            if facility == "24-hours Open" {
-                let obj = Facility(image: "open", title: facility)
+            if facility == "24-hours Open" || facility == "24-hours open" {
+                let obj = Facility(image: "open", title: "24-hours Open")
                 objPfFacilty.append(obj)
             }
             self.facilitiesArray = objPfFacilty
@@ -731,13 +731,19 @@ extension AccomodationDetailVC: MKMapViewDelegate {
     
     func setupMapAnnotations() {
         guard let acc = self.accomodationDetailObj?.accommodation else { return }
-        
-        
+
         let annotation = AccommodationAnnotation(accommodation: acc)
         mapVw.addAnnotation(annotation)
-        
-        
-        // Optionally zoom to show all annotations
+
+        let coordinate = annotation.coordinate
+
+        let region = MKCoordinateRegion(
+            center: coordinate,
+            latitudinalMeters: 500,      // 🔥 more zoom
+            longitudinalMeters: 500
+        )
+
+        mapVw.setRegion(region, animated: true)
     }
     
     // MARK: - MKMapViewDelegate

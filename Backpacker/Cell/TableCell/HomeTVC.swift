@@ -434,6 +434,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                 cell.lbl_Count.text = "-"
                             }
                             cell.lbl_title.text = "Total Job Offer"
+                            cell.mainBgVw.backgroundColor = UIColor(hex: "#EDF6E9")
                         }else if indexPath.item == 1{
                             
                             if let decline = self.declinedJobCount {
@@ -442,6 +443,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                 cell.lbl_Count.text = "-"
                             }
                             cell.lbl_title.text = "Declined"
+                            cell.mainBgVw.backgroundColor = UIColor(hex: "#FFEAEA")
                         }else if indexPath.item == 2{
                             if let accepted = self.acceptedJobCount {
                                 cell.lbl_Count.text = "\(accepted)"
@@ -449,6 +451,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                 cell.lbl_Count.text = "-"
                             }
                             cell.lbl_title.text = "Accepted"
+                            cell.mainBgVw.backgroundColor = UIColor(hex: "#EAF6FF")
                         }
                         return cell
                         
@@ -1038,15 +1041,15 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.bounds.width
 #if BackpackerHire
-        
-        
-        
-        
-        
         let sectionType = activeSections?[tableSection]
         switch sectionType {
         case .banner:
-            return CGSize(width: (width / 2) - 5, height: 180)
+            if isComeForHireDetailPage == false {
+                return CGSize(width: (width / 2) - 5, height: 150)
+            }else{
+                return CGSize(width: (width / 2) - 5, height: 180)
+            }
+            
         case .accommodations:
             return CGSize(width: (width / 2) - 12, height: 235)
         case  .hangouts:

@@ -130,8 +130,8 @@ extension EmployerController: MKMapViewDelegate {
         
         // Zoom in
         let region = MKCoordinateRegion(center: annotation.coordinate,
-                                        latitudinalMeters: 5000,
-                                        longitudinalMeters: 5000)
+                                        latitudinalMeters: 2000,
+                                        longitudinalMeters: 2000)
         mapViw.setRegion(region, animated: true)
     }
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {

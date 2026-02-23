@@ -81,7 +81,7 @@ class FilterVC: UIViewController {
         self.lbl_Distance.font = FontManager.inter(.medium, size: 14)
         self.lbl_ValDistance.font = FontManager.inter(.medium, size: 14)
         self.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-        self.ViewHeight.constant = UIScreen.main.bounds.height / 2
+        self.ViewHeight.constant = UIScreen.main.bounds.height / 1.42
         mainView.layer.cornerRadius = 20
         mainView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         mainView.clipsToBounds = true

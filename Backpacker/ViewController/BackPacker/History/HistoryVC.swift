@@ -27,6 +27,7 @@ class HistoryVC: UIViewController {
     var isLoading: Bool = true // true while loading, false once data is ready
     var lastContentOffset: CGFloat = 0
     var jobData : [CompletedJob]?
+    var jobId : String?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lbl_No_AccomdodationFound.text = "No Data Found"
@@ -118,15 +119,15 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
                 cell.onTap = { [weak self]  index in
                     guard let self = self else { return }
                     print("Cell tapped at index: \(indexPath.item)")
-                    // Navigate or perform any action
+                  //  if let id =  declineJob.id {
+                        print("Cell id tapped at index: \(declineJob.id)")
+                        self.jobId = declineJob.id
+                        self.navigateToDescriptionVC()
+                  //  }
                  
                 }
-                cell.onFavTap = { [weak self]  index in
-                    guard let self = self else { return }
-                    print("Cell Fav tapped at index: \(indexPath.item)")
-                    // Navigate or perform any action
-                 
-                }
+                cell.btn_fav.isHidden = true
+                cell.btn_fav.isUserInteractionEnabled = false
                 // Assign item to your label/image inside the cell
                 // cell.titleLabel.text = item
                 cell.lbl_Title.text = declineJob.name
@@ -380,5 +381,19 @@ extension HistoryVC: SkeletonCollectionViewDataSource {
     
     func collectionSkeletonView(_ skeletonView: UICollectionView, cellIdentifierForItemAt indexPath: IndexPath) -> ReusableCellIdentifier {
         return "SkeltonCVC" // Your skeleton cell identifier
+    }
+    private func navigateToDescriptionVC(animation: Bool = true){
+        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+        if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
+            jobDescriptionVC.JobId = self.jobId
+            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                jobDescriptionVC.notificationId = appDelegate.pendingNotificationId
+            }
+            
+            // Optional: pass selected job title
+            self.navigationController?.pushViewController(jobDescriptionVC, animated: animation)
+        }
+        
+        
     }
 }

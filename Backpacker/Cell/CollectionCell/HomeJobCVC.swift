@@ -76,7 +76,7 @@ class HomeJobCVC: UICollectionViewCell {
             self.lbl_jobStatus.isHidden = true
             self.statusVw.isHidden = true
         }else{
-            self.lbl_AmountHeight.constant = 0.0
+            self.lbl_AmountHeight.constant = 20.0
             self.lbl_jobStatus.isHidden = true
             self.statusVw.isHidden = true
         }

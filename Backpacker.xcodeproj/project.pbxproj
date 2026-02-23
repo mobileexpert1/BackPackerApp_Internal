@@ -576,14 +576,14 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = BackpackerHire.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = 9H6AYY67L8;
 				ENABLE_DEBUG_DYLIB = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BackpackerHire-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Backacker Hire";
+				INFOPLIST_KEY_CFBundleDisplayName = "Backpacker Hire";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Shiftly uses your calendar to help you schedule, view, and manage your upcoming shifts, check availability, and plan work events efficiently.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Shiftly  needs camera access so you can capture and upload photos related to your workplace documentation";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Shiftly uses your location to show nearby job opportunities and improve the accuracy of job listings while you’re using the app.";
@@ -625,7 +625,7 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = BackpackerHireRelease.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 9H6AYY67L8;
 				ENABLE_DEBUG_DYLIB = YES;
@@ -633,7 +633,7 @@
 				EXCLUDED_ARCHS = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "BackpackerHire-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Backacker Hire";
+				INFOPLIST_KEY_CFBundleDisplayName = "Backpacker Hire";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "Shiftly uses your calendar to help you schedule, view, and manage your upcoming shifts, check availability, and plan work events efficiently.";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Shiftly  needs camera access so you can capture and upload photos related to your workplace documentation";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Shiftly uses your location to show nearby job opportunities and improve the accuracy of job listings while you’re using the app.";

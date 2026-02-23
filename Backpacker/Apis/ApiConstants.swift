@@ -64,10 +64,10 @@ struct ApiConstants {
             return url
         }
         static func getBACKPACKER_JOBSSEEALLURLWITHTYPE(
-            page: Int, perPage: Int, search: String? = nil, type: Int
+            page: Int, perPage: Int, search: String? = nil, type: Int,wokkType:String
         ) -> String {
             var url =
-            "\(BASE_URL)api/backpackers/jobs/seeAll?page=\(page)&perPage=\(perPage)&type=\(type)"
+            "\(BASE_URL)api/backpackers/jobs/seeAll?page=\(page)&perPage=\(perPage)&type=\(type)&workType=\(wokkType)"
             
             if let searchText = search?.trimmingCharacters(
                 in: .whitespacesAndNewlines), !searchText.isEmpty

@@ -899,7 +899,7 @@ extension JobDescriptionVC {
         self.lblTitle.text = obj.name
         self.lbl_Address.text = obj.locationText
         let duration = calculateDuration(startTime: obj.startTime, endTime: obj.endTime)
-        self.lbl_Time.text = duration
+        self.lbl_Time.text = "Duration \(duration)"
         let imageStr = obj.image
         if !imageStr.isEmpty {
             let baseURL1 = ApiConstants.API.API_IMAGEURL
@@ -963,7 +963,7 @@ extension JobDescriptionVC {
             self.lblTitle.text = obj.name
             self.lbl_Address.text = obj.locationText
             let duration = self.calculateDuration(startTime: obj.startTime, endTime: obj.endTime)
-            self.lbl_Time.text = duration
+            self.lbl_Time.text = "Duration \(duration)"
             let imageStr = obj.image
             if !imageStr.isEmpty {
                 let baseURL1 = ApiConstants.API.API_IMAGEURL
