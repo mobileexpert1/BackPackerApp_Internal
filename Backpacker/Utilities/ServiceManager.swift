@@ -874,19 +874,53 @@ extension ServiceManager {
                     case 401:
                         // Access token expired — refresh token flow
                         completion(.failure(.unauthorized, statusCode: statusCode))
+/*
+ case 403:
+     // Refresh token expired — logout
+     DispatchQueue.main.async {
+         let storyboard = UIStoryboard(name: "Main", bundle: nil)
+         let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC")
+         let nav = UINavigationController(rootViewController: loginVC)
+         nav.navigationBar.isHidden = true
+         UIApplication.shared.windows.first?.rootViewController = nav
+         UIApplication.shared.windows.first?.makeKeyAndVisible()
+     }
+     completion(.failure(.forbidden, statusCode: statusCode))
+ */
 
                     case 403:
-                        // Refresh token expired — logout
-                        DispatchQueue.main.async {
-                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                            let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC")
-                            let nav = UINavigationController(rootViewController: loginVC)
-                            nav.navigationBar.isHidden = true
-                            UIApplication.shared.windows.first?.rootViewController = nav
-                            UIApplication.shared.windows.first?.makeKeyAndVisible()
-                        }
-                        completion(.failure(.forbidden, statusCode: statusCode))
-                       
+                        
+                        let messageResponse = try? JSONDecoder().decode(MessageResponseAlert.self, from: data)
+                            let message = messageResponse?.message ?? "Session expired. Please login again."
+
+                            DispatchQueue.main.async {
+
+                                guard let topVC = UIApplication.shared.topViewController() else { return }
+
+                                let alert = UIAlertController(
+                                    title: "Alert",
+                                    message: message,
+                                    preferredStyle: .alert
+                                )
+
+                                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+
+                                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                                    let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC")
+                                    let nav = UINavigationController(rootViewController: loginVC)
+                                    nav.navigationBar.isHidden = true
+
+                                    if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                                       let window = scene.windows.first(where: { $0.isKeyWindow }) {
+                                        window.rootViewController = nav
+                                        window.makeKeyAndVisible()
+                                    }
+                                }))
+
+                                topVC.present(alert, animated: true)
+                            }
+
+                            completion(.failure(.forbidden, statusCode: statusCode))
 
                     default:
                         // Other status codes
@@ -918,76 +952,6 @@ extension ServiceManager {
             completion(.failure(.requestFailed(description: error.localizedDescription),statusCode: nil))
         }
     }
-
-    /* // Request Api
-     private func requestAPI<T: Codable>(
-         _ url: URLConvertible,
-         method: HTTPMethod,
-         parameters: Parameters? = nil,
-         httpBody: String? = nil,
-         headers: [String: String]? = nil,
-         showLoader: Bool = true,
-         contentType: ContentType = .json,
-         completion: @escaping (ApiResult<T, APIError>) -> Void
-     ) {
-         print("📡 URL:", url)
-
-         guard Reachability.isConnectedToNetwork() else {
-             completion(.failure(.requestFailed(description: "The internet connection appears to be offline.")))
-             return
-         }
-
-         if showLoader {
-             // MBProgressHUD.showAdded(to: UIApplication.appWindow, animated: true)
-         }
-
-         do {
-             var request = try URLRequest(url: url.asURL())
-             request.httpMethod = method.rawValue
-             request.httpBody = httpBody?.data(using: .utf8)
-             request.addValue("application/json", forHTTPHeaderField: "Accept")
-             request.addValue(contentType.stringValue, forHTTPHeaderField: "Content-Type")
-
-             for (key, value) in getHeaders() {
-                 request.setValue(value, forHTTPHeaderField: key)
-             }
-
-             print("📨 Headers:", request.allHTTPHeaderFields ?? [:])
-             print("📦 Params:", parameters ?? [:])
-             print("📬 Method:", method.rawValue)
-
-             APIManager.Manager.request(request).responseData { response in
-                 if showLoader {
-                     // MBProgressHUD.hide(for: UIApplication.appWindow, animated: true)
-                 }
-
-                 switch response.result {
-                 case .success(let data):
-                     print("-Raw Response:\n", String(data: data, encoding: .utf8) ?? "nil")
-
-                     do {
-                         let decoded = try JSONDecoder().decode(T.self, from: data)
-                         completion(.success(decoded))
-                     } catch {
-                         print("- Decoding Error:", error.localizedDescription)
-                         completion(.failure(.jsonDecodingFailure))
-                     }
-
-                 case .failure(let error):
-                     print("- Request Error:", error.localizedDescription)
-                     completion(.failure(.requestFailed(description: error.localizedDescription)))
-                 }
-             }
-
-         } catch {
-             if showLoader {
-                 // MBProgressHUD.hide(for: UIApplication.appWindow, animated: true)
-             }
-             completion(.failure(.requestFailed(description: error.localizedDescription)))
-         }
-     }
-     */
- 
     private func validateDictionary<T: Codable>(
         _ url: URLConvertible,
         method: HTTPMethod,
@@ -1328,4 +1292,36 @@ struct NullResponse: Codable {
 
 struct MessageResponse: Codable {
     let message: String
+}
+extension UIApplication {
+    
+    func topViewController(base: UIViewController? = {
+        if #available(iOS 13.0, *) {
+            return UIApplication.shared.connectedScenes
+                .compactMap { ($0 as? UIWindowScene)?.windows.first(where: { $0.isKeyWindow }) }
+                .first?.rootViewController
+        } else {
+            return UIApplication.shared.keyWindow?.rootViewController
+        }
+    }()) -> UIViewController? {
+        
+        if let nav = base as? UINavigationController {
+            return topViewController(base: nav.visibleViewController)
+        }
+        
+        if let tab = base as? UITabBarController,
+           let selected = tab.selectedViewController {
+            return topViewController(base: selected)
+        }
+        
+        if let presented = base?.presentedViewController {
+            return topViewController(base: presented)
+        }
+        
+        return base
+    }
+}
+struct MessageResponseAlert: Codable {
+    let success: Bool?
+    let message: String?
 }
