@@ -170,7 +170,7 @@ class AddNewPlaceVC: UIViewController {
     
     func setupEditData(){
         if isComeFromEdit == true{
-            self.lbl_MainHeader.text = "Edit HangOut"
+            self.lbl_MainHeader.text = "Edit hangout"
             self.btn_Save.setTitle("Update", for: .normal)
             if let name = editName {
                 self.txtFldName.text = name
@@ -422,7 +422,7 @@ class AddNewPlaceVC: UIViewController {
                 AlertManager.showAlert(
                     on: self,
                     title: "Plan Limit Reached",
-                    message: "Please update your plan to add more hangout."
+                    message: "You have reached your current plan limit. To add a new hangout, please upgrade your plan under the Employer role."
                 ){
 //                        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
 //                        if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {

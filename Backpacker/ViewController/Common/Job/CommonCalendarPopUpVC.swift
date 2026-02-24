@@ -41,7 +41,7 @@ class CommonCalendarPopUpVC: UIViewController {
     
     func setUpYearList(){
         let currentYear = Calendar.current.component(.year, from: Date())
-        let years = (currentYear...2030).map { "\($0)" }
+        let years = (currentYear...2035).map { "\($0)" }
         
         dropdownHelper = DropdownHelper(
             parentView: self.view,
@@ -49,36 +49,75 @@ class CommonCalendarPopUpVC: UIViewController {
             options: years,
             optionImages: Array(repeating: "role_EmpTick", count: years.count) // or use empty string/image if not needed
         )
-        
         dropdownHelper?.onOptionSelected = { [weak self] selectedYear in
             guard let self = self else { return }
             
-            print("-Selected year:", selectedYear)
             self.lbl_year.text = selectedYear
-            
-            // 1. Deselect all selected dates
             self.calendarView.selectedDates.forEach { self.calendarView.deselect($0) }
             
-            // 2. Scroll and select Jan 1st of selected year
-            if let yearInt = Int(selectedYear) {
-                var components = DateComponents()
-                components.year = yearInt
+            guard let yearInt = Int(selectedYear) else { return }
+            
+            let today = Date()
+            let currentYear = Calendar.current.component(.year, from: today)
+            
+            var components = DateComponents()
+            components.year = yearInt
+            
+            if yearInt == currentYear {
+                // Select today
+                self.calendarView.setCurrentPage(today, animated: true)
+                self.calendarView.select(today)
+                self.startDate = today
+                self.selectedDate = today
+            } else {
+                // Select Jan 1
                 components.month = 1
                 components.day = 1
                 
                 if let targetDate = Calendar.current.date(from: components) {
                     self.calendarView.setCurrentPage(targetDate, animated: true)
-                    
-                    // -Select Jan 1st
                     self.calendarView.select(targetDate)
                     self.startDate = targetDate
                     self.selectedDate = targetDate
                 }
             }
             
-            // 3. Reset end date if range was previously selected
             self.endDate = nil
         }
+        
+        /* Prevous work code
+         
+         dropdownHelper?.onOptionSelected = { [weak self] selectedYear in
+             guard let self = self else { return }
+             
+             print("-Selected year:", selectedYear)
+             self.lbl_year.text = selectedYear
+             
+             // 1. Deselect all selected dates
+             self.calendarView.selectedDates.forEach { self.calendarView.deselect($0) }
+             
+             // 2. Scroll and select Jan 1st of selected year
+             if let yearInt = Int(selectedYear) {
+                 var components = DateComponents()
+                 components.year = yearInt
+                 components.month = 1
+                 components.day = 1
+                 
+                 if let targetDate = Calendar.current.date(from: components) {
+                     self.calendarView.setCurrentPage(targetDate, animated: true)
+                     
+                     // -Select Jan 1st
+                     self.calendarView.select(targetDate)
+                     self.startDate = targetDate
+                     self.selectedDate = targetDate
+                 }
+             }
+             
+             // 3. Reset end date if range was previously selected
+             self.endDate = nil
+         }
+         */
+
     }
     func setupUI(){
         self.lbl_year.font = FontManager.inter(.medium, size: 14.0)
@@ -255,7 +294,14 @@ extension CommonCalendarPopUpVC: FSCalendarDelegate, FSCalendarDataSource,FSCale
     
     
     func minimumDate(for calendar: FSCalendar) -> Date {
-        return Date() // today's date
+        let currentYear = Calendar.current.component(.year, from: Date())
+        
+        var components = DateComponents()
+        components.year = currentYear
+        components.month = 1
+        components.day = 1
+        
+        return Calendar.current.date(from: components)!
     }
     func maximumDate(for calendar: FSCalendar) -> Date {
         return Calendar.current.date(from: DateComponents(year: 2035, month: 12, day: 31))!

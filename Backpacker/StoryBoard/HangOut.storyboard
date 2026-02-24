@@ -377,7 +377,7 @@
                                 <viewLayoutGuide key="contentLayoutGuide" id="VuD-CY-eJP"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="7DC-3O-41L"/>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8KB-Lc-8bg">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8KB-Lc-8bg">
                                 <rect key="frame" x="293" y="61.666666666666657" width="35" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="3Zl-YH-Gt2"/>

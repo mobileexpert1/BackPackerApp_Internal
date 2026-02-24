@@ -72,7 +72,7 @@ class EmployerAccomodationVC: UIViewController {
         self.searchBgVw.layer.borderWidth = 1.0
         
         txtFld_Search.attributedPlaceholder = NSAttributedString(
-            string: "Search Accommodation",
+            string: "Search",
             attributes: [
                 .foregroundColor: UIColor.black,
                 .font:FontManager.inter(.regular, size: 14.0)

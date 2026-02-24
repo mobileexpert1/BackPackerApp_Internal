@@ -220,7 +220,7 @@ enum APIError: Error {
         case .serverError(let code):
             return "Server error with status code: \(code)"
         case .customError(let message):
-                    return message
+            return message
         }
     }
 }
@@ -239,7 +239,7 @@ enum HTTPStatusCode: Int {
     case methodNotAllowed = 405  // logout
     case internalServerError = 500 // logout
     case unknown
-
+    
     init(rawValue: Int) {
         switch rawValue {
         case 200: self = .ok
@@ -251,7 +251,7 @@ enum HTTPStatusCode: Int {
         default: self = .unknown
         }
     }
-
+    
     var description: String {
         switch self {
         case .ok: return "Success"
@@ -302,13 +302,13 @@ class ServiceManager: NSObject {
     }
     
     
-
+    
     @objc func getHeaders() -> [String: String] {
-        #if BackpackerHire
+#if BackpackerHire
         let apiToken = UserDefaultsManager.shared.employerbearerToken
-        #else
+#else
         let apiToken = UserDefaultsManager.shared.bearerToken
-        #endif
+#endif
         
         guard let token = apiToken else { return [:] }
         
@@ -316,7 +316,7 @@ class ServiceManager: NSObject {
         print("HEADERS: ", httpHeaders)
         return httpHeaders
     }
-
+    
 }
 
 
@@ -338,8 +338,8 @@ extension ServiceManager {
             case .success(let data, let statusCode):
                 print("-Upload success. Status code: \(statusCode)")
                 completion(true, data ?? nil, statusCode)
-
-
+                
+                
             case .failure(let error, let statusCode):
                 print("- Upload failed. Error: \(error.customDescription), Status code: \(statusCode ?? -1)")
                 completion(false, nil, statusCode)
@@ -376,7 +376,7 @@ extension ServiceManager {
             }
         }
     }
-
+    
     
     
     func requestApi<T: Codable>(
@@ -402,14 +402,14 @@ extension ServiceManager {
             case .success(let data, let statusCode):
                 print("-API Success – Status Code: \(statusCode), Data: \(String(describing: data))")
                 completion(true, data ?? nil, statusCode)
-
+                
             case .failure(let error, let statusCode):
                 print("- API Failure – \(error.customDescription), Status Code: \(statusCode ?? -1)")
                 completion(true, nil, statusCode)
             }
         }
     }
-
+    
     func requestValidatedApi<T: Codable>(
         _ url: URLConvertible,
         method: HTTPMethod = .post,
@@ -436,7 +436,7 @@ extension ServiceManager {
                 }else{
                     
                 }
-
+                
             case .failure(let error, let statusCode):
                 completion(.failure(error, statusCode: statusCode))
             }
@@ -468,7 +468,7 @@ extension ServiceManager {
                 }else{
                     
                 }
-
+                
             case .failure(let error, let statusCode):
                 completion(.failure(error, statusCode: statusCode))
             }
@@ -476,8 +476,8 @@ extension ServiceManager {
     }
     private func requestUploadAPI<T:Codable>(_ url: URLConvertible,videoData:Data? = nil,method:HTTPMethod, parameters: Parameters? = nil,httpBody:String? = nil,headers:[String:String]? = nil, completion: @escaping (ApiResult<T,APIError>) -> Void) {
         print("URL: ",url)
-       // //MBProgressHUD.showAdded(to: UIA     pplication.appWindow, animated: true)
-      //  self.showLoader()
+        // //MBProgressHUD.showAdded(to: UIA     pplication.appWindow, animated: true)
+        //  self.showLoader()
         do {
             var request = try URLRequest(url: url.asURL())
             request.httpMethod = method.rawValue
@@ -534,14 +534,14 @@ extension ServiceManager {
                 
             }, to: url, usingThreshold: UInt64.init(), method: .post, headers: request.headers ).responseJSON {[weak self] response1 in
                 //AF.request(request).responseJSON(completionHandler: { response1 in
-               // //MBProgressHUD.hide(for: UIApplication.appWindow, animated: true)
+                // //MBProgressHUD.hide(for: UIApplication.appWindow, animated: true)
                 
                 self?.hideLoader()
                 //self?.progressView = nil
                 guard let statusCode = response1.response?.statusCode else {
-                       completion(.failure(.responseUnsuccessful(description: "No status code received from server"), statusCode: nil))
-                       return
-                   }
+                    completion(.failure(.responseUnsuccessful(description: "No status code received from server"), statusCode: nil))
+                    return
+                }
                 if let error = response1.error {
                     print("--------- Error -------",error.localizedDescription)
                     if let responseData = response1.data {
@@ -550,10 +550,10 @@ extension ServiceManager {
                         switch URLError.Code(rawValue: error._code) {
                         case .notConnectedToInternet:
                             print("NotConnectedToInternet")
-                         //   AlertFactory.showErrorToast(title: error.localizedDescription)
+                            //   AlertFactory.showErrorToast(title: error.localizedDescription)
                             return
                         default:
-                         //   AlertFactory.showErrorToast(title: "There was an error in the response. Please try again.")
+                            //   AlertFactory.showErrorToast(title: "There was an error in the response. Please try again.")
                             break
                         }
                         completion(.failure(.requestFailed(description: error.localizedDescription), statusCode: statusCode))
@@ -578,9 +578,9 @@ extension ServiceManager {
             
         }
         catch{
-           // //MBProgressHUD.hide(for: UIApplication.appWindow, animated: true)
+            // //MBProgressHUD.hide(for: UIApplication.appWindow, animated: true)
             self.hideLoader()
-
+            
             completion(.failure(.requestFailed(description: error.localizedDescription), statusCode: nil))
         }
         
@@ -694,7 +694,7 @@ extension ServiceManager {
             completion(.failure(.requestFailed(description: "\(error.localizedDescription)"), statusCode: nil))
         }
     }
-
+    
     func requestMultipartAPI<T:Codable>(_ url: URLConvertible,image:Data? = nil,method:HTTPMethod, parameters: Parameters? = nil,httpBody:String? = nil,headers:[String:String]? = nil,isComeFromCompany: Bool = false, completion: @escaping (ApiResult<ApiResponseModel<T>, APIError>) -> Void) {
         print("URL: ",url)
         do {
@@ -725,20 +725,20 @@ extension ServiceManager {
                     {
                         multipartFormData.append(image!, withName: "image", fileName: "file.jpg", mimeType: "image/jpg")
                     }
-                        
-
-                   
+                    
+                    
+                    
                 }
             }, to: url, usingThreshold: UInt64.init(), method: method, headers: request.headers ).responseJSON {[weak self] response1 in
                 let statusCode = response1.response?.statusCode
-
+                
                 if let error = response1.error {
                     print("--------- Error -------", error.localizedDescription)
-
+                    
                     if let responseData = response1.data {
                         let htmlString = String(data: responseData, encoding: .utf8)
                         print("Result ", htmlString ?? "Unable to decode response")
-
+                        
                         switch URLError.Code(rawValue: error._code) {
                         case .notConnectedToInternet:
                             print("NotConnectedToInternet")
@@ -747,7 +747,7 @@ extension ServiceManager {
                         default:
                             break
                         }
-
+                        
                         completion(.failure(.jsonDecodingFailure, statusCode: statusCode))
                         return
                     }
@@ -755,12 +755,12 @@ extension ServiceManager {
                     let responseString = String(data: data, encoding: .utf8)
                     print("Raw Response: ", responseString ?? "No response string")
                 }
-
+                
                 if let statusCode = statusCode {
                     do {
                         let decoded = try JSONDecoder().decode(ApiResponseModel<T>.self, from: response1.data!)
                         print("Decoded Success – Status Code: \(statusCode)")
-
+                        
                         if decoded.success == true {
                             completion(.success(decoded, statusCode: statusCode))
                         } else {
@@ -775,7 +775,7 @@ extension ServiceManager {
                     print("No status code found")
                     completion(.failure(.responseUnsuccessful(description: "No status code"), statusCode: nil))
                 }
-
+                
             }.uploadProgress(queue: .main, closure: { progress in
                 print("Upload Progress: \(progress.fractionCompleted)")
             })
@@ -813,12 +813,12 @@ extension ServiceManager {
             request.httpMethod = method.rawValue
             request.addValue("application/json", forHTTPHeaderField: "Accept")
             request.addValue(contentType.stringValue, forHTTPHeaderField: "Content-Type")
-
+            
             // Attach custom headers
             for (key, value) in getHeaders() {
                 request.setValue(value, forHTTPHeaderField: key)
             }
-
+            
             // Encode parameters
             if let parameters = parameters {
                 if method == .get {
@@ -832,7 +832,7 @@ extension ServiceManager {
                 // If no parameters, attach raw httpBody if provided
                 request.httpBody = httpBody.data(using: .utf8)
             }
-
+            
             // Debug logging
             print("📨 Headers:", request.allHTTPHeaderFields ?? [:])
             print("📦 Params:", parameters ?? [:])
@@ -840,20 +840,20 @@ extension ServiceManager {
             if let body = request.httpBody {
                 print("📝 Body:", String(data: body, encoding: .utf8) ?? "")
             }
-
+            
             APIManager.Manager.request(request).responseData { response in
                 guard let statusCode = response.response?.statusCode else {
-                                completion(.failure(.responseUnsuccessful(description: "No status code received from server"), statusCode: nil))
-                                return
-                            }
-
-
+                    completion(.failure(.responseUnsuccessful(description: "No status code received from server"), statusCode: nil))
+                    return
+                }
+                
+                
                 print("📥 Status Code:", statusCode)
-
+                
                 switch response.result {
                 case .success(let data):
                     print("-Raw Response:\n", String(data: data, encoding: .utf8) ?? "nil")
-
+                    
                     switch statusCode {
                     case 200...299:
                         do {
@@ -874,58 +874,44 @@ extension ServiceManager {
                     case 401:
                         // Access token expired — refresh token flow
                         completion(.failure(.unauthorized, statusCode: statusCode))
-/*
- case 403:
-     // Refresh token expired — logout
-     DispatchQueue.main.async {
-         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-         let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC")
-         let nav = UINavigationController(rootViewController: loginVC)
-         nav.navigationBar.isHidden = true
-         UIApplication.shared.windows.first?.rootViewController = nav
-         UIApplication.shared.windows.first?.makeKeyAndVisible()
-     }
-     completion(.failure(.forbidden, statusCode: statusCode))
- */
-
                     case 403:
                         
                         let messageResponse = try? JSONDecoder().decode(MessageResponseAlert.self, from: data)
-                            let message = messageResponse?.message ?? "Session expired. Please login again."
-
-                            DispatchQueue.main.async {
-
-                                guard let topVC = UIApplication.shared.topViewController() else { return }
-
-                                let alert = UIAlertController(
-                                    title: "Alert",
-                                    message: message,
-                                    preferredStyle: .alert
-                                )
-
-                                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-
-                                    let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                                    let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC")
-                                    let nav = UINavigationController(rootViewController: loginVC)
-                                    nav.navigationBar.isHidden = true
-
-                                    if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                                       let window = scene.windows.first(where: { $0.isKeyWindow }) {
-                                        window.rootViewController = nav
-                                        window.makeKeyAndVisible()
-                                    }
-                                }))
-
-                                topVC.present(alert, animated: true)
-                            }
-
-                            completion(.failure(.forbidden, statusCode: statusCode))
-
+                        let message = messageResponse?.message ?? "Session expired. Please login again."
+                        
+                        DispatchQueue.main.async {
+                            
+                            guard let topVC = UIApplication.shared.topViewController() else { return }
+                            
+                            let alert = UIAlertController(
+                                title: "Alert",
+                                message: message,
+                                preferredStyle: .alert
+                            )
+                            
+                            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+                                
+                                let storyboard = UIStoryboard(name: "Main", bundle: nil)
+                                let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginVC")
+                                let nav = UINavigationController(rootViewController: loginVC)
+                                nav.navigationBar.isHidden = true
+                                
+                                if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                                   let window = scene.windows.first(where: { $0.isKeyWindow }) {
+                                    window.rootViewController = nav
+                                    window.makeKeyAndVisible()
+                                }
+                            }))
+                            
+                            topVC.present(alert, animated: true)
+                        }
+                        
+                     ///   completion(.failure(.forbidden, statusCode: statusCode))
+                        
                     default:
                         // Other status codes
                         if let jsonString = String(data: data, encoding: .utf8) {
-                          
+                            
                             if let messageData = jsonString.data(using: .utf8),
                                let messageObj = try? JSONDecoder().decode(MessageResponse.self, from: messageData) {
                                 print("API Message:", messageObj.message)
@@ -936,15 +922,15 @@ extension ServiceManager {
                         } else {
                             completion(.failure(.serverError(code: statusCode), statusCode: statusCode))
                         }
-
+                        
                     }
-
+                    
                 case .failure(let error):
                     print("- Request Error:", error.localizedDescription)
                     completion(.failure(.requestFailed(description: error.localizedDescription),statusCode: statusCode))
                 }
             }
-
+            
         } catch {
             if showLoader {
                 // MBProgressHUD.hide(for: UIApplication.appWindow, animated: true)
@@ -962,29 +948,29 @@ extension ServiceManager {
         self.getValidDict(result: response1.result) { dict, error, retry in
             let statusCode = response1.response?.statusCode
             print("URL:", url, "\nRESPONSE:", dict as Any)
-
+            
             guard let response = dict as? [String: Any] else {
                 let fallbackMessage = error?.localizedDescription ?? "Something went wrong"
                 completion(.failure(.requestFailed(description: fallbackMessage), statusCode: statusCode))
                 return
             }
-
+            
             let isSuccess = response["success"] as? Bool ?? false
-
+            
             if !isSuccess {
                 // Handle error message from "message" or "errors"
                 let message = (response["message"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
                 let errors = response["errors"] as? [String]
                 let firstError = errors?.first?.trimmingCharacters(in: .whitespacesAndNewlines)
-
+                
                 let errorDescription = message?.isEmpty == false ? message! :
-                                       firstError?.isEmpty == false ? firstError! :
-                                       "Unknown error occurred"
-
+                firstError?.isEmpty == false ? firstError! :
+                "Unknown error occurred"
+                
                 completion(.failure(.requestFailed(description: errorDescription), statusCode: statusCode))
                 return
             }
-
+            
             // -On success
             if let data = response1.data, response["data"] != nil {
                 self.parseResponseData(data: data, statusCode: statusCode,completion: completion)
@@ -993,75 +979,75 @@ extension ServiceManager {
             }
         }
     }
-/*
- 
- private func validateDictionary<T:Codable>(_ url: URLConvertible,method:HTTPMethod, parameters: Parameters? = nil,response1:AFDataResponse<Any>,completion: @escaping (ApiResult<T,APIError>) -> Void){
+    /*
+     
+     private func validateDictionary<T:Codable>(_ url: URLConvertible,method:HTTPMethod, parameters: Parameters? = nil,response1:AFDataResponse<Any>,completion: @escaping (ApiResult<T,APIError>) -> Void){
      self.getValidDict(result: response1.result, completion: {(dict, error, retry) in
-         let statusCode = response1.response?.statusCode
-         if retry! {
-             //  self.requestAPI(url,method:method, parameters: parameters, completion: completion)
-             //return
-         }
-         
-         print("URL: ",url,  "RESPONSE: ",dict as Any)
-                 
-         var dict = dict
-         if dict == nil {
-             dict = NSDictionary.init(dictionary:
-                                         [kBaseMessageKey: error?.localizedDescription ?? "Some error has been occured",
-                                          kBaseStatusKey: false])
-//                if method == .get {
-//                    AlertFactory.showErrorToast(title: "Something Went Wrong")
-//                }
-//                else{
-//                    AlertFactory.showErrorToast(title: error?.localizedDescription ?? "Some error has been occured")
-//                }
-             completion(.failure(.jsonDecodingFailure,statusCode: statusCode))
-         }
-         let response = dict as? [String:Any]
-         if let type = response?["status"] as? Bool {
-             
-             if type == false{
-                 
-                 if let error = response?["error"] as? String{
-                     if (response1.request?.url?.absoluteString.contains("verify")) == true && error.contains("Auth failed"){
-                         completion(.failure(.requestFailed(description: "Please enter correct code"),statusCode: statusCode))
-                     }
-                     else{
-                         completion(.failure(.requestFailed(description: "\(error)"),statusCode: statusCode))
-                     }
-                 } else {
-                     let error = self.handleError(json: response1.value as AnyObject)
-                     completion(.failure(.requestFailed(description: "\(error.localizedDescription)"),statusCode: statusCode))
-                 }
-                 
-             }
-             else if type == true , let data = response1.data{
-                 if response?["data"] != nil  {
-                     self.parseResponseData(data: data, completion: completion)
-                     if let message = response?["message"] as? String{
-                         if (response1.request?.url!.absoluteString.contains("resendOtp"))!{
-                          //   AlertFactory.showSuccessToast(title: message)
-                         }
-                     }
-                 }
-                 else {
-                     completion(.success(nil, statusCode: statusCode!))
-                 }
-             }
-             
-         }
-         else{
-             completion(.failure(.jsonDecodingFailure,statusCode: statusCode))
-         }
-         
+     let statusCode = response1.response?.statusCode
+     if retry! {
+     //  self.requestAPI(url,method:method, parameters: parameters, completion: completion)
+     //return
+     }
+     
+     print("URL: ",url,  "RESPONSE: ",dict as Any)
+     
+     var dict = dict
+     if dict == nil {
+     dict = NSDictionary.init(dictionary:
+     [kBaseMessageKey: error?.localizedDescription ?? "Some error has been occured",
+     kBaseStatusKey: false])
+     //                if method == .get {
+     //                    AlertFactory.showErrorToast(title: "Something Went Wrong")
+     //                }
+     //                else{
+     //                    AlertFactory.showErrorToast(title: error?.localizedDescription ?? "Some error has been occured")
+     //                }
+     completion(.failure(.jsonDecodingFailure,statusCode: statusCode))
+     }
+     let response = dict as? [String:Any]
+     if let type = response?["status"] as? Bool {
+     
+     if type == false{
+     
+     if let error = response?["error"] as? String{
+     if (response1.request?.url?.absoluteString.contains("verify")) == true && error.contains("Auth failed"){
+     completion(.failure(.requestFailed(description: "Please enter correct code"),statusCode: statusCode))
+     }
+     else{
+     completion(.failure(.requestFailed(description: "\(error)"),statusCode: statusCode))
+     }
+     } else {
+     let error = self.handleError(json: response1.value as AnyObject)
+     completion(.failure(.requestFailed(description: "\(error.localizedDescription)"),statusCode: statusCode))
+     }
+     
+     }
+     else if type == true , let data = response1.data{
+     if response?["data"] != nil  {
+     self.parseResponseData(data: data, completion: completion)
+     if let message = response?["message"] as? String{
+     if (response1.request?.url!.absoluteString.contains("resendOtp"))!{
+     //   AlertFactory.showSuccessToast(title: message)
+     }
+     }
+     }
+     else {
+     completion(.success(nil, statusCode: statusCode!))
+     }
+     }
+     
+     }
+     else{
+     completion(.failure(.jsonDecodingFailure,statusCode: statusCode))
+     }
+     
      })
- }
- 
- 
- */
+     }
+     
+     
+     */
     // Validate the response from server and provide respective alerts and responses.
-
+    
     // Create reesult dictionary dictionary from api response
     private func getValidDict(result: AFResult<Any>, completion: @escaping (_ : NSDictionary?, _ : NSError?, _ : Bool?) -> Void) {
         var dict: NSDictionary!
@@ -1075,7 +1061,7 @@ extension ServiceManager {
                 completion (dict, nil, true)
             }
             break
-        //success, do anything
+            //success, do anything
         case .failure(let error):
             completion (dict, error as NSError, false)
             break
@@ -1090,31 +1076,31 @@ extension ServiceManager {
     ) {
         do {
             let decoder = JSONDecoder()
-
+            
             // Try decoding the response using flexible model
             let responseObject = try decoder.decode(ApiResponse<T>.self, from: data)
-
+            
             // Check success status
             if responseObject.success == false {
                 let message = responseObject.message ?? "Something went wrong"
                 completion(.failure(.requestFailed(description: message), statusCode: statusCode))
                 return
             }
-
+            
             // If data is required, ensure it's non-nil
             guard let unwrappedData = responseObject.data else {
                 completion(.failure(.jsonDecodingFailure, statusCode: statusCode))
                 return
             }
-
+            
             completion(.success(unwrappedData, statusCode: statusCode ?? 200))
-
+            
         } catch {
             // Print raw JSON if decoding fails
             if let jsonString = String(data: data, encoding: .utf8) {
                 print("🧨 Raw Response:\n\(jsonString)")
             }
-
+            
             switch error {
             case let DecodingError.dataCorrupted(context):
                 print("🧨 Data corrupted:", context)
@@ -1134,13 +1120,13 @@ extension ServiceManager {
             }
         }
     }
-
-
+    
+    
     
     func parseError(context:DecodingError.Context) -> String {
         return false//CONSTANTS.API.DEBUG_MODE_ON
-            ? (context.codingPath.description + context.debugDescription)
-            : "There was an error. Please try again."
+        ? (context.codingPath.description + context.debugDescription)
+        : "There was an error. Please try again."
     }
     
     
@@ -1217,29 +1203,29 @@ extension ServiceManager {
     }
     
     
-//    func showLoader() {
-//        let loader = LoaderVC(nibName: "LoaderVC", bundle: nil)
-//        loader.view.tag = 4444
-//        
-//        if let windowScene = UIApplication.shared.connectedScenes
-//            .compactMap({ $0 as? UIWindowScene })
-//            .first(where: { $0.activationState == .foregroundActive }),
-//            let window = windowScene.windows.first {
-//            
-//            window.viewWithTag(4444)?.removeFromSuperview()
-//            
-//            loader.view.layer.zPosition = .greatestFiniteMagnitude
-//            loader.view.frame = window.bounds
-//            
-//            window.addSubview(loader.view)
-//        }
-//    }
+    //    func showLoader() {
+    //        let loader = LoaderVC(nibName: "LoaderVC", bundle: nil)
+    //        loader.view.tag = 4444
+    //
+    //        if let windowScene = UIApplication.shared.connectedScenes
+    //            .compactMap({ $0 as? UIWindowScene })
+    //            .first(where: { $0.activationState == .foregroundActive }),
+    //            let window = windowScene.windows.first {
+    //
+    //            window.viewWithTag(4444)?.removeFromSuperview()
+    //
+    //            loader.view.layer.zPosition = .greatestFiniteMagnitude
+    //            loader.view.frame = window.bounds
+    //
+    //            window.addSubview(loader.view)
+    //        }
+    //    }
     func hideLoader() {
         DispatchQueue.main.async {
             if let windowScene = UIApplication.shared.connectedScenes
                 .compactMap({ $0 as? UIWindowScene })
                 .first(where: { $0.activationState == .foregroundActive }),
-                let window = windowScene.windows.first {
+               let window = windowScene.windows.first {
                 
                 window.viewWithTag(4444)?.removeFromSuperview()
             }
@@ -1276,8 +1262,8 @@ struct ApiResponse<T: Codable>: Codable {
     var data: T?
     var message: String?
     var errors: ErrorModel?
-
-  
+    
+    
 }
 
 
@@ -1297,12 +1283,12 @@ extension UIApplication {
     
     func topViewController(base: UIViewController? = {
         if #available(iOS 13.0, *) {
-            return UIApplication.shared.connectedScenes
-                .compactMap { ($0 as? UIWindowScene)?.windows.first(where: { $0.isKeyWindow }) }
-                .first?.rootViewController
-        } else {
-            return UIApplication.shared.keyWindow?.rootViewController
-        }
+        return UIApplication.shared.connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.windows.first(where: { $0.isKeyWindow }) }
+            .first?.rootViewController
+    } else {
+        return UIApplication.shared.keyWindow?.rootViewController
+    }
     }()) -> UIViewController? {
         
         if let nav = base as? UINavigationController {

@@ -387,7 +387,7 @@ class AddNewAccomodationVC: UIViewController {
                     AlertManager.showAlert(
                         on: self,
                         title: "Plan Limit Reached",
-                        message: "Please update your plan to add more accomodations."
+                        message: "You have reached your current plan limit. To add a new accommodation, please upgrade your plan under the Employer role."
                     ){
 //                        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
 //                        if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {

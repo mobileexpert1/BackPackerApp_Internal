@@ -37,6 +37,11 @@ class MainJobController: UIViewController {
     var selectedIndex =  0
     var JobId = String()
     var isComeFromNotification : Bool = false
+    let viewModelAuth = LogInVM()
+    let viewModel = JobVM()
+    var isLoading : Bool = false
+    var currentPlanOfUser : SubscriptionData?
+    var subscriptionStatus : String?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lbl_noDataFound.isHidden = true
@@ -47,6 +52,7 @@ class MainJobController: UIViewController {
 #else
         self.BtnAddJob.isHidden = false
         self.BtnAddJob.isUserInteractionEnabled = true
+       
         
 #endif
         self.BtnAddJob.titleLabel?.font = FontManager.inter(.medium, size: 12.0)
@@ -60,6 +66,9 @@ class MainJobController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+#if BackpackerHire
+     //   self.getCurrentPlanOfUser()
+        #endif
         collVw.reloadData()
         // Select and trigger index 0 after reload
         DispatchQueue.main.async { [self] in
@@ -78,13 +87,22 @@ class MainJobController: UIViewController {
         }
     }
     @IBAction func action_AddJob(_ sender: Any) {
-        
-        let storyboard = UIStoryboard(name: "Job", bundle: nil)
-        if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewJobVC") as? AddNewJobVC {
-            self.navigationController?.pushViewController(accVC, animated: true)
-        } else {
-            print("- Could not instantiate AddNewAccomodationVC")
-        }
+//        if subscriptionStatus == "inactive"{
+//            AlertManager.showConfirmationAlert(on: self, title: "Upgrade Required", message: "Your current plan is inactive. Please upgrade your subscription to continue using all features.") {
+//                let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+//                if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+//                    self.navigationController?.pushViewController(vc, animated: true)
+//                }
+//            }
+//        }else{
+            let storyboard = UIStoryboard(name: "Job", bundle: nil)
+            if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewJobVC") as? AddNewJobVC {
+                self.navigationController?.pushViewController(accVC, animated: true)
+            } else {
+                print("- Could not instantiate AddNewAccomodationVC")
+            }
+        //}
+       
         
         
     }
@@ -157,6 +175,7 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
                     }
                 case let listVC as EmployerBackPackerListVC:
                     listVC.iscomeFromEmployer = false
+                    listVC.isComeFromEmpJobSection = true
                 default:
                     break
                 }
@@ -244,4 +263,69 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
         return storyboard.instantiateViewController(withIdentifier: identifier)
     }
     
+}
+
+extension MainJobController {
+    
+    func getCurrentPlanOfUser(){
+            self.isLoading = true
+        viewModel.getCurrentPlan { [weak self] (success: Bool, result: SubscriptionResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            self.currentPlanOfUser = result?.data
+                            if self.currentPlanOfUser?.subscriptionStatus == "inactive"{
+                                self.subscriptionStatus = "inactive"
+                               
+                            }else{
+                                self.subscriptionStatus = "active"
+                            }
+                            print("Current rchase Plan of use",self.currentPlanOfUser)
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                     
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getCurrentPlanOfUser()
+                            } else {
+                                LoaderManager.shared.hide()
+                                //self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                                NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
+                                
+                            }
+                        }
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                      //  self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                     //   self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
+                     
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                     
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    
+                    }
+                }
+            }
+        }
+    }
 }

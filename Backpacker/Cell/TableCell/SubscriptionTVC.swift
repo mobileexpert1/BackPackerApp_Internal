@@ -20,8 +20,10 @@ class SubscriptionTVC: UITableViewCell {
     var feature1 : String?
     @IBOutlet weak var lbl_feature2: UILabel!
     var feature2: String?
+    @IBOutlet weak var lbl_feature4: UILabel!
     var feature3: String?
     //@IBOutlet weak var lbl_feature4: UILabel!
+    @IBOutlet weak var vw_Feature4: UIView!
     var feature4: String?
     @IBOutlet weak var lbl_feature3: UILabel!
     @IBOutlet weak var lbl_feature1: UILabel!

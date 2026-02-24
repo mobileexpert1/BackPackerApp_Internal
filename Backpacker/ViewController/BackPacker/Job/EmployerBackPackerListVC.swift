@@ -34,9 +34,13 @@ class EmployerBackPackerListVC: UIViewController {
     var searchDebounceTimer: Timer?
     var lastSearchedText: String = ""
     var lastContentOffset: CGFloat = 0
+    @IBOutlet weak var lbl_BackPacker: UILabel!
+    @IBOutlet weak var top_TableViw: NSLayoutConstraint!
+    var isComeFromEmpJobSection : Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -46,6 +50,15 @@ class EmployerBackPackerListVC: UIViewController {
         
     }
     func setUpUI(){
+        if isComeFromEmpJobSection == true {
+            self.lbl_BackPacker.text = "Backpackers"
+            self.lbl_BackPacker.isHidden = false
+            self.top_TableViw.constant = 5.0
+        }else{
+            self.lbl_BackPacker.isHidden = true
+            self.top_TableViw.constant = 0.0
+        }
+        self.lbl_BackPacker.font = FontManager.inter(.semiBold, size: 16.0)
         self.lbl_NoDataFound.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_NoDataFound.isHidden = true
         tbaleView.delegate = self

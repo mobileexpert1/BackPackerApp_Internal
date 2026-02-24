@@ -45,17 +45,8 @@ class SubscriptionVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.getPriceFormStore()
-        /*
-         self.lbl_patymentDescription.text = "If you choose to subscribe, payment will be charged to your iTunes account, and your subscription will automatically renew 24 hours before the end of the current period. You can turn off auto-renewal at any time in your iTunes account settings. If you don’t subscribe, you can continue using the app for free."
-         */
-     
         self.lbl_patymentDescription.text = "Payment will be charged to your iTunes account. Your subscription will automatically renew 24 hours before the end of the current period. The price may vary depending on your country or region. You can turn off auto-renewal in your iTunes account settings. You can continue using the app for free without subscribing."
-        
-       
         print("Region Code:", regionCode ?? "Unknown")
-
-
-       
         tblVw.isScrollEnabled = false
 
         let nib = UINib(nibName: "SubscriptionTVC", bundle: nil)
@@ -279,9 +270,37 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
             }
             cell.lbl_description.text = plan.desc
             cell.indexPath = indexPath
-            cell.lbl_feature1.text = plan.feature[0]
-            cell.lbl_feature2.text = plan.feature[1]
-            cell.lbl_feature3.text = plan.feature[2]
+            let features = plan.feature
+
+            // First hide all labels
+            cell.lbl_feature1.isHidden = true
+            cell.lbl_feature2.isHidden = true
+            cell.lbl_feature3.isHidden = true
+            cell.lbl_feature4.isHidden = true
+            cell.vw_Feature4.isHidden = true
+            // Show based on count
+            if features.count == 4 {
+                cell.lbl_feature1.text = features[0]
+                cell.lbl_feature2.text = features[1]
+                cell.lbl_feature3.text = features[2]
+                cell.lbl_feature4.text = features[3]
+                
+                cell.lbl_feature1.isHidden = false
+                cell.lbl_feature2.isHidden = false
+                cell.lbl_feature3.isHidden = false
+                cell.lbl_feature4.isHidden = false
+                cell.vw_Feature4.isHidden = false
+                
+            } else if features.count == 3 {
+                cell.lbl_feature1.text = features[0]
+                cell.lbl_feature2.text = features[1]
+                cell.lbl_feature3.text = features[2]
+                cell.lbl_feature1.isHidden = false
+                cell.lbl_feature2.isHidden = false
+                cell.lbl_feature3.isHidden = false
+                cell.vw_Feature4.isHidden = true
+            }
+           
             cell.onCellTapped = { [weak self] tappedIndex in
                 guard let self = self,
                       let tappedPlan = self.plansN?[tappedIndex.row] else {
@@ -330,10 +349,10 @@ extension SubscriptionVC : UITableViewDelegate,UITableViewDataSource{
         tblVw.layoutIfNeeded()
         if UIDevice.current.userInterfaceIdiom == .pad {
             let count = (self.plansN?.count ?? 0 + 1 )
-            tblHeght.constant =  CGFloat(((count) * 255))
+            tblHeght.constant =  CGFloat(((count) * 285))
         }else{
             let count = (self.plansN?.count ?? 0 + 1 )
-            tblHeght.constant =  CGFloat(((count) * 225))
+            tblHeght.constant =  CGFloat(((count) * 255))
         }
         
         tblVw.layoutIfNeeded()

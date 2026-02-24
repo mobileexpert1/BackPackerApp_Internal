@@ -123,7 +123,7 @@ class CompanyDetailVC: UIViewController {
             self.bussinesName_Vw.txtFld.text = self.objComapny?.name
             self.contactNumberVw.txtFld.text = self.objComapny?.contactNumber
             self.websiteVw.txtFld.text = self.objComapny?.website
-            self.emailVw.txtFld.text = self.objComapny?.website
+            self.emailVw.txtFld.text = self.objComapny?.email ?? ""
             self.lbl_Val_SelctedIndustry.text = self.objComapny?.industryType.name
             self.lbl_Val_SelctedIndustry.textColor = .black
             self.industryId = self.objComapny?.industryType.id

@@ -91,9 +91,8 @@ class CalendarVC: UIViewController {
         
     }
     private func setUpCalendar(){
-        //        let selectedYear = Calendar.current.component(.year, from: Date()) // or any selected year
-        //        monthsArray = getAllMonths(for: selectedYear) // replace with your year
         let currentYear = Calendar.current.component(.year, from: Date())
+        self.lbl_Year.text = "\(currentYear)"
            monthsArray = getAllMonths(from: currentYear, to: 2035) // dynamic start year
         
         monthCollectionVw.delegate = self
@@ -160,6 +159,7 @@ class CalendarVC: UIViewController {
         self.lbl_Value_Date.font = FontManager.inter(.regular, size: 14.0)
         self.lbl_Value_Hour.font = FontManager.inter(.regular, size: 14.0)
         self.lbl_Value_Date.text = dateToString(selectedDate ?? Date())
+
     }
     
     @IBAction func btn_previous(_ sender: Any) {

@@ -385,7 +385,7 @@ struct CompanyList: Codable {
     let contactNumber: String
     let createdAt: String
     let updatedAt: String
-
+    let email: String?
     enum CodingKeys: String, CodingKey {
         case id = "_id"
         case userId
@@ -396,6 +396,7 @@ struct CompanyList: Codable {
         case contactNumber
         case createdAt
         case updatedAt
+        case email
     }
 }
 
