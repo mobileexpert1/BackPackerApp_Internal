@@ -208,6 +208,7 @@ class ProfileVM {
         logo: Data?,
         website: String,
         contactNumber: String,
+        email:String,
         completion: @escaping (Bool, String?, Int?) -> Void
     )  {
 #if BackpackerHire
@@ -230,7 +231,8 @@ class ProfileVM {
                     "industryTypeId": industryTypeId,
                     "logo": logo,
                     "website": website,
-                    "contactNumber": contactNumber
+                    "contactNumber": contactNumber,
+            "email":email
                 ]
         
       

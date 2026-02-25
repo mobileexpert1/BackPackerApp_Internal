@@ -832,7 +832,7 @@ extension CompanyDetailVC{
                                logo: Data?){
             LoaderManager.shared.show()
 
-        profileVm.updateComapnyDetail(comapnyId: self.objComapny?.id ?? "", name: name, industryTypeId: industryTypeId, logo: logo, website: website, contactNumber: contactNumber){ success, message ,statusCode in
+        profileVm.updateComapnyDetail(comapnyId: self.objComapny?.id ?? "", name: name, industryTypeId: industryTypeId, logo: logo, website: website, contactNumber: contactNumber, email: email){ success, message ,statusCode in
                 guard let statusCode = statusCode else {
                     LoaderManager.shared.hide()
                     AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
