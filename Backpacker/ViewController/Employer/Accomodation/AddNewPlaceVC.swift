@@ -422,12 +422,12 @@ class AddNewPlaceVC: UIViewController {
                 AlertManager.showAlert(
                     on: self,
                     title: "Plan Limit Reached",
-                    message: "You have reached your current plan limit. To add a new hangout, please upgrade your plan under the Employer role."
+                    message: "You have reached your current plan limit. To add a new hangout, please upgrade your plan."
                 ){
-//                        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-//                        if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
-//                            self.navigationController?.pushViewController(vc, animated: true)
-//                        }
+                        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+                        if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+                            self.navigationController?.pushViewController(vc, animated: true)
+                        }
                 }
             }
         }else{

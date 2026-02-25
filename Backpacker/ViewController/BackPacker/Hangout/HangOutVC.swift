@@ -39,6 +39,18 @@ class HangOutVC: UIViewController {
     var lastSearchedText: String = ""
     var isComFromSearch : Bool = false
     var lastContentOffset: CGFloat = 0
+    
+    var regionCode: String?
+    let viewModell = SubscriptionViewModel()
+    var plansN : [PlanS]?
+    let viewAuth = LogInVM()
+    var activePlanLocationCount : Int?
+    var activePlanJobCount: Int?
+    var totalLocation : Int?
+    
+    var countsLoc : CountsLoc?
+    var accCount : Int?
+    var activePlan = ""
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -56,6 +68,7 @@ class HangOutVC: UIViewController {
                 self.listOfAllBackPackerHangOuts()
                 
                 #else
+        self.getPriceFormStore()
                 self.listOfAllEmployerHangOuts()
 #endif
     }
@@ -176,12 +189,39 @@ class HangOutVC: UIViewController {
     }
     
     @IBAction func action__Add(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
-        if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "AddNewPlaceVC") as? AddNewPlaceVC {
-            jobDescriptionVC.hangoutCount = self.hangOutList.count
-            // Optional: pass selected job title
-            self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+        if self.activePlan == ApiConstants.Products.defaultFreePlan {
+            if self.hangOutList.count < 1 {
+                let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
+                if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "AddNewPlaceVC") as? AddNewPlaceVC {
+                    jobDescriptionVC.hangoutCount = self.hangOutList.count
+                    // Optional: pass selected job title
+                    self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+                }
+                
+            }else{
+                AlertManager.showAlert(
+                    on: self,
+                    title: "Plan Limit Reached",
+                    message: "You have reached your current plan limit. To add a new hangout, please upgrade your plan."
+                ){
+                    let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+                    if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    }
+                }
+            }
+        }else{
+            let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
+            if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "AddNewPlaceVC") as? AddNewPlaceVC {
+                jobDescriptionVC.hangoutCount = self.hangOutList.count
+                // Optional: pass selected job title
+                self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+            }
+            
+            
         }
+        
+        
         
     }
 }
@@ -796,4 +836,109 @@ extension HangOutVC : UITextFieldDelegate{
     }
     
     
+}
+extension HangOutVC{
+    
+#if BackpackerHire
+    func getPriceFormStore() {
+        //   LoaderManager.shared.show()
+        
+        Task {
+            let result = await SubscriptionManager.shared.fetchLocalizedPricesForAllPlans()
+            
+            let prices = result.prices
+            let regionCode = result.region
+            
+            print("REGION:", regionCode)
+            
+            self.regionCode = regionCode
+            
+            self.getListOfAllSubscriptions(regionCode: self.regionCode ?? "")
+        }
+    }
+    private func getListOfAllSubscriptions(regionCode:String)
+    {
+        LoaderManager.shared.show()
+        viewModell.getlistOfSubscriptions(regionCode: regionCode) { [weak self] (success: Bool, result: SubscriptionPlansResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            if result?.data != nil{
+                                self.plansN?.removeAll()
+                                self.plansN = result?.data ?? []
+                                guard let plans = self.plansN else { return }
+                                
+                                let activePlans = plans.first { $0.planStatus.lowercased() == "active" }
+                                let locationCount = activePlans?.locationCount ?? 0
+                                let jobCount = activePlans?.jobCount ?? 0
+                                if activePlans == nil{
+                                    self.activePlan = ApiConstants.Products.defaultFreePlan
+                                }else{
+                                    self.activePlan = activePlans?.iosAttributes.name ?? ""
+                                }
+                                print("active plan",activePlans)
+                                print("Location Count:", locationCount)
+                                print("Job Count:", jobCount)
+                                self.activePlanJobCount = jobCount
+                                self.activePlanLocationCount = locationCount
+                                
+                            }else{
+                                AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
+                            }
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            LoaderManager.shared.hide()
+                        }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        
+                    case .unauthorized :
+                        self.viewAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getListOfAllSubscriptions(regionCode: regionCode)
+                            } else {
+                                LoaderManager.shared.hide()
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                            }
+                        }
+                        
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                      
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        LoaderManager.shared.hide()
+                        
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        LoaderManager.shared.hide()
+                      
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        
+                    }
+                }
+            }
+        }
+    }
+    
+    #endif
+   
 }
