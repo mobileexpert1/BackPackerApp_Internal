@@ -410,7 +410,7 @@ class AccountDetailVC: UIViewController {
         if isComeFromUpdate == true{
             DispatchQueue.main.async {
                 self.NameVw.txtFld.isUserInteractionEnabled = true
-                self.EmailVw.txtFld.isUserInteractionEnabled = true
+                self.EmailVw.txtFld.isUserInteractionEnabled = false
                 self.stateVw.txtFld.isUserInteractionEnabled = true
                 self.AreaVW.txtFld.isUserInteractionEnabled = true
             }
@@ -428,7 +428,7 @@ class AccountDetailVC: UIViewController {
             self.isComeFromUpdate = true
             DispatchQueue.main.async {
                 self.NameVw.txtFld.isUserInteractionEnabled = true
-                self.EmailVw.txtFld.isUserInteractionEnabled = true
+                self.EmailVw.txtFld.isUserInteractionEnabled = false
                 self.stateVw.txtFld.isUserInteractionEnabled = true
                 self.AreaVW.txtFld.isUserInteractionEnabled = true
                 self.startDateField.isUserInteractionEnabled  = true

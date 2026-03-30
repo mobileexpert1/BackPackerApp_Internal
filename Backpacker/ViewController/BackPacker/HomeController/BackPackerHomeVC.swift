@@ -784,8 +784,8 @@ extension BackPackerHomeVC {
                             
 #endif
                             
-                            if self.homeData?.name.isEmpty == true && self.homeData?.email.isEmpty == true{
-                                self.showForceUpdatePopUp()
+                            if self.homeData?.name.isEmpty == true || self.homeData?.email.isEmpty == true{
+                                self.showForceUpdatePopUp(email: self.homeData!.email)
                             }
                             DispatchQueue.main.async {
                                 self.isLoading = false
@@ -993,9 +993,10 @@ extension  BackPackerHomeVC: SkeletonTableViewDataSource {
        }
     
     
-    func showForceUpdatePopUp(){
+    func showForceUpdatePopUp(email:String){
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ForceUpdateVC") as! ForceUpdateVC
+        vc.email = email
         vc.modalPresentationStyle = .overFullScreen
         self.present(vc, animated: true)
     }
@@ -1037,8 +1038,8 @@ extension BackPackerHomeVC {
                                 self.lbl_NoData.isHidden = true
                                 self.lbl_NoData.text = ""
                             }
-                            if self.accomdationEmpHomeData?.name.isEmpty == true && self.accomdationEmpHomeData?.email.isEmpty == true{
-                                self.showForceUpdatePopUp()
+                            if self.accomdationEmpHomeData?.name.isEmpty == true || self.accomdationEmpHomeData?.email.isEmpty == true{
+                                self.showForceUpdatePopUp(email: self.accomdationEmpHomeData!.email)
                             }
                             DispatchQueue.main.async {
                                 self.isLoading = false
@@ -1114,8 +1115,8 @@ extension BackPackerHomeVC {
                                 self.lbl_NoData.text = ""
                             }
                             
-                            if self.hangoutEmpHomeData?.name.isEmpty == true && self.hangoutEmpHomeData?.email.isEmpty == true{
-                                self.showForceUpdatePopUp()
+                            if self.hangoutEmpHomeData?.name.isEmpty == true || self.hangoutEmpHomeData?.email.isEmpty == true{
+                                self.showForceUpdatePopUp(email: self.hangoutEmpHomeData!.email)
                             }
                             DispatchQueue.main.async {
                                 self.isLoading = false

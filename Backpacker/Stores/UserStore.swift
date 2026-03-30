@@ -35,7 +35,19 @@ class UserStore: ServiceManager , UserSearchable {
         }
     }
 
-    
+    func SignUpUser<T: Codable>(
+        params: Parameters,
+        completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
+    ) {
+        requestApi(
+            ApiConstants.API.SignUp_USER,
+            method: .post,
+            parameters: nil,
+            httpBody: params.toJsonString()
+        ) { (success: Bool, result: T?, statusCode: Int?) in
+            completion(success, result, statusCode)
+        }
+    }
     // API for verifying OTP
     func sendOTP<T: Codable>(
         params: Parameters,

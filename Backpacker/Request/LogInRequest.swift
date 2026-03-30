@@ -32,9 +32,18 @@ struct LoginRequest : AppRequest {
     var countryCode : String
     var countryName : String
     var fcmToken : String
+    var email : String
     
 }
-
+struct SignInRequest : AppRequest {
+    
+    var roleType : String
+    var mobileNumber : String
+    var countryCode : String
+    var countryName : String
+    var email : String
+    var loginType : String
+}
 struct OtpRequest: AppRequest, Codable {
     var userId: String
     var otp: String

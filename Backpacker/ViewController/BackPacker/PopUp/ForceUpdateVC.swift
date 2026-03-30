@@ -71,7 +71,7 @@ class ForceUpdateVC: UIViewController {
     @IBOutlet weak var lbl_dob: UILabel!
     var DOBPicker: UIDatePicker?
     @IBOutlet weak var lbl_avlDob: UILabel!
-    
+    var email : String?
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
@@ -175,6 +175,8 @@ class ForceUpdateVC: UIViewController {
         }else{
             self.lbl_Val_VisaType.textColor = UIColor(named: "blackColor")
         }
+        self.email_Vw.txtFld.text = self.email
+        self.email_Vw.txtFld.isUserInteractionEnabled = false
         self.lbl_error_SelectVisaType.font = FontManager.inter(.regular, size: 8.0)
         self.lbl_error_SelectVisaType.textColor = .red
         self.Vw_VisaType.layer.cornerRadius = 10.0

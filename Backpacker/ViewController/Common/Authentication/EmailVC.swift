@@ -1,106 +1,153 @@
 //
-//  LoginVC.swift
+//  EmailVC.swift
 //  Backpacker
 //
-//  Created by Mobile on 02/07/25.
+//  Created by Mobile on 25/03/26.
 //
 
 import UIKit
 import CountryPickerView
-
-class LoginVC: UIViewController {
+class EmailVC: UIViewController {
     
     @IBOutlet weak var img_logo_bottom: NSLayoutConstraint! //50
     @IBOutlet weak var img_Logo_width: NSLayoutConstraint!//120
     @IBOutlet weak var img_logo_Height: NSLayoutConstraint!//120
     @IBOutlet weak var logo_Img: UIImageView!
     //Outlet
-    @IBOutlet weak var btn_term_Topconstraint: NSLayoutConstraint!
+    @IBOutlet weak var picker_Vw: CountryPickerView!
+    @IBOutlet weak var header_ImgTop: NSLayoutConstraint!
+   @IBOutlet weak var btn_term_Topconstraint: NSLayoutConstraint!
     @IBOutlet weak var lbl_temsandCondition: UILabel!
     @IBOutlet weak var btn_trmcondition: UIButton!
     @IBOutlet weak var vwTxtFld: UIView!
-    @IBOutlet weak var phoneNumberVw: UIView!
     @IBOutlet weak var lblLogIn: UILabel!
     @IBOutlet weak var lblSubTitle: UILabel!
-    @IBOutlet weak var picker_Vw: CountryPickerView!
-    @IBOutlet weak var btn_countryPicker: UIButton!
     @IBOutlet weak var btn_Continue: UIButton!
-    @IBOutlet weak var lbl_phoneCode: UILabel!
     @IBOutlet weak var lbl_Error: UILabel!
     @IBOutlet weak var txtFld_PhoneNumber: UITextField!
     //Variables
-    @IBOutlet weak var imgFlg: UIImageView!
     @IBOutlet weak var lbl_EntrNumber: UILabel!
-    var countryName = String()
-    var phoneCode = String()
-    var flag = UIImage()
+    
+    @IBOutlet weak var txtFld_Email: UITextField!
+    
+    @IBOutlet weak var segment_vw: UIView!
+    
+    @IBOutlet weak var btn_email: UIButton!
+    
+    @IBOutlet weak var btn_PhoneNumber: UIButton!
+    
+    @IBOutlet weak var vw_EmailStack: UIView!
+    
+    
+    @IBOutlet weak var vw_passStack: UIView!
+    
+    
+    @IBOutlet weak var btn_countryPicker: UIButton!
+    @IBOutlet weak var lbl_Header_PhneBunber: UILabel!
+    
+    @IBOutlet weak var lbl_errorPhneNumber: UILabel!
+    @IBOutlet weak var lbl_countryCode: UILabel!
+    @IBOutlet weak var img_flag: UIImageView!
+    
+    @IBOutlet weak var vw_TxtFldPhoneNumber: UIView!
+    @IBOutlet weak var vw_Flag: UIView!
+    
+    var isEmailSelected : Bool = true
     var viewModel = LogInVM()
-    
-    @IBOutlet weak var lbl_herader_EnterEmail: UILabel!
-    
-    @IBOutlet weak var btnSignIn: UIButton!
-    @IBOutlet weak var lbl_emailError_height: NSLayoutConstraint!
-    @IBOutlet weak var lbl_emailEror: UILabel!
-    @IBOutlet weak var email_TxtFd: UITextField!
-    @IBOutlet weak var MainVw_EmailTxtFld: UIView!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUI()
+        self.setupRoundedBorder(for: vwTxtFld)
+        self.setupRoundedBorder(for: vw_Flag)
+        self.setupRoundedBorder(for: vw_TxtFldPhoneNumber)
+        applyGradientButtonStyle(to: btn_Continue)
+        segment_vw.layer.cornerRadius = 12
+           segment_vw.backgroundColor = UIColor.lightGray.withAlphaComponent(0.2)
+           
+           updateSegmentUI(isEmailSelected: true)
+        // Do any additional setup after loading the view.
+    }
+    
+    
+    @IBAction func action_PhoneNumber(_ sender: Any) {
+        updateSegmentUI(isEmailSelected: false)
+        
+    }
+    @IBAction func action_Email(_ sender: Any) {
+        updateSegmentUI(isEmailSelected: true)
+        
+    }
+    
+    func updateSegmentUI(isEmailSelected: Bool) {
+        
+        let selectedFont = FontManager.inter(.medium, size: 14.0)
+        let normalFont = FontManager.inter(.regular, size: 12.0)
+        
+        let selectedColor = UIColor.white
+        let normalColor = UIColor.black
+        
+        if isEmailSelected {
+            // Email Selected
+            self.isEmailSelected = isEmailSelected
+            btn_email.backgroundColor = UIColor(hex: "#7EB268")
+            btn_email.setTitleColor(selectedColor, for: .normal)
+            btn_email.setTitleColor(selectedColor, for: .selected)
+            btn_email.titleLabel?.font = selectedFont
+            
+            btn_PhoneNumber.backgroundColor = .clear
+            btn_PhoneNumber.setTitleColor(normalColor, for: .normal)
+            btn_PhoneNumber.setTitleColor(normalColor, for: .selected)
+            btn_PhoneNumber.titleLabel?.font = normalFont
+            btn_PhoneNumber.layer.cornerRadius = 10
+            btn_email.layer.cornerRadius = 10
+            self.vw_passStack.isHidden = true
+            self.vw_EmailStack.isHidden = false
+        } else {
+            // Phone Selected
+            self.isEmailSelected = isEmailSelected
+            btn_PhoneNumber.backgroundColor = UIColor(hex: "#7EB268")
+            btn_PhoneNumber.setTitleColor(selectedColor, for: .normal)
+            btn_PhoneNumber.setTitleColor(selectedColor, for: .selected)
+            btn_PhoneNumber.titleLabel?.font = selectedFont
+            
+            btn_email.backgroundColor = .clear
+            btn_email.setTitleColor(normalColor, for: .normal)
+            btn_email.setTitleColor(normalColor, for: .selected)
+            btn_email.titleLabel?.font = normalFont
+            btn_PhoneNumber.layer.cornerRadius = 10
+            btn_email.layer.cornerRadius = 10
+            self.vw_passStack.isHidden = false
+            self.vw_EmailStack.isHidden = true
+        }
+    }
+    func setupRoundedBorder(for view: UIView) {
+        view.layer.cornerRadius = 10
+        view.layer.borderWidth = 1.0
+        view.layer.borderColor = UIColor(named:"borderColor")?.cgColor
+        view.clipsToBounds = true
+    }
+    private func setUI(){
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
           tapGesture.cancelsTouchesInView = false // important
           self.view.addGestureRecognizer(tapGesture)
-        self.setupRoundedBorder(for: vwTxtFld)
-        self.setupRoundedBorder(for: phoneNumberVw)
-        self.setupRoundedBorder(for: MainVw_EmailTxtFld)
-        applyGradientButtonStyle(to: btn_Continue)
-        self.setupSignInText()
-    }
-    
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-    }
-    
-    @objc func dismissKeyboard() {
-        self.view.endEditing(true)
-    }
-    func setupSignInText() {
-        let fullText = "Already have an account? Sign In"
-        let signInText = "Sign In"
-        
-        let attributedString = NSMutableAttributedString(string: fullText)
-        
-        // Full text → Black color + regular font
-        attributedString.addAttributes([
-            .font: FontManager.inter(.regular, size: 13.0),
-            .foregroundColor: UIColor.black
-        ], range: NSRange(location: 0, length: fullText.count))
-        
-        // Highlight "Sign In" → Green + Medium font
-        let range = (fullText as NSString).range(of: signInText)
-        attributedString.addAttributes([
-            .foregroundColor: UIColor(hex: "#7EB268"),
-            .font: FontManager.inter(.medium, size: 15.0)
-        ], range: range)
-        
-        btnSignIn.setAttributedTitle(attributedString, for: .normal)
-    }
-    func setUnderlinedButtonTitle(
-        button: UIButton,
-        title: String,
-        font: UIFont,
-        color: UIColor
-    ) {
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: font,
-            .foregroundColor: color,
-            .underlineStyle: NSUnderlineStyle.single.rawValue
-        ]
-        
-        let attributedTitle = NSAttributedString(string: title, attributes: attributes)
-        button.setAttributedTitle(attributedTitle, for: .normal)
-    }
-    private func setUI(){
+        #if BackpackerHire
+        self.header_ImgTop.constant = 20
+        #else
+        self.header_ImgTop.constant = 70
+        #endif
+        picker_Vw.delegate = self
+        picker_Vw.dataSource = self
+        picker_Vw.setCountryByName("India")
+        picker_Vw.showCountryNameInView = false
+        picker_Vw.showCountryCodeInView = false
+        picker_Vw.showPhoneCodeInView = false
+        picker_Vw.flagImageView.isHidden = true
+        self.lbl_errorPhneNumber.isHidden = true
+        txtFld_PhoneNumber.delegate = self
+        txtFld_PhoneNumber.addTarget(self, action: #selector(emailTextChanged), for: .editingChanged)
+        txtFld_PhoneNumber.keyboardType = .phonePad
+        txtFld_Email.delegate = self
+        txtFld_Email.addTarget(self, action: #selector(phoneNumberTextChanged), for: .editingChanged)
         self.btn_term_Topconstraint.constant = 0.0
         self.btn_trmcondition.tag = 0
         self.lbl_temsandCondition.textColor = UIColor(named: "subTitleColor")
@@ -110,37 +157,25 @@ class LoginVC: UIViewController {
         self.lblSubTitle.font = FontManager.inter(.regular, size: 14.0)
         self.txtFld_PhoneNumber.font = FontManager.inter(.regular, size: 17.0)
         self.lbl_EntrNumber.font = FontManager.inter(.medium, size: 14.0)
-        self.lbl_herader_EnterEmail.font = FontManager.inter(.medium, size: 14.0)
+        self.lbl_Header_PhneBunber.font = FontManager.inter(.medium, size: 14.0)
+        self.txtFld_Email.placeholder = Constants.Placeholder.email
         self.txtFld_PhoneNumber.placeholder = Constants.Placeholder.phoneNumber
-        self.email_TxtFd.placeholder = Constants.Placeholder.email
         self.txtFld_PhoneNumber.font = FontManager.inter(.regular, size: 14.0)
-        self.email_TxtFd.font = FontManager.inter(.regular, size: 14.0)
-        self.txtFld_PhoneNumber.keyboardType = .phonePad
-        self.email_TxtFd.keyboardType = .emailAddress
+        self.txtFld_Email.font = FontManager.inter(.regular, size: 14.0)
+        self.txtFld_Email.keyboardType = .emailAddress
         self.btn_Continue.layer.cornerRadius = 10.0
-        picker_Vw.delegate = self
-        picker_Vw.dataSource = self
-        picker_Vw.setCountryByName("India")
-        picker_Vw.showCountryNameInView = false
-        picker_Vw.showCountryCodeInView = false
-        picker_Vw.showPhoneCodeInView = false
-        picker_Vw.flagImageView.isHidden = true
         self.lbl_Error.font = FontManager.inter(.regular, size: 10.0)
         self.lbl_Error.isHidden = true
-        self.lbl_emailEror.font = FontManager.inter(.regular, size: 10.0)
-        self.lbl_emailEror.isHidden = true
-        self.lbl_emailError_height.constant = 0.0
-        self.lbl_phoneCode.text = picker_Vw.selectedCountry.phoneCode
-        self.lbl_phoneCode.font = FontManager.inter(.regular, size: 14.0)
-        self.imgFlg.image = picker_Vw.selectedCountry.flag
+        self.lbl_errorPhneNumber.font = FontManager.inter(.regular, size: 10.0)
+        self.lbl_errorPhneNumber.isHidden = true
         self.btn_Continue.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
-        self.txtFld_PhoneNumber.delegate = self
-        self.email_TxtFd.delegate = self
         txtFld_PhoneNumber.returnKeyType = .done
-        email_TxtFd.returnKeyType = .done
-        btn_countryPicker.addTarget(self, action: #selector(selectCountryAction(_:)), for: .touchUpInside)
         self.lbl_temsandCondition.isUserInteractionEnabled = true
         self .setupTermsLabel()
+        self.lbl_countryCode.text = picker_Vw.selectedCountry.phoneCode
+        self.lbl_countryCode.font = FontManager.inter(.regular, size: 14.0)
+        self.img_flag.image = picker_Vw.selectedCountry.flag
+        btn_countryPicker.addTarget(self, action: #selector(selectCountryAction(_:)), for: .touchUpInside)
 #if BackpackerHire
         self.logo_Img.image = UIImage(named: "Logo2")
         self.img_logo_bottom.constant = 0
@@ -152,6 +187,20 @@ class LoginVC: UIViewController {
         self.img_Logo_width.constant = 120
         self.img_logo_Height.constant = 120
 #endif
+    }
+    @objc func dismissKeyboard() {
+        self.view.endEditing(true)
+    }
+    @objc func emailTextChanged(_ textField: UITextField) {
+       
+    }
+    @objc func phoneNumberTextChanged(_ textField: UITextField) {
+        
+        
+    }
+    @objc func selectCountryAction(_ sender: Any) {
+        picker_Vw.showCountriesList(from: self)
+        
     }
     private func setupTermsLabel() {
         let text = "I have read and agree to the Privacy Policy and Terms & Conditions"
@@ -182,41 +231,6 @@ class LoginVC: UIViewController {
         // Add tap gesture recognizer
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapOnLabel(_:)))
         lbl_temsandCondition.addGestureRecognizer(tapGesture)
-    }
-    func validateEmail() -> Bool {
-        
-        let email = email_TxtFd.text?
-            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        
-        // ✅ Check empty
-        if email.isEmpty {
-            lbl_emailEror.isHidden = false
-            lbl_emailEror.text = "Email cannot be empty."
-            btn_term_Topconstraint.constant = 10.0
-            lbl_emailError_height.constant = 20.0
-            return false
-        }
-        
-        // ✅ Email Regex Validation
-        let emailPredicate = NSPredicate(
-            format: "SELF MATCHES %@",
-            "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
-        )
-        
-        if emailPredicate.evaluate(with: email) {
-            print("✅ Valid Email")
-            lbl_emailEror.isHidden = true
-            lbl_emailEror.text = ""
-            btn_term_Topconstraint.constant = 2.0
-            lbl_emailError_height.constant = 0.0
-            return true
-        } else {
-            lbl_emailEror.isHidden = false
-            lbl_emailEror.text = "Please enter a valid email address."
-            btn_term_Topconstraint.constant = 10.0
-            lbl_emailError_height.constant = 20.0
-            return false
-        }
     }
     @objc private func handleTapOnLabel(_ gesture: UITapGestureRecognizer) {
         guard let label = gesture.view as? UILabel,
@@ -267,14 +281,14 @@ class LoginVC: UIViewController {
 #endif
         }
     }
-    
-    
+    @IBAction func back(_ sender: Any) {
+        self.navigationController?.popViewController(animated: true)
+    }
     private func openURL(_ urlString: String) {
         if let url = URL(string: urlString) {
             UIApplication.shared.open(url)
         }
     }
-    
     /// Helper: Detect which text index was tapped
     private func characterRange(at point: CGPoint, in label: UILabel) -> NSRange? {
         guard let attributedText = label.attributedText else { return nil }
@@ -314,70 +328,86 @@ class LoginVC: UIViewController {
             self.btn_trmcondition.setImage(UIImage(named: "Checkbox"), for: .normal)
         }
     }
-    @objc func selectCountryAction(_ sender: Any) {
-        picker_Vw.showCountriesList(from: self)
-        
-    }
     
-    //MARK: - Action
-    
-    @IBAction func action_Continue(_ sender: Any) {
-        self.view.endEditing(true)
-        
-        let isPhoneValid = validatePhoneNumber()
-        let isEmailValid = validateEmail()
-        
-        // Check if at least one is valid
-        if !isPhoneValid && !isEmailValid {
-            return
-        }
-        
-        // Check Terms & Conditions
-        if btn_trmcondition.tag != 1 {
-            AlertManager.showAlert(
-                on: self,
-                title: "Terms & Conditions Required",
-                message: "You must agree to the Terms & Conditions to continue."
-            )
-            return
-        }
-        
-        // All good ✅
-        loginApiCall()
-    }
-    func setupRoundedBorder(for view: UIView) {
-        view.layer.cornerRadius = 10
-        view.layer.borderWidth = 1.0
-        view.layer.borderColor = UIColor(named:"borderColor")?.cgColor
-        view.clipsToBounds = true
-    }
-    
-    @IBAction func action_termsAndCondtionBtn(_ sender: Any) {
-        
+    @IBAction func btn_termsCondition(_ sender: Any) {
         self.handleTermConditionBtn()
     }
     
-    @IBAction func action_signIN(_ sender: Any) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let viewController = storyboard.instantiateViewController(withIdentifier: "EmailVC") as? EmailVC{
-            self.navigationController?.pushViewController(viewController, animated: true)
+    @IBAction func btn_continue(_ sender: Any) {
+        self.view.endEditing(true)
+        if isEmailSelected {
+            if self.validateEmail() {
+                if self.btn_trmcondition.tag == 1{
+                    self.loginApiCall()
+                }else{
+                    AlertManager.showAlert(
+                        on: self,
+                        title: "Terms & Conditions Required",
+                        message: "You must agree to the Terms & Conditions to create an account or log in."
+                    )
+                    
+                }
+                
+            }
+        }else{
+            if self.validatePhoneNumber() {
+                if self.btn_trmcondition.tag == 1{
+                    self.loginApiCall()
+                }else{
+                    AlertManager.showAlert(
+                        on: self,
+                        title: "Terms & Conditions Required",
+                        message: "You must agree to the Terms & Conditions to create an account or log in."
+                    )
+                    
+                }
+            }
+        }
+      
+    }
+    func validateEmail() -> Bool {
+        
+        let email = txtFld_Email.text?
+            .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        
+        // ✅ Check empty
+        if email.isEmpty {
+            lbl_Error.isHidden = false
+            lbl_Error.text = "Email cannot be empty."
+            btn_term_Topconstraint.constant = 10.0
+            return false
         }
         
-    }
-    @IBAction func action_LoginViaEmail(_ sender: UIButton) {
-     
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let viewController = storyboard.instantiateViewController(withIdentifier: "EmailVC") as? EmailVC{
-            self.navigationController?.pushViewController(viewController, animated: true)
+        // ✅ Email Regex Validation
+        let emailPredicate = NSPredicate(
+            format: "SELF MATCHES %@",
+            "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+        )
+        
+        if emailPredicate.evaluate(with: email) {
+            print("✅ Valid Email")
+            lbl_Error.isHidden = true
+            lbl_Error.text = ""
+            btn_term_Topconstraint.constant = 5.0
+            return true
+        } else {
+            lbl_Error.isHidden = false
+            lbl_Error.text = "Please enter a valid email address."
+            btn_term_Topconstraint.constant = 10.0
+            return false
         }
     }
+    
+    
+   
 }
-//MARK: - EXtension
-extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITextFieldDelegate{
+
+extension EmailVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITextFieldDelegate{
+    
     func countryPickerView(_ countryPickerView: CountryPickerView, didSelectCountry country: Country) {
         // Only countryPickerInternal has it's delegate set
-        self.lbl_phoneCode.text  = country.phoneCode
-        self.imgFlg.image = country.flag
+        self.lbl_countryCode.text  = country.phoneCode
+        self.img_flag.image = country.flag
         if txtFld_PhoneNumber.text?.isEmpty == false{
             let _ =   self.validatePhoneNumber()
         }
@@ -403,14 +433,14 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
         
         // Check for empty fields
         if phoneNumber.isEmpty {
-            self.lbl_Error.isHidden = false
-            self.lbl_Error.text = "Phone number cannot be empty."
+            self.lbl_errorPhneNumber.isHidden = false
+            self.lbl_errorPhneNumber.text = "Phone number cannot be empty."
             self.btn_term_Topconstraint.constant = 10.0
             return false
         }
         if phoneCode.isEmpty {
-            self.lbl_Error.isHidden = false
-            self.lbl_Error.text = "Please select a country code."
+            self.lbl_errorPhneNumber.isHidden = false
+            self.lbl_errorPhneNumber.text = "Please select a country code."
             self.btn_term_Topconstraint.constant = 10.0
             return false
         }
@@ -419,13 +449,13 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
         let  isValid   = ValidationManager.isValidPhoneNumber(phoneNumber, regionCode: region)
         if isValid {
             print("-Valid number")
-            self.lbl_Error.isHidden = true
-            self.lbl_Error.text = ""
-            self.btn_term_Topconstraint.constant = 2.0
+            self.lbl_errorPhneNumber.isHidden = true
+            self.lbl_errorPhneNumber.text = ""
+            self.btn_term_Topconstraint.constant = 5.0
             return true
         } else {
-            self.lbl_Error.isHidden = false
-            self.lbl_Error.text = Constants.Alert.invalidPhoneMessage
+            self.lbl_errorPhneNumber.isHidden = false
+            self.lbl_errorPhneNumber.text = Constants.Alert.invalidPhoneMessage
             self.btn_term_Topconstraint.constant = 10.0
             return false
         }
@@ -437,7 +467,7 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 _ = self.validatePhoneNumber()
             }
-        }else{
+        }else if textField == self.txtFld_Email{
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 _ = self.validateEmail()
             }
@@ -452,10 +482,7 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
     
     
 }
-
-
-
-extension LoginVC {
+extension EmailVC {
     private func loginApiCall(){
         LoaderManager.shared.show()
         var role = String()
@@ -467,15 +494,28 @@ extension LoginVC {
         role = "1"
         token = UserDefaultsManager.shared.fcmToken ?? ""
 #endif
-        
-        let loginRequest = LoginRequest(
-            roleType: role,
-            mobileNumber: self.txtFld_PhoneNumber.text!,
-            countryCode: picker_Vw.selectedCountry.phoneCode,
-            countryName: picker_Vw.selectedCountry.name,
-            fcmToken: token, email: self.email_TxtFd.text!
-        )
-        viewModel.SignUPUser(loginRequest: loginRequest) { success, response, statusCode in
+        var logInType : String = "mobile"
+        var req : SignInRequest
+        if isEmailSelected == true{
+            logInType = "email"
+            req = SignInRequest(
+                roleType: role,
+                mobileNumber: "",
+                countryCode: "",
+                countryName: "",
+                email: self.txtFld_Email.text!, loginType: logInType
+            )
+        }else{
+            logInType = "mobile"
+            req = SignInRequest(
+                roleType: role,
+                mobileNumber: self.txtFld_PhoneNumber.text!,
+                countryCode: picker_Vw.selectedCountry.phoneCode,
+                countryName: picker_Vw.selectedCountry.name,
+                email: "", loginType: logInType
+            )
+        }
+        viewModel.loginUser(loginRequest: req) { success, response, statusCode in
             if let statusCode = statusCode {
                 let httpStatus = HTTPStatusCode(rawValue: statusCode)
                 LoaderManager.shared.hide()

@@ -366,7 +366,7 @@ extension FavourateJobVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                         cell.lbl_Title.text = accommodation.name
                          let amount = "20"
                         cell.lblAmount.isHidden = false
-                        cell.lblAmount.text = "From $,\(amount) per adult"
+                        cell.lblAmount.text = "From $\(amount) per adult"
                         cell.lblRating.isHidden = true
                         cell.lbl_review.isHidden = true
                         cell.cosmosVw.isHidden = true

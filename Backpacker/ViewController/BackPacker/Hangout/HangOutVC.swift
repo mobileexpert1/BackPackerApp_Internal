@@ -55,7 +55,7 @@ class HangOutVC: UIViewController {
         super.viewDidLoad()
         
         self.setUpUI()
-
+        
         
     }
     
@@ -65,11 +65,11 @@ class HangOutVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 #if Backapacker
-                self.listOfAllBackPackerHangOuts()
-                
-                #else
+        self.listOfAllBackPackerHangOuts()
+        
+#else
         self.getPriceFormStore()
-                self.listOfAllEmployerHangOuts()
+        self.listOfAllEmployerHangOuts()
 #endif
     }
     func setUpUI(){
@@ -82,8 +82,8 @@ class HangOutVC: UIViewController {
         self.lbl_NDataFound.font = FontManager.inter(.medium, size: 16.0)
         self.lbl_NDataFound.isHidden = true
 #if BackpackerHire
-//        self.maVw_Height.constant = 0
-//        self.lbl_nearBackpacker_Height.constant = 0
+        //        self.maVw_Height.constant = 0
+        //        self.lbl_nearBackpacker_Height.constant = 0
         self.btnAdd.isHidden = false
         self.btnAdd.isUserInteractionEnabled = true
 #else
@@ -98,8 +98,8 @@ class HangOutVC: UIViewController {
         self.collectIOnVw.register(nib, forCellWithReuseIdentifier: "AccomodationCVC")
         
         collectIOnVw.register(UINib(nibName: "LoaderFooterViewCVC", bundle: nil),
-                         forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
-                         withReuseIdentifier: "LoaderFooterViewCVC")
+                              forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+                              withReuseIdentifier: "LoaderFooterViewCVC")
         self.searchVw.layer.borderColor = UIColor.black.cgColor
         self.searchVw.layer.borderWidth = 1.0
         self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)
@@ -124,7 +124,7 @@ class HangOutVC: UIViewController {
     
     @objc private func refreshCollectionData() {
         // Reset pagination and loading flags
-
+        
         self.page = 1
         self.isAllDataLoaded = false
         self.isLoadingMoreData = false
@@ -136,18 +136,18 @@ class HangOutVC: UIViewController {
         // Fetch data
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
 #if Backapacker
-                self.listOfAllBackPackerHangOuts()
-                
-                #else
-                self.listOfAllEmployerHangOuts()
+            self.listOfAllBackPackerHangOuts()
+            
+#else
+            self.listOfAllEmployerHangOuts()
 #endif
-       
+            
         }
         
     }
-   
+    
     @IBAction func action_ClearTExtFld(_ sender: Any) {
-
+        
         self.isComFromSearch = false
         txtFld.text = ""
         lastSearchedText = ""
@@ -155,12 +155,12 @@ class HangOutVC: UIViewController {
         txtFld.resignFirstResponder()
         self.btn_cleartxtFld.isHidden = true
 #if Backapacker
-                self.listOfAllBackPackerHangOuts()
-                
-                #else
-                self.listOfAllEmployerHangOuts()
+        self.listOfAllBackPackerHangOuts()
+        
+#else
+        self.listOfAllEmployerHangOuts()
 #endif
-       
+        
     }
     
     @IBAction func action_filter(_ sender: Any) {
@@ -172,15 +172,15 @@ class HangOutVC: UIViewController {
             print("Facilities: \(facilities ?? "-")")
             print("Sort by: \(sortBy ?? "-")")
             print("Radius: \(radius ?? "-")")
-
+            
             self?.radius = Int(radius ?? "")
             // You can now use the data to filter your content
             self?.page = 1
 #if Backapacker
-                self?.listOfAllBackPackerHangOuts()
-                
-                #else
-                self?.listOfAllEmployerHangOuts()
+            self?.listOfAllBackPackerHangOuts()
+            
+#else
+            self?.listOfAllEmployerHangOuts()
 #endif
         }
         
@@ -265,17 +265,17 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
                     } else {
                         let url3000 = URL(string: "\(ApiConstants.API.API_IMAGEURL)\(firstIMage)")
                         let url3001 = URL(string: "\(ApiConstants.API.API_IMAGEURL)\(firstIMage)")
-
+                        
                         cell.imgVw.sd_setImage(with: url3000, placeholderImage: UIImage(named: "img_Placehodler")) { image, _, _, _ in
                             if image == nil {
                                 cell.imgVw.sd_setImage(with: url3001, placeholderImage: UIImage(named: "img_Placehodler"))
                             }
                         }
                     }
-
+                    
                 }else{
                     cell.imgVw.image = UIImage(named: "img_Placehodler")
-               }
+                }
                 cell.onItemTapped = { [weak self] val in
                     let id = self?.hangOutList[indexPath.item].id
                     self?.moveToDetail(id: id ?? "")
@@ -285,7 +285,7 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
                     if let id = self?.hangOutList[indexPath.item].id {
 #if Backapacker
                         self?.MakeJobHangOutFav(id: id)
-                        #endif
+#endif
                         
                     }
                     
@@ -300,7 +300,7 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
                 return UICollectionViewCell()
             }
             
-           
+            
         }
         
         
@@ -318,15 +318,15 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-         let id  = hangOutList[indexPath.item].id
-            let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
+        let id  = hangOutList[indexPath.item].id
+        let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
         if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "HangOutDetailVC") as? HangOutDetailVC {
             jobDescriptionVC.hangoutID = id
             // Optional: pass selected job title
             self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
         }
         
-       
+        
     }
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
@@ -377,7 +377,7 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
         
         // Check if near bottom
         if offsetY > contentHeight - frameHeight - 300 {
-     
+            
             if !isComeFromPullTorefresh {
                 if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
                     isLoadingMoreData = true
@@ -385,24 +385,24 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
                     collectIOnVw.reloadSections(IndexSet(integer: 0))
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
 #if Backapacker
-                self.listOfAllBackPackerHangOuts()
-                
-                #else
-                self.listOfAllEmployerHangOuts()
+                        self.listOfAllBackPackerHangOuts()
+                        
+#else
+                        self.listOfAllEmployerHangOuts()
 #endif
                     }
                 }
             }
         }
     }
-/*
- func collectionView(_ collectionView: UICollectionView,
-                     layout collectionViewLayout: UICollectionViewLayout,
-                     sizeForItemAt indexPath: IndexPath) -> CGSize {
+    /*
+     func collectionView(_ collectionView: UICollectionView,
+     layout collectionViewLayout: UICollectionViewLayout,
+     sizeForItemAt indexPath: IndexPath) -> CGSize {
      return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 210) // Adjust height based on content
- }
- */
-   
+     }
+     */
+    
     
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
@@ -448,7 +448,7 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
         return isLoadingMoreData ? CGSize(width: collectionView.frame.width, height: 100) : .zero
     }
     
-  
+    
 }
 
 extension HangOutVC{
@@ -524,7 +524,7 @@ extension HangOutVC{
                                 // Pagination end check
                                 self.isAllDataLoaded = newAccommodations.count < self.perPage
                                 
-                             
+                                
                                 self.isLoadingMoreData = false
                                 self.collectIOnVw.reloadData()
                                 self.refreshControl.endRefreshing()
@@ -572,7 +572,7 @@ extension HangOutVC{
                             self.lastContentOffset = 0.0
                             self.collectIOnVw.setContentOffset(.zero, animated: true)
                             self.isComeFromPullTorefresh = false
-                           
+                            
                             AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                                 self.navigationController?.popViewController(animated: true)
                             }
@@ -631,7 +631,7 @@ extension HangOutVC{
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 }
             }
-               }
+        }
     }
     
     
@@ -706,7 +706,7 @@ extension HangOutVC{
                                 // Pagination end check
                                 self.isAllDataLoaded = newAccommodations.count < self.perPage
                                 
-                             
+                                
                                 self.isLoadingMoreData = false
                                 self.collectIOnVw.reloadData()
                                 self.refreshControl.endRefreshing()
@@ -754,7 +754,7 @@ extension HangOutVC{
                             self.lastContentOffset = 0.0
                             self.collectIOnVw.setContentOffset(.zero, animated: true)
                             self.isComeFromPullTorefresh = false
-                           
+                            
                             AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
                                 self.navigationController?.popViewController(animated: true)
                             }
@@ -808,7 +808,7 @@ extension HangOutVC : UITextFieldDelegate{
         searchDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
             guard let self = self else { return }
             let trimmedSearch = updatedText.trimmingCharacters(in: .whitespacesAndNewlines)
-
+            
             
             if self.lastSearchedText != trimmedSearch {
                 self.lastSearchedText = trimmedSearch
@@ -817,14 +817,14 @@ extension HangOutVC : UITextFieldDelegate{
 #if Backapacker
                 self.listOfAllBackPackerHangOuts()
                 
-                #else
+#else
                 self.listOfAllEmployerHangOuts()
 #endif
             }
             
-           
             
-         
+            
+            
         }
         return true
     }
@@ -916,7 +916,7 @@ extension HangOutVC{
                         
                     case .unauthorizedToken:
                         LoaderManager.shared.hide()
-                      
+                        
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
@@ -930,7 +930,7 @@ extension HangOutVC{
                         AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
                     case .internalServerError:
                         LoaderManager.shared.hide()
-                      
+                        
                         AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
                         
                     }
@@ -939,6 +939,6 @@ extension HangOutVC{
         }
     }
     
-    #endif
-   
+#endif
+    
 }

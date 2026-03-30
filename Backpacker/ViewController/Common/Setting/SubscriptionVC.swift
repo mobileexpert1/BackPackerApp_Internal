@@ -55,7 +55,7 @@ class SubscriptionVC: UIViewController {
         tblVw.dataSource = self
         tblVw.reloadData()
         manageHeight()
-
+        SubscriptionManager.shared.selectedPlan = .free
         applyGradientButtonStyle(to: self.btnProceed)
         self.btn_restorePurchase.titleLabel?.font = FontManager.inter(.medium, size: 12.0)
         self.btn_restorePurchase.titleLabel?.textColor = UIColor(named: "themeColor")
@@ -73,6 +73,7 @@ class SubscriptionVC: UIViewController {
                 }
                 
                 refreshControl.addTarget(self, action: #selector(refreshScrollView), for: .valueChanged)
+        
         self.handleAppearanceFrBottomBtns()
         // Text with highlighted parts
                 let text = "For more information, please visit our Terms of Use and Privacy Policy."
@@ -391,11 +392,19 @@ extension SubscriptionVC {
                                         } else {
                                             self.selectedIndex = IndexPath(row: 0, section: 0) // default
                                         }
+                                        self.selectedPlanId = self.plansN?[self.selectedIndex?.row ?? 0].iosAttributes.name ?? ""
+                                        if self.selectedPlanId == "Free/Starter Plan" {
+                                            self.btnProceed.isUserInteractionEnabled = false
+                                        }else{
+                                            self.btnProceed.isUserInteractionEnabled = true
+                                        }
                                     }
                                 }else{
+                                    self.btnProceed.isUserInteractionEnabled = false
                                     AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
                                 }
                             } else {
+                                self.btnProceed.isUserInteractionEnabled = false
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                                 LoaderManager.shared.hide()
                             }
@@ -404,6 +413,7 @@ extension SubscriptionVC {
                             self.manageHeight()
                             self.handleAppearanceFrBottomBtns()
                         case .badRequest:
+                            self.btnProceed.isUserInteractionEnabled = false
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                             self.refreshControl.endRefreshing()
                         case .unauthorized :

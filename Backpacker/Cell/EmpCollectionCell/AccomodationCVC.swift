@@ -59,7 +59,7 @@ class AccomodationCVC: UICollectionViewCell {
         lblRating.text = "\(rating)"
         lbl_review.text = "(\(reviewCount) reviews)"
         cosmosVw.rating = rating
-        lblAmount.text = "From $,\(amount) per adult"
+        lblAmount.text = "From $\(amount) per adult"
     }
     @objc private func heartTapped() {
         onHeartTapped?(item ?? 0)

@@ -8,18 +8,19 @@
 import Foundation
 
 struct ApiConstants {
-    struct API { 
+    struct API {
         static let DEBUG_MODE_ON = true
         private static let BASE_URL: String = {
             if DEBUG_MODE_ON {
-                return "https://backpacker.csdevhub.com/"//"https://backpacker.csdevhub.com/"//"https://backpacker.csdevhub.com/"//"http://http://192.168.11.4:3003/"
+                return "https://backpacker.csdevhub.com/"// "https://backpacker.csdevhub.com/"
             } else {
-                return "https://backpacker.csdevhub.com/"//"https://backpacker.csdevhub.com/"//"https://backpacker.csdevhub.com/"//"http://192.168.11.4:3003/"
+                return "https://backpacker.csdevhub.com/"// "https://backpacker.csdevhub.com/"
             }
         }()
         
         static let API_IMAGEURL = BASE_URL + "assets/"
         static let LOGIN_USER = BASE_URL + "api/auth/login"
+        static let SignUp_USER = BASE_URL + "api/auth/signup"
         static let OTP_SEND = BASE_URL + "api/auth/verifyOtp"
         static let OTP_RESEND = BASE_URL + "api/auth/resendOtp"
         static let REFRESH_TOKEN = BASE_URL + "api/auth/refreshToken"
@@ -128,7 +129,7 @@ struct ApiConstants {
             long: Double,
             radius: Int? = nil,
             search: String? = nil
-        ) -> String {
+        ) -> String {  //ductatale
             var url =
             "\(BASE_URL)api/backpackers/hangout?page=\(page)&perPage=\(perPage)&lat=\(lat)&long=\(long)"
             if let radius = radius {
@@ -662,9 +663,9 @@ struct ApiConstants {
         
         //MARK: - Delete Profile
         static let DELETE_PROFILEW = BASE_URL + "api/profile"
-       //MARK: - Subscriptions
+        //MARK: - Subscriptions
         
-       // https://backpacker.csdevhub.com/api/admin/subscription
+        // https://backpacker.csdevhub.com/api/admin/subscription
         static let GET_LISTOF_SUBSCRIPTIONS = BASE_URL + "api/subscription"
         static func GET_LISTOF_SUBSCRIPTIONSNEW(
             platform: String, country: String
@@ -687,15 +688,15 @@ struct ApiConstants {
             let url = "\(BASE_URL)api/subscription/currentPlan/check?locID=\(locID)"
             return url
         }
-        }
- 
- 
+    }
+    
+    
     struct Products{
         static let product_basic = "com.shiftly.app.subscription.basic"
         static let product_growth = "com.shiftly.app.subscription.growth"
         static let product_pro = "com.shiftly.app.subscription.pro"
         static let product_headOffice = "com.shiftly.app.subscription.headOffice"
-      
+        
         
         static let defaultFreePlan = "Free/Starter Plan"
     }
@@ -705,35 +706,36 @@ struct ApiConstants {
     struct Alert {
         static let invalidPhoneTitle = "Invalid Phone Number"
         static let invalidPhoneMessage =
-            "Please enter a valid phone number based on your selected country."
+        "Please enter a valid phone number based on your selected country."
         static let okButton = "OK"
     }
-
+    
     struct General {
         static let appName = "BackPacker"
         static let somethingWentWrong =
-            "Something went wrong. Please try again."
+        "Something went wrong. Please try again."
     }
-
+    
     struct Placeholder {
         static let phoneNumber = "Enter your phone number"
     }
-
+    
     struct Keys {
         static let userToken = "user_token"
+        
         static let isLoggedIn = "is_logged_in"
     }
     struct Walkthrough {
         // Titles
         static let screen1Title =
-            "Backpackers can search for jobs based on their current location."
+        "Backpackers can search for jobs based on their current location."
         static let screen2Title =
-            "Enable location access to receive the most relevant job opportunities near you."
+        "Enable location access to receive the most relevant job opportunities near you."
         static let screen3Title =
-            "Backpackers can easily accept or reject job offers based on their preferences."
+        "Backpackers can easily accept or reject job offers based on their preferences."
         static let screen4Title =
-            "Set your availability to receive job offers that match your preferred working schedule."
-
+        "Set your availability to receive job offers that match your preferred working schedule."
+        
         // Image names (as in Assets.xcassets)
         static let screen1Image = "walkthrough_1"
         static let screen2Image = "walkthrough_2"

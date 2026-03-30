@@ -543,7 +543,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         if let accomodationList = accomodationList?[indexPath.item] {
                             cell.item = indexPath.item
                             cell.lbl_Title.text = accomodationList.name
-                            cell.lblAmount.text = "From $, \(accomodationList.price) per adult"
+                            cell.lblAmount.text = "From $\(accomodationList.price) per adult"
                             if let firstIMage = accomodationList.image.first{
                                 let baseURL1 = ApiConstants.API.API_IMAGEURL
                                 let baseURL2 = ApiConstants.API.API_IMAGEURL

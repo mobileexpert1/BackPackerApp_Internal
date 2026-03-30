@@ -11,14 +11,21 @@ import Alamofire
 class LogInVM {
     
     func loginUser(
-        loginRequest: LoginRequest,
+        loginRequest: SignInRequest,
         completion: @escaping (_ success: Bool, _ result: LoginResponse?, _ statusCode: Int?) -> Void
     ) {
         UserStore.shared.loginUser(params: loginRequest.asDictionary) { (success, result: LoginResponse?, statusCode: Int?) in
             completion(true, result, statusCode)
         }
     }
-
+    func SignUPUser(
+        loginRequest: LoginRequest,
+        completion: @escaping (_ success: Bool, _ result: LoginResponse?, _ statusCode: Int?) -> Void
+    ) {
+        UserStore.shared.SignUpUser(params: loginRequest.asDictionary) { (success, result: LoginResponse?, statusCode: Int?) in
+            completion(true, result, statusCode)
+        }
+    }
     func SendOtp(
         otpRequest: OtpRequest,
         completion: @escaping (_ success: Bool, _ result: OtpResponse?, _ statusCode: Int?) -> Void

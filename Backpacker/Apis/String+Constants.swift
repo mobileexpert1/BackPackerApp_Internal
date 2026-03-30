@@ -20,6 +20,7 @@ struct Constants{
 
     struct Placeholder {
         static let phoneNumber = "Enter your phone number"
+        static let email = "Enter your email"
     }
 
     struct Keys {

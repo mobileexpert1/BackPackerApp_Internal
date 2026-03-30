@@ -474,8 +474,8 @@ extension EmployerHomeVC{
                             if self.homeData?.jobslist?.count ?? 0 <= 0{
                                 self.showNoData(isShow: true)
                             }
-                            if self.homeData?.name?.isEmpty == true && self.homeData?.email?.isEmpty == true{
-                                self.showForceUpdatePopUp()
+                            if self.homeData?.name?.isEmpty == true || self.homeData?.email?.isEmpty == true{
+                                self.showForceUpdatePopUp(email: (self.homeData?.email)!)
                             }
                             DispatchQueue.main.async {
                                 LoaderManager.shared.hide()
@@ -541,9 +541,10 @@ extension  EmployerHomeVC: SkeletonTableViewDataSource {
     }
     
     
-    func showForceUpdatePopUp(){
+    func showForceUpdatePopUp(email:String){
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ForceUpdateVC") as! ForceUpdateVC
+        vc.email = email
         vc.modalPresentationStyle = .overFullScreen
         self.present(vc, animated: true)
     }
