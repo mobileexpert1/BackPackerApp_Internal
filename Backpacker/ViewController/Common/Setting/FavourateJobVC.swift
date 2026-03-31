@@ -272,7 +272,6 @@ extension FavourateJobVC: UICollectionViewDelegate, UICollectionViewDataSource, 
                 }
             }
             
-          
 #endif
             
         }

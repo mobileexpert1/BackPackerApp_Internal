@@ -64,6 +64,7 @@ class CommonGridVC: UIViewController {
     @IBOutlet weak var btn_Farm: UIButton!
     var selectedWork = ""
     @IBOutlet weak var btn_All: UIButton!
+    private let viewModelJOb = JobVM()
     override func viewDidLoad() {
         super.viewDidLoad()
         // Register the collection view cell
@@ -517,9 +518,21 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                         guard let self = self else { return }
                         print("Cell tapped at index----------: \(indexPath.item)")
                         // Navigate or perform any action
-//                    let id = self?.jobslist[indexPath.item].id
-//                    self?.jobId = id ?? ""
+                    let id = self.jobslist[indexPath.item].id
+                    self.jobId = id
+#if Backapacker
+                    self.MakeJobFavorate()
+                    #endif
+                    
                     }
+#if Backapacker
+                if jobslist[indexPath.item].favoriteStatus == 1 {
+                    cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
+                }else{
+                    cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
+                }
+#endif
+        
                 // Optionally configure cell
                 return cell
             }
@@ -899,4 +912,54 @@ extension CommonGridVC {
             }
         }
     }
+}
+
+extension CommonGridVC {
+#if Backapacker
+    func MakeJobFavorate(){
+        LoaderManager.shared.show()
+        viewModelJOb.MakeJOBFAVOURATE(id: self.jobId) { success, message ,statusCode in
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Job added to favorites"){
+                            self.getListOfAll()
+                        }
+                        
+                    } else {
+                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                    }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.MakeJobFavorate()
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                }
+            }
+               }
+    }
+    #endif
 }
