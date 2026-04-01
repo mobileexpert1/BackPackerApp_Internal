@@ -90,7 +90,7 @@ class CommonGridVC: UIViewController {
         self.lbl_nodata_Found.text = "No Jobs Found"
         self.lbl_nodata_Found.isHidden = true
         let nib2 = UINib(nibName: "SkeltonCVC", bundle: nil)
-               self.collVw.register(nib2, forCellWithReuseIdentifier: "SkeltonCVC")
+        self.collVw.register(nib2, forCellWithReuseIdentifier: "SkeltonCVC")
         collVw.isSkeletonable = true
         collVw.register(UINib(nibName: "AccomodationCVC", bundle: nil), forCellWithReuseIdentifier: "AccomodationCVC")
         collVw.register(UINib(nibName: "HomeJobCVC", bundle: nil), forCellWithReuseIdentifier: "HomeJobCVC")
@@ -124,24 +124,24 @@ class CommonGridVC: UIViewController {
         self.isAllDataLoaded = false
         self.isLoadingMoreData = false
         self.isLoading = true
-
+        
         // Start refreshing UI
         self.refreshControl.beginRefreshing()
         isComeFromPullTorefresh = true
         // Fetch data
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
 #if BackpackerHire
-        self.EmploerGetListOfAll()
+            self.EmploerGetListOfAll()
 #else
-        self.getListOfAll()
+            self.getListOfAll()
 #endif
         }
-       
+        
     }
     @IBAction func action_ClearSearch(_ sender: Any) {
         txtFldSearch.text = ""
-            lastSearchedText = ""
-            page = 1
+        lastSearchedText = ""
+        page = 1
         txtFldSearch.resignFirstResponder()
         self.btn_searchCross.isHidden = true
 #if BackpackerHire
@@ -149,7 +149,7 @@ class CommonGridVC: UIViewController {
 #else
         self.getListOfAll()
 #endif
-           
+        
     }
     
     func setUpStatus(){
@@ -248,8 +248,8 @@ class CommonGridVC: UIViewController {
         }
 #endif
         
-       
-       
+        
+        
         self.setTitleForSearch()
     }
     func setTitleForSearch(){
@@ -264,7 +264,7 @@ class CommonGridVC: UIViewController {
                         .foregroundColor: UIColor.black,
                         .font: FontManager.inter(.regular, size: 14.0)
                     ])
-               
+                
                 
             }else  if isComeFromHomeHangout == true{
                 txtFldSearch.attributedPlaceholder = NSAttributedString(
@@ -294,7 +294,7 @@ class CommonGridVC: UIViewController {
                         .foregroundColor: UIColor.black,
                         .font: FontManager.inter(.regular, size: 14.0)
                     ])
-               
+                
                 
             }else  if isComeFromHomeHangout == true{
                 txtFldSearch.attributedPlaceholder = NSAttributedString(
@@ -317,7 +317,7 @@ class CommonGridVC: UIViewController {
         }
 #endif
         
-       
+        
     }
     
     private func setUpVwWork(){
@@ -337,15 +337,15 @@ class CommonGridVC: UIViewController {
         self.lbl_Farm.font = FontManager.inter(.medium, size: 13.0)
         self.lbl_regional.font = FontManager.inter(.medium, size: 13.0)
         self.lbl_all_Border.isHidden = true
-        #else
+#else
         self.heigtWorkVw.constant = 0.0
         self.Vw_allWork.isHidden = true
         self.regionalVw.isHidden = true
         self.farmVw.isHidden = true
         self.WorkVw.isHidden = true
-        #endif
+#endif
         
-     
+        
     }
     
     @IBAction func action_back(_ sender: Any) {
@@ -388,7 +388,7 @@ class CommonGridVC: UIViewController {
             self.farmVw.isHidden = false
             self.lbl_all_Border.isHidden = false
         }
-     
+        
         
     }
     
@@ -418,15 +418,15 @@ class CommonGridVC: UIViewController {
 extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-
+        
         if isLoading ==  true{
             return 8
         }else{
             return jobslist.count
         }
-      
-       
-      
+        
+        
+        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -469,21 +469,21 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                 } else {
                     let url3000 = URL(string: "\(ApiConstants.API.API_IMAGEURL)\(item.image)")
                     let url3001 = URL(string: "\(ApiConstants.API.API_IMAGEURL)\(item.image)")
-
+                    
                     cell.imgVw.sd_setImage(with: url3000, placeholderImage: UIImage(named: "img_Placehodler")) { image, _, _, _ in
                         if image == nil {
                             cell.imgVw.sd_setImage(with: url3001, placeholderImage: UIImage(named: "img_Placehodler"))
                         }
                     }
                 }
-
+                
 #if BackpackerHire
-              
-                    cell.isComeForHiredetailpage = true
-                    cell.lbl_jobStatus.text = ""
-                    cell.statusVw.isHidden = true
-                    cell.SetUpHeight(isHeightShow: false)
-              
+                
+                cell.isComeForHiredetailpage = true
+                cell.lbl_jobStatus.text = ""
+                cell.statusVw.isHidden = true
+                cell.SetUpHeight(isHeightShow: false)
+                
 #else
                 if isComeFromHomeHangout == true { // New Job
                     cell.isComeForHiredetailpage = true
@@ -508,23 +508,23 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                 let duration1 = Date.durationString(from: strtTime , to: endTime) // "8 hr"
                 cell.lbl_duration.text = "Duration \(duration1)"
                 cell.onTap = { [weak self] val in
-
+                    
                     let id = self?.jobslist[indexPath.item].id
                     self?.jobId = id ?? ""
                     self?.navigateToDescriptionVC()
-
+                    
                 }
                 cell.onFavTap = { [weak self] val in
-                        guard let self = self else { return }
-                        print("Cell tapped at index----------: \(indexPath.item)")
-                        // Navigate or perform any action
+                    guard let self = self else { return }
+                    print("Cell tapped at index----------: \(indexPath.item)")
+                    // Navigate or perform any action
                     let id = self.jobslist[indexPath.item].id
                     self.jobId = id
 #if Backapacker
                     self.MakeJobFavorate()
-                    #endif
+#endif
                     
-                    }
+                }
 #if Backapacker
                 if jobslist[indexPath.item].favoriteStatus == 1 {
                     cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
@@ -532,33 +532,33 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                     cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
                 }
 #endif
-        
+                
                 // Optionally configure cell
                 return cell
             }
         }
-      
-           
-     
+        
+        
+        
     }
     
-  
+    
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-
+        
         guard kind == UICollectionView.elementKindSectionFooter else {
             return UICollectionReusableView()
         }
-
+        
         let footer = collectionView.dequeueReusableSupplementaryView(
             ofKind: kind,
             withReuseIdentifier: "LoaderFooterViewCVC",
             for: indexPath
         ) as! LoaderFooterViewCVC
-
+        
         footer.lbl_fetching.isHidden = false
         footer.activityIndicator.isHidden = false
-
+        
         if isAllDataLoaded {
             footer.lbl_fetching.text = "All data fetched"
             footer.activityIndicator.stopAnimating()
@@ -571,7 +571,7 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
             footer.activityIndicator.stopAnimating()
             footer.activityIndicator.isHidden = true
         }
-
+        
         return footer
     }
     func collectionView(_ collectionView: UICollectionView,
@@ -588,8 +588,8 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
             return CGSize(width: (width / 2) - 4, height: 195)
         }
     }
-
-
+    
+    
     
     // Horizontal spacing between items
     func collectionView(_ collectionView: UICollectionView,
@@ -609,21 +609,21 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         insetForSectionAt section: Int) -> UIEdgeInsets {
-     
+        
         if isComeFromHomeJob == true {
             return UIEdgeInsets(top: 5, left: 0, bottom: 4, right: 0)
         }else{
             return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         }
-       
+        
     }
-   
+    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForFooterInSection section: Int) -> CGSize {
         return isLoadingMoreData ? CGSize(width: collectionView.frame.width, height: 100) : .zero
     }
-   
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y < 0 {
             return
@@ -639,7 +639,7 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
         let frameHeight = scrollView.frame.size.height
-
+        
         if offsetY > contentHeight - frameHeight - 300 {
             if isComeFromPullTorefresh == false{
                 if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
@@ -648,62 +648,62 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                     page += 1
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5 ){
 #if BackpackerHire
-        self.EmploerGetListOfAll()
+                        self.EmploerGetListOfAll()
 #else
-        self.getListOfAll()
+                        self.getListOfAll()
 #endif
                     }
-                   
+                    
                 }
             }
-          
+            
         }
     }
 }
 
-    extension CommonGridVC: UITextFieldDelegate {
-        func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-            let currentText = textField.text ?? ""
-              
-              // Prevent leading space
-              if currentText.isEmpty && string == " " {
-                  return false
-              }
-              
-              guard let stringRange = Range(range, in: currentText) else { return true }
-              let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
-              
-              let hasText = !updatedText.trimmingCharacters(in: .whitespaces).isEmpty
-              btn_searchCross.isHidden = !hasText
-
-              // Cancel existing timer
-              searchDebounceTimer?.invalidate()
-
-              // Start a new timer (debounce delay)
-              searchDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
-                  guard let self = self else { return }
-                  let trimmedSearch = updatedText.trimmingCharacters(in: .whitespacesAndNewlines)
-
-                  if self.lastSearchedText != trimmedSearch {
-                      self.lastSearchedText = trimmedSearch
-                      self.page = 1
+extension CommonGridVC: UITextFieldDelegate {
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentText = textField.text ?? ""
+        
+        // Prevent leading space
+        if currentText.isEmpty && string == " " {
+            return false
+        }
+        
+        guard let stringRange = Range(range, in: currentText) else { return true }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        
+        let hasText = !updatedText.trimmingCharacters(in: .whitespaces).isEmpty
+        btn_searchCross.isHidden = !hasText
+        
+        // Cancel existing timer
+        searchDebounceTimer?.invalidate()
+        
+        // Start a new timer (debounce delay)
+        searchDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+            guard let self = self else { return }
+            let trimmedSearch = updatedText.trimmingCharacters(in: .whitespacesAndNewlines)
+            
+            if self.lastSearchedText != trimmedSearch {
+                self.lastSearchedText = trimmedSearch
+                self.page = 1
 #if BackpackerHire
-        self.EmploerGetListOfAll()
+                self.EmploerGetListOfAll()
 #else
-        self.getListOfAll()
+                self.getListOfAll()
 #endif
-                  }
-              }
-
-              return true
+            }
         }
-
-        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-            self.btn_searchCross.isHidden = true
-            textField.resignFirstResponder()
-            return true
-        }
+        
+        return true
     }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.btn_searchCross.isHidden = true
+        textField.resignFirstResponder()
+        return true
+    }
+}
 
 
 
@@ -959,7 +959,7 @@ extension CommonGridVC {
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 }
             }
-               }
+        }
     }
-    #endif
+#endif
 }

@@ -144,7 +144,6 @@ class EmailVC: UIViewController {
         picker_Vw.flagImageView.isHidden = true
         self.lbl_errorPhneNumber.isHidden = true
         txtFld_PhoneNumber.delegate = self
-        txtFld_PhoneNumber.addTarget(self, action: #selector(emailTextChanged), for: .editingChanged)
         txtFld_PhoneNumber.keyboardType = .phonePad
         txtFld_Email.delegate = self
         txtFld_Email.addTarget(self, action: #selector(phoneNumberTextChanged), for: .editingChanged)

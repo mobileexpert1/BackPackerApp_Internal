@@ -615,30 +615,6 @@ extension CommonLocationListVC{
                             self.plansN?.removeAll()
                             self.countsLoc = data.counts
                             completion(true)
-//                        if success == true {
-//                            if let data = result?.data {
-//                                self.isLoading = false
-//                                self.plansN?.removeAll()
-//                                self.countsLoc = data.counts
-//                                
-//                                completion(true)
-//                                
-//                            } else {
-//                                AlertManager.showAlert(
-//                                    on: self,
-//                                    title: "Success",
-//                                    message: result?.message ?? "Completed successfully."
-//                                )
-//                                completion(true)
-//                            }
-//                        } else {
-//                            AlertManager.showAlert(
-//                                on: self,
-//                                title: "Error",
-//                                message: result?.message ?? "Something went wrong."
-//                            )
-//                            completion(false)
-//                        }
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         completion(false)
@@ -652,7 +628,6 @@ extension CommonLocationListVC{
                                             title: "Success",
                                             message: "Location details updated successfully."
                                         ) {
-                                            // ✅ Perform action after alert
                                             self.navigationController?.popViewController(animated: true)
                                         }
                                     }

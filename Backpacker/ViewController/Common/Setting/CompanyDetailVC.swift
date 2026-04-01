@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CountryPickerView
 
 class CompanyDetailVC: UIViewController {
     @IBOutlet weak var scroll_Height: NSLayoutConstraint!
@@ -13,7 +14,6 @@ class CompanyDetailVC: UIViewController {
     @IBOutlet weak var emailVw: CommonTxtFldLblVw!
     @IBOutlet weak var btn_edit: UIButton!
     @IBOutlet weak var websiteVw: CommonTxtFldLblVw!
-    @IBOutlet weak var contactNumberVw: CommonTxtFldLblVw!
     @IBOutlet weak var lbl_HeaderLbl: UILabel!
     @IBOutlet weak var tapImageBtn: UIButton!
     @IBOutlet weak var btn_Cancle: UIButton!
@@ -80,11 +80,29 @@ class CompanyDetailVC: UIViewController {
     var activePlanJobCount: Int?
     var totalLocation : Int?
     var iscameraOpen : Bool = false
+    
+    @IBOutlet weak var img_Flag: UIImageView!
+
+    @IBOutlet weak var lbl_countrycode: UILabel!
+    
+    @IBOutlet weak var txtFld_PhoneNUmber: UITextField!
+    @IBOutlet weak var picker_Vw: CountryPickerView!
+    @IBOutlet weak var btnPicker: UIButton!
+    
+    @IBOutlet weak var backVw: UIView!
+    @IBOutlet weak var phoneNUmberVw: UIView!
+    @IBOutlet weak var phpneNUmbeMianVw: UIView!
+    @IBOutlet weak var lbl_ErrorPhonenUmber: UILabel!
+    @IBOutlet weak var lbl_EntrNumber: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.attachRefreshControl()
         self.setUpUI()
+        self.setupCountryPickerVw()
+        registerForKeyboardNotifications()
     }
+
+ 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.getPriceFormStore()
@@ -101,6 +119,80 @@ class CompanyDetailVC: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
        /// jobs_Tble_Height.constant = CGFloat(locations?.count ?? 0) * (100 + 10)
+    }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    func registerForKeyboardNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+    }
+    func setupCountryPickerVw() {
+       self.setupRoundedBorder(for:phoneNUmberVw)
+        self.setupRoundedBorder(for:backVw)
+        picker_Vw.isHidden = false
+        picker_Vw.delegate = self
+        picker_Vw.dataSource = self
+        
+        picker_Vw.setCountryByName("India")
+        
+        picker_Vw.showCountryNameInView = false
+        picker_Vw.showCountryCodeInView = false
+        picker_Vw.showPhoneCodeInView = false
+        
+        picker_Vw.flagImageView.isHidden = true
+        
+        lbl_ErrorPhonenUmber.isHidden = true
+        
+        txtFld_PhoneNUmber.delegate = self
+        txtFld_PhoneNUmber.keyboardType = .phonePad
+        
+        // Set Data
+        lbl_countrycode.text = picker_Vw.selectedCountry.phoneCode
+        img_Flag.image = picker_Vw.selectedCountry.flag
+        
+        // Fonts
+        lbl_countrycode.font = FontManager.inter(.regular, size: 14.0)
+        txtFld_PhoneNUmber.font = FontManager.inter(.regular, size: 14.0)
+        lbl_EntrNumber.font = FontManager.inter(.medium, size: 14.0)
+        lbl_ErrorPhonenUmber.font = FontManager.inter(.regular, size: 10.0)
+        
+        // Placeholder
+        txtFld_PhoneNUmber.placeholder = "Enter your contact number"
+        
+        // Button Action
+        btnPicker.addTarget(self, action: #selector(selectCountryAction(_:)), for: .touchUpInside)
+    }
+    @objc func keyboardWillShow(notification: NSNotification) {
+        guard let userInfo = notification.userInfo,
+              let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+
+        let keyboardHeight = keyboardFrame.height
+
+        main_scrollVw.contentInset.bottom = keyboardHeight
+        main_scrollVw.scrollIndicatorInsets.bottom = keyboardHeight
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        main_scrollVw.contentInset.bottom = 0
+        main_scrollVw.scrollIndicatorInsets.bottom = 0
+    }
+    func setupRoundedBorder(for view: UIView) {
+        view.layer.cornerRadius = 10
+        view.layer.borderWidth = 1.0
+        view.layer.borderColor = UIColor(named:"borderColor")?.cgColor
+        view.clipsToBounds = true
+    }
+    @objc func selectCountryAction(_ sender: Any) {
+        picker_Vw.showCountriesList(from: self)
+        
     }
     func getPriceFormStore() {
      //   LoaderManager.shared.show()
@@ -121,7 +213,7 @@ class CompanyDetailVC: UIViewController {
     private func setupData(){
         if isComeFromUpdate == true && iscameraOpen == false{
             self.bussinesName_Vw.txtFld.text = self.objComapny?.name
-            self.contactNumberVw.txtFld.text = self.objComapny?.contactNumber
+            self.txtFld_PhoneNUmber.text = self.objComapny?.contactNumber
             self.websiteVw.txtFld.text = self.objComapny?.website
             self.emailVw.txtFld.text = self.objComapny?.email ?? ""
             self.lbl_Val_SelctedIndustry.text = self.objComapny?.industryType.name
@@ -177,27 +269,25 @@ class CompanyDetailVC: UIViewController {
        
         }
     @objc private func didPullToRefresh() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
-            if self.iscomeFromCamera == false{
-                if self.iscomeFromCamera == false && self.isComeFromUpdate == true{
-                    self.getIndustriesList()
-                    self.getListOfLocationAll()
-                }else{
-                    self.getIndustriesList()
-                }
-                    
-                }
+        if isComeFromUpdate == true {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
+                if self.iscomeFromCamera == false{
+                    if self.iscomeFromCamera == false && self.isComeFromUpdate == true{
+                        self.getIndustriesList()
+                        self.getListOfLocationAll()
+                    }else{
+                        self.getIndustriesList()
+                    }
+                        
+                    }
+            }
+        }else{
+            self.refreshControl.endRefreshing()
         }
+      
           
       }
     func setUpUI(){
-//        if isComeFromUpdate == true{
-//            self.btn_edit.isHidden = false
-//            self.btn_edit.isUserInteractionEnabled = true
-//        }else{
-//            self.btn_edit.isHidden = true
-//            self.btn_edit.isUserInteractionEnabled = false
-//        }
         self.btn_edit.tag = 0
         isEditap()
         self.updateAppearanceOfBottomBtns()
@@ -211,11 +301,7 @@ class CompanyDetailVC: UIViewController {
         self.bussinesName_Vw.setTitleLabel("Business Name")
         self.bussinesName_Vw.setPlaceholder("Business Name")
         self.bussinesName_Vw.setError("")
-        
-        self.contactNumberVw.setTitleLabel("Contact Number")
-        self.contactNumberVw.setPlaceholder("Contact Number")
-        self.contactNumberVw.setError("")
-        self.contactNumberVw.txtFld.keyboardType = .numberPad
+    
         
         self.websiteVw.setTitleLabel("Website")
         self.websiteVw.setPlaceholder("Website Url")
@@ -302,7 +388,7 @@ class CompanyDetailVC: UIViewController {
                 return
             }
             
-        guard let contctNumber = contactNumberVw.txtFld.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+        guard let contctNumber = self.txtFld_PhoneNUmber.text?.trimmingCharacters(in: .whitespacesAndNewlines),
                   !contctNumber.isEmpty else {
                 AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter contact number")
                 return
@@ -1198,4 +1284,76 @@ extension CompanyDetailVC : CompanyLocationVCDelegate {
                 }
             }
     }
+}
+extension CompanyDetailVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITextFieldDelegate{
+    
+    func countryPickerView(_ countryPickerView: CountryPickerView, didSelectCountry country: Country) {
+        // Only countryPickerInternal has it's delegate set
+        self.lbl_countrycode.text  = country.phoneCode
+        self.img_Flag.image = country.flag
+        if txtFld_PhoneNUmber.text?.isEmpty == false{
+            let _ =   self.validatePhoneNumber()
+        }
+        
+    }
+    
+    //DatatSource
+    func showPhoneCodeInList(in countryPickerView: CountryPickerView) -> Bool {
+        return true
+    }
+    
+    func showCountryCodeInList(in countryPickerView: CountryPickerView) -> Bool {
+        return true
+    }
+    func preferredCountries(in countryPickerView: CountryPickerView) -> [Country] {
+        
+        return ["NG", "US", "GB"].compactMap { countryPickerView.getCountryByCode($0) }
+        
+    }
+    func validatePhoneNumber() -> Bool {
+        let phoneNumber = txtFld_PhoneNUmber.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let phoneCode = picker_Vw.selectedCountry.phoneCode.trimmingCharacters(in: .whitespacesAndNewlines)
+        
+        // Check for empty fields
+        if phoneNumber.isEmpty {
+            self.lbl_ErrorPhonenUmber.isHidden = false
+            self.lbl_ErrorPhonenUmber.text = "Phone number cannot be empty."
+            return false
+        }
+        if phoneCode.isEmpty {
+            self.lbl_ErrorPhonenUmber.isHidden = false
+            self.lbl_ErrorPhonenUmber.text = "Please select a country code."
+            return false
+        }
+        // Validate format
+        let region = picker_Vw.selectedCountry.code
+        let  isValid   = ValidationManager.isValidPhoneNumber(phoneNumber, regionCode: region)
+        if isValid {
+            print("-Valid number")
+            self.lbl_ErrorPhonenUmber.isHidden = true
+            self.lbl_ErrorPhonenUmber.text = ""
+            return true
+        } else {
+            self.lbl_ErrorPhonenUmber.isHidden = false
+            self.lbl_ErrorPhonenUmber.text = Constants.Alert.invalidPhoneMessage
+            return false
+        }
+    }
+    
+    // -Real-time validation on text change
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if textField == self.txtFld_PhoneNUmber {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                _ = self.validatePhoneNumber()
+            }
+        }
+        
+        return true
+    }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder() // -Dismiss keyboard
+        return true
+    }
+    
+    
 }

@@ -67,7 +67,6 @@ class MainJobController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 #if BackpackerHire
-     //   self.getCurrentPlanOfUser()
         #endif
         collVw.reloadData()
         // Select and trigger index 0 after reload

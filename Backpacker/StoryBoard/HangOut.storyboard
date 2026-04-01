@@ -378,7 +378,7 @@
                                 <viewLayoutGuide key="frameLayoutGuide" id="7DC-3O-41L"/>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8KB-Lc-8bg">
-                                <rect key="frame" x="293" y="61.666666666666657" width="35" height="35"/>
+                                <rect key="frame" x="303" y="61.666666666666657" width="35" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="35" id="3Zl-YH-Gt2"/>
                                     <constraint firstAttribute="width" constant="35" id="qgd-a3-NuY"/>
@@ -396,7 +396,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mWU-G5-SBa">
-                                <rect key="frame" x="338" y="61.666666666666657" width="35" height="35"/>
+                                <rect key="frame" x="348" y="61.666666666666657" width="35" height="35"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="35" id="T1R-65-DHn"/>
                                     <constraint firstAttribute="height" constant="35" id="oc7-JB-DCt"/>
@@ -422,7 +422,7 @@
                             <constraint firstItem="vIG-ty-nOB" firstAttribute="top" secondItem="4pt-aR-2h0" secondAttribute="bottom" constant="8" id="e0N-vh-3Bq"/>
                             <constraint firstItem="i05-K2-TXM" firstAttribute="centerY" secondItem="4pt-aR-2h0" secondAttribute="centerY" id="kb3-Zw-DdJ"/>
                             <constraint firstItem="i05-K2-TXM" firstAttribute="centerX" secondItem="Wac-nw-ceW" secondAttribute="centerX" id="ldX-gB-iOa"/>
-                            <constraint firstItem="Wac-nw-ceW" firstAttribute="trailing" secondItem="mWU-G5-SBa" secondAttribute="trailing" constant="20" id="nbo-su-N0e"/>
+                            <constraint firstItem="Wac-nw-ceW" firstAttribute="trailing" secondItem="mWU-G5-SBa" secondAttribute="trailing" constant="10" id="nbo-su-N0e"/>
                         </constraints>
                     </view>
                     <connections>

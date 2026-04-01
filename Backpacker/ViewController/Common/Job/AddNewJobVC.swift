@@ -106,7 +106,7 @@ class AddNewJobVC: UIViewController {
     var selectedBackPackerJSONString: String?
 
     @IBOutlet weak var lbl_placeholder_description: UILabel!
-    @IBOutlet weak var btn_Mic: UIButton!
+
     //Edit
     var jobID : String?
     var isComeFromEdit : Bool = false
@@ -161,8 +161,6 @@ class AddNewJobVC: UIViewController {
         setupTimePicker()
         self.UpdateLocationTxtColor()
         self.setUpEditData()
-        self.btn_Mic.tag = 0
-        self.btn_Mic.isHidden = true
         self.lbl_placeholder_description.font = FontManager.inter(.regular, size: 14.0)
         // Do any additional setup after loading the view.
    //     self.getListOfLocationAll()
@@ -187,41 +185,7 @@ class AddNewJobVC: UIViewController {
     }
 
 
-    @IBAction func action_MicCommon(_ sender: UIButton) {
-        if btn_Mic.tag == 0{
-            btn_Mic.tag = 1
-        }else{
-            btn_Mic.tag = 0
-        }
-        self.setTxtFieldFocus()
-    }
     
-    
-    private func setTxtFieldFocus(){
-        if btn_Mic.tag == 1 {
-            speechManager.startRecording()
-            if txtFldName.text?.isEmpty ?? true {
-                txtFldName.becomeFirstResponder()
-            }
-           else if txtFldAddress.text?.isEmpty ?? true {
-                txtFldAddress.becomeFirstResponder()
-            }
-            else if txtVw_Description.text?.isEmpty ?? true {
-                txtVw_Description.becomeFirstResponder()
-            }
-            else if txtFld_Requirment.text?.isEmpty ?? true {
-                txtFld_Requirment.becomeFirstResponder()
-            } else{
-                txtFldName.becomeFirstResponder()
-            }
-        }else{
-            speechManager.stopRecording()
-            txtFldName.resignFirstResponder()
-            txtVw_Description.resignFirstResponder()
-            txtFld_Requirment.resignFirstResponder()
-            txtFldAddress.resignFirstResponder()
-        }
-        }
     @IBAction func action_farm(_ sender: Any) {
         self.btn_regional.tag = 0
         if self.btn_frm.tag == 0 {
