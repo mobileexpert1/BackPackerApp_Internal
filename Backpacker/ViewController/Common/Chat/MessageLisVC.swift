@@ -501,6 +501,8 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
                     settingVC.isComeFromAdmin = true
                     settingVC.ticketId = ticketId ?? ""
                 }else{
+                    
+                    
                     settingVC.isComeFromAdmin = false
                     self.btn_Admin.tag = 1
                     self.btn_Employer.tag =  0
