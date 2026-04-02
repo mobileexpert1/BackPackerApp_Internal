@@ -55,7 +55,7 @@ class OtpVC: UIViewController {
     }
     private func setUpUI(){
         self.lbl_Timer.font =  FontManager.inter(.regular, size: 12.0)
-        self.lbl_title.font = FontManager.inter(.regular, size: 26.0)
+        self.lbl_title.font = FontManager.inter(.regular, size: 24.0)
         self.lbl_EnterOtp.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_dontReceive.font = FontManager.inter(.regular, size: 14.0)
         self.btn_Resend.titleLabel?.font = FontManager.inter(.semiBold, size: 14.0)

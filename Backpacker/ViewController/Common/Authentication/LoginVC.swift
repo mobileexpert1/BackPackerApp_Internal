@@ -15,6 +15,7 @@ class LoginVC: UIViewController {
     @IBOutlet weak var img_logo_Height: NSLayoutConstraint!//120
     @IBOutlet weak var logo_Img: UIImageView!
     //Outlet
+    @IBOutlet weak var man_ScrollVw: UIScrollView!
     @IBOutlet weak var btn_term_Topconstraint: NSLayoutConstraint!
     @IBOutlet weak var lbl_temsandCondition: UILabel!
     @IBOutlet weak var btn_trmcondition: UIButton!
@@ -54,15 +55,40 @@ class LoginVC: UIViewController {
         self.setupRoundedBorder(for: MainVw_EmailTxtFld)
         applyGradientButtonStyle(to: btn_Continue)
         self.setupSignInText()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
     }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
     
     @objc func dismissKeyboard() {
         self.view.endEditing(true)
+    }
+    @objc func keyboardWillShow(notification: Notification) {
+        if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
+            let keyboardHeight = keyboardFrame.height
+            
+            man_ScrollVw.contentInset.bottom = keyboardHeight
+            man_ScrollVw.scrollIndicatorInsets.bottom = keyboardHeight
+        }
+    }
+
+    @objc func keyboardWillHide(notification: Notification) {
+        man_ScrollVw.contentInset.bottom = 0
+        man_ScrollVw.scrollIndicatorInsets.bottom = 0
     }
     func setupSignInText() {
         let fullText = "Already have an account? Sign In"

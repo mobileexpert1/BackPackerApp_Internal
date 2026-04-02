@@ -450,7 +450,13 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
+#if BackpackerHire
+        label.text = "Loading more backpackers..."
+        #else
+        
         label.text = "Loading more employers..."
+#endif
+      
         label.font = FontManager.inter(.medium, size: 12.0)
         label.textColor = .gray
         
@@ -491,7 +497,6 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
                 if isComefFromAdmin == true{
                     self.btn_Admin.tag = 0
                     self.btn_Employer.tag =  1
-                    
                     self.UpdateBtnAppearance()
                     settingVC.isComeFromAdmin = true
                     settingVC.ticketId = ticketId ?? ""
@@ -499,7 +504,6 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
                     settingVC.isComeFromAdmin = false
                     self.btn_Admin.tag = 1
                     self.btn_Employer.tag =  0
-                    
                     self.UpdateBtnAppearance()
                 }
                 settingVC.resceiverID  = senderId

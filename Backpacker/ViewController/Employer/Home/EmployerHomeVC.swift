@@ -53,7 +53,7 @@ class EmployerHomeVC: UIViewController {
         self.lblnodataFound.font = FontManager.inter(.medium, size: 16.0)
         if roleType == "2" {
             sectionTitles = ["", "Jobs"]
-            self.lblnodataFound.text = ""
+           // self.lblnodataFound.text = ""
         }else if roleType == "3" {
             sectionTitles = ["", "Accomodations"]
         }else{

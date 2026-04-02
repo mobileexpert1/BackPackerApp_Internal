@@ -14,6 +14,9 @@ class CommonGridVC: UIViewController {
     @IBOutlet weak var lbl_FarmBorder: UILabel!
     
     
+    @IBOutlet weak var reginaImg: UIImageView!
+    @IBOutlet weak var farm_img: UIImageView!
+    @IBOutlet weak var all_img: UIImageView!
     @IBOutlet weak var main_Header: UILabel!
     @IBOutlet weak var collVw: UICollectionView!
     var currentPage = 1
@@ -327,12 +330,19 @@ class CommonGridVC: UIViewController {
         self.btn_regional.tag = 0
         self.heigtWorkVw.constant = 30.0
         self.Vw_allWork.isHidden = false
+        self.all_img.isHidden = false
+        self.farm_img.isHidden = true
+        self.reginaImg.isHidden = true
         self.regionalVw.isHidden = true
         self.farmVw.isHidden = true
         WorkVw.layer.cornerRadius = 5
         WorkVw.layer.borderWidth = 0.5
         WorkVw.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        WorkVw.clipsToBounds = true
+        WorkVw.clipsToBounds = false
+        WorkVw.layer.shadowColor = UIColor(hex: "#E5E5E5").cgColor
+        WorkVw.layer.shadowOpacity = 0.3
+        WorkVw.layer.shadowOffset = CGSize(width: 0, height: 2)
+        WorkVw.layer.shadowRadius = 4
         self.lbl_all.font = FontManager.inter(.medium, size: 13.0)
         self.lbl_Farm.font = FontManager.inter(.medium, size: 13.0)
         self.lbl_regional.font = FontManager.inter(.medium, size: 13.0)
@@ -360,13 +370,21 @@ class CommonGridVC: UIViewController {
             self.Vw_allWork.isHidden = true
             self.regionalVw.isHidden = false
             self.farmVw.isHidden = true
+            self.all_img.isHidden = true
+            self.farm_img.isHidden = true
+            self.reginaImg.isHidden = false
             self.getListOfAll()
+            self.all_img.image = UIImage(named: "newUpward")
         }else{
             sender.tag = 0
             self.heigtWorkVw.constant = 90
             self.Vw_allWork.isHidden = false
             self.regionalVw.isHidden = false
             self.farmVw.isHidden = false
+            self.all_img.isHidden = false
+            self.farm_img.isHidden = true
+            self.reginaImg.isHidden = true
+            self.all_img.image = UIImage(named: "newDownward")
             
         }
     }
@@ -380,6 +398,10 @@ class CommonGridVC: UIViewController {
             self.farmVw.isHidden = true
             self.lbl_all_Border.isHidden = true
             self.getListOfAll()
+            self.all_img.isHidden = false
+            self.farm_img.isHidden = true
+            self.reginaImg.isHidden = true
+            self.all_img.image = UIImage(named: "newUpward")
         }else{
             sender.tag = 0
             self.heigtWorkVw.constant = 90
@@ -387,6 +409,10 @@ class CommonGridVC: UIViewController {
             self.regionalVw.isHidden = false
             self.farmVw.isHidden = false
             self.lbl_all_Border.isHidden = false
+            self.all_img.isHidden = false
+            self.farm_img.isHidden = true
+            self.reginaImg.isHidden = true
+            self.all_img.image = UIImage(named: "newDownward")
         }
         
         
@@ -402,6 +428,10 @@ class CommonGridVC: UIViewController {
             self.farmVw.isHidden = false
             self.lbl_FarmBorder.isHidden = true
             self.getListOfAll()
+            self.all_img.isHidden = true
+            self.farm_img.isHidden = false
+            self.reginaImg.isHidden = true
+            self.all_img.image = UIImage(named: "newUpward")
         }else{
             sender.tag = 0
             self.heigtWorkVw.constant = 100.0
@@ -409,8 +439,10 @@ class CommonGridVC: UIViewController {
             self.regionalVw.isHidden = false
             self.farmVw.isHidden = false
             self.lbl_FarmBorder.isHidden = false
-            
-            
+            self.all_img.isHidden = false
+            self.farm_img.isHidden = true
+            self.reginaImg.isHidden = true
+            self.all_img.image = UIImage(named: "newDownward")
         }
         
     }

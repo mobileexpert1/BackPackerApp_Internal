@@ -202,6 +202,50 @@ class ForceUpdateVC: UIViewController {
         
     }
     private func setupPicker(){
+#if Backapacker
+        // Start Date Picker (PAST ONLY)
+           startDatePicker = UIDatePicker()
+           startDatePicker?.datePickerMode = .date
+           
+           if #available(iOS 14.0, *) {
+               startDatePicker?.preferredDatePickerStyle = .wheels
+           }
+           
+           startDatePicker?.maximumDate = Date() // 👉 only past (till today)
+           startDatePicker?.addTarget(self, action: #selector(startDateChanged), for: .valueChanged)
+           startDateField.inputView = startDatePicker
+           
+           
+           // End Date Picker (FUTURE ONLY)
+           endDatePicker = UIDatePicker()
+           endDatePicker?.datePickerMode = .date
+           
+           if #available(iOS 14.0, *) {
+               endDatePicker?.preferredDatePickerStyle = .wheels
+           }
+           
+           endDatePicker?.minimumDate = Date() // 👉 only future (from today)
+           endDatePicker?.addTarget(self, action: #selector(endDateChanged), for: .valueChanged)
+           endDateField.inputView = endDatePicker
+           
+           
+           // Toolbar
+           let toolbar = UIToolbar()
+           toolbar.sizeToFit()
+           
+           let doneButton = UIBarButtonItem(barButtonSystemItem: .done,
+                                            target: self,
+                                            action: #selector(donePressed))
+           
+           toolbar.setItems([doneButton], animated: true)
+           
+           startDateField.inputAccessoryView = toolbar
+           endDateField.inputAccessoryView = toolbar
+        
+        
+        
+        #else
+        
         startDatePicker = UIDatePicker()
         startDatePicker?.datePickerMode = .date
         if #available(iOS 14.0, *) {
@@ -226,8 +270,29 @@ class ForceUpdateVC: UIViewController {
         toolbar.setItems([doneButton], animated: true)
         startDateField.inputAccessoryView = toolbar
         endDateField.inputAccessoryView = toolbar
+#endif
+       
     }
     @objc func startDateChanged() {
+#if Backapacker
+        guard let date = startDatePicker?.date else { return }
+         
+         // UI Format
+         let formatter = DateFormatter()
+         formatter.dateStyle = .medium
+         startDateField.text = formatter.string(from: date)
+         
+         // API Format (UTC)
+         let isoFormatter = ISO8601DateFormatter()
+         isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+         isoFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+         self.startDateCovertedVal = isoFormatter.string(from: date)
+         
+         self.lbl_error_startDate.isHidden = true
+        
+        
+        #else
+        
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         startDateField.text = formatter.string(from: startDatePicker?.date ?? Date())
@@ -239,6 +304,8 @@ class ForceUpdateVC: UIViewController {
         formatter2.timeZone = TimeZone(secondsFromGMT: 0) // UTC
         self.startDateCovertedVal = formatter2.string(from: date)
         self.lbl_error_startDate.isHidden = true
+#endif
+    
     }
     
     @IBAction func action_chosseDOB(_ sender: Any) {
@@ -290,6 +357,20 @@ class ForceUpdateVC: UIViewController {
         present(alert, animated: true)
     }
     @objc func endDateChanged() {
+        
+#if Backapacker
+        guard let date = endDatePicker?.date else { return }
+         
+         let formatter = DateFormatter()
+         formatter.dateStyle = .medium
+         endDateField.text = formatter.string(from: date)
+         
+         let isoFormatter = ISO8601DateFormatter()
+         isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+         isoFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+         self.endDateConvertedVal = isoFormatter.string(from: date)
+        self.lbl_error_endDate.isHidden = true
+        #else
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         endDateField.text = formatter.string(from: endDatePicker?.date ?? Date())
@@ -302,6 +383,10 @@ class ForceUpdateVC: UIViewController {
         formatter2.timeZone = TimeZone(secondsFromGMT: 0) // UTC
         self.endDateConvertedVal = formatter2.string(from: date)
         self.lbl_error_endDate.isHidden = true
+#endif
+        
+        
+       
     }
     
     @objc func donePressed() {

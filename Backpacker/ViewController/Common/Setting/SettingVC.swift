@@ -50,6 +50,7 @@ class SettingVC: UIViewController {
             menuItems = [
                 MenuItem(iconName: "Profile1", title: "Profile"),
             //    MenuItem(iconName: "Heart", title: "Favorite Hangout"),
+                MenuItem(iconName: "Subscription", title: "Subscription Plan"),
                 MenuItem(iconName: "switchAcc", title: "Switch Account"),
                 MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
                 MenuItem(iconName: "Error", title: "Report Issue"),
@@ -61,6 +62,7 @@ class SettingVC: UIViewController {
             menuItems = [
                 MenuItem(iconName: "Profile1", title: "Profile"),
             //    MenuItem(iconName: "Heart", title: "Favorite Accomodations"),
+                MenuItem(iconName: "Subscription", title: "Subscription Plan"),
                 MenuItem(iconName: "switchAcc", title: "Switch Account"),
                 MenuItem(iconName: "Terms and Conditions", title: "Terms & Conditions"),
                 MenuItem(iconName: "Error", title: "Report Issue"),
@@ -157,30 +159,34 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
 //                    self.navigationController?.pushViewController(vc, animated: true)
 //                }
             case 1:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 2:
                 let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
                 if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
                     vc.isBackButtonHidden = false
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
                 
-            case 2:
+            case 3:
 //                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
 //                    vc.isComeFromPrivacy = false
 //                    self.navigationController?.pushViewController(vc, animated: true)
 //                }
                 self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/terms-condition/employer")
-            case 3:
+            case 4:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 4:
+            case 5:
 //                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
 //                    vc.isComeFromPrivacy = true
 //                    self.navigationController?.pushViewController(vc, animated: true)
 //                }
                 self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/privacy-policy/employer")
-            case 5:
+            case 6:
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Delete Account",
                                                    message: "Are you sure you want to delete the account?",
@@ -188,7 +194,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                     self.deleteAccountAPI()
                     
                 })
-            case 6:
+            case 76:
                  
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Logout",
@@ -221,31 +227,35 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
 //                    
 //                    self.navigationController?.pushViewController(vc, animated: true)
 //                }
-            case 1 :
+            case 1:
+                if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+                    self.navigationController?.pushViewController(vc, animated: true)
+                }
+            case 2 :
                 let storyboardMain = UIStoryboard(name: "Main", bundle: nil)
                 if let vc = storyboardMain.instantiateViewController(withIdentifier: "ChooseRoleTypeVC") as? ChooseRoleTypeVC {
                     vc.isBackButtonHidden = false
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
                 
-            case 2:
+            case 3:
 //                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
 //                    vc.isComeFromPrivacy = false
 //                    self.navigationController?.pushViewController(vc, animated: true)
 //                }
                 self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/terms-condition/employer")
-            case 3:
+            case 4:
                 if let vc = storyboard.instantiateViewController(withIdentifier: "ReportIssueVC") as? ReportIssueVC {
                     self.navigationController?.pushViewController(vc, animated: true)
                 }
 
-            case 4:
+            case 5:
 //                if let vc = storyboard.instantiateViewController(withIdentifier: "TermsConditionVC") as? TermsConditionVC {
 //                    vc.isComeFromPrivacy = true
 //                    self.navigationController?.pushViewController(vc, animated: true)
 //                }
                 self.openURLInSafari(urlString: "https://backpacker.csdevhub.com/privacy-policy/employer")
-            case 5:
+            case 6:
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Delete Account",
                                                    message: "Are you sure you want to delete the account?",
@@ -253,7 +263,7 @@ extension SettingVC : UITableViewDelegate,UITableViewDataSource{
                     self.deleteAccountAPI()
                     
                 })
-            case 6:
+            case 7:
                  
                 AlertManager.showConfirmationAlert(on: self,
                                                    title: "Logout",

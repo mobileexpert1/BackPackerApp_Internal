@@ -325,6 +325,7 @@
                         <outlet property="lbl_phoneCode" destination="HFt-ra-apt" id="kJb-jE-8Es"/>
                         <outlet property="lbl_temsandCondition" destination="w4m-LV-uzs" id="xel-Oz-LPS"/>
                         <outlet property="logo_Img" destination="knM-E3-UjR" id="gPa-hC-Avh"/>
+                        <outlet property="man_ScrollVw" destination="4im-es-nCb" id="KFc-WW-iy4"/>
                         <outlet property="phoneNumberVw" destination="ec7-Xc-ovn" id="zcF-cZ-BMY"/>
                         <outlet property="picker_Vw" destination="3iD-Ic-I5b" id="BM9-If-y71"/>
                         <outlet property="txtFld_PhoneNumber" destination="16H-qJ-WFv" id="44L-Cr-vRF"/>
