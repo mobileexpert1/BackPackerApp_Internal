@@ -62,7 +62,77 @@ class CalendarEventManager {
 
         return calendar.date(from: components)
     }
-
+    
+        //MARK: - Save jo to calnedar when backpacker accpet the job 
+    func saveEventToCalendar(
+        title: String,
+        startDate: Date,
+        endDate: Date?,
+        startTime: Date,
+        endTime: Date?
+    ) {
+        
+        let eventStore = EKEventStore()
+        
+        // Request permission
+        eventStore.requestAccess(to: .event) { granted, error in
+            if granted && error == nil {
+                
+                let event = EKEvent(eventStore: eventStore)
+                event.title = title
+                
+                // 👉 Combine date + time
+                let calendar = Calendar.current
+                
+                let startComponentsDate = calendar.dateComponents([.year, .month, .day], from: startDate)
+                let startComponentsTime = calendar.dateComponents([.hour, .minute], from: startTime)
+                
+                var startComponents = DateComponents()
+                startComponents.year = startComponentsDate.year
+                startComponents.month = startComponentsDate.month
+                startComponents.day = startComponentsDate.day
+                startComponents.hour = startComponentsTime.hour
+                startComponents.minute = startComponentsTime.minute
+                
+                let finalStartDate = calendar.date(from: startComponents) ?? startDate
+                
+                // 👉 Handle End Date fallback
+                let actualEndDate = endDate ?? startDate
+                
+                let endComponentsDate = calendar.dateComponents([.year, .month, .day], from: actualEndDate)
+                let endComponentsTime = calendar.dateComponents([.hour, .minute], from: endTime ?? startTime)
+                
+                var endComponents = DateComponents()
+                endComponents.year = endComponentsDate.year
+                endComponents.month = endComponentsDate.month
+                endComponents.day = endComponentsDate.day
+                endComponents.hour = endComponentsTime.hour
+                endComponents.minute = endComponentsTime.minute
+                
+                let finalEndDate = calendar.date(from: endComponents) ?? finalStartDate
+                
+                event.startDate = finalStartDate
+                event.endDate = finalEndDate
+                
+                event.calendar = eventStore.defaultCalendarForNewEvents
+                let alarm = EKAlarm(relativeOffset: -7200)
+                            event.addAlarm(alarm)
+                do {
+                    try eventStore.save(event, span: .thisEvent)
+                    
+                    DispatchQueue.main.async {
+                        print("✅ Event saved to calendar")
+                    }
+                    
+                } catch {
+                    print("❌ Error saving event: \(error.localizedDescription)")
+                }
+                
+            } else {
+                print("❌ Calendar permission denied")
+            }
+        }
+    }
 }
 import UIKit
 

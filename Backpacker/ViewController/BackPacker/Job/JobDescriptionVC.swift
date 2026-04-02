@@ -446,7 +446,32 @@ class JobDescriptionVC: UIViewController {
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
-    
+    func convertISODate(_ dateString: String) -> Date? {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter.date(from: dateString)
+    }
+    func convertTime(_ timeString: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter.date(from: timeString)
+    }
+    func combine(date: Date, time: Date) -> Date {
+        let calendar = Calendar.current
+        
+        let dateComp = calendar.dateComponents([.year, .month, .day], from: date)
+        let timeComp = calendar.dateComponents([.hour, .minute], from: time)
+        
+        var finalComp = DateComponents()
+        finalComp.year = dateComp.year
+        finalComp.month = dateComp.month
+        finalComp.day = dateComp.day
+        finalComp.hour = timeComp.hour
+        finalComp.minute = timeComp.minute
+        
+        return calendar.date(from: finalComp) ?? date
+    }
     @IBAction func action_JobAccept(_ sender: Any) {
         
 #if Backapacker
@@ -455,8 +480,11 @@ class JobDescriptionVC: UIViewController {
                                                title: "",
                                                message: "Are you sure you want to accept the job?",
                                                confirmAction: {
-                if let id = self.JobId{
+                if let id = self.JobId {
+                   // self.acceptRejectJob(status: "accepted")
+                  
                     self.acceptRejectJob(status: "accepted")
+
                 }else{
                     AlertManager.showAlert(on: self, title: "Missing", message: "Job Id Is Missing")
                 }
@@ -612,6 +640,7 @@ extension JobDescriptionVC {
                         switch httpStatus {
                         case .ok, .created:
                             if success == true {
+                                self.AddtoCalendar()
                                 AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? ""){
                                     self.getDetailOfJob()
                                 }
@@ -619,7 +648,6 @@ extension JobDescriptionVC {
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                                 
                             }
-                            LoaderManager.shared.hide()
                             self.refreshControl.endRefreshing()
                         case .badRequest:
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
@@ -1078,5 +1106,32 @@ extension JobDescriptionVC : DescriptionControllerDelegate {
             self.btn_Decline.isHidden = true
             self.btn_Decline.isUserInteractionEnabled = false
         }
+    }
+    
+    private func AddtoCalendar(){
+        let startDateStr = self.jobDetailObj?.startDate ?? ""
+        let endDateStr = self.jobDetailObj?.endDate ?? ""
+        let startTimeStr = self.jobDetailObj?.startTime ?? ""
+        let endTimeStr = self.jobDetailObj?.endTime ?? ""
+
+        // Parse
+        guard let baseStartDate = self.convertISODate(startDateStr),
+              let startTime = self.convertTime(startTimeStr) else { return }
+
+        let baseEndDate = endDateStr.isEmpty ? baseStartDate : self.convertISODate(endDateStr)
+        let endTime = self.convertTime(endTimeStr) ?? startTime
+
+        // Combine
+        let finalStartDate = self.combine(date: baseStartDate, time: startTime)
+        let finalEndDate = self.combine(date: baseEndDate ?? baseStartDate, time: endTime)
+
+        // Save to calendar
+        CalendarEventManager.shared.saveEventToCalendar(
+            title: self.jobDetailObj?.name ?? "My Job",
+            startDate: finalStartDate,
+            endDate: finalEndDate,
+            startTime: finalStartDate,
+            endTime: finalEndDate
+        )
     }
 }
