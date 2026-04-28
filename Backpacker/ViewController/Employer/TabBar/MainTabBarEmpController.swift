@@ -4,15 +4,6 @@
 //
 //  Created by Mobile on 22/07/25.
 //
-
-import Foundation
-//
-//  MainTabBarController.swift
-//  Backpacker
-//
-//  Created by Mobile on 03/07/25.
-//
-
 import Foundation
 import UIKit
 
@@ -49,7 +40,6 @@ class MainTabBarEmpController: UITabBarController,UITabBarControllerDelegate {
                 createTab(fromStoryboard: "Setting", identifier: "SettingVC", title: "Settings", image: "Setting")
             ]
         default:
-            print("Role Type Is-----------------------------------------",role)
             viewControllers = [
                 createTab(fromStoryboard: "EmployerHome", identifier: "EmployerHomeVC", title: "Home", image: "Home"),
                 createTab(fromStoryboard: "Job", identifier: "MainJobController", title: "Jobs", image: "Job Seeker"),
@@ -71,7 +61,7 @@ class MainTabBarEmpController: UITabBarController,UITabBarControllerDelegate {
         nav.tabBarItem.image = UIImage(named: image )
         return nav
     }
-    
+
     
     private func configureTabBarAppearance() {
         let appearance = UITabBarAppearance()

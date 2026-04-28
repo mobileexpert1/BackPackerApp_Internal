@@ -121,7 +121,7 @@ class CalendarEventManager {
                     try eventStore.save(event, span: .thisEvent)
                     
                     DispatchQueue.main.async {
-                        print("✅ Event saved to calendar")
+                        print(" Event saved to calendar")
                     }
                     
                 } catch {

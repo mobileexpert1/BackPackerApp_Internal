@@ -1325,11 +1325,10 @@ extension CompanyDetailVC : CountryPickerViewDelegate,CountryPickerViewDataSourc
             self.lbl_ErrorPhonenUmber.text = "Please select a country code."
             return false
         }
-        // Validate format
+        //MARK: -  Validate format
         let region = picker_Vw.selectedCountry.code
         let  isValid   = ValidationManager.isValidPhoneNumber(phoneNumber, regionCode: region)
         if isValid {
-            print("-Valid number")
             self.lbl_ErrorPhonenUmber.isHidden = true
             self.lbl_ErrorPhonenUmber.text = ""
             return true
@@ -1354,6 +1353,5 @@ extension CompanyDetailVC : CountryPickerViewDelegate,CountryPickerViewDataSourc
         textField.resignFirstResponder() // -Dismiss keyboard
         return true
     }
-    
-    
 }
+

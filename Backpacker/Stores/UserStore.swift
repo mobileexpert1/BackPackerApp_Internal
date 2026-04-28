@@ -20,7 +20,7 @@ class UserStore: ServiceManager , UserSearchable {
     
     
     static let shared = UserStore()
-   
+    
     func loginUser<T: Codable>(
         params: Parameters,
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
@@ -34,7 +34,7 @@ class UserStore: ServiceManager , UserSearchable {
             completion(success, result, statusCode)
         }
     }
-
+    
     func SignUpUser<T: Codable>(
         params: Parameters,
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
@@ -57,7 +57,7 @@ class UserStore: ServiceManager , UserSearchable {
             completion(success, result, statusCode)
         }
     }
-
+    
     // API for resending OTP
     func resendOTP<T: Codable>(
         params: Parameters,
@@ -67,29 +67,29 @@ class UserStore: ServiceManager , UserSearchable {
             completion(success, result, statusCode)
         }
     }
-
+    
     // API for refreshing token
     func refreshToken<T: Codable>(
         completion: @escaping (_ success: Bool, _ result: T?, _ statusCode: Int?) -> Void
     ) {
 #if BackpackerHire
         let refreshToken = UserDefaultsManager.shared.employerrefreshToken
-  #else
-  let refreshToken = UserDefaultsManager.shared.refreshToken
-  #endif
-  
-  guard let token = refreshToken, !token.isEmpty else {
-      print("⚠️ No refresh token found.")
-      completion(false, nil, nil)
-      return
-  }
-        let params: [String: Any] = ["refreshToken": refreshToken]
+#else
+        let refreshToken = UserDefaultsManager.shared.refreshToken
+#endif
+        
+        guard let token = refreshToken, !token.isEmpty else {
+            print("⚠️ No refresh token found.")
+            completion(false, nil, nil)
+            return
+        }
+        let params: [String: Any] = ["refreshToken": refreshToken ?? ""]
         let url = ApiConstants.API.REFRESH_TOKEN
         requestApi(url, method: .post, parameters: params) { (success, result, statusCode) in
             completion(success, result, statusCode)
         }
     }
-
+    
     // API for ChooseRole Type
     func chooseRoleType<T: Codable>(
         params: Parameters,
@@ -97,22 +97,23 @@ class UserStore: ServiceManager , UserSearchable {
     ) {
 #if BackpackerHire
         let bearerToken = UserDefaultsManager.shared.employerbearerToken
-  #else
-  let bearerToken = UserDefaultsManager.shared.bearerToken
-  #endif
-  
-  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
-      print("⚠️ No refresh token found.")
-      completion(false, nil, nil)
-      return
-  }
+#else
+        let bearerToken = UserDefaultsManager.shared.bearerToken
+#endif
+        
+        guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+            print("No refresh token found.")
+            completion(false, nil, nil)
+            return
+        }
         let url = ApiConstants.API.SWITCH_ROLE
-           let headers = getHeaders()
-           requestApi(url, method: .put, parameters: params, headers: headers) { (success, result, statusCode) in
-               completion(success, result, statusCode)
-           }
+        let headers = getHeaders()
+        requestApi(url, method: .put, parameters: params, headers: headers) { (success, result, statusCode) in
+            completion(success, result, statusCode)
+        }
     }
     
-
+    
 }
+
 

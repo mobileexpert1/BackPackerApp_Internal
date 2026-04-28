@@ -35,8 +35,6 @@ let accessToken = UserDefaultsManager.shared.employerbearerToken
 let userId = UserDefaultsManager.shared.userId
 let accessToken = UserDefaultsManager.shared.bearerToken
 #endif
-
-        
         // Decide which screen to show
         let rootVC: UIViewController
 
@@ -52,7 +50,6 @@ let accessToken = UserDefaultsManager.shared.bearerToken
             navController.navigationBar.isHidden = true
             rootVC = navController
         } else {
-            // Logged in → Go to MainTabBarController
 #if BackpackerHire
             let role =  UserDefaults.standard.string(forKey: "UserRoleType")
              if role != "2" && role != "3" && role != "4"{
@@ -63,18 +60,14 @@ let accessToken = UserDefaultsManager.shared.bearerToken
                 } else {
                     rootVC = UIViewController() // fallback if casting fails
                 }
-                
-            }else{
+             }else{
                 let storyboard = UIStoryboard(name: "MainTabBarEmpStoryboard", bundle: nil)
                 rootVC = storyboard.instantiateViewController(withIdentifier: "MainTabBarEmpController")
             }
-            
             #else
             let storyboard = UIStoryboard(name: "TabBarController", bundle: nil)
             rootVC = storyboard.instantiateViewController(withIdentifier: "MainTabBarController")
-            
 #endif
-            
         }
 
         window?.rootViewController = rootVC
@@ -86,13 +79,10 @@ let accessToken = UserDefaultsManager.shared.bearerToken
            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
            //previous code work
            if appDelegate.isComeFromNotification,
-               let info = appDelegate.userInfo{
-             //  NotificationManager.shared.handleNotification(userInfo: info)
+               let del = appDelegate.userInfo {
            }
        }
-
-
-
+    
     func sceneWillResignActive(_ scene: UIScene) {
         // Called when the scene will move from an active state to an inactive state.
         // This may occur due to temporary interruptions (ex. an incoming phone call).
@@ -113,9 +103,7 @@ let accessToken = UserDefaultsManager.shared.bearerToken
            let userInfo = response.notification.request.content.userInfo
            if let jobId = userInfo["jobId"] as? String,
               let appType = userInfo["appType"] as? String, let notificationIS = userInfo["notificationId"] as? String  {
-               
-               print("📩 Cold launch via SceneDelegate: \(jobId) \(appType)")
-               
+               print("Cold launch via SceneDelegate: \(jobId) \(appType)")
                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                    (UIApplication.shared.delegate as? AppDelegate)?
                        .handleNotification(jobId: jobId, appType: appType, notificationId: notificationIS)
@@ -132,7 +120,6 @@ extension SceneDelegate {
         guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let delegate = scene.delegate as? SceneDelegate,
               let window = delegate.window else { return }
-
 #if BackpackerHire
         UserDefaultsManager.shared.employerbearerToken = nil
         UserDefaultsManager.shared.employerrefreshToken = nil
@@ -144,7 +131,6 @@ extension SceneDelegate {
         
         UserDefaultsManager.shared.employeruserId = nil
 #endif
-       
         window.rootViewController = vc
         window.makeKeyAndVisible()
     }
