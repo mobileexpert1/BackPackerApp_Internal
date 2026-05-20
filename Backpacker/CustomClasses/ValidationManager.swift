@@ -1,9 +1,6 @@
-//
 //  ValidationManager.swift
 //  Backpacker
-//
 //  Created by Mobile on 03/07/25.
-//
 
 import Foundation
 import PhoneNumberKit

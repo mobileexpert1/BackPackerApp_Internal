@@ -1,14 +1,14 @@
-//
 //  BackPackerDetailVC.swift
 //  BackpackerHire
-//
 //  Created by Mobile on 25/07/25.
-//
 
 import UIKit
 import MapKit
+
 class BackPackerDetailVC: UIViewController {
+    
     @IBOutlet weak var mapVw: MKMapView!
+    
     let sectionTitles = ["Accepted", "Declined"]
     let itemsPerSection = [
         ["Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa"],
@@ -29,20 +29,19 @@ class BackPackerDetailVC: UIViewController {
         ["Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai","Mumbai"] // 👈 Add a third section here
     ]
     @IBOutlet weak var tblVw: UITableView!
-    
     @IBOutlet weak var lbl_Val_JobCount: UILabel!
     @IBOutlet weak var lbl_ValNam: UILabel!
     @IBOutlet weak var lblName: UILabel!
-    
     @IBOutlet weak var lbl_AddressVal: UILabel!
     @IBOutlet weak var lbl_TotalJobs: UILabel!
     @IBOutlet weak var lbl_Address: UILabel!
     @IBOutlet weak var lbl_mainHeader: UILabel!
+    
     let Role =  UserDefaults.standard.string(forKey: "UserRoleType")
     var obj : Backpacker?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
         self.tblVw.isHidden = true
  //       let nib = UINib(nibName: "HomeTVC", bundle: nil)
 //        self.tblVw.register(nib, forCellReuseIdentifier: "HomeTVC")
@@ -57,19 +56,21 @@ class BackPackerDetailVC: UIViewController {
         self.setUpUi()
         self.setUpData()
     }
+    
     private func setUpUi(){
         self.lbl_mainHeader.font = FontManager.inter(.medium, size: 16.0)
         self.lblName.font = FontManager.inter(.regular, size: 13.0)
         self.lbl_TotalJobs.font = FontManager.inter(.regular, size: 13.0)
         self.lbl_Address.font = FontManager.inter(.regular, size: 13.0)
-        
         self.lbl_ValNam.font = FontManager.inter(.semiBold, size: 13.0)
         self.lbl_Val_JobCount.font = FontManager.inter(.semiBold, size: 13.0)
         self.lbl_AddressVal.font = FontManager.inter(.semiBold, size: 13.0)
     }
+    
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
+    
     func setUpData() {
         if let obj = obj {
             if obj.name.isEmpty {
@@ -147,7 +148,6 @@ class BackPackerDetailVC: UIViewController {
                 if let country = placemark.country {
                     addressString += country
                 }
-                
                 completion(addressString)
             } else {
                 completion(nil)
@@ -155,6 +155,7 @@ class BackPackerDetailVC: UIViewController {
         }
     }
 }
+
 extension BackPackerDetailVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -178,7 +179,6 @@ extension BackPackerDetailVC: UITableViewDelegate, UITableViewDataSource {
             print("Cell tapped at index: \(indexPath.item)")
             // Navigate or perform any action
         }
-        
         return cell
     }
     
@@ -199,16 +199,14 @@ extension BackPackerDetailVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 40
-        
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         return 200
     }
-    
   
     private func handleHeaderButtonTap(in section: Int) {
         print("Button tapped in section \(section)")
     }
-    
 }

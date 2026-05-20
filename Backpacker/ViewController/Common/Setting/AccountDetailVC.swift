@@ -1,9 +1,6 @@
-//
 //  AccountDetailVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 04/07/25.
-//
 
 import UIKit
 protocol CommonDetailChildDelegate: AnyObject {
@@ -11,8 +8,8 @@ protocol CommonDetailChildDelegate: AnyObject {
 }
 
 class AccountDetailVC: UIViewController {
-    @IBOutlet weak var EmailVw: CommonTxtFldLblVw!
     
+    @IBOutlet weak var EmailVw: CommonTxtFldLblVw!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var stackVw_VisaDateHeight: NSLayoutConstraint!
     @IBOutlet weak var visaTypeHeight: NSLayoutConstraint!
@@ -29,16 +26,18 @@ class AccountDetailVC: UIViewController {
     @IBOutlet weak var btn_Cancel: UIButton!
     @IBOutlet weak var btn_Edit: UIButton!
     @IBOutlet weak var lbl_VisaTitle: UILabel!
-    
     @IBOutlet weak var BgVwTbl: UIView!
     @IBOutlet weak var lbl_MainHeader: UILabel!
     @IBOutlet weak var visaVw: UIView!
-    
     @IBOutlet weak var stckBotmHeight: NSLayoutConstraint!
     //heightConstraint
     @IBOutlet weak var lbl_error_VisaHeight: NSLayoutConstraint!
     @IBOutlet weak var lbl_error_SelectVisaType: UILabel!
-    
+    @IBOutlet weak var top_HeaderHeight: NSLayoutConstraint!
+    @IBOutlet weak var lblzHeaderVisa: UILabel!
+    @IBOutlet weak var btn_back: UIButton!
+    @IBOutlet weak var btn_editHeight: NSLayoutConstraint!
+    @IBOutlet weak var btn_backHeight: NSLayoutConstraint!
     
     let profileVm = ProfileVM()
     let viewModelAuth = LogInVM()
@@ -52,21 +51,13 @@ class AccountDetailVC: UIViewController {
         "Investor Visa"
     ]
     var DOBPicker: UIDatePicker?
-    @IBOutlet weak var top_HeaderHeight: NSLayoutConstraint!
-    @IBOutlet weak var lblzHeaderVisa: UILabel!
     let role = UserDefaults.standard.string(forKey: "UserRoleType")
-    @IBOutlet weak var btn_back: UIButton!
-    @IBOutlet weak var btn_editHeight: NSLayoutConstraint!
-    @IBOutlet weak var btn_backHeight: NSLayoutConstraint!
     var isComeFromUpdate : Bool = false
-  
+    
     @IBOutlet weak var lbl_strtDate: UILabel!
-    
     @IBOutlet weak var lbl_expDate: UILabel!
-    
     @IBOutlet weak var vw_EndDate: UIView!
     @IBOutlet weak var Vw_strtdate: UIView!
-    
     @IBOutlet weak var Vw_DobMini: UIView!
     @IBOutlet weak var lbl_dob: UILabel!
     @IBOutlet weak var lbl_avlDob: UILabel!
@@ -77,10 +68,10 @@ class AccountDetailVC: UIViewController {
     @IBOutlet weak var lbl_errStrtDate: UILabel!
     
     private var startDatePicker: UIDatePicker?
-      private var endDatePicker: UIDatePicker?
-    
+    private var endDatePicker: UIDatePicker?
     var startDateCovertedVal : String?
     var endDateConvertedVal : String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lbl_dobError.isHidden = true
@@ -90,9 +81,6 @@ class AccountDetailVC: UIViewController {
         self.lbl_dob.font = FontManager.inter(.regular, size: 14.0)
         self.lbl_avlDob.font = FontManager.inter(.regular, size: 12.0)
         self.Vw_DobMini.addShadowAllSides(radius: 2.0)
-        
-        
-       
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
         self.setUpFonts()
         let nib = UINib(nibName: "ReportIssueTVC", bundle: nil)
@@ -117,17 +105,17 @@ class AccountDetailVC: UIViewController {
                 self.btn_back.setImage(UIImage(named: ""), for: .normal)
                 self.handleBottomBtn()
                 self.top_HeaderHeight.constant = 0.0
-               
+                
             }
         }
 #endif
-       
+        
         self.getProfileInfo()
 #if BackpackerHire
         stackVw_VisaDateHeight.constant = 0.0
         self.startDateField.isHidden = true
         self.endDateField.isHidden = true
-        #else
+#else
         stackVw_VisaDateHeight.constant = 85.0
         
 #endif
@@ -137,37 +125,33 @@ class AccountDetailVC: UIViewController {
     
     private func setUpNotificationObserver(){
         NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(keyboardWillShow),
-                name: UIResponder.keyboardWillShowNotification,
-                object: nil)
-            
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(keyboardWillHide),
-                name: UIResponder.keyboardWillHideNotification,
-                object: nil)
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil)
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil)
     }
-   
-    private func setUpFonts(){
+    
+    private func setUpFonts() {
         self.lbl_strtDate.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_expDate.font = FontManager.inter(.medium, size: 14.0)
-        
         self.startDateField.font = FontManager.inter(.regular, size: 12.0)
         self.endDateField.font = FontManager.inter(.regular, size: 12.0)
-        
         self.Vw_strtdate.layer.cornerRadius = 10
         self.vw_EndDate.layer.cornerRadius = 10
         self.Vw_strtdate.addShadowAllSides(radius: 2.0)
         self.vw_EndDate.addShadowAllSides(radius: 2.0)
-        
         self.lbl_errExpDate.textColor = .red
         self.lbl_errStrtDate.textColor = .red
         self.lbl_errExpDate.font = FontManager.inter(.regular, size: 8.0)
         self.lbl_errStrtDate.font = FontManager.inter(.regular, size: 8.0)
         self.lbl_errExpDate.isHidden = true
         self.lbl_errStrtDate.isHidden = true
-        
         self.startDateField.isUserInteractionEnabled = false
         self.endDateField.isUserInteractionEnabled = false
         self.lbl_error_VisaHeight.constant = 0.0
@@ -203,32 +187,34 @@ class AccountDetailVC: UIViewController {
         self.AreaVW.txtFld.isUserInteractionEnabled = false
         self.AreaVW.txtFld.keyboardType = .default
     }
-    private func setupPicker(){
+    
+    private func setupPicker() {
         startDatePicker = UIDatePicker()
-              startDatePicker?.datePickerMode = .date
-              if #available(iOS 14.0, *) {
-                  startDatePicker?.preferredDatePickerStyle = .wheels
-              }
-              startDatePicker?.addTarget(self, action: #selector(startDateChanged), for: .valueChanged)
-              startDateField.inputView = startDatePicker
-              
-              // Setup End Date Picker
-              endDatePicker = UIDatePicker()
-              endDatePicker?.datePickerMode = .date
-              if #available(iOS 14.0, *) {
-                  endDatePicker?.preferredDatePickerStyle = .wheels
-              }
-              endDatePicker?.addTarget(self, action: #selector(endDateChanged), for: .valueChanged)
-              endDateField.inputView = endDatePicker
-              
-              // Optional: Add toolbar with Done button
-              let toolbar = UIToolbar()
-              toolbar.sizeToFit()
-              let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(donePressed))
-              toolbar.setItems([doneButton], animated: true)
-              startDateField.inputAccessoryView = toolbar
-              endDateField.inputAccessoryView = toolbar
+        startDatePicker?.datePickerMode = .date
+        if #available(iOS 14.0, *) {
+            startDatePicker?.preferredDatePickerStyle = .wheels
+        }
+        startDatePicker?.addTarget(self, action: #selector(startDateChanged), for: .valueChanged)
+        startDateField.inputView = startDatePicker
+        
+        // Setup End Date Picker
+        endDatePicker = UIDatePicker()
+        endDatePicker?.datePickerMode = .date
+        if #available(iOS 14.0, *) {
+            endDatePicker?.preferredDatePickerStyle = .wheels
+        }
+        endDatePicker?.addTarget(self, action: #selector(endDateChanged), for: .valueChanged)
+        endDateField.inputView = endDatePicker
+        
+        // Optional: Add toolbar with Done button
+        let toolbar = UIToolbar()
+        toolbar.sizeToFit()
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(donePressed))
+        toolbar.setItems([doneButton], animated: true)
+        startDateField.inputAccessoryView = toolbar
+        endDateField.inputAccessoryView = toolbar
     }
+    
     @objc func keyboardWillShow(notification: Notification) {
         
         guard let userInfo = notification.userInfo,
@@ -247,79 +233,80 @@ class AccountDetailVC: UIViewController {
         scrollView.contentInset.bottom = 0
         scrollView.verticalScrollIndicatorInsets.bottom = 0
     }
+    
     @objc func startDateChanged() {
-           let formatter = DateFormatter()
-           formatter.dateStyle = .medium
-           startDateField.text = formatter.string(from: startDatePicker?.date ?? Date())
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        startDateField.text = formatter.string(from: startDatePicker?.date ?? Date())
         
         guard let date = startDatePicker?.date else { return }
-
-            let formatter2 = ISO8601DateFormatter()
-            formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-            formatter2.timeZone = TimeZone(secondsFromGMT: 0) // UTC
+        
+        let formatter2 = ISO8601DateFormatter()
+        formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        formatter2.timeZone = TimeZone(secondsFromGMT: 0) // UTC
         self.startDateCovertedVal = formatter2.string(from: date)
         self.lbl_errStrtDate.isHidden = true
-       }
-       
-       @objc func endDateChanged() {
-           let formatter = DateFormatter()
-           formatter.dateStyle = .medium
-           endDateField.text = formatter.string(from: endDatePicker?.date ?? Date())
-           
-           
-           guard let date = endDatePicker?.date else { return }
-
-               let formatter2 = ISO8601DateFormatter()
-               formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-               formatter2.timeZone = TimeZone(secondsFromGMT: 0) // UTC
-           self.endDateConvertedVal = formatter2.string(from: date)
-           self.lbl_errExpDate.isHidden = true
-       }
-       
-       @objc func donePressed() {
-           
-           if startDateField.isFirstResponder == true{
-               guard let date = startDatePicker?.date else { return }
-                  
-                  // 1️⃣ Visible formatted date
-                  let formatter = DateFormatter()
-                  formatter.dateStyle = .medium
-               startDateField.text = formatter.string(from: date)
-                  
-                  // 2️⃣ ISO format for backend
-                  let formatter2 = ISO8601DateFormatter()
-                  formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-                  formatter2.timeZone = TimeZone(secondsFromGMT: 0)
-                  
-               self.startDateCovertedVal = formatter2.string(from: date)
-                  
-               self.lbl_errStrtDate.isHidden = true
-                  
-                  self.view.endEditing(true)
-           }else if endDateField.isFirstResponder == true {
-               guard let date = endDatePicker?.date else { return }
-                  
-                  // 1️⃣ Visible formatted date
-                  let formatter = DateFormatter()
-                  formatter.dateStyle = .medium
-                  endDateField.text = formatter.string(from: date)
-                  
-                  // 2️⃣ ISO format for backend
-                  let formatter2 = ISO8601DateFormatter()
-                  formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-                  formatter2.timeZone = TimeZone(secondsFromGMT: 0)
-                  
-                  self.endDateConvertedVal = formatter2.string(from: date)
-                  
-                  self.lbl_errExpDate.isHidden = true
-                  
-                  self.view.endEditing(true)
-           }else{
-               self.view.endEditing(true)
-           }
-           
-       }
-    private func setUpButtons(){
+    }
+    
+    @objc func endDateChanged() {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        endDateField.text = formatter.string(from: endDatePicker?.date ?? Date())
+        
+        
+        guard let date = endDatePicker?.date else { return }
+        
+        let formatter2 = ISO8601DateFormatter()
+        formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        formatter2.timeZone = TimeZone(secondsFromGMT: 0) // UTC
+        self.endDateConvertedVal = formatter2.string(from: date)
+        self.lbl_errExpDate.isHidden = true
+    }
+    
+    @objc func donePressed() {
+        
+        if startDateField.isFirstResponder == true{
+            guard let date = startDatePicker?.date else { return }
+            
+            // 1️⃣ Visible formatted date
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            startDateField.text = formatter.string(from: date)
+            
+            // 2️⃣ ISO format for backend
+            let formatter2 = ISO8601DateFormatter()
+            formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            formatter2.timeZone = TimeZone(secondsFromGMT: 0)
+            
+            self.startDateCovertedVal = formatter2.string(from: date)
+            
+            self.lbl_errStrtDate.isHidden = true
+            
+            self.view.endEditing(true)
+        } else if endDateField.isFirstResponder == true {
+            guard let date = endDatePicker?.date else { return }
+            
+            // 1️⃣ Visible formatted date
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            endDateField.text = formatter.string(from: date)
+            
+            // 2️⃣ ISO format for backend
+            let formatter2 = ISO8601DateFormatter()
+            formatter2.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            formatter2.timeZone = TimeZone(secondsFromGMT: 0)
+            
+            self.endDateConvertedVal = formatter2.string(from: date)
+            
+            self.lbl_errExpDate.isHidden = true
+            
+            self.view.endEditing(true)
+        } else {
+            self.view.endEditing(true)
+        }
+    }
+    
+    private func setUpButtons() {
         
         self.btn_drpdwn.tag = 0
         self.manageHeightOfTable()
@@ -327,7 +314,7 @@ class AccountDetailVC: UIViewController {
         btn_Save.titleLabel?.font = FontManager.inter(.semiBold, size: 14.0)
         
         // Corner Radius
-      //  btn_Save.layer.cornerRadius = 10.0
+        //  btn_Save.layer.cornerRadius = 10.0
         // Border
         applyGradientButtonStyle(to: btn_Save)
         // Optional: Clip to bounds for corner radius to work
@@ -335,27 +322,30 @@ class AccountDetailVC: UIViewController {
         self.tblVwHeight.constant = 0.0
         self.btn_Edit.titleLabel?.font = FontManager.inter(.medium, size: 16.0)
     }
+    
     @IBAction func action_VisaDrpDwn(_ sender: Any) {
         if btn_Edit.tag == 1 {
             if btn_drpdwn.tag == 0{
                 self.btn_drpdwn.tag = 1
-            }else{
+            } else {
                 self.btn_drpdwn.tag = 0
             }
             self.manageHeightOfTable()
         }
     }
-    func manageHeightOfTable(){
-        if self.btn_drpdwn.tag == 0{
+    
+    func manageHeightOfTable() {
+        if self.btn_drpdwn.tag == 0 {
             self.tblVwHeight.constant = 0.0
             self.vWHeightContraint.constant = 0.0
             self.BgVwTbl.addShadowAllSides(radius: 0)
-        }else{
+        } else {
             self.BgVwTbl.addShadowAllSides(radius: 1.5)
             self.tblVwHeight.constant = 176.0
             self.vWHeightContraint.constant = 190.0
         }
     }
+    
     func showDatePicker() {
         let alert = UIAlertController(title: "Select DOB",
                                       message: "\n\n\n\n\n\n\n\n",
@@ -385,7 +375,7 @@ class AccountDetailVC: UIViewController {
         }
         
         alert.addAction(doneAction)
-
+        
         // IMPORTANT: Fix crash on iPad
         if let popoverController = alert.popoverPresentationController {
             popoverController.sourceView = self.view
@@ -394,20 +384,21 @@ class AccountDetailVC: UIViewController {
                                                   width: 0, height: 0)
             popoverController.permittedArrowDirections = []
         }
-        
         present(alert, animated: true)
     }
-
+    
     @IBAction func action_chosseDob(_ sender: Any) {
         self.showDatePicker()
     }
+    
     @IBAction func action_Back(_ sender: Any) {
         
         self.navigationController?.popViewController(animated: true)
     }
-    func isEditap(){
+    
+    func isEditap() {
 #if BackpackerHire
-        if isComeFromUpdate == true{
+        if isComeFromUpdate == true {
             DispatchQueue.main.async {
                 self.NameVw.txtFld.isUserInteractionEnabled = true
                 self.EmailVw.txtFld.isUserInteractionEnabled = false
@@ -416,12 +407,13 @@ class AccountDetailVC: UIViewController {
             }
             self.stckBotmHeight.constant = 50.0
             applyGradientButtonStyle(to: self.btn_Save)
-        }else{
+        } else {
             self.isComeFromUpdate = false
             self.stckBotmHeight.constant = 0.0
         }
-        #endif
+#endif
     }
+    
     @IBAction func actionEdit(_ sender: Any) {
         if self.btn_Edit.tag == 0{
             self.btn_Edit.tag = 1
@@ -434,7 +426,7 @@ class AccountDetailVC: UIViewController {
                 self.startDateField.isUserInteractionEnabled  = true
                 self.endDateField.isUserInteractionEnabled  = true
             }
-        }else{
+        } else {
             self.btn_Edit.tag = 0
             self.isComeFromUpdate = false
             self.NameVw.txtFld.isUserInteractionEnabled = false
@@ -446,17 +438,18 @@ class AccountDetailVC: UIViewController {
         }
         self.handleBottomBtn()
     }
-    private func handleBottomBtn(){
-        if self.btn_Edit.tag == 0{
+    
+    private func handleBottomBtn() {
+        if self.btn_Edit.tag == 0 {
             self.stckBotmHeight.constant = 0.0
-        }else{
+        } else {
             self.stckBotmHeight.constant = 50.0
             DispatchQueue.main.async{
                 applyGradientButtonStyle(to: self.btn_Save)
             }
-            
         }
     }
+    
     @IBAction func actionSave(_ sender: Any) {
         
         let isNameValid = NameVw.validateNotEmpty(errorMessage: "Please enter your name")
@@ -471,7 +464,7 @@ class AccountDetailVC: UIViewController {
 #if BackpackerHire
         isVisaTypeValid = true
         hasError = false
-        #else
+#else
         if self.lbl_VisaTitle.text == "Select Visa Type" {
             self.lbl_error_SelectVisaType.isHidden = false
             self.lbl_error_VisaHeight.constant = 20.0
@@ -487,13 +480,13 @@ class AccountDetailVC: UIViewController {
             lbl_errStrtDate.isHidden = false
             hasError = true
         }
-
+        
         // End date validation
         if endDateField.text?.isEmpty == true {
             lbl_errExpDate.isHidden = false
             hasError = true
         }
-
+        
         // Check if end date is after start date
         if let startText = startDateField.text, let endText = endDateField.text,
            let formatter = DateFormatter() as DateFormatter?,
@@ -507,11 +500,8 @@ class AccountDetailVC: UIViewController {
                 hasError = true
             }
         }
-        
-        
 #endif
-       
-       
+        
         if isNameValid && isEmailValid && isPhoneValid && isCountryValid && isStateValid && isAreaValid && isVisaTypeValid && !hasError {
             if isComeFromUpdate == true{
                 let name = NameVw.txtFld.text!
@@ -526,55 +516,47 @@ class AccountDetailVC: UIViewController {
                 AlertManager.showConfirmationAlert(on: self, title: "Alert!", message: "Do you really want to update your profile information?") {
                     self.updateProfileInfo(name: name, email: email, state: state, area: area, visaType: visaType,startDate: self.startDateCovertedVal ?? "",endDate: self.endDateConvertedVal ?? "")
                 }
-                
-               
             }
         } else {
-           
+            
         }
-
     }
-    
     
     @IBAction func action_Cancelk(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
-
-  
-    
 }
+
 extension AccountDetailVC: CommonDetailChildDelegate {
     func enableEditing(_ isEnabled: Bool) {
-            // Enable or disable editing UI
-            if isEnabled {
-                self.isComeFromUpdate = true
-               
-            } else {
-                self.isComeFromUpdate = false
-            }
-        isEditap()
+        // Enable or disable editing UI
+        if isEnabled {
+            self.isComeFromUpdate = true
+            
+        } else {
+            self.isComeFromUpdate = false
         }
+        isEditap()
+    }
 }
-
-
-
 
 extension AccountDetailVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return visaTypes.count
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "ReportIssueTVC", for: indexPath) as? ReportIssueTVC else {
             return UITableViewCell()
         }
-
+        
         cell.lbl_Issue.text = visaTypes[indexPath.row] // assuming your cell has `lbl_title`
         return cell
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedIssue = visaTypes[indexPath.row]
-            print("Selected issue: \(selectedIssue)")
+        print("Selected issue: \(selectedIssue)")
         self.lbl_VisaTitle.text = selectedIssue
         self.btn_drpdwn.tag = 0
         self.manageHeightOfTable()
@@ -585,70 +567,70 @@ extension AccountDetailVC : UITableViewDelegate,UITableViewDataSource{
             self.lbl_error_SelectVisaType.isHidden = true
             self.lbl_error_VisaHeight.constant = 0.0
         }
-
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50.0
     }
-    
 }
+
 extension AccountDetailVC {
     
     func getProfileInfo(isComeFromUpdate:Bool = false) {
-            LoaderManager.shared.show()
+        LoaderManager.shared.show()
+        
+        profileVm.getBackPackerProfile(isComeFromUpdate: isComeFromUpdate) { [weak self] (success: Bool, result: UserProfileResponse?, statusCode: Int?) in
+            guard let self = self else { return }
             
-            profileVm.getBackPackerProfile(isComeFromUpdate: isComeFromUpdate) { [weak self] (success: Bool, result: UserProfileResponse?, statusCode: Int?) in
-                guard let self = self else { return }
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
                 
-                guard let statusCode = statusCode else {
-                    LoaderManager.shared.hide()
-                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
-                    return
-                }
-                
-                let httpStatus = HTTPStatusCode(rawValue: statusCode)
-                
-                DispatchQueue.main.async {
-                    LoaderManager.shared.hide()
-                    
-                    switch httpStatus {
-                    case .ok, .created:
-                        if success, let profileData = result?.data {
-                            print("User Profile data fetched result:", profileData)
-                            self.setProfileData(profileData)
-                        } else {
-                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                        }
-                    case .badRequest:
-                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                    case .unauthorized :
-                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                self.getProfileInfo() // Retry on token refresh success
-                            } else {
-                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
-                            }
-                        }
-                    case .unauthorizedToken:
-                        LoaderManager.shared.hide()
-                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-                    case .unknown:
-                        LoaderManager.shared.hide()
-                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
-                    case .methodNotAllowed:
-                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                    case .internalServerError:
+                switch httpStatus {
+                case .ok, .created:
+                    if success, let profileData = result?.data {
+                        print("User Profile data fetched result:", profileData)
+                        self.setProfileData(profileData)
+                    } else {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.getProfileInfo() // Retry on token refresh success
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                 }
             }
         }
+    }
     
-    func setProfileData(_ data: UserProfileData){
+    func setProfileData(_ data: UserProfileData) {
         NameVw.txtFld.text = data.name.isEmpty ? nil : data.name
         EmailVw.txtFld.text = data.email.isEmpty ? nil : data.email
         CountryVw.txtFld.text = data.countryName.isEmpty ? nil : data.countryName
-
+        
         // Phone Number with optional country code
         if data.mobileNumber.isEmpty {
             phoneNumberVw.txtFld.text = nil
@@ -659,10 +641,9 @@ extension AccountDetailVC {
                 phoneNumberVw.txtFld.text = "\(data.countryCode) \(data.mobileNumber)"
             }
         }
-
+        
         stateVw.txtFld.text = data.state.isEmpty ? nil : data.state
         AreaVW.txtFld.text = data.area.isEmpty ? nil : data.area
-
         lbl_VisaTitle.text = data.visaType.isEmpty ? "Select Visa Type" : data.visaType
         
         if let startDate = data.startDate {
@@ -674,7 +655,7 @@ extension AccountDetailVC {
             } else {
                 print("Invalid date")
             }
-
+            
         }
         if let expDate = data.endDate {
             self.endDateConvertedVal = expDate
@@ -690,7 +671,7 @@ extension AccountDetailVC {
         if let isoDate = data.dob {
             let isoFormatter = ISO8601DateFormatter()
             isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds] // handles .000Z too
-
+            
             if let date = isoFormatter.date(from: isoDate) ?? ISO8601DateFormatter().date(from: isoDate.replacingOccurrences(of: ".000Z", with: "Z")) {
                 
                 let displayFormatter = DateFormatter()
@@ -711,9 +692,8 @@ extension AccountDetailVC {
         } else {
             lbl_dobError.isHidden = false
         }
-
-       
     }
+    
     func formatISODate(_ isoString: String) -> String? {
         // 1. Convert ISO string to Date
         let isoFormatter = ISO8601DateFormatter()
@@ -728,10 +708,9 @@ extension AccountDetailVC {
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMM yyyy" // e.g., 10 Oct 2013
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        
         return formatter.string(from: date)
     }
-
+    
     func updateProfileInfo(name: String, email: String, state: String, area: String, visaType: String,startDate: String,endDate: String) {
         LoaderManager.shared.show()
         profileVm.updateBackPackerProfile(email: email, name: name, state: state, area: area, visaType: visaType, notificationStatus: false,startDate: startDate,endDate: endDate,dob: self.lbl_avlDob.text ?? "") { [weak self] (success: Bool, result: UpdateProfileResponse?, statusCode: Int?) in

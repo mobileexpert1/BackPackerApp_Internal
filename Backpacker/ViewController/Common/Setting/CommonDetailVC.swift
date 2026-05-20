@@ -1,26 +1,25 @@
-//
 //  CommonDetailVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 04/08/25.
-//
 
 import UIKit
-
 
 class CommonDetailVC: UIViewController {
 
     @IBOutlet weak var btn_Edit: UIButton!
     @IBOutlet weak var collection_Vw: UICollectionView!
+    @IBOutlet weak var containerVw: UIView!
+    
     let colArray = ["Account Details","Company Details"]
     var selectedIndex =  0
-    @IBOutlet weak var containerVw: UIView!
     private var activeChildVC: (UIViewController & CommonDetailChildDelegate)?
     var isComeFromAddScreen : Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUi()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         collection_Vw.reloadData()
@@ -31,7 +30,8 @@ class CommonDetailVC: UIViewController {
               self.collectionView(self.collection_Vw, didSelectItemAt: defaultIndexPath)
           }
     }
-    func setUpUi(){
+    
+    func setUpUi() {
         self.btn_Edit.titleLabel?.font = FontManager.inter(.regular, size: 14.0)
         self.btn_Edit.tag = 0
    //     self.selectedIndex = 0
@@ -39,7 +39,6 @@ class CommonDetailVC: UIViewController {
         collection_Vw.delegate = self
         collection_Vw.dataSource = self
         collection_Vw.scrollToItem(at: IndexPath(item: selectedIndex, section: 0), at: .centeredHorizontally, animated: false)
-        
     }
     
     @IBAction func action_Back(_ sender: Any) {
@@ -48,14 +47,14 @@ class CommonDetailVC: UIViewController {
     
     @IBAction func action_EditTapped(_ sender: UIButton) {
         if selectedIndex == 0 {
-                    if btn_Edit.tag == 0{
+                    if btn_Edit.tag == 0 {
                         btn_Edit.tag = 1
                         activeChildVC?.enableEditing(true)
-                    }else{
+                    } else {
                         btn_Edit.tag = 0
                         activeChildVC?.enableEditing(false)
                     }
-        }else{
+        } else {
             let storyboard = UIStoryboard(name: "Setting", bundle: nil)
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "CompanyDetailVC") as? CompanyDetailVC {
                 settingVC.isComeFromUpdate = false
@@ -63,7 +62,6 @@ class CommonDetailVC: UIViewController {
                } else {
                    print("- Could not instantiate SettingVC")
                }
-            
         }
         /*
          if btn_Edit.tag == 0{
@@ -74,13 +72,10 @@ class CommonDetailVC: UIViewController {
              activeChildVC?.enableEditing(false)
          }
          */
-
     }
-    
-    
 }
-extension CommonDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout
-{
+
+extension CommonDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return colArray.count
@@ -96,6 +91,7 @@ extension CommonDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,U
         
         return cell
     }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let previousIndex = selectedIndex
         selectedIndex = indexPath.item
@@ -141,7 +137,6 @@ extension CommonDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,U
                 }
         }
 #endif
-       
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -156,9 +151,9 @@ extension CommonDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,U
         
         return CGSize(width: textWidth + padding, height: 50) // Adjust height as per design
     }
+    
     func loadViewController(from storyboardName: String, identifier: String) -> UIViewController? {
         let storyboard = UIStoryboard(name: storyboardName, bundle: nil)
         return storyboard.instantiateViewController(withIdentifier: identifier)
     }
-    
 }

@@ -1,9 +1,6 @@
-//
 //  CompanyLocationVC.swift
 //  BackpackerHire
-//
 //  Created by Mobile on 26/09/25.
-//
 
 import UIKit
 import Foundation
@@ -13,8 +10,8 @@ protocol CompanyLocationVCDelegate: AnyObject {
     func didLocationAdded(success: Bool)
 }
 
-
 class CompanyLocationVC: UIViewController {
+    
     weak var delegate: CompanyLocationVCDelegate?
     @IBOutlet weak var txtFld_manual: UITextField!
     @IBOutlet weak var txtFld_Vw: UIView!
@@ -25,6 +22,7 @@ class CompanyLocationVC: UIViewController {
     @IBOutlet weak var VwTxtFld: UIView!
     @IBOutlet weak var lbl_addlocation: UILabel!
     @IBOutlet weak var bgVwAddLocation: UIView!
+    
     var isLocAlreadyAdded: Bool = false
     let profileVm = ProfileVM()
     let viewModelAuth = LogInVM()
@@ -35,10 +33,9 @@ class CompanyLocationVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
-       
-        
     }
-    func setUpUI(){
+    
+    func setUpUI() {
         view.backgroundColor = UIColor.black.withAlphaComponent(0.2) // semi-transparent
         applyGradientButtonStyle(to: self.btn_Save)
         self.VwTxtFld.addShadowAllSides(radius: 0.5)
@@ -52,38 +49,36 @@ class CompanyLocationVC: UIViewController {
         txtFldLcation.delegate = self
         txtFld_manual.delegate = self
     }
+    
     @IBAction func btn_canle(_ sender: Any) {
         self.dismiss(animated: true)
     }
     
     @IBAction func btn_save(_ sender: Any) {
         // Check if latitude and longitude are valid
-            guard self.lat != 0.0 && self.long != 0.0 else {
-                AlertManager.showAlert(on: self, title: "Alert!", message: "Location not properly obtained. Please choose location again.")
-                return
-            }
+        guard self.lat != 0.0 && self.long != 0.0 else {
+            AlertManager.showAlert(on: self, title: "Alert!", message: "Location not properly obtained. Please choose location again.")
+            return
+        }
         var loctext = String()
-            // Trimmed location text
+        // Trimmed location text
         if isLocAlreadyAdded {
             loctext = self.txtFld_manual.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         } else {
             loctext = self.txtFldLcation.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         }
         
-            
-            // Check if location text is empty
+        // Check if location text is empty
         guard !loctext.isEmpty else {
-                AlertManager.showAlert(on: self, title: "Alert", message: "Please enter your address")
-                return
-            }
-            
-            // Show alert based on whether the location is already added
-           
-            
-            // Call API
-            self.addCompanyLocation()
+            AlertManager.showAlert(on: self, title: "Alert", message: "Please enter your address")
+            return
+        }
+        // Show alert based on whether the location is already added
         
+        // Call API
+        self.addCompanyLocation()
     }
+    
     @IBAction func action_choosecation(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
@@ -92,21 +87,22 @@ class CompanyLocationVC: UIViewController {
         } else {
             print("- Could not instantiate SettingVC")
         }
-        
     }
+    
     private func handleManualTxtFldAppearance(){
-        if isLocAlreadyAdded == false{
+        if isLocAlreadyAdded == false {
             self.main_VwManual.isHidden = true
             self.lbl_manually.isHidden = true
             self.txtFld_manual.isHidden = true
-        }else{
+        } else {
             self.main_VwManual.isHidden = false
             self.lbl_manually.isHidden = false
             self.txtFld_manual.isHidden = false
         }
     }
 }
-extension CompanyLocationVC : SetLocationDelegate{
+
+extension CompanyLocationVC : SetLocationDelegate {
     func didSelectLocation(locationName: String, fullAddress: String, coordinate: CLLocationCoordinate2D) {
         let Address = "\(locationName), \(fullAddress)"
         self.txtFldLcation.text = Address
@@ -124,10 +120,10 @@ extension CompanyLocationVC : UITextFieldDelegate {
         var locationText : String?
         if isLocAlreadyAdded == true {
             locationText = self.txtFld_manual.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        }else{
+        } else {
             locationText = self.txtFldLcation.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         }
-
+        
         profileVm.addCompanyLocation2(
             name: locationText ?? "",
             lat: lat ?? 0.0,
@@ -145,12 +141,11 @@ extension CompanyLocationVC : UITextFieldDelegate {
                 case .ok, .created:
                     if let response = response, response.success == true {
                         self.handleLocationCheck(response: response.data)
-                     //   self.dismiss(animated: true)
+                        //   self.dismiss(animated: true)
                     } else {
                         let msg = response?.message ?? error?.customDescription ?? "Something went wrong."
                         AlertManager.showAlert(on: self, title: "Error", message: msg)
                     }
-                    
                 case .badRequest:
                     let msg = response?.message ?? error?.customDescription ?? "Something went wrong."
                     AlertManager.showAlert(on: self, title: "Error", message: msg)
@@ -180,6 +175,7 @@ extension CompanyLocationVC : UITextFieldDelegate {
             }
         }
     }
+    
     func handleLocationCheck(response: LocationCheckData?) {
         guard let isNotExist = response?.isNotExist else {
             print("⚠️ Could not get isNotExist")
@@ -199,21 +195,22 @@ extension CompanyLocationVC : UITextFieldDelegate {
             AlertManager.showAlert(on: self, title: "Error", message:"A location with this name already exists for your business."){
                 self.handleUIForIfLocationExist()
             }
-            
         }
-       
     }
-    func handleUIForIfLocationExist(){
+    
+    func handleUIForIfLocationExist() {
         if isLocAlreadyAdded == true {
             self.isLocAlreadyAdded = true
             self.handleManualTxtFldAppearance()
         }
     }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder() // Dismiss keyboard
         return true
     }
 }
+
 // MARK: - LocationCheckResponse
 struct LocationCheckResponse: Codable {
     let success: Bool?

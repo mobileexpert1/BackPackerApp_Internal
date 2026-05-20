@@ -1,9 +1,6 @@
-//
 //  AccomodationCVC.swift
 //  BackpackerHire
-//
 //  Created by Mobile on 22/07/25.
-//
 
 import UIKit
 import Cosmos
@@ -21,13 +18,12 @@ class AccomodationCVC: UICollectionViewCell {
     @IBOutlet weak var imgVw: UIImageView!
     @IBOutlet weak var imgNgVw: UIView!
     @IBOutlet weak var mainVw: UIView!
-    
     @IBOutlet weak var btnTapeed: UIButton!
-    
     
     var onHeartTapped: ((Int) -> Void)?
     var onItemTapped: ((Int) -> Void)?
     var item : Int?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         setupFonts()
@@ -35,15 +31,17 @@ class AccomodationCVC: UICollectionViewCell {
         self.btn_Heart.isHidden = true
         self.heartVw.isHidden = true
         self.imgHeart.isHidden = true
-        #else
+#else
         self.btn_Heart.isHidden = false
         self.heartVw.isHidden = false
         self.imgHeart.isHidden = false
 #endif
     }
+    
     @IBAction func action_Tap(_ sender: Any) {
         onItemTapped?(item ?? 0)
     }
+    
     private func setupFonts() {
         btn_Heart.tag = 0
         // Customize fonts according to your design system
@@ -53,6 +51,7 @@ class AccomodationCVC: UICollectionViewCell {
         lblAmount.font =  FontManager.inter(.medium, size: 10.0)
         self.imgNgVw.addShadowAllSides(radius: 0.5)
     }
+    
     /// Configure cell with values
     func configureCell(title: String, rating: Double, reviewCount: Int,amount: Int) {
         lbl_Title.text = title
@@ -61,6 +60,7 @@ class AccomodationCVC: UICollectionViewCell {
         cosmosVw.rating = rating
         lblAmount.text = "From $\(amount) per adult"
     }
+    
     @objc private func heartTapped() {
         onHeartTapped?(item ?? 0)
     }

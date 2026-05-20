@@ -1,36 +1,33 @@
-//
 //  MainTabBarController.swift
 //  Backpacker
-//
 //  Created by Mobile on 03/07/25.
-//
 
 import Foundation
 import UIKit
 
 class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
-
+    
     override func viewDidLoad() {
-           super.viewDidLoad()
-           self.delegate = self
-           setupTabsForUserRole()
-           configureTabBarAppearance()
-       }
-
-       private func setupTabsForUserRole() {
-           let role = UserDefaults.standard.string(forKey: "UserRoleType")
-
-           var viewControllers: [UIViewController] = []
-           viewControllers = [
-               createTab(fromStoryboard: "Home", identifier: "BackPackerHomeVC", title: "Home", image: "Home"),
-               createTab(fromStoryboard: "Accomodation", identifier: "EmployerAccomodationVC", title: "Accommodation", image: "Accommodation"),
-               createTab(fromStoryboard: "Job", identifier: "MainJobController", title: "Jobs", image: "Job Seeker"),
-               createTab(fromStoryboard: "HangOut", identifier: "HangOutVC", title: "HangOut", image: "hangout"),
-               createTab(fromStoryboard: "Setting", identifier: "SettingVC", title: "Settings", image: "Setting")
-           ]
-           self.viewControllers = viewControllers
-       }
-
+        super.viewDidLoad()
+        self.delegate = self
+        setupTabsForUserRole()
+        configureTabBarAppearance()
+    }
+    
+    private func setupTabsForUserRole() {
+        let role = UserDefaults.standard.string(forKey: "UserRoleType")
+        
+        var viewControllers: [UIViewController] = []
+        viewControllers = [
+            createTab(fromStoryboard: "Home", identifier: "BackPackerHomeVC", title: "Home", image: "Home"),
+            createTab(fromStoryboard: "Accomodation", identifier: "EmployerAccomodationVC", title: "Accommodation", image: "Accommodation"),
+            createTab(fromStoryboard: "Job", identifier: "MainJobController", title: "Jobs", image: "Job Seeker"),
+            createTab(fromStoryboard: "HangOut", identifier: "HangOutVC", title: "HangOut", image: "hangout"),
+            createTab(fromStoryboard: "Setting", identifier: "SettingVC", title: "Settings", image: "Setting")
+        ]
+        self.viewControllers = viewControllers
+    }
+    
     private func createTab(fromStoryboard name: String, identifier: String, title: String, image: String) -> UINavigationController {
         let storyboard = UIStoryboard(name: name, bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: identifier)
@@ -41,25 +38,24 @@ class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
         nav.tabBarItem.image = UIImage(named: image )
         return nav
     }
-
-
+    
     private func configureTabBarAppearance() {
         let tabBar = self.tabBar
-
+        
         let tabBarWidth = tabBar.bounds.width
         let tabBarHeight = tabBar.bounds.height
         let itemCount = CGFloat(viewControllers?.count ?? 1)
-
+        
         guard tabBarWidth > 0, tabBarHeight > 0,
               tabBarWidth.isFinite, tabBarHeight.isFinite,
               itemCount > 0 else {
             print("- Invalid tabBar layout: width = \(tabBarWidth), height = \(tabBarHeight)")
             return
         }
-
+        
         let widthPerItem = tabBarWidth / itemCount
         let height = tabBarHeight
-
+        
         // Create selection indicator image using UIGraphicsImageRenderer
         let size = CGSize(width: widthPerItem, height: height)
         let renderer = UIGraphicsImageRenderer(size: size)
@@ -69,12 +65,12 @@ class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
             let pillX = (widthPerItem - pillW) / 2
             let pillY = (height - pillH) / 2
             let pillRect = CGRect(x: pillX, y: pillY, width: pillW, height: pillH)
-
+            
             let path = UIBezierPath(roundedRect: pillRect, cornerRadius: 10)
             UIColor.systemPurple.withAlphaComponent(0.3).setFill()
             path.fill()
         }.resizableImage(withCapInsets: .zero)
-
+        
         // Set up tab bar appearance
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
@@ -96,18 +92,18 @@ class MainTabBarController: UITabBarController,UITabBarControllerDelegate {
         ]
         appearance.stackedLayoutAppearance.normal.iconColor = .black
         appearance.stackedLayoutAppearance.selected.iconColor = selectedColor
-
+        
         tabBar.standardAppearance = appearance
         if #available(iOS 15.0, *) {
             tabBar.scrollEdgeAppearance = appearance
         }
-
+        
         tabBar.tintColor = selectedColor
         tabBar.unselectedItemTintColor = .black
     }
-
-       override func viewDidLayoutSubviews() {
-           super.viewDidLayoutSubviews()
-           configureTabBarAppearance()
-       }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        configureTabBarAppearance()
+    }
 }

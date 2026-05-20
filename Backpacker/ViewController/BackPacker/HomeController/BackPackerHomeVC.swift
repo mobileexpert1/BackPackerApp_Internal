@@ -11,8 +11,6 @@ import SkeletonView
 class BackPackerHomeVC: UIViewController {
     
     @IBOutlet weak var imgLogotTop: UIImageView!
-    
-    
     @IBOutlet weak var leading_LblHeader: NSLayoutConstraint!
     @IBOutlet weak var imgLogoHeight: NSLayoutConstraint!
     @IBOutlet weak var homeTblVw: UITableView!
@@ -23,22 +21,19 @@ class BackPackerHomeVC: UIViewController {
     @IBOutlet weak var VW_Noitication: UIView!
     @IBOutlet weak var Vw_Chat: UIView!
     @IBOutlet weak var lblMainHeader: UILabel!
-    
     @IBOutlet weak var lbl_NoData: UILabel!
     @IBOutlet weak var vw_searchBtm: NSLayoutConstraint!
     @IBOutlet weak var img_placeholde_Search: UIImageView!
     @IBOutlet weak var Vw_SearchHeight: NSLayoutConstraint!
     @IBOutlet weak var mainHeaderImgWidth: NSLayoutConstraint!
+    
     var refreshControl: UIRefreshControl?
     var sectionTitles = ["","Accommodations","Backpackers Hangout","Jobs"]
     let role = UserDefaults.standard.string(forKey: "UserRoleType")
     private let viewModel = BackPackerHomeVM()
     private let viewModelAuth = LogInVM()
-   
     private var homeData: BackpackerHomeResponseModel?
-    
     private let viewModelEmpAccomodationHome = AccommodationViewModel()
-    
     private var accomdationEmpHomeData: EmployerAccommodationData?
     private let viewModelEmpHangoutHome = HangoutViewModel()
     private var hangoutEmpHomeData: EmployerHangoutData?
@@ -53,9 +48,9 @@ class BackPackerHomeVC: UIViewController {
     var ticketId : String?
     var activeSections: [SectionType] {
         var sections: [SectionType] = []
-       
+        
 #if BackpackerHire
-        if role == "3"{
+        if role == "3" {
             if let banners = accomdationEmpHomeData?.banners, !banners.isEmpty {
                 sections.append(.banner)
             }
@@ -64,8 +59,7 @@ class BackPackerHomeVC: UIViewController {
             }
         }
         
-        
-        if role == "4"{
+        if role == "4" {
             if let banners = hangoutEmpHomeData?.banners, !banners.isEmpty {
                 sections.append(.banner)
             }
@@ -73,11 +67,8 @@ class BackPackerHomeVC: UIViewController {
                 sections.append(.hangouts)
             }
         }
-       
-       
         
-        
-        #else
+#else
         if let banners = homeData?.banners, !banners.isEmpty {
             sections.append(.banner)
         }
@@ -92,8 +83,6 @@ class BackPackerHomeVC: UIViewController {
         }
         
 #endif
-       
-        
         return sections
     }
     var lat : Double?
@@ -122,7 +111,7 @@ class BackPackerHomeVC: UIViewController {
         }
 #else
         sectionTitles = ["","Accommodations","Backpackers Hangout","Jobs"]
-       
+        
 #endif
         
         let nib4 = UINib(nibName: "SkeltonTVC", bundle: nil)
@@ -130,7 +119,6 @@ class BackPackerHomeVC: UIViewController {
         
         let nib5 = UINib(nibName: "SkeltonCollectionTVC", bundle: nil)
         self.homeTblVw.register(nib5, forCellReuseIdentifier: "SkeltonCollectionTVC")
-        
         
         let nib = UINib(nibName: "HomeTVC", bundle: nil)
         self.homeTblVw.register(nib, forCellReuseIdentifier: "HomeTVC")
@@ -152,6 +140,7 @@ class BackPackerHomeVC: UIViewController {
         self.setUpUI()
         self.setUpLogoHeader()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 #if Backapacker
@@ -165,53 +154,48 @@ class BackPackerHomeVC: UIViewController {
         
         
 #if BackpackerHire
-        if role == "3"{
+        if role == "3" {
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
-            {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 LoaderManager.shared.show()
                 self.EmployerAccomodationHome()
             }
-            
-           
         }
         
-        if role == "4"{
+        if role == "4" {
             
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
-            {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 LoaderManager.shared.show()
                 self.EmployerHangoutApiCall()
             }
-            
-           
         }
 #endif
         
     }
     
-    func setUpLogoHeader(){
+    func setUpLogoHeader() {
 #if Backapacker
         self.imgLogotTop.image = UIImage(named: "Home_BackPacker")
         self.imgLogoHeight.constant = 25
         self.mainHeaderImgWidth.constant = 25
         self.leading_LblHeader.constant = 10
-        #else
+#else
         
         self.imgLogotTop.image = UIImage(named: "Logo1")
         self.imgLogoHeight.constant = 30
         self.mainHeaderImgWidth.constant = 30
         self.leading_LblHeader.constant = 5
-        #endif
+#endif
     }
+    
     func showTopView(isShow : Bool = false,title : String = "Employer"){
-        if isShow == true{
+        if isShow == true {
             self.lblMainHeader.text = title
             Vw_Chat.isHidden = true
             notifictionCountBgVw.isHidden = true
             VW_Noitication.isHidden = true
             self.mainHeaderImgWidth.constant = 22.0
-        }else{
+        } else {
             self.lblMainHeader.text = "Employer"
             Vw_Chat.isHidden = false
             notifictionCountBgVw.isHidden = false
@@ -220,7 +204,7 @@ class BackPackerHomeVC: UIViewController {
         }
     }
     
-    func setUpUI(){
+    func setUpUI() {
         self.lblMainHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.homeTblVw.delegate = self
         self.homeTblVw.dataSource = self
@@ -236,7 +220,8 @@ class BackPackerHomeVC: UIViewController {
         self.Vw_Chat.addShadowAllSides(radius: 2.0)
         self.txtFldVw.delegate = self
     }
-    func refreshData(){
+    
+    func refreshData() {
         if isComeFromNotification == true{
             let storyboard = UIStoryboard(name: "Chat", bundle: nil)
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
@@ -253,7 +238,6 @@ class BackPackerHomeVC: UIViewController {
             }
         }
     }
-    
     
     @IBAction func action_Chat(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Chat", bundle: nil)
@@ -275,25 +259,23 @@ class BackPackerHomeVC: UIViewController {
         } else {
             print("- Could not instantiate SettingVC")
         }
-        
     }
-    
 }
+
 extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
     
     func numberOfSections(in tableView: UITableView) -> Int {
         
-           if isLoading {
+        if isLoading {
             return 4 // Show 5 skeleton cells (or however many you want)
         } else {
-        let count = activeSections.count
-        if count == 0{
-            return 0
-        }else{
-            return count
+            let count = activeSections.count
+            if count == 0{
+                return 0
+            } else {
+                return count
+            }
         }
-        }
-
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -308,16 +290,16 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                     return UITableViewCell()
                 }
                 return cell
-            }else{
+            } else {
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonCollectionTVC", for: indexPath) as? SkeltonCollectionTVC else {
                     return UITableViewCell()
                 }
                 return cell
                 
             }
-        }else{
+        } else {
             
-    #if BackpackerHire
+#if BackpackerHire
             let sectionType = activeSections[indexPath.section]
             
             switch sectionType {
@@ -325,14 +307,14 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "AdvertiesmentTVC", for: indexPath) as? AdvertiesmentTVC else {
                     return UITableViewCell()
                 }
-                if role == "3"{
+                if role == "3" {
                     let adsData = accomdationEmpHomeData?.banners
                     if let adsData  = adsData {
                         cell.ads = adsData
                     }
                 }
                 
-                if role == "4"{
+                if role == "4" {
                     let adsData = hangoutEmpHomeData?.banners
                     if let adsData  = adsData {
                         cell.ads = adsData
@@ -349,11 +331,9 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 cell.isComeForHireDetailPage = false
                 // Handle final callback here
                 cell.onAddAccommodation = { [weak self] val  in
-                    
-                    
                 }
                 cell.activeSections = activeSections
-            return cell
+                return cell
                 
             case .hangouts:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
@@ -390,8 +370,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 cell.activeSections = activeSections
                 return cell
             }
-           
-    #else
+#else
             let sectionType = activeSections[indexPath.section]
             
             switch sectionType {
@@ -413,10 +392,10 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 cell.isComeFromJob = true
                 cell.isComeForHireDetailPage = false
                 // Handle final callback here
-//                cell.onAddAccommodation = { [weak self] in
-//                    
-//                  
-//                }
+                //                cell.onAddAccommodation = { [weak self] in
+                //
+                //
+                //                }
                 cell.onTap  = { [weak self] val in
                     if let id =  self?.homeData?.jobslist[val].id {
                         print("Cell tapped at index: \(id)")
@@ -454,7 +433,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                     if let id = self?.homeData?.hangoutList[val].id{
                         self?.MakeJobHangOutFav(id: id)
                     }
-                   
+                    
                 }
                 cell.hangoutList = homeData?.hangoutList  ?? []
                 cell.activeSections = activeSections
@@ -472,7 +451,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                     print("ASccomodation Item",val)
                     let id = self?.homeData?.accommodationList[val].id
                     self?.moveToDetailPage(id: id ?? "", isComeFromHangOut: false)
-                  
+                    
                 }
                 cell.onFavTap  = { [weak self] val in
                     print("Hangout Item",val)
@@ -480,15 +459,14 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                     if let id = self?.homeData?.accommodationList[val].id{
                         self?.MakeJobAccomodationFav(id: id)
                     }
-                   
+                    
                 }
                 cell.accomodationList = homeData?.accommodationList  ?? []
                 cell.activeSections = activeSections
                 return cell
             }
-    #endif
+#endif
         }
-
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -532,20 +510,18 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         return header
     }
     
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if isLoading {
             return 0.0
-        }else{
-        let sectionType = activeSections[section]
-        switch sectionType {
-        case .banner:
-            return 0
-        case .accommodations, .hangouts, .jobs:
-            return 40
+        } else {
+            let sectionType = activeSections[section]
+            switch sectionType {
+            case .banner:
+                return 0
+            case .accommodations, .hangouts, .jobs:
+                return 40
+            }
         }
-        }
-
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -555,23 +531,23 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
             }else{
                 return 200
             }
-           
             
-        }else{
+            
+        } else {
             if indexPath.section == 0 {
 #if BackpackerHire
-                    let sectionType = activeSections[indexPath.section]
-                    switch sectionType {
-                    case .banner:
-                        return 160
-                    case .accommodations:
-                        return 230
-                    case  .hangouts:
-                        return 210
-                    case .jobs :
-                        return 180
-                    }
-                #else
+                let sectionType = activeSections[indexPath.section]
+                switch sectionType {
+                case .banner:
+                    return 160
+                case .accommodations:
+                    return 230
+                case  .hangouts:
+                    return 210
+                case .jobs :
+                    return 180
+                }
+#else
                 let sectionType = activeSections[indexPath.section]
                 switch sectionType {
                 case .banner:
@@ -584,20 +560,19 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                     return 180
                 }
 #endif
-              
-            }else if  indexPath.section == 1  {
-    #if BackpackerHire
+                
+            } else if  indexPath.section == 1 {
+#if BackpackerHire
                 if role == "4"   {
                     return 420
-                }else if role == "3"{
+                } else if role == "3" {
                     return 470
-                }else if role == "2"{
+                } else if role == "2" {
                     return 470
-                    
-                } else{
+                } else {
                     return 380
                 }
-    #else
+#else
                 let sectionType = activeSections[indexPath.section]
                 switch sectionType {
                 case .banner:
@@ -609,9 +584,9 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 case .jobs :
                     return 180
                 }
-               
-    #endif
-            }else if indexPath.section == 2 {
+                
+#endif
+            } else if indexPath.section == 2 {
                 let sectionType = activeSections[indexPath.section]
                 switch sectionType {
                 case .banner:
@@ -623,15 +598,12 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 case .jobs :
                     return 180
                 }
-               
-            }
-            else{
+            } else {
                 return 195
             }
-            
         }
-
     }
+    
     private func moveToAddAccomodationVC() {
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewAccomodationVC") as? AddNewAccomodationVC {
@@ -643,12 +615,12 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
     
     private func setupPullToRefresh() {
         refreshControl = UIRefreshControl()
-           refreshControl?.attributedTitle = NSAttributedString(string: "Refresh")
-           refreshControl?.tintColor = .gray
-           refreshControl?.addTarget(self, action: #selector(refreshTableData), for: .valueChanged)
+        refreshControl?.attributedTitle = NSAttributedString(string: "Refresh")
+        refreshControl?.tintColor = .gray
+        refreshControl?.addTarget(self, action: #selector(refreshTableData), for: .valueChanged)
         homeTblVw.refreshControl = refreshControl
     }
-
+    
     @objc private func refreshTableData() {
         // Call your API
 #if Backapacker
@@ -657,26 +629,23 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
         {
             self.HomeApiCall()
         }
-        #else
-        if role == "3"{
+#else
+        if role == "3" {
             self.isLoading = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
-            {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.EmployerAccomodationHome()
             }
         }
-        if role == "4"{
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
-            {
+        if role == "4" {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 LoaderManager.shared.show()
                 self.EmployerHangoutApiCall()
             }
         }
-       
 #endif
-      
+        
     }
-
+    
     private func handleHeaderButtonTap(in section: Int,title:String) {
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
         if title == "Accommodations" {
@@ -685,19 +654,20 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 self.navigationController?.pushViewController(settingVC, animated: true)
             }
             
-        }else if title == "Backpacker Hangout"{
+        } else if title == "Backpacker Hangout" {
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonGridVC") as? CommonGridVC {
                 settingVC.isComeFromHomeHangout = true
                 self.navigationController?.pushViewController(settingVC, animated: true)
             }
             
-        }else if title == "Jobs"{
+        } else if title == "Jobs" {
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "JobAllListVC") as? JobAllListVC {
                 self.navigationController?.pushViewController(settingVC, animated: true)
             }
         }
     }
-   private func moveToDetailPage(id:String,isComeFromHangOut: Bool = false){
+    
+    private func moveToDetailPage(id:String,isComeFromHangOut: Bool = false){
         if id.isEmpty == false {
             if isComeFromHangOut == false {
                 let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
@@ -707,7 +677,7 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                 } else {
                     print("- Could not instantiate AddNewAccomodationVC")
                 }
-            }else{
+            } else {
                 let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
                 if let accVC = storyboard.instantiateViewController(withIdentifier: "HangOutDetailVC") as? HangOutDetailVC {
                     accVC.hangoutID = id
@@ -716,8 +686,6 @@ extension  BackPackerHomeVC : UITableViewDelegate,UITableViewDataSource{
                     print("- Could not instantiate AddNewAccomodationVC")
                 }
             }
-            
-           
         }
     }
 }
@@ -728,24 +696,23 @@ extension BackPackerHomeVC : UITextFieldDelegate {
         textField.resignFirstResponder() // hides keyboard
         return true
     }
-    
 }
+
 extension BackPackerHomeVC : LocationManagerDelegate {
     func didFailWithError(_ error: Error) {
-            print("- Failed to get location: \(error.localizedDescription)")
-        }
+        print("- Failed to get location: \(error.localizedDescription)")
+    }
     
     func didUpdateLocation(_ location: CLLocation) {
-          let latitude = location.coordinate.latitude
-          let longitude = location.coordinate.longitude
-          print("📍 ViewController Received Location: \(latitude), \(longitude)")
+        let latitude = location.coordinate.latitude
+        let longitude = location.coordinate.longitude
+        print("📍 ViewController Received Location: \(latitude), \(longitude)")
         self.lat = latitude
         self.long =  longitude
-          // You can now use latitude and longitude here
-      }
-
-    
+        // You can now use latitude and longitude here
+    }
 }
+
 extension BackPackerHomeVC {
     
 #if Backapacker
@@ -779,7 +746,7 @@ extension BackPackerHomeVC {
                         if success == true {
                             self.homeData = data
 #if Backapacker
-                           // self.homeData?.banners.removeAll()
+                            // self.homeData?.banners.removeAll()
 #else
                             
 #endif
@@ -834,6 +801,7 @@ extension BackPackerHomeVC {
             }
         }
     }
+    
     func MakeJobFavorate(){
         LoaderManager.shared.show()
         viewModelJOb.MakeJOBFAVOURATE(id: self.jobId) { success, message ,statusCode in
@@ -877,7 +845,7 @@ extension BackPackerHomeVC {
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 }
             }
-               }
+        }
     }
     
     func MakeJobAccomodationFav(id: String){
@@ -923,7 +891,7 @@ extension BackPackerHomeVC {
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 }
             }
-               }
+        }
     }
     
     func MakeJobHangOutFav(id:String){
@@ -969,29 +937,27 @@ extension BackPackerHomeVC {
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 }
             }
-               }
+        }
     }
 #endif
 }
 
-
 extension  BackPackerHomeVC: SkeletonTableViewDataSource {
     func numSections(in collectionSkeletonView: UITableView) -> Int {
-           return 2 // Or your actual section count
-       }
-
-       func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
-           return 5
-       }
-
-       func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
-           if indexPath.section == 2 {
-               return "SkeltonCollectionTVC"
-           } else {
-               return "SkeltonTVC"
-           }
-       }
+        return 2 // Or your actual section count
+    }
     
+    func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
+        if indexPath.section == 2 {
+            return "SkeltonCollectionTVC"
+        } else {
+            return "SkeltonTVC"
+        }
+    }
     
     func showForceUpdatePopUp(email:String){
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
@@ -1000,13 +966,14 @@ extension  BackPackerHomeVC: SkeletonTableViewDataSource {
         vc.modalPresentationStyle = .overFullScreen
         self.present(vc, animated: true)
     }
+    
     private func navigateToDescriptionVC(){
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
-           if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
-               jobDescriptionVC.JobId = self.jobId
-               // Optional: pass selected job title
-               self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
-           }
+        if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
+            jobDescriptionVC.JobId = self.jobId
+            // Optional: pass selected job title
+            self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+        }
     }
 }
 
@@ -1087,8 +1054,7 @@ extension BackPackerHomeVC {
         }
     }
     
-    
-    func EmployerHangoutApiCall(){
+    func EmployerHangoutApiCall() {
         LoaderManager.shared.show()
         viewModelEmpHangoutHome.getEmployerHangOutHomeData() { [weak self] success, data, message, statusCode in
             guard let self = self else { return }
@@ -1110,7 +1076,7 @@ extension BackPackerHomeVC {
                             if self.hangoutEmpHomeData?.hangoutList.count == 0 {
                                 self.lbl_NoData.isHidden = false
                                 self.lbl_NoData.text = "No Hangout Found"
-                            }else{
+                            } else {
                                 self.lbl_NoData.isHidden = true
                                 self.lbl_NoData.text = ""
                             }
@@ -1162,11 +1128,9 @@ extension BackPackerHomeVC {
                 }
             }
         }
-        
-        
     }
     
-    #endif
+#endif
     
     private func moveToDetail(id : String){
         if id.isEmpty == false {
@@ -1185,10 +1149,10 @@ extension BackPackerHomeVC {
         if   self.homeData?.notificationCount ?? 0 <= 0 {
             self.notifictionCountBgVw.isHidden = true
             self.lbl_NotificationCount.isHidden = true
-        }else{
+        } else {
             self.notifictionCountBgVw.isHidden = false
             self.lbl_NotificationCount.isHidden = false
-             let count = self.homeData?.notificationCount ?? 0
+            let count = self.homeData?.notificationCount ?? 0
             self.lbl_NotificationCount.text = "\(count)"
         }
 #endif

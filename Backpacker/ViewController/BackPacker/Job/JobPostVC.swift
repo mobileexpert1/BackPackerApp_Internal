@@ -1,14 +1,11 @@
-//
 //  JobPostVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 08/07/25.
-//
 
 import UIKit
 
 class JobPostVC: UIViewController {
-
+    
     @IBOutlet weak var Vw_Setting: UIView!
     @IBOutlet weak var lblHeader: UILabel!
     @IBOutlet weak var txtFldSearch: UITextField!
@@ -20,13 +17,13 @@ class JobPostVC: UIViewController {
     @IBOutlet weak var vW_Jobs: UIView!
     @IBOutlet weak var btn_BackPacker: UIButton!
     @IBOutlet weak var btn_Jobs: UIButton!
-    var firstVC: JobCollectionVC!
-    var secondVC: BackPackerListVC!
-
     @IBOutlet weak var Vw_RatingHeight: NSLayoutConstraint!
     @IBOutlet weak var Vw_RatingDistance: CommonRatingDistanceView!
+    @IBOutlet weak var btn_Filter: UIButton!
+    
+    var firstVC: JobCollectionVC!
+    var secondVC: BackPackerListVC!
     var currentChildVC: UIViewController?
-   
     var designationsJobs : [JobsDesignation] = [
         JobsDesignation(Name: "Software Engineer", star: "5 Star",distance: "10 Km"),
         JobsDesignation(Name: "UI/UX Designer", star: "2 Star",distance: "2 Km"),
@@ -48,14 +45,12 @@ class JobPostVC: UIViewController {
     var filteredBackPackerList : [BackPackers] = []
     var filteredDesignations: [JobsDesignation] = []
     
-    @IBOutlet weak var btn_Filter: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
         self.setUPBtns()
-       
-       
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.Vw_RatingHeight.constant = 0
@@ -72,7 +67,8 @@ class JobPostVC: UIViewController {
             // Do something with the selected item
         }
     }
-    private func setUpUI(){
+    
+    private func setUpUI() {
         self.Vw_Setting.addShadowAllSides()
         self.lblHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.seacrhVw.layer.cornerRadius = 25.0
@@ -90,7 +86,6 @@ class JobPostVC: UIViewController {
         firstVC = storyboard.instantiateViewController(withIdentifier: "JobCollectionVC") as? JobCollectionVC
         secondVC = storyboard.instantiateViewController(withIdentifier: "BackPackerListVC") as? BackPackerListVC
         self.btn_Filter.tag = 0
-      
     }
     
     private func setUPBtns(){
@@ -107,7 +102,7 @@ class JobPostVC: UIViewController {
         self.lblBackPacker.font = FontManager.inter(.medium, size: 14.0)
         self.showChild(firstVC)
     }
-
+    
     @IBAction func action_btnBackPacker(_ sender: Any) {
         self.btn_BackPacker.tag = 0
         self.btn_Jobs.tag = 1
@@ -123,6 +118,7 @@ class JobPostVC: UIViewController {
         self.setBtnTitle()
         self.showChild(secondVC)
     }
+    
     @IBAction func action_BtnJobs(_ sender: Any) {
         
         self.btn_BackPacker.tag = 1
@@ -145,7 +141,6 @@ class JobPostVC: UIViewController {
         self.lblBackPacker.text = "BackPacker"
     }
     
-    
     @objc func searchTextChanged() {
         let text = txtFldSearch.text ?? ""
         
@@ -155,32 +150,29 @@ class JobPostVC: UIViewController {
                 filteredDesignations = designationsJobs
             } else {
                 filteredDesignations = designationsJobs.filter { $0.Name.lowercased().contains(text.lowercased()) }
-
+                
             }
             firstVC.updateDesignations(filteredDesignations)
-            
         } else {
             // 🔹 Filter backpackers for BackPackerListVC
             let search = text.lowercased()
             let filtered = search.isEmpty
             ? backpackers
-                : backpackers.filter { $0.name.lowercased().contains(search) }
+            : backpackers.filter { $0.name.lowercased().contains(search) }
             secondVC.updateDesignations(filtered)
         }
     }
-
     
     @IBAction func actionFilter(_ sender: Any) {
         self.filterActions(item: "")
-        
     }
     
     private func filterActions(item:String){
         if self.btn_Filter.tag == 0 {
-             self.btn_Filter.tag = 1
-         }else{
-             self.btn_Filter.tag = 0
-         }
+            self.btn_Filter.tag = 1
+        }else{
+            self.btn_Filter.tag = 0
+        }
         if btn_Filter.tag == 1{
             self.Vw_RatingHeight.constant = 250
             self.Vw_RatingDistance.isHidden = false
@@ -189,28 +181,29 @@ class JobPostVC: UIViewController {
             self.Vw_RatingDistance.isHidden = true
         }
         // -Force layout update
-           UIView.animate(withDuration: 0.2) {
-               self.Vw_RatingDistance.layoutIfNeeded()
-           }
+        UIView.animate(withDuration: 0.2) {
+            self.Vw_RatingDistance.layoutIfNeeded()
+        }
         filterDesignations(by: item)
     }
+    
     func filterDesignations(by item: String) {
         if item.contains("Star") {
             // It's a star filter
-         let ByStar  =  filterByStar(starStr: item)
+            let ByStar  =  filterByStar(starStr: item)
             if ByStar.count > 0{
                 firstVC.updateDesignations(ByStar)
             }
         }
         if item.contains("Km") {
             // It's a distance filter
-          let byDistnance =   filterByDistance(distanceStr: item)
+            let byDistnance =   filterByDistance(distanceStr: item)
             if byDistnance.count > 0{
                 firstVC.updateDesignations(byDistnance)
             }
         }
     }
-
+    
     private func showChild(_ newVC: UIViewController) {
         // Remove current child if any
         if let currentVC = currentChildVC {
@@ -218,14 +211,14 @@ class JobPostVC: UIViewController {
             currentVC.view.removeFromSuperview()
             currentVC.removeFromParent()
         }
-
+        
         // Add new child
         addChild(newVC)
         newVC.view.frame = description_ContainerVW.bounds // -Corrected line
         newVC.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         description_ContainerVW.addSubview(newVC.view)
         newVC.didMove(toParent: self)
-
+        
         // Update current
         currentChildVC = newVC
         if currentChildVC == firstVC {
@@ -235,27 +228,26 @@ class JobPostVC: UIViewController {
         }
     }
     
-    
     @IBAction func action_Setting(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-           if let settingVC = storyboard.instantiateViewController(withIdentifier: "SettingVC") as? SettingVC {
-               self.navigationController?.pushViewController(settingVC, animated: true)
-           } else {
-               print("- Could not instantiate SettingVC")
-           }
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "SettingVC") as? SettingVC {
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("- Could not instantiate SettingVC")
+        }
     }
-    
-    
-    
 }
+
 extension JobPostVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder() // hides the keyboard
         return true
     }
+    
     func extractNumber(from string: String) -> Int? {
         return Int(string.components(separatedBy: CharacterSet.decimalDigits.inverted).joined())
     }
+    
     func filterByDistance(distanceStr: String) -> [JobsDesignation] {
         guard let maxDistance = extractNumber(from: distanceStr) else {
             return []
@@ -268,6 +260,7 @@ extension JobPostVC: UITextFieldDelegate {
             return false
         }
     }
+    
     func filterByStar(starStr: String) -> [JobsDesignation] {
         guard let minStar = extractNumber(from: starStr) else {
             return []
@@ -280,5 +273,4 @@ extension JobPostVC: UITextFieldDelegate {
             return false
         }
     }
-
 }

@@ -1,9 +1,6 @@
-//
 //  AdvertiesmentTVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 23/07/25.
-//
 
 import UIKit
 import SDWebImage
@@ -43,7 +40,6 @@ class AdvertiesmentTVC: UITableViewCell {
         collectionViw.showAnimatedGradientSkeleton()
     }
     
-    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
@@ -55,6 +51,7 @@ extension AdvertiesmentTVC: SkeletonCollectionViewDataSource {
         return "AdvertiesmentCVC"
     }
 }
+
 // MARK: - UICollectionView Delegates
 extension AdvertiesmentTVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
@@ -82,6 +79,7 @@ extension AdvertiesmentTVC: UICollectionViewDelegate, UICollectionViewDataSource
         }
         return cell
     }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let ad = ads[indexPath.item]
         let urlString = ad.link

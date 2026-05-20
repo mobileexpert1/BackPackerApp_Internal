@@ -1,15 +1,13 @@
-//
 //  HomeVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 03/07/25.
-//
 
 import UIKit
 import SkeletonView
+
 class HomeVC: UIViewController {
     
-   let sectionTitles = ["Current Jobs","New Jobs","Declined Jobs"]
+    let sectionTitles = ["Current Jobs","New Jobs","Declined Jobs"]
     
     @IBOutlet weak var lbl_noJobs: UILabel!
     let itemsPerSection = [
@@ -34,7 +32,7 @@ class HomeVC: UIViewController {
     @IBOutlet weak var home_TblVw: UITableView!
     
     //HeaderOutLets
- //   @IBOutlet weak var Vw_Chat: UIView!
+    //   @IBOutlet weak var Vw_Chat: UIView!
     
     let viewModel = JobVM()
     let viewModelAuth = LogInVM()
@@ -53,7 +51,7 @@ class HomeVC: UIViewController {
         if let newJobslist = EmployerJobData?.data?.upcomingJobList, !newJobslist.isEmpty {
             sections.append(.upcomingJob)
         }
-      
+        
         if let declineJobslist = EmployerJobData?.data?.postedJobList, !declineJobslist.isEmpty {
             sections.append(.declinedJobs)
         }
@@ -64,21 +62,17 @@ class HomeVC: UIViewController {
         if let newJobslist = JobData?.data.newJobslist, !newJobslist.isEmpty {
             sections.append(.upcomingJob)
         }
-      
+        
         if let declineJobslist = JobData?.data.declinedJobslist, !declineJobslist.isEmpty {
             sections.append(.declinedJobs)
         }
 #endif
-        
-        
-        
-        
-       
         return sections
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-       // self.setUpUI()
+        // self.setUpUI()
         //  LoaderManager.shared.show()
         self.setupPullToRefresh()
         self.lbl_noJobs.font = FontManager.inter(.medium, size: 15.0)
@@ -102,17 +96,15 @@ class HomeVC: UIViewController {
 #else
         self.getListOfAll()
 #endif
-       
-   
-}
+        
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         self.refreshData()
-      
     }
-    func refreshData(){
+    
+    func refreshData() {
         if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
             if  appDelegate.isComeFromNotification == true && self.jobId.isEmpty == false {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
@@ -121,6 +113,7 @@ class HomeVC: UIViewController {
             }
         }
     }
+    
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
         refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
@@ -134,66 +127,61 @@ class HomeVC: UIViewController {
         self.refreshControl.beginRefreshing()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5){
 #if BackpackerHire
-        self.getEmployerJobList()
-        
+            self.getEmployerJobList()
+            
 #else
-        self.getListOfAll()
+            self.getListOfAll()
 #endif
         }
-        
-       
     }
-
-@IBAction func actionNotification(_ sender: Any) {
-    let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-    if let settingVC = storyboard.instantiateViewController(withIdentifier: "NotificationVC") as? NotificationVC {
-        self.navigationController?.pushViewController(settingVC, animated: true)
-    } else {
-        print("- Could not instantiate SettingVC")
+    
+    @IBAction func actionNotification(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "NotificationVC") as? NotificationVC {
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("- Could not instantiate SettingVC")
+        }
     }
-}
-@IBAction func action_Settings(_ sender: Any) {
-    let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-    if let settingVC = storyboard.instantiateViewController(withIdentifier: "SettingVC") as? SettingVC {
-        self.navigationController?.pushViewController(settingVC, animated: true)
-    } else {
-        print("- Could not instantiate SettingVC")
+    
+    @IBAction func action_Settings(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "SettingVC") as? SettingVC {
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("- Could not instantiate SettingVC")
+        }
     }
-}
-
-@IBAction func action_Chat(_ sender: Any) {
-    let storyboard = UIStoryboard(name: "Chat", bundle: nil)
-    if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
-        self.navigationController?.pushViewController(settingVC, animated: true)
-    } else {
-        print("- Could not instantiate SettingVC")
-    } 
-}
+    
+    @IBAction func action_Chat(_ sender: Any) {
+        let storyboard = UIStoryboard(name: "Chat", bundle: nil)
+        if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("- Could not instantiate SettingVC")
+        } 
+    }
 }
 
 extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         if isLoading {
-         return 4 // Show 5 skeleton cells (or however many you want)
+            return 4 // Show 5 skeleton cells (or however many you want)
         }else{
             //#if Backapacker
-     let count = activeSections.count
-     if count == 0{
-         return 0
-     }else{
-         return count
-     }
-      
-//#else
-//        return sectionTitles.count
-//        
-//#endif
+            let count = activeSections.count
+            if count == 0{
+                return 0
+            }else{
+                return count
+            }
+            
+            //#else
+            //        return sectionTitles.count
+            //        
+            //#endif
         }
-
-        
-        
-       
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -203,13 +191,11 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if isLoading {
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonCollectionTVC", for: indexPath) as? SkeltonCollectionTVC else {
-                    return UITableViewCell()
-                }
-                return cell
-             
-
-        }else{
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonCollectionTVC", for: indexPath) as? SkeltonCollectionTVC else {
+                return UITableViewCell()
+            }
+            return cell
+        } else {
             
             let sectionType = activeSections[indexPath.section]
             
@@ -229,16 +215,16 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
                 cell.empCurrentJobslist = EmployerJobData?.data?.currentJobslist
                 cell.activeSectionsList = self.activeSections
                 cell.onTap = { [weak self] val in
-                        guard let self = self else { return }
-                        print("Cell tapped at index----------: \(indexPath.item)")
-                        // Navigate or perform any action
+                    guard let self = self else { return }
+                    print("Cell tapped at index----------: \(indexPath.item)")
+                    // Navigate or perform any action
                     if let id =  EmployerJobData?.data?.currentJobslist?[val].id {
                         print("Cell tapped at index: \(id)")
                         self.jobId = id
                         self.navigateToDescriptionVC()
                     }
-                   
-                    }
+                    
+                }
 #else
                 cell.isComeFromJob = true
                 cell.isComeForHireDetailPage = false
@@ -246,30 +232,29 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
                 cell.currentJobslist = JobData?.data.currentJobslist
                 cell.activeSectionsList = self.activeSections
                 cell.onTap = { [weak self] val in
-                        guard let self = self else { return }
-                        print("Cell tapped at index----------: \(indexPath.item)")
-                        // Navigate or perform any action
+                    guard let self = self else { return }
+                    print("Cell tapped at index----------: \(indexPath.item)")
+                    // Navigate or perform any action
                     if let id = JobData?.data.currentJobslist[val].id {
                         print("Cell tapped at index: \(id)")
                         self.jobId = id
                         self.navigateToDescriptionVC()
                     }
-                   
-                    }
+                    
+                }
                 cell.onFavTap = { [weak self] val in
-                        guard let self = self else { return }
-                        print("Cell tapped at index----------: \(indexPath.item)")
-                        // Navigate or perform any action
+                    guard let self = self else { return }
+                    print("Cell tapped at index----------: \(indexPath.item)")
+                    // Navigate or perform any action
                     if let id = JobData?.data.currentJobslist[val].id {
                         print("Cell tapped at index: \(id)")
                         self.jobId = id
                         self.MakeJobFavorate()
                     }
-                    }
+                }
                 
 #endif
                 
-               
                 return cell
                 
             case .upcomingJob:
@@ -285,47 +270,43 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
                 cell.empNewjobList = EmployerJobData?.data?.upcomingJobList
                 cell.activeSectionsList = self.activeSections
                 cell.onTap = { [weak self] val in
-                        guard let self = self else { return }
-                        print("Cell tapped at index----------: \(indexPath.item)")
-                        // Navigate or perform any action
+                    guard let self = self else { return }
+                    print("Cell tapped at index----------: \(indexPath.item)")
+                    // Navigate or perform any action
                     if let id = EmployerJobData?.data?.upcomingJobList?[val].id {
                         print("Cell tapped at index: \(id)")
                         self.jobId = id
                         self.navigateToDescriptionVC()
                     }
-                   
-                    }
+                }
                 
 #else
                 cell.isComeFromJob = true
                 cell.isComeFromJobListSeeAll = true
                 cell.isComeForHireDetailPage = false
                 cell.onTap = { [weak self] val in
-                        guard let self = self else { return }
-                        print("Cell tapped at index------------: \(indexPath.item)")
-                        // Navigate or perform any action
+                    guard let self = self else { return }
+                    print("Cell tapped at index------------: \(indexPath.item)")
+                    // Navigate or perform any action
                     if let id = JobData?.data.newJobslist[val].id {
                         print("Cell tapped at index: \(id)")
                         self.jobId = id
                         self.navigateToDescriptionVC()
                     }
-                    }
+                }
                 cell.onFavTap = { [weak self] val in
-                        guard let self = self else { return }
-                        print("Cell tapped at index----------: \(indexPath.item)")
-                        // Navigate or perform any action
+                    guard let self = self else { return }
+                    print("Cell tapped at index----------: \(indexPath.item)")
+                    // Navigate or perform any action
                     if let id = JobData?.data.newJobslist[val].id {
                         print("Cell tapped at index: \(id)")
                         self.jobId = id
                         self.MakeJobFavorate()
                     }
-                    }
+                }
                 cell.newjobList = JobData?.data.newJobslist
                 cell.activeSectionsList = self.activeSections
 #endif
-                
-                
-             
                 return cell
                 
             case .declinedJobs:
@@ -341,56 +322,49 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
                 cell.empPostedjobList = EmployerJobData?.data?.postedJobList
                 cell.activeSectionsList = self.activeSections
                 cell.onTap = { [weak self] val in
-                        guard let self = self else { return }
-                        print("Cell tapped at index----------: \(indexPath.item)")
-                        // Navigate or perform any action
+                    guard let self = self else { return }
+                    print("Cell tapped at index----------: \(indexPath.item)")
+                    // Navigate or perform any action
                     if let id =  EmployerJobData?.data?.postedJobList?[val].id {
                         print("Cell tapped at index: \(id)")
                         self.jobId = id
                         self.navigateToDescriptionVC()
                     }
-                   
-                    }
-                
-                
+                    
+                }
 #else
                 cell.isComeFromJob = true
                 cell.isComeForHireDetailPage = false
                 cell.isComeFromJobListSeeAll = true
                 cell.onTap = { [weak self] val in
-                        guard let self = self else { return }
-                        print("Cell tapped at index----------: \(indexPath.item)")
-                        // Navigate or perform any action
+                    guard let self = self else { return }
+                    print("Cell tapped at index----------: \(indexPath.item)")
+                    // Navigate or perform any action
                     if let id = JobData?.data.declinedJobslist[val].id {
                         print("Cell tapped at index: \(id)")
                         self.jobId = id
                         self.navigateToDescriptionVC()
                     }
-                    }
+                }
                 cell.onFavTap = { [weak self] val in
-                        guard let self = self else { return }
-                        print("Cell tapped at index----------: \(indexPath.item)")
-                        // Navigate or perform any action
+                    guard let self = self else { return }
+                    print("Cell tapped at index----------: \(indexPath.item)")
+                    // Navigate or perform any action
                     if let id = JobData?.data.declinedJobslist[val].id {
                         print("Cell tapped at index: \(id)")
                         self.jobId = id
                         self.MakeJobFavorate()
                     }
-                    }
+                }
                 cell.declinedjobList = JobData?.data.declinedJobslist
                 cell.activeSectionsList = self.activeSections
-                
-                
 #endif
-                
-               
                 return cell
                 
             }
         }
-     
     }
-
+    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         
         guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "HomeHeaderView") as? HomeHeaderView else {
@@ -413,7 +387,7 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
 #else
             header.titleLaBLE.text = "New Jobs"
 #endif
-          
+            
         case .declinedJobs:
 #if BackpackerHire
             header.titleLaBLE.text = "Posted"
@@ -442,14 +416,14 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
                 self.navigationController?.pushViewController(settingVC, animated: true)
             }
             
-        }else if title == "Upcoming"{
+        } else if title == "Upcoming" {
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonGridVC") as? CommonGridVC {
                 settingVC.isComeFromHomeHangout = true
                 settingVC.isComeFromJobSections = true
                 self.navigationController?.pushViewController(settingVC, animated: true)
             }
             
-        }else if title == "Posted"{
+        } else if title == "Posted" {
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonGridVC") as? CommonGridVC {
                 settingVC.isComeFromJobSections = true
                 settingVC.isComeFromHomeJob = true
@@ -465,14 +439,14 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
                 self.navigationController?.pushViewController(settingVC, animated: true)
             }
             
-        }else if title == "New Jobs"{
+        } else if title == "New Jobs" {
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonGridVC") as? CommonGridVC {
                 settingVC.isComeFromHomeHangout = true
                 settingVC.isComeFromJobSections = true
                 self.navigationController?.pushViewController(settingVC, animated: true)
             }
             
-        }else if title == "Declined Jobs"{
+        } else if title == "Declined Jobs" {
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonGridVC") as? CommonGridVC {
                 settingVC.isComeFromJobSections = true
                 settingVC.isComeFromHomeJob = true
@@ -480,21 +454,17 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
             }
         }
 #endif
-        
-       
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if isLoading {
             return 0.0
-        }else{
+        } else {
             return 40
         }
-      
-        
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-      
         return 185
     }
     
@@ -502,21 +472,20 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         print("Button tapped in section \(section)")
     }
     
-    private func navigateToDescriptionVC(animation: Bool = true){
+    private func navigateToDescriptionVC(animation: Bool = true) {
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
-           if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
-               jobDescriptionVC.JobId = self.jobId
-               if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                   jobDescriptionVC.notificationId = appDelegate.pendingNotificationId
-               }
-               
-               // Optional: pass selected job title
-               self.navigationController?.pushViewController(jobDescriptionVC, animated: animation)
-           }
+        if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
+            jobDescriptionVC.JobId = self.jobId
+            if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                jobDescriptionVC.notificationId = appDelegate.pendingNotificationId
+            }
+            
+            // Optional: pass selected job title
+            self.navigationController?.pushViewController(jobDescriptionVC, animated: animation)
+        }
     }
     
- 
-    func setUpUI(){
+    func setUpUI() {
         let nib = UINib(nibName: "HomeTVC", bundle: nil)
         self.home_TblVw.register(nib, forCellReuseIdentifier: "HomeTVC")
         home_TblVw.register(UINib(nibName: "HomeHeaderView", bundle: nil),
@@ -528,12 +497,12 @@ extension HomeVC: UITableViewDelegate, UITableViewDataSource {
         home_TblVw.contentInset = .zero
         home_TblVw.sectionHeaderTopPadding = 0 // for iOS 15+
     }
-
 }
+
 extension HomeVC {
     
 #if Backapacker
-    func getListOfAll(){
+    func getListOfAll() {
         let trimmedSearch = ""
         
         LoaderManager.shared.show()
@@ -566,7 +535,7 @@ extension HomeVC {
                         if self.JobData?.data.currentJobslist.count == 0 &&  self.JobData?.data.declinedJobslist.count == 0 &&
                             self.JobData?.data.newJobslist.count == 0 {
                             self.lbl_noJobs.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_noJobs.isHidden = true
                         }
                     case .badRequest:
@@ -574,7 +543,7 @@ extension HomeVC {
                         if self.JobData?.data.currentJobslist.count == 0 &&  self.JobData?.data.declinedJobslist.count == 0 &&
                             self.JobData?.data.newJobslist.count == 0 {
                             self.lbl_noJobs.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_noJobs.isHidden = true
                         }
                     case .unauthorized :
@@ -586,7 +555,6 @@ extension HomeVC {
                                 self.refreshControl.endRefreshing()
                                 self.home_TblVw.setContentOffset(.zero, animated: true)
                                 NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
-                                
                             }
                         }
                     case .unauthorizedToken:
@@ -602,7 +570,7 @@ extension HomeVC {
                         if self.JobData?.data.currentJobslist.count == 0 &&  self.JobData?.data.declinedJobslist.count == 0 &&
                             self.JobData?.data.newJobslist.count == 0 {
                             self.lbl_noJobs.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_noJobs.isHidden = true
                         }
                     case .methodNotAllowed:
@@ -610,7 +578,7 @@ extension HomeVC {
                         if self.JobData?.data.currentJobslist.count == 0 &&  self.JobData?.data.declinedJobslist.count == 0 &&
                             self.JobData?.data.newJobslist.count == 0 {
                             self.lbl_noJobs.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_noJobs.isHidden = true
                         }
                     case .internalServerError:
@@ -618,21 +586,21 @@ extension HomeVC {
                         if self.JobData?.data.currentJobslist.count == 0 &&  self.JobData?.data.declinedJobslist.count == 0 &&
                             self.JobData?.data.newJobslist.count == 0 {
                             self.lbl_noJobs.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_noJobs.isHidden = true
                         }
                     }
                 }
             }
-            }
+        }
     }
     
 #endif
-   
+    
     
 #if BackpackerHire
     
-    func getEmployerJobList(){
+    func getEmployerJobList() {
         LoaderManager.shared.show()
         viewModel.getEmployerJobListSeeAll()  { [weak self] (success: Bool, result: EmployerJobsResponse?, statusCode: Int?) in
             guard let self = self else { return }
@@ -664,7 +632,7 @@ extension HomeVC {
                             (self.EmployerJobData?.data?.postedJobList?.isEmpty ?? true) &&
                             (self.EmployerJobData?.data?.upcomingJobList?.isEmpty ?? true)) {
                             self.lbl_noJobs.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_noJobs.isHidden = true
                         }
                     case .badRequest:
@@ -672,7 +640,7 @@ extension HomeVC {
                         if self.EmployerJobData?.data?.currentJobslist?.count == 0 &&  self.EmployerJobData?.data?.postedJobList?.count == 0 &&
                             self.EmployerJobData?.data?.upcomingJobList?.count == 0 {
                             self.lbl_noJobs.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_noJobs.isHidden = true
                         }
                     case .unauthorized :
@@ -684,7 +652,6 @@ extension HomeVC {
                                 self.refreshControl.endRefreshing()
                                 self.home_TblVw.setContentOffset(.zero, animated: true)
                                 NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
-                                
                             }
                         }
                     case .unauthorizedToken:
@@ -708,7 +675,7 @@ extension HomeVC {
                         if self.EmployerJobData?.data?.currentJobslist?.count == 0 &&  self.EmployerJobData?.data?.postedJobList?.count == 0 &&
                             self.EmployerJobData?.data?.upcomingJobList?.count == 0 {
                             self.lbl_noJobs.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_noJobs.isHidden = true
                         }
                     case .internalServerError:
@@ -716,35 +683,35 @@ extension HomeVC {
                         if self.EmployerJobData?.data?.currentJobslist?.count == 0 &&  self.EmployerJobData?.data?.postedJobList?.count == 0 &&
                             self.EmployerJobData?.data?.upcomingJobList?.count == 0 {
                             self.lbl_noJobs.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_noJobs.isHidden = true
                         }
                     }
                 }
             }
-            }
+        }
     }
     
-  
 #endif
 }
+
 extension  HomeVC: SkeletonTableViewDataSource {
     func numSections(in collectionSkeletonView: UITableView) -> Int {
-           return 2 // Or your actual section count
-       }
-
-       func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
-           return 5
-       }
-
-       func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
-               return "SkeltonCollectionTVC"
-          
-       }
+        return 2 // Or your actual section count
+    }
+    
+    func collectionSkeletonView(_ skeletonView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 5
+    }
+    
+    func collectionSkeletonView(_ skeletonView: UITableView, cellIdentifierForRowAt indexPath: IndexPath) -> ReusableCellIdentifier {
+        return "SkeltonCollectionTVC"
+    }
 }
+
 extension HomeVC {
 #if Backapacker
-    func MakeJobFavorate(){
+    func MakeJobFavorate() {
         LoaderManager.shared.show()
         viewModelJOb.MakeJOBFAVOURATE(id: self.jobId) { success, message ,statusCode in
             guard let statusCode = statusCode else {
@@ -787,13 +754,13 @@ extension HomeVC {
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 }
             }
-               }
+        }
     }
-    #endif
+#endif
 }
+
 enum SectionTypeList {
     case currentJob
     case upcomingJob
     case declinedJobs
 }
-

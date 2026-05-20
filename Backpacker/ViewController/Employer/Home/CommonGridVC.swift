@@ -1,38 +1,32 @@
-//
 //  CommonGridVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 05/08/25.
-//
 
 import UIKit
 
 class CommonGridVC: UIViewController {
     
     @IBOutlet weak var lbl_all_Border: UILabel!
-    
     @IBOutlet weak var lbl_FarmBorder: UILabel!
-    
-    
     @IBOutlet weak var reginaImg: UIImageView!
     @IBOutlet weak var farm_img: UIImageView!
     @IBOutlet weak var all_img: UIImageView!
     @IBOutlet weak var main_Header: UILabel!
     @IBOutlet weak var collVw: UICollectionView!
+    @IBOutlet weak var btn_searchCross: UIButton!
+    @IBOutlet weak var lbl_nodata_Found: UILabel!
+    @IBOutlet weak var txtFldSearch: UITextField!
+    @IBOutlet weak var seacrh_Vw: UIView!
+    
     var currentPage = 1
     var isFetchingData = false
     var hasMorePages = true
     var isLoadingMore = false
     var lastContentOffset: CGFloat = 0
-    @IBOutlet weak var btn_searchCross: UIButton!
-    @IBOutlet weak var lbl_nodata_Found: UILabel!
-    @IBOutlet weak var txtFldSearch: UITextField!
-    @IBOutlet weak var seacrh_Vw: UIView!
     var isComeFromJobSections : Bool = false
     var isComeFromHomeJob : Bool = false
     var isComeFromHomeAccomodation : Bool = false
     var isComeFromHomeHangout : Bool = false
-    
     let viewModel = JobVM()
     let viewModelAuth = LogInVM()
     var type : Int?
@@ -40,7 +34,6 @@ class CommonGridVC: UIViewController {
     var isLoading : Bool = true
     let refreshControl = UIRefreshControl()
     var accommodationList = [Accommodation]()
-    
     var page = 1
     let perPage = 10
     var totalJobs = Int()
@@ -51,22 +44,21 @@ class CommonGridVC: UIViewController {
     var lastSearchedText: String = ""
     var jobId = String()
     var isComeFromSeeAllBP: Bool = false
+    var selectedWork = ""
     //  FARm/REGION WOrk UI
     
     @IBOutlet weak var heigtWorkVw: NSLayoutConstraint!
     @IBOutlet weak var WorkVw: UIView!
-    
     @IBOutlet weak var lbl_all: UILabel!
     @IBOutlet weak var regionalVw: UIView!
     @IBOutlet weak var farmVw: UIView!
     @IBOutlet weak var Vw_allWork: UIView!
-    
     @IBOutlet weak var btn_regional: UIButton!
     @IBOutlet weak var lbl_regional: UILabel!
     @IBOutlet weak var lbl_Farm: UILabel!
     @IBOutlet weak var btn_Farm: UIButton!
-    var selectedWork = ""
     @IBOutlet weak var btn_All: UIButton!
+    
     private let viewModelJOb = JobVM()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,7 +68,6 @@ class CommonGridVC: UIViewController {
         self.setUpVwWork()
     }
     
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         isComeFromPullTorefresh = false
@@ -85,9 +76,9 @@ class CommonGridVC: UIViewController {
 #else
         self.getListOfAll()
 #endif
-        
     }
-    func setUpUI(){
+    
+    func setUpUI() {
         btn_searchCross.isHidden = true
         self.lbl_nodata_Found.isHidden = true
         self.lbl_nodata_Found.text = "No Jobs Found"
@@ -114,6 +105,7 @@ class CommonGridVC: UIViewController {
         self.seacrh_Vw.layer.borderColor = UIColor(hex: "#000000").cgColor
         txtFldSearch.delegate = self
     }
+    
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
         refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
@@ -139,8 +131,8 @@ class CommonGridVC: UIViewController {
             self.getListOfAll()
 #endif
         }
-        
     }
+    
     @IBAction func action_ClearSearch(_ sender: Any) {
         txtFldSearch.text = ""
         lastSearchedText = ""
@@ -152,14 +144,13 @@ class CommonGridVC: UIViewController {
 #else
         self.getListOfAll()
 #endif
-        
     }
     
-    func setUpStatus(){
+    func setUpStatus() {
         
 #if BackpackerHire
         
-        if isComeFromJobSections == false{
+        if isComeFromJobSections == false {
             if isComeFromHomeJob == true{
                 self.isComeFromHomeHangout = false
                 self.isComeFromHomeAccomodation = false
@@ -172,95 +163,86 @@ class CommonGridVC: UIViewController {
                 print("IsComefrom Hangout")
                 self.main_Header.text = "Backpacker Hangout"
                 
-            }else  if isComeFromHomeAccomodation == true{
+            } else  if isComeFromHomeAccomodation == true {
                 self.isComeFromHomeJob = false
                 self.isComeFromHomeHangout = false
                 print("IsComefrom Accomodation")
                 self.main_Header.text = "Accommodations"
-                
             }
-        }else{
-            if isComeFromHomeJob == true{
+        } else {
+            if isComeFromHomeJob == true {
                 self.isComeFromHomeHangout = false
                 self.isComeFromHomeAccomodation = false
                 print("IsComefrom JOb")
                 self.main_Header.text = "Posted"
                 self.type = 3
                 
-            }else  if isComeFromHomeHangout == true{
+            } else  if isComeFromHomeHangout == true {
                 self.isComeFromHomeJob = false
                 self.isComeFromHomeAccomodation = false
                 print("IsComefrom Hangout")
                 self.main_Header.text = "Upcoming"
                 self.type = 2
                 
-            }else  if isComeFromHomeAccomodation == true{
+            } else  if isComeFromHomeAccomodation == true {
                 self.isComeFromHomeJob = false
                 self.isComeFromHomeHangout = false
                 print("IsComefrom Accomodation")
                 self.main_Header.text = "Current Jobs"
                 self.type = 1
-                
             }
         }
-        
 #else
-        if isComeFromJobSections == false{
+        if isComeFromJobSections == false {
             if isComeFromHomeJob == true{
                 self.isComeFromHomeHangout = false
                 self.isComeFromHomeAccomodation = false
                 print("IsComefrom JOb")
                 self.main_Header.text = "Jobs"
-                
-            }else  if isComeFromHomeHangout == true{
+            } else  if isComeFromHomeHangout == true {
                 self.isComeFromHomeJob = false
                 self.isComeFromHomeAccomodation = false
                 print("IsComefrom Hangout")
                 self.main_Header.text = "Backpacker Hangout"
-                
-            }else  if isComeFromHomeAccomodation == true{
+            } else  if isComeFromHomeAccomodation == true {
                 self.isComeFromHomeJob = false
                 self.isComeFromHomeHangout = false
                 print("IsComefrom Accomodation")
                 self.main_Header.text = "Accommodations"
-                
             }
-        }else{
-            if isComeFromHomeJob == true{
+        } else {
+            if isComeFromHomeJob == true {
                 self.isComeFromHomeHangout = false
                 self.isComeFromHomeAccomodation = false
                 print("IsComefrom JOb")
                 self.main_Header.text = "Declined Jobs"
                 self.type = 2
-                
-            }else  if isComeFromHomeHangout == true{
+            } else  if isComeFromHomeHangout == true {
                 self.isComeFromHomeJob = false
                 self.isComeFromHomeAccomodation = false
                 print("IsComefrom Hangout")
                 self.main_Header.text = "New Jobs"
                 self.type = 3
                 
-            }else  if isComeFromHomeAccomodation == true{
+            } else  if isComeFromHomeAccomodation == true {
                 self.isComeFromHomeJob = false
                 self.isComeFromHomeHangout = false
                 print("IsComefrom Accomodation")
                 self.main_Header.text = "Current Jobs"
                 self.type = 1
-                
             }
         }
 #endif
         
-        
-        
         self.setTitleForSearch()
     }
-    func setTitleForSearch(){
+    
+    func setTitleForSearch() {
         
 #if BackpackerHire
         
         if isComeFromJobSections == false {
-            if isComeFromHomeJob == true{
+            if isComeFromHomeJob == true {
                 txtFldSearch.attributedPlaceholder = NSAttributedString(
                     string: "Posted",
                     attributes: [
@@ -268,8 +250,7 @@ class CommonGridVC: UIViewController {
                         .font: FontManager.inter(.regular, size: 14.0)
                     ])
                 
-                
-            }else  if isComeFromHomeHangout == true{
+            } else  if isComeFromHomeHangout == true {
                 txtFldSearch.attributedPlaceholder = NSAttributedString(
                     string: "UpComing",
                     attributes: [
@@ -277,7 +258,7 @@ class CommonGridVC: UIViewController {
                         .font: FontManager.inter(.regular, size: 14.0)
                     ])
                 
-            }else  if isComeFromHomeAccomodation == true{
+            } else  if isComeFromHomeAccomodation == true {
                 txtFldSearch.attributedPlaceholder = NSAttributedString(
                     string: "Current Jobs",
                     attributes: [
@@ -285,12 +266,11 @@ class CommonGridVC: UIViewController {
                         .font: FontManager.inter(.regular, size: 14.0)
                     ])
             }
-        }else{
-            
+        } else {
         }
 #else
         if isComeFromJobSections == false {
-            if isComeFromHomeJob == true{
+            if isComeFromHomeJob == true {
                 txtFldSearch.attributedPlaceholder = NSAttributedString(
                     string: "Declined Jobs",
                     attributes: [
@@ -299,7 +279,7 @@ class CommonGridVC: UIViewController {
                     ])
                 
                 
-            }else  if isComeFromHomeHangout == true{
+            } else  if isComeFromHomeHangout == true {
                 txtFldSearch.attributedPlaceholder = NSAttributedString(
                     string: "New Jobs",
                     attributes: [
@@ -307,7 +287,7 @@ class CommonGridVC: UIViewController {
                         .font: FontManager.inter(.regular, size: 14.0)
                     ])
                 
-            }else  if isComeFromHomeAccomodation == true{
+            } else  if isComeFromHomeAccomodation == true {
                 txtFldSearch.attributedPlaceholder = NSAttributedString(
                     string: "Current Jobs",
                     attributes: [
@@ -315,15 +295,12 @@ class CommonGridVC: UIViewController {
                         .font: FontManager.inter(.regular, size: 14.0)
                     ])
             }
-        }else{
-            
+        } else {
         }
 #endif
-        
-        
     }
     
-    private func setUpVwWork(){
+    private func setUpVwWork() {
 #if Backapacker
         self.btn_All.tag = 1
         self.btn_Farm.tag = 0
@@ -355,7 +332,6 @@ class CommonGridVC: UIViewController {
         self.WorkVw.isHidden = true
 #endif
         
-        
     }
     
     @IBAction func action_back(_ sender: Any) {
@@ -375,7 +351,7 @@ class CommonGridVC: UIViewController {
             self.reginaImg.isHidden = false
             self.getListOfAll()
             self.all_img.image = UIImage(named: "newUpward")
-        }else{
+        } else {
             sender.tag = 0
             self.heigtWorkVw.constant = 90
             self.Vw_allWork.isHidden = false
@@ -385,9 +361,9 @@ class CommonGridVC: UIViewController {
             self.farm_img.isHidden = true
             self.reginaImg.isHidden = true
             self.all_img.image = UIImage(named: "newDownward")
-            
         }
     }
+    
     @IBAction func action_all(_ sender: UIButton) {
         self.selectedWork = ""
         if sender.tag == 0 {
@@ -402,7 +378,7 @@ class CommonGridVC: UIViewController {
             self.farm_img.isHidden = true
             self.reginaImg.isHidden = true
             self.all_img.image = UIImage(named: "newUpward")
-        }else{
+        } else {
             sender.tag = 0
             self.heigtWorkVw.constant = 90
             self.Vw_allWork.isHidden = false
@@ -414,8 +390,6 @@ class CommonGridVC: UIViewController {
             self.reginaImg.isHidden = true
             self.all_img.image = UIImage(named: "newDownward")
         }
-        
-        
     }
     
     @IBAction func action_Btn_Farm(_ sender: UIButton) {
@@ -432,7 +406,7 @@ class CommonGridVC: UIViewController {
             self.farm_img.isHidden = false
             self.reginaImg.isHidden = true
             self.all_img.image = UIImage(named: "newUpward")
-        }else{
+        } else {
             sender.tag = 0
             self.heigtWorkVw.constant = 100.0
             self.Vw_allWork.isHidden = false
@@ -444,21 +418,18 @@ class CommonGridVC: UIViewController {
             self.reginaImg.isHidden = true
             self.all_img.image = UIImage(named: "newDownward")
         }
-        
     }
 }
+
 extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if isLoading ==  true{
+        if isLoading ==  true {
             return 8
-        }else{
+        } else {
             return jobslist.count
         }
-        
-        
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -468,7 +439,7 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                 return UICollectionViewCell()
             }
             return cell
-        }else{
+        } else {
             if isComeFromJobSections == false {
                 if isComeFromHomeHangout == true || isComeFromHomeAccomodation == true{
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
@@ -476,15 +447,14 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                     }
                     // Optionally configure cell
                     return cell
-                }else{
+                } else {
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
                         return UICollectionViewCell()
                     }
                     // Optionally configure cell
                     return cell
                 }
-                
-            }else{
+            } else {
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
                     return UICollectionViewCell()
                 }
@@ -515,20 +485,19 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                 cell.lbl_jobStatus.text = ""
                 cell.statusVw.isHidden = true
                 cell.SetUpHeight(isHeightShow: false)
-                
 #else
                 if isComeFromHomeHangout == true { // New Job
                     cell.isComeForHiredetailpage = true
                     cell.lbl_jobStatus.text = ""
                     cell.statusVw.isHidden = true
                     cell.SetUpHeight(isHeightShow: false)
-                } else if isComeFromHomeJob == true{
+                } else if isComeFromHomeJob == true {
                     cell.isComeForHiredetailpage = true
                     cell.lbl_jobStatus.text = "Declined"
                     cell.statusVw.isHidden = false
                     cell.statusVw.backgroundColor = UIColor.red
                     cell.SetUpHeight(isHeightShow: true)
-                }else{//Current job
+                } else {//Current job
                     cell.lbl_jobStatus.text = "Accepted"
                     cell.statusVw.isHidden = false
                     cell.statusVw.backgroundColor = UIColor(hex: "#00A925")
@@ -555,12 +524,11 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
 #if Backapacker
                     self.MakeJobFavorate()
 #endif
-                    
                 }
 #if Backapacker
                 if jobslist[indexPath.item].favoriteStatus == 1 {
                     cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
-                }else{
+                } else {
                     cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
                 }
 #endif
@@ -569,12 +537,7 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                 return cell
             }
         }
-        
-        
-        
     }
-    
-    
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
@@ -603,25 +566,23 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
             footer.activityIndicator.stopAnimating()
             footer.activityIndicator.isHidden = true
         }
-        
         return footer
     }
+    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = collectionView.bounds.width
-        if isComeFromJobSections == false{
-            if isComeFromHomeJob == true{
+        if isComeFromJobSections == false {
+            if isComeFromHomeJob == true {
                 return CGSize(width: (width / 2) - 4, height: 178)
-            }else{
+            } else {
                 return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 225) // Adjust height based on content
             }
-        }else{
+        } else {
             return CGSize(width: (width / 2) - 4, height: 195)
         }
     }
-    
-    
     
     // Horizontal spacing between items
     func collectionView(_ collectionView: UICollectionView,
@@ -644,10 +605,9 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
         
         if isComeFromHomeJob == true {
             return UIEdgeInsets(top: 5, left: 0, bottom: 4, right: 0)
-        }else{
+        } else {
             return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         }
-        
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -688,7 +648,6 @@ extension CommonGridVC: UICollectionViewDataSource, UICollectionViewDelegate, UI
                     
                 }
             }
-            
         }
     }
 }
@@ -726,7 +685,6 @@ extension CommonGridVC: UITextFieldDelegate {
 #endif
             }
         }
-        
         return true
     }
     
@@ -736,8 +694,6 @@ extension CommonGridVC: UITextFieldDelegate {
         return true
     }
 }
-
-
 
 extension CommonGridVC {
     func getListOfAll(){
@@ -829,7 +785,6 @@ extension CommonGridVC {
                         AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
                     case .internalServerError:
                         AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                        
                     }
                 }
             }
@@ -837,7 +792,7 @@ extension CommonGridVC {
     }
     
 #if BackpackerHire
-    private func EmploerGetListOfAll(){
+    private func EmploerGetListOfAll() {
         if page == 1 {
             self.isLoading = true
             LoaderManager.shared.show()
@@ -934,7 +889,7 @@ extension CommonGridVC {
     }
 #endif
     
-    private func navigateToDescriptionVC(){
+    private func navigateToDescriptionVC() {
         if self.jobId.isEmpty == false{
             let storyboard = UIStoryboard(name: "Job", bundle: nil)
             if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
@@ -948,7 +903,7 @@ extension CommonGridVC {
 
 extension CommonGridVC {
 #if Backapacker
-    func MakeJobFavorate(){
+    func MakeJobFavorate() {
         LoaderManager.shared.show()
         viewModelJOb.MakeJOBFAVOURATE(id: self.jobId) { success, message ,statusCode in
             guard let statusCode = statusCode else {
@@ -965,7 +920,6 @@ extension CommonGridVC {
                         AlertManager.showAlert(on: self, title: "Success", message: message ?? "Job added to favorites"){
                             self.getListOfAll()
                         }
-                        
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     }

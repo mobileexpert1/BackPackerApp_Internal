@@ -1,9 +1,6 @@
-//
 //  Extensions.swift
 //  Backpacker
-//
 //  Created by Mobile on 12/08/25.
-//
 
 import Foundation
 import UIKit
@@ -44,27 +41,28 @@ extension String {
         return formatter.string(from: date)
     }
 }
+
 extension String {
     /// Automatically converts time to AM/PM if needed
     /// Supports: "HH:mm", "hh:mm a"
     func toAmPmIfNeeded() -> String? {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
-
+        
         // 1️⃣ Try parsing as 12-hour format (already AM/PM)
         formatter.dateFormat = "hh:mm a"
         if let date = formatter.date(from: self.uppercased()) {
             // Already AM/PM → return as-is (normalized)
             return formatter.string(from: date)
         }
-
+        
         // 2️⃣ Try parsing as 24-hour format
         formatter.dateFormat = "HH:mm"
         if let date = formatter.date(from: self) {
             formatter.dateFormat = "hh:mm a"
             return formatter.string(from: date)
         }
-
+        
         // 3️⃣ Invalid time string
         return nil
     }
@@ -98,8 +96,9 @@ extension String {
         )
         return max(40, ceil(boundingBox.height))
     }
-
+    
 }
+
 import Foundation
 
 extension Date {
@@ -176,5 +175,4 @@ extension UIImage {
         let duration = Double(count) / 24.0 // Adjust FPS if needed
         return UIImage.animatedImage(with: images, duration: duration)
     }
-  
 }

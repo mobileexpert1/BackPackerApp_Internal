@@ -1,9 +1,6 @@
-//
 //  UserStore.swift
 //  Backpacker
-//
 //  Created by Mobile on 03/07/25.
-//
 
 import Foundation
 import Foundation
@@ -17,7 +14,6 @@ class UserStore: ServiceManager , UserSearchable {
     func searchUser<T>(number: String, completion: @escaping ((Bool, T?) -> Void)) where T : Decodable, T : Encodable {
         
     }
-    
     
     static let shared = UserStore()
     
@@ -48,6 +44,7 @@ class UserStore: ServiceManager , UserSearchable {
             completion(success, result, statusCode)
         }
     }
+    
     // API for verifying OTP
     func sendOTP<T: Codable>(
         params: Parameters,
@@ -112,8 +109,4 @@ class UserStore: ServiceManager , UserSearchable {
             completion(success, result, statusCode)
         }
     }
-    
-    
 }
-
-

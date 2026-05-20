@@ -15,7 +15,7 @@ import MapKit
 import SDWebImage
 import SKPhotoBrowser
 class HangOutDetailVC: UIViewController {
-
+    
     @IBOutlet weak var lbl_MainHeader: UILabel!
     @IBOutlet weak var btn_delete: UIButton!
     @IBOutlet weak var btn_Edit: UIButton!
@@ -23,37 +23,29 @@ class HangOutDetailVC: UIViewController {
     @IBOutlet weak var page_Controller: UIPageControl!
     @IBOutlet weak var img_CollectionVw: UICollectionView!
     @IBOutlet weak var mapView: MKMapView!
-    
     @IBOutlet weak var title_Location: UILabel!
-    
     @IBOutlet weak var btn_ViewOnMap: UIButton!
-    
     @IBOutlet weak var lbl_Address: UILabel!
-    
     @IBOutlet weak var title_About: UILabel!
-    
     @IBOutlet weak var mainScrollVw: UIScrollView!
     @IBOutlet weak var imgVw: UIImageView!
-    
     @IBOutlet weak var lbl_restaurantName: UILabel!
-    
     @IBOutlet weak var lbl_AboutDescription: UILabel!
     @IBOutlet weak var lbl_review: UILabel!
     @IBOutlet weak var lbl_Rating: UILabel!
+    
     let viewMOdel = HangoutViewModel()
     let viewModelAuth = LogInVM()
     var isLoading: Bool = true // true while loading, false once data is ready
     var hangoutDetailObj : HangoutData?
     var hangoutID : String?
     let refreshControl = UIRefreshControl()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
-
-        
         self.setUpCollectionVw()
         self.setupPullToRefresh()
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -79,22 +71,22 @@ class HangOutDetailVC: UIViewController {
     
     @objc private func refreshCollectionData() {
         // Reset pagination and loading flags
-
+        
         // Fetch data
         LoaderManager.shared.show()
         self.refreshControl.beginRefreshing()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
 #if BackpackerHire
-        
-        self.getEmployerDetailOfHangout()
+            
+            self.getEmployerDetailOfHangout()
 #else
-        self.getDetailOfHangout()
-        
+            self.getDetailOfHangout()
+            
 #endif
         }
-        
     }
-    private func setUpUI(){
+    
+    private func setUpUI() {
         self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.title_Location.font = FontManager.inter(.semiBold, size: 14.0)
         self.lbl_Address.font = FontManager.inter(.regular, size: 12.0)
@@ -104,15 +96,12 @@ class HangOutDetailVC: UIViewController {
         self.title_About.font = FontManager.inter(.semiBold, size: 14.0)
         self.lbl_AboutDescription.font = FontManager.inter(.regular, size: 12.0)
         btn_ViewOnMap.titleLabel?.font = FontManager.inter(.regular, size: 12.0)
-
-    
-
     }
     
-    func setUpCollectionVw(){
+    func setUpCollectionVw() {
         let nib2 = UINib(nibName: "CommonImageCell", bundle: nil)
         img_CollectionVw.register(nib2, forCellWithReuseIdentifier: "CommonImageCell")
-      
+        
         img_CollectionVw.isPagingEnabled = true
         img_CollectionVw.showsHorizontalScrollIndicator = false
         img_CollectionVw.decelerationRate = .fast
@@ -138,18 +127,14 @@ class HangOutDetailVC: UIViewController {
                                            title: "Delete Hangout",
                                            message: "Are you sure you want to delete the Hangout?",
                                            confirmAction: {
-            if let id = self.hangoutID{
+            if let id = self.hangoutID {
                 self.deleteHangout()
-            }else{
+            } else {
                 AlertManager.showAlert(on: self, title: "Missing", message: "Accommodation Id Is Missing")
             }
-           
-            
         })
         
-        
 #endif
-      
         
     }
     
@@ -187,21 +172,21 @@ class HangOutDetailVC: UIViewController {
 #endif
         
     }
-   
+    
     @IBAction func action_VwOnMap(_ sender: Any) {
         if let lat = self.hangoutDetailObj?.hangout.lat,
            let long = self.hangoutDetailObj?.hangout.long {
             
             // Create a URL for Apple Maps
-
-                let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
-                let placemark = MKPlacemark(coordinate: coordinate)
-                let mapItem = MKMapItem(placemark: placemark)
-                mapItem.name = "Hangout Location" // 👉 Custom title on the pin
-                mapItem.openInMaps(launchOptions: [
-                    MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: coordinate),
-                    MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
-                ])
+            
+            let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            let placemark = MKPlacemark(coordinate: coordinate)
+            let mapItem = MKMapItem(placemark: placemark)
+            mapItem.name = "Hangout Location" // 👉 Custom title on the pin
+            mapItem.openInMaps(launchOptions: [
+                MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: coordinate),
+                MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
+            ])
         }
     }
     
@@ -209,18 +194,17 @@ class HangOutDetailVC: UIViewController {
         self.navigationController?.popViewController(animated: true)
     }
 }
+
 extension HangOutDetailVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if isLoading == true{
+        if isLoading == true {
             return 5
-        }else{
+        } else {
             return hangoutDetailObj?.hangout.image.count ?? 0
         }
-       
-      
-        
     }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CommonImageCell", for: indexPath) as? CommonImageCell else {
             return UICollectionViewCell()
@@ -231,9 +215,9 @@ extension HangOutDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,
         if let img = hangoutDetailObj?.hangout.image[indexPath.item] {
             let baseURL1 = ApiConstants.API.API_IMAGEURL
             let baseURL2 = ApiConstants.API.API_IMAGEURL
-
+            
             let imageURLString = img.hasPrefix("http") ? img : baseURL1 + img
-
+            
             cell.img_Vw.sd_setImage(
                 with: URL(string: imageURLString),
                 placeholderImage: UIImage(named: "img_Placehodler")
@@ -251,7 +235,7 @@ extension HangOutDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,
         }
         cell.img_Vw.isUserInteractionEnabled = true
         cell.img_Vw.tag = indexPath.item
-
+        
         let tap = UITapGestureRecognizer(target: self, action: #selector(imageTapped(_:)))
         cell.img_Vw.addGestureRecognizer(tap)
 #if BackpackerHire
@@ -260,53 +244,51 @@ extension HangOutDetailVC: UICollectionViewDelegate, UICollectionViewDataSource,
 #endif
         return cell
     }
+    
     @objc func imageTapped(_ sender: UITapGestureRecognizer) {
         guard let tappedImageView = sender.view as? UIImageView else { return }
         let startIndex = tappedImageView.tag
-
+        
         var photos: [SKPhotoProtocol] = []
-
+        
         if let imgArr =  hangoutDetailObj?.hangout.image {
             for img in imgArr {
                 let baseURL = ApiConstants.API.API_IMAGEURL
                 let imageURLString = img.hasPrefix("http") ? img : baseURL + img
-
+                
                 let photo = SKPhoto.photoWithImageURL(imageURLString)
                 photo.shouldCachePhotoURLImage = true
                 photos.append(photo)
             }
         }
-
+        
         let browser = SKPhotoBrowser(photos: photos, initialPageIndex: startIndex)
         browser.modalPresentationStyle = .fullScreen
         present(browser, animated: true, completion: nil)
     }
+    
     // Optional: Set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let width = img_CollectionVw.bounds.width
-
-            return CGSize(width: width, height: 186)
+        
+        return CGSize(width: width, height: 186)
+    }
     
-
-    }
-
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-      
-            return 0
-       
+        
+        return 0
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-      
-            return 0
-     
+        
+        return 0
     }
+    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let page = Int(scrollView.contentOffset.x / img_CollectionVw.frame.width)
         page_Controller.currentPage = page
     }
-   
 }
 
 extension HangOutDetailVC {
@@ -317,14 +299,14 @@ extension HangOutDetailVC {
         isLoading = true
         if hangoutID?.isEmpty == true {
             LoaderManager.shared.hide()
-                AlertManager.showAlert(
-                    on: self,
-                    title: "Alert",
-                    message: "Hangout ID is missing."
-                )
+            AlertManager.showAlert(
+                on: self,
+                title: "Alert",
+                message: "Hangout ID is missing."
+            )
             
             return
-        }else{
+        } else {
             viewMOdel.getEmployerHangutDetail(hangoutID: hangoutID ?? ""){ [weak self] (success: Bool, result: HangoutDetailResponse?, statusCode: Int?) in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
@@ -352,7 +334,7 @@ extension HangOutDetailVC {
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                                 LoaderManager.shared.hide()
                             }
-                          
+                            
                             self.refreshControl.endRefreshing()
                         case .badRequest:
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
@@ -392,21 +374,21 @@ extension HangOutDetailVC {
                 }
             }
         }
-        
     }
-    func deleteHangout(){
+    
+    func deleteHangout() {
         LoaderManager.shared.show()
         isLoading = true
         if hangoutID?.isEmpty == true {
             LoaderManager.shared.hide()
-                AlertManager.showAlert(
-                    on: self,
-                    title: "Alert",
-                    message: "Hangout ID is missing."
-                )
+            AlertManager.showAlert(
+                on: self,
+                title: "Alert",
+                message: "Hangout ID is missing."
+            )
             
             return
-        }else{
+        } else {
             viewMOdel.delete(hangoutID: hangoutID ?? ""){ [weak self] (success: Bool, result: DeleteJobResponse?, statusCode: Int?) in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
@@ -428,7 +410,6 @@ extension HangOutDetailVC {
                                 }
                             } else {
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                                
                             }
                             LoaderManager.shared.hide()
                             self.refreshControl.endRefreshing()
@@ -470,25 +451,23 @@ extension HangOutDetailVC {
                 }
             }
         }
-        
     }
     
-    
-    #else
+#else
     
     func getDetailOfHangout(){
         LoaderManager.shared.show()
         isLoading = true
         if hangoutID?.isEmpty == true {
             LoaderManager.shared.hide()
-                AlertManager.showAlert(
-                    on: self,
-                    title: "Alert",
-                    message: "Hangout ID is missing."
-                )
+            AlertManager.showAlert(
+                on: self,
+                title: "Alert",
+                message: "Hangout ID is missing."
+            )
             
             return
-        }else{
+        } else {
             viewMOdel.getBackPackerHangutDetail(hangoutID: hangoutID ?? ""){ [weak self] (success: Bool, result: HangoutDetailResponse?, statusCode: Int?) in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
@@ -516,7 +495,7 @@ extension HangOutDetailVC {
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                                 LoaderManager.shared.hide()
                             }
-                          
+                            
                             self.refreshControl.endRefreshing()
                         case .badRequest:
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
@@ -556,12 +535,11 @@ extension HangOutDetailVC {
                 }
             }
         }
-        
     }
     
 #endif
-  
-    func setUpValues(obj : HangoutData){
+    
+    func setUpValues(obj : HangoutData) {
         DispatchQueue.main.async {
             self.lbl_Address.text = obj.hangout.address
             self.lbl_restaurantName.text = obj.hangout.name
@@ -570,21 +548,19 @@ extension HangOutDetailVC {
                 self.page_Controller.numberOfPages = 0
                 self.page_Controller.currentPage = 0
                 self.page_Controller.isHidden = true
-            }else{
+            } else {
                 self.page_Controller.numberOfPages = self.hangoutDetailObj?.hangout.image.count ?? 0
                 self.page_Controller.currentPage = 0
                 self.page_Controller.isHidden = false
             }
-            
             self.img_CollectionVw.reloadData()
             self.setupMapAnnotations()
         }
     }
 }
 
-
 extension HangOutDetailVC: MKMapViewDelegate {
-
+    
     func setupMapAnnotations() {
         guard let nearbyUsers = self.hangoutDetailObj?.nearbyUsers else { return }
         
@@ -621,11 +597,9 @@ extension HangOutDetailVC: MKMapViewDelegate {
         } else {
             annotationView?.annotation = annotation
         }
-        
         return annotationView
     }
 }
-
 
 class UserAnnotation: NSObject, MKAnnotation {
     let coordinate: CLLocationCoordinate2D
@@ -638,5 +612,3 @@ class UserAnnotation: NSObject, MKAnnotation {
         self.subtitle = user.email
     }
 }
-
-

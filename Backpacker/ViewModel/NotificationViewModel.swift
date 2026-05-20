@@ -1,15 +1,10 @@
-//
 //  NotificationViewModel.swift
 //  Backpacker
-//
 //  Created by Mobile on 26/08/25.
-//
 
 import Foundation
 import Alamofire
 class NotificationViewModel {
-    
-    
     
     // MARK: - BackPacker: List of All Accommodation
     func getBackpackerNotificationList<T: Codable>(
@@ -23,8 +18,7 @@ class NotificationViewModel {
 #else
         let url = ApiConstants.API.EMPLPYER_NOTIFICATION_LIST(page: page, perPage: perPage,search: search)
 #endif
-       
-
+        
         ServiceManager.sharedInstance.requestApi(
             url,
             method: .get,
@@ -34,6 +28,7 @@ class NotificationViewModel {
             completion(success, result, statusCode)
         }
     }
+    
     // MARK: - NOtificationREAD API
     func BackpackerNotificationRead<T: Codable>(
         id: String,
@@ -44,11 +39,11 @@ class NotificationViewModel {
 #else
         let url = ApiConstants.API.NACKPACKER_NOTIFICATION_READ(ID: id)
 #endif
-       
+        
         let params: Parameters = [
             "notificationId": id
         ]
-
+        
         ServiceManager.sharedInstance.requestApi(
             url,
             method: .patch,

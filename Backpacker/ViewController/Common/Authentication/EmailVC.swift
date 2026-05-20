@@ -1,9 +1,6 @@
-//
 //  EmailVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 25/03/26.
-//
 
 import UIKit
 import CountryPickerView
@@ -16,7 +13,7 @@ class EmailVC: UIViewController {
     //Outlet
     @IBOutlet weak var picker_Vw: CountryPickerView!
     @IBOutlet weak var header_ImgTop: NSLayoutConstraint!
-   @IBOutlet weak var btn_term_Topconstraint: NSLayoutConstraint!
+    @IBOutlet weak var btn_term_Topconstraint: NSLayoutConstraint!
     @IBOutlet weak var lbl_temsandCondition: UILabel!
     @IBOutlet weak var btn_trmcondition: UIButton!
     @IBOutlet weak var vwTxtFld: UIView!
@@ -25,35 +22,25 @@ class EmailVC: UIViewController {
     @IBOutlet weak var btn_Continue: UIButton!
     @IBOutlet weak var lbl_Error: UILabel!
     @IBOutlet weak var txtFld_PhoneNumber: UITextField!
-    //Variables
     @IBOutlet weak var lbl_EntrNumber: UILabel!
-    
     @IBOutlet weak var txtFld_Email: UITextField!
-    
     @IBOutlet weak var segment_vw: UIView!
-    
     @IBOutlet weak var btn_email: UIButton!
-    
     @IBOutlet weak var btn_PhoneNumber: UIButton!
-    
     @IBOutlet weak var vw_EmailStack: UIView!
-    
-    
     @IBOutlet weak var vw_passStack: UIView!
-    
-    
     @IBOutlet weak var btn_countryPicker: UIButton!
     @IBOutlet weak var lbl_Header_PhneBunber: UILabel!
-    
     @IBOutlet weak var lbl_errorPhneNumber: UILabel!
     @IBOutlet weak var lbl_countryCode: UILabel!
     @IBOutlet weak var img_flag: UIImageView!
-    
     @IBOutlet weak var vw_TxtFldPhoneNumber: UIView!
     @IBOutlet weak var vw_Flag: UIView!
     
+    //Variables
     var isEmailSelected : Bool = true
     var viewModel = LogInVM()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUI()
@@ -62,20 +49,18 @@ class EmailVC: UIViewController {
         self.setupRoundedBorder(for: vw_TxtFldPhoneNumber)
         applyGradientButtonStyle(to: btn_Continue)
         segment_vw.layer.cornerRadius = 12
-           segment_vw.backgroundColor = UIColor.lightGray.withAlphaComponent(0.2)
-           
-           updateSegmentUI(isEmailSelected: true)
+        segment_vw.backgroundColor = UIColor.lightGray.withAlphaComponent(0.2)
+        
+        updateSegmentUI(isEmailSelected: true)
         // Do any additional setup after loading the view.
     }
     
-    
     @IBAction func action_PhoneNumber(_ sender: Any) {
         updateSegmentUI(isEmailSelected: false)
-        
     }
+    
     @IBAction func action_Email(_ sender: Any) {
         updateSegmentUI(isEmailSelected: true)
-        
     }
     
     func updateSegmentUI(isEmailSelected: Bool) {
@@ -120,21 +105,23 @@ class EmailVC: UIViewController {
             self.vw_EmailStack.isHidden = true
         }
     }
+    
     func setupRoundedBorder(for view: UIView) {
         view.layer.cornerRadius = 10
         view.layer.borderWidth = 1.0
         view.layer.borderColor = UIColor(named:"borderColor")?.cgColor
         view.clipsToBounds = true
     }
+    
     private func setUI(){
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-          tapGesture.cancelsTouchesInView = false // important
-          self.view.addGestureRecognizer(tapGesture)
-        #if BackpackerHire
+        tapGesture.cancelsTouchesInView = false // important
+        self.view.addGestureRecognizer(tapGesture)
+#if BackpackerHire
         self.header_ImgTop.constant = 20
-        #else
+#else
         self.header_ImgTop.constant = 70
-        #endif
+#endif
         picker_Vw.delegate = self
         picker_Vw.dataSource = self
         picker_Vw.setCountryByName("India")
@@ -180,27 +167,28 @@ class EmailVC: UIViewController {
         self.img_logo_bottom.constant = 0
         self.img_Logo_width.constant = 180
         self.img_logo_Height.constant = 180
-        #else
+#else
         self.logo_Img.image = UIImage(named: "launchBP")
         self.img_logo_bottom.constant = 50
         self.img_Logo_width.constant = 120
         self.img_logo_Height.constant = 120
 #endif
     }
+    
     @objc func dismissKeyboard() {
         self.view.endEditing(true)
     }
+    
     @objc func emailTextChanged(_ textField: UITextField) {
-       
     }
+    
     @objc func phoneNumberTextChanged(_ textField: UITextField) {
-        
-        
     }
+    
     @objc func selectCountryAction(_ sender: Any) {
         picker_Vw.showCountriesList(from: self)
-        
     }
+    
     private func setupTermsLabel() {
         let text = "I have read and agree to the Privacy Policy and Terms & Conditions"
         
@@ -231,6 +219,7 @@ class EmailVC: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapOnLabel(_:)))
         lbl_temsandCondition.addGestureRecognizer(tapGesture)
     }
+    
     @objc private func handleTapOnLabel(_ gesture: UITapGestureRecognizer) {
         guard let label = gesture.view as? UILabel,
               let attributedText = label.attributedText else { return }
@@ -280,9 +269,11 @@ class EmailVC: UIViewController {
 #endif
         }
     }
+    
     @IBAction func back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
+    
     private func openURL(_ urlString: String) {
         if let url = URL(string: urlString) {
             UIApplication.shared.open(url)
@@ -297,14 +288,13 @@ class EmailVC: UIViewController {
         textContainer.lineFragmentPadding = 0.0
         textContainer.maximumNumberOfLines = label.numberOfLines
         textContainer.lineBreakMode = label.lineBreakMode
-        
         layoutManager.addTextContainer(textContainer)
         textStorage.addLayoutManager(layoutManager)
-        
         let location = CGPoint(x: point.x, y: point.y)
         let index = layoutManager.characterIndex(for: location, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
         return NSRange(location: index, length: 1)
     }
+    
     @objc func termsLabelTapped() {
 #if BackpackerHire
         if let url = URL(string: "https://backpacker.csdevhub.com/terms-condition/employer") {
@@ -315,14 +305,13 @@ class EmailVC: UIViewController {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
 #endif
-        
     }
     
-    private func handleTermConditionBtn(){
-        if self.btn_trmcondition.tag == 0{
+    private func handleTermConditionBtn() {
+        if self.btn_trmcondition.tag == 0 {
             self.btn_trmcondition.tag = 1
             self.btn_trmcondition.setImage(UIImage(named: "Checkbox2"), for: .normal)
-        }else{
+        } else {
             self.btn_trmcondition.tag = 0
             self.btn_trmcondition.setImage(UIImage(named: "Checkbox"), for: .normal)
         }
@@ -336,34 +325,31 @@ class EmailVC: UIViewController {
         self.view.endEditing(true)
         if isEmailSelected {
             if self.validateEmail() {
-                if self.btn_trmcondition.tag == 1{
+                if self.btn_trmcondition.tag == 1 {
                     self.loginApiCall()
-                }else{
+                } else {
                     AlertManager.showAlert(
                         on: self,
                         title: "Terms & Conditions Required",
                         message: "You must agree to the Terms & Conditions to create an account or log in."
                     )
-                    
                 }
-                
             }
-        }else{
+        } else {
             if self.validatePhoneNumber() {
-                if self.btn_trmcondition.tag == 1{
+                if self.btn_trmcondition.tag == 1 {
                     self.loginApiCall()
-                }else{
+                } else {
                     AlertManager.showAlert(
                         on: self,
                         title: "Terms & Conditions Required",
                         message: "You must agree to the Terms & Conditions to create an account or log in."
                     )
-                    
                 }
             }
         }
-      
     }
+    
     func validateEmail() -> Bool {
         
         let email = txtFld_Email.text?
@@ -396,12 +382,9 @@ class EmailVC: UIViewController {
             return false
         }
     }
-    
-    
-   
 }
 
-extension EmailVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITextFieldDelegate{
+extension EmailVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITextFieldDelegate {
     
     func countryPickerView(_ countryPickerView: CountryPickerView, didSelectCountry country: Country) {
         // Only countryPickerInternal has it's delegate set
@@ -410,7 +393,6 @@ extension EmailVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
         if txtFld_PhoneNumber.text?.isEmpty == false{
             let _ =   self.validatePhoneNumber()
         }
-        
     }
     
     //DatatSource
@@ -421,11 +403,12 @@ extension EmailVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
     func showCountryCodeInList(in countryPickerView: CountryPickerView) -> Bool {
         return true
     }
+    
     func preferredCountries(in countryPickerView: CountryPickerView) -> [Country] {
         
         return ["NG", "US", "GB"].compactMap { countryPickerView.getCountryByCode($0) }
-        
     }
+    
     func validatePhoneNumber() -> Bool {
         let phoneNumber = txtFld_PhoneNumber.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let phoneCode = picker_Vw.selectedCountry.phoneCode.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -466,21 +449,20 @@ extension EmailVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 _ = self.validatePhoneNumber()
             }
-        }else if textField == self.txtFld_Email{
+        } else if textField == self.txtFld_Email {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 _ = self.validateEmail()
             }
         }
-        
         return true
     }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder() // -Dismiss keyboard
         return true
     }
-    
-    
 }
+
 extension EmailVC {
     private func loginApiCall(){
         LoaderManager.shared.show()
@@ -504,7 +486,7 @@ extension EmailVC {
                 countryName: "",
                 email: self.txtFld_Email.text!, loginType: logInType
             )
-        }else{
+        } else {
             logInType = "mobile"
             req = SignInRequest(
                 roleType: role,
@@ -527,9 +509,7 @@ extension EmailVC {
                             UserDefaultsManager.shared.employeruserId = userId
 #else
                             UserDefaultsManager.shared.userId = userId
-                            
 #endif
-                            
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                                 LoaderManager.shared.hide()
                                 self.push(OtpVC.self, fromStoryboard: "Main", identifier: "OtpVC") { vc in
@@ -569,11 +549,10 @@ extension EmailVC {
                     print(" Unknown status:", httpStatus.description)
                     AlertManager.showAlert(on: self, title: "Error", message: httpStatus.description)
                 }
-            }else{
+            } else {
                 LoaderManager.shared.hide()
                 AlertManager.showAlert(on: self, title: "Error", message: "Something went wrong.")
             }
         }
-        
     }
 }

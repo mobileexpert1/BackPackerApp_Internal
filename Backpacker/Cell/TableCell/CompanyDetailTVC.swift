@@ -1,9 +1,6 @@
-//
 //  CompanyDetailTVC.swift
 //  BackpackerHire
-//
 //  Created by Mobile on 12/08/25.
-//
 
 import UIKit
 
@@ -18,7 +15,6 @@ class CompanyDetailTVC: UITableViewCell {
     @IBOutlet weak var btn_More: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         self.main_Vw.addShadowAllSides(radius:2)
         self.main_Vw.layer.cornerRadius = 10.0
         self.lbl_Location.font = FontManager.inter(.semiBold, size: 13.0)
@@ -30,7 +26,6 @@ class CompanyDetailTVC: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
-        // Configure the view for the selected state
     }
     
     @IBAction func aactin_delete(_ sender: Any) {

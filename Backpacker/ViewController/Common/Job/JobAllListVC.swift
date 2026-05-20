@@ -1,18 +1,16 @@
-//
 //  JobAllListVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 06/08/25.
-//
 
 import UIKit
 
 class JobAllListVC: UIViewController {
-
+    
     @IBOutlet weak var txtFldSearch: UITextField!
     @IBOutlet weak var seacrhVw: UIView!
     @IBOutlet weak var tblVw: UITableView!
     @IBOutlet weak var mainHeader: UILabel!
+    
     let sectionTitles = ["Current Jobs", "New Jobs", "Declined Jobs"]
     let itemsPerSection = [
         ["Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa","Goa"],
@@ -45,18 +43,15 @@ class JobAllListVC: UIViewController {
         if let newJobslist = JobData?.data.newJobslist, !newJobslist.isEmpty {
             sections.append(.upcomingJob)
         }
-      
+        
         if let declineJobslist = JobData?.data.declinedJobslist, !declineJobslist.isEmpty {
             sections.append(.declinedJobs)
         }
         return sections
     }
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
         self.setUpUI()
         self.setupPullToRefresh()
     }
@@ -66,30 +61,27 @@ class JobAllListVC: UIViewController {
         
         self.getListOfAll()
     }
-  
+    
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
 }
+
 extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
         
 #if Backapacker
-     let count = activeSections.count
-     if count == 0{
-         return 0
-     }else{
-         return count
-     }
-      
+        let count = activeSections.count
+        if count == 0 {
+            return 0
+        } else {
+            return count
+        }
+        
 #else
         return sectionTitles.count
-        
 #endif
-        
-        
-       
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -110,11 +102,11 @@ extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
             cell.isComeFromJob = true
             cell.isComeForHireDetailPage = false
             cell.onTap = { [weak self] val  in
-                    guard let self = self else { return }
-                    print("Cell tapped at index: \(indexPath.item)")
-                    // Navigate or perform any action
+                guard let self = self else { return }
+                print("Cell tapped at index: \(indexPath.item)")
+                // Navigate or perform any action
                 self.navigateToDescriptionVC()
-                }
+            }
             cell.currentJobslist = JobData?.data.currentJobslist
             cell.activeSectionsList = self.activeSections
             return cell
@@ -129,11 +121,11 @@ extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
             cell.isComeFromJobListSeeAll = true
             cell.isComeForHireDetailPage = false
             cell.onTap = { [weak self] val in
-                    guard let self = self else { return }
-                    print("Cell tapped at index: \(indexPath.item)")
-                    // Navigate or perform any action
+                guard let self = self else { return }
+                print("Cell tapped at index: \(indexPath.item)")
+                // Navigate or perform any action
                 self.navigateToDescriptionVC()
-                }
+            }
             cell.newjobList = JobData?.data.newJobslist
             cell.activeSectionsList = self.activeSections
             return cell
@@ -147,15 +139,14 @@ extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
             cell.isComeFromJob = true
             cell.isComeForHireDetailPage = false
             cell.onTap = { [weak self] val in
-                    guard let self = self else { return }
-                    print("Cell tapped at index: \(indexPath.item)")
-                    // Navigate or perform any action
+                guard let self = self else { return }
+                print("Cell tapped at index: \(indexPath.item)")
+                // Navigate or perform any action
                 self.navigateToDescriptionVC()
-                }
+            }
             cell.declinedjobList = JobData?.data.declinedJobslist
             cell.activeSectionsList = self.activeSections
             return cell
-            
         }
     }
     
@@ -176,10 +167,9 @@ extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 40
-        
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
         return 200
     }
     
@@ -189,11 +179,11 @@ extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
     
     private func navigateToDescriptionVC(){
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
-           if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
-               
-               // Optional: pass selected job title
-               self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
-           }
+        if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
+            
+            // Optional: pass selected job title
+            self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
+        }
     }
     
     private func setupPullToRefresh() {
@@ -211,8 +201,8 @@ extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
             self.tblVw.setContentOffset(.zero, animated: true)
         }
     }
-
-    func setUpUI(){
+    
+    func setUpUI() {
         self.mainHeader.text = "Jobs"
         self.mainHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.seacrhVw.layer.cornerRadius = 25.0
@@ -228,7 +218,7 @@ extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
         let nib = UINib(nibName: "HomeTVC", bundle: nil)
         self.tblVw.register(nib, forCellReuseIdentifier: "HomeTVC")
         tblVw.register(UINib(nibName: "HomeHeaderView", bundle: nil),
-                            forHeaderFooterViewReuseIdentifier: "HomeHeaderView")
+                       forHeaderFooterViewReuseIdentifier: "HomeHeaderView")
         self.tblVw.delegate = self
         self.tblVw.dataSource = self
         tblVw.showsVerticalScrollIndicator = false
@@ -236,10 +226,7 @@ extension JobAllListVC: UITableViewDelegate, UITableViewDataSource {
         tblVw.contentInset = .zero
         tblVw.sectionHeaderTopPadding = 0 // for iOS 15+
     }
-
 }
-
-
 
 extension JobAllListVC : UITextFieldDelegate{
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -248,12 +235,9 @@ extension JobAllListVC : UITextFieldDelegate{
     }
 }
 
-
 extension JobAllListVC {
     
-    
-    
-    func getListOfAll(){
+    func getListOfAll() {
         let trimmedSearch = txtFldSearch.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         LoaderManager.shared.show()
         viewModel.getJobListSeeAll(page: 1, perPage: 10, search: trimmedSearch ?? "")  { [weak self] (success: Bool, result: JobListResponse?, statusCode: Int?) in
@@ -291,7 +275,6 @@ extension JobAllListVC {
                                 self.refreshControl.endRefreshing()
                                 self.tblVw.setContentOffset(.zero, animated: true)
                                 NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
-                                
                             }
                         }
                     case .unauthorizedToken:
@@ -311,6 +294,6 @@ extension JobAllListVC {
                     }
                 }
             }
-            }
+        }
     }
 }

@@ -1,9 +1,6 @@
-//
 //  AddNewPlaceVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 30/07/25.
-//
 
 import UIKit
 import CoreLocation
@@ -11,7 +8,6 @@ class AddNewPlaceVC: UIViewController {
     
     @IBOutlet weak var main_ScrollVw: UIScrollView!
     @IBOutlet weak var lbl_MainHeader: UILabel!
-    
     @IBOutlet weak var lbl_PlaceHodler: UILabel!
     @IBOutlet weak var imgPlacehoder: UIImageView!
     @IBOutlet weak var Vw_Placehoder: UIView!
@@ -20,7 +16,6 @@ class AddNewPlaceVC: UIViewController {
     @IBOutlet weak var Vw_Name: UIView!
     @IBOutlet weak var Vw_Address: UIView!
     @IBOutlet weak var header_Name: UILabel!
-    
     @IBOutlet weak var imageCollectionView: UICollectionView!
     // @IBOutlet weak var main_ImgVw: UIImageView!
     //  @IBOutlet weak var Btn_Cross: UIButton!
@@ -33,6 +28,10 @@ class AddNewPlaceVC: UIViewController {
     @IBOutlet weak var btn_Save: UIButton!
     @IBOutlet weak var btncan: UIButton!
     @IBOutlet weak var txtFld_Address: UITextField!
+    @IBOutlet weak var btn_Name_mic: UIButton!
+    @IBOutlet weak var btn_description_mic: UIButton!
+    @IBOutlet weak var btn_Address_mic: UIButton!
+    
     var mediaPicker: MediaPickerManager?
     let viewModel = HangoutViewModel()
     let viewModelAuth = LogInVM()
@@ -42,12 +41,6 @@ class AddNewPlaceVC: UIViewController {
     var selectedImagesData: [Data] = []
     //Mic btn OutLet
     var locationId : String?
-    @IBOutlet weak var btn_Name_mic: UIButton!
-    
-    
-    @IBOutlet weak var btn_description_mic: UIButton!
-    @IBOutlet weak var btn_Address_mic: UIButton!
-    
     //Speech to text
     let speechManager = SpeechToTextManager()
     var currentActiveTextField: UITextField?
@@ -69,7 +62,6 @@ class AddNewPlaceVC: UIViewController {
     var removedStrings: String = ""
     var editedImages: [EditedImage] = []
     var isMediaPickerTap : Bool = false
-
     
     let viewModell = SubscriptionViewModel()
     let viewAuth = LogInVM()
@@ -78,16 +70,17 @@ class AddNewPlaceVC: UIViewController {
     var activePlanLocationCount : Int?
     var activePlanJobCount: Int?
     var totalLocation : Int?
-    
     var countsLoc : CountsLoc?
     var hangoutCount : Int?
     var activePlan = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.SetUpUI()
         self.setupSpeechCallbacks()
         self.setupEditData()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.getPriceFormStore()
@@ -104,18 +97,16 @@ class AddNewPlaceVC: UIViewController {
             object: nil
         )
     }
-    func SetUpUI(){
+    
+    func SetUpUI() {
         
         Vw_Name.layer.cornerRadius = 10.0
         Vw_Name.layer.borderWidth = 1.0
         Vw_Name.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
         
-        
-        
         Vw_Address.layer.cornerRadius = 10.0
         Vw_Address.layer.borderWidth = 1.0
         Vw_Address.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        
         
         Vw_Description.layer.cornerRadius = 10.0
         Vw_Description.layer.borderWidth = 1.0
@@ -124,7 +115,6 @@ class AddNewPlaceVC: UIViewController {
         vw_Location.layer.cornerRadius = 10.0
         vw_Location.layer.borderWidth = 1.0
         vw_Location.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        
         
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16)
         self.header_Address.font = FontManager.inter(.medium, size: 14)
@@ -148,9 +138,7 @@ class AddNewPlaceVC: UIViewController {
                 .font: FontManager.inter(.regular, size: 14.0)
             ])
         
-        
         txtFldName.delegate = self
-        
         
         txtFld_Address.attributedPlaceholder = NSAttributedString(
             string: "Address",
@@ -158,7 +146,6 @@ class AddNewPlaceVC: UIViewController {
                 .foregroundColor: UIColor(hex: "#9D9D9D"),
                 .font: FontManager.inter(.regular, size: 14.0)
             ])
-        
         
         txtFld_Address.delegate = self
         
@@ -168,8 +155,8 @@ class AddNewPlaceVC: UIViewController {
         self.imageCollectionView.dataSource = self
     }
     
-    func setupEditData(){
-        if isComeFromEdit == true{
+    func setupEditData() {
+        if isComeFromEdit == true {
             self.lbl_MainHeader.text = "Edit hangout"
             self.btn_Save.setTitle("Update", for: .normal)
             if let name = editName {
@@ -194,11 +181,7 @@ class AddNewPlaceVC: UIViewController {
             self.longitude = editLongitude
             self.selectedImages.removeAll()
         }
-        
-        
     }
-    
-    
     
     @IBAction func action_Name_Mic(_ sender: UIButton) {
         //  handleMicTap(for: sender, textField: txtFldName, textView: nil) //Prevois btn functionality
@@ -221,15 +204,11 @@ class AddNewPlaceVC: UIViewController {
                     self?.txtFld_Address.resignFirstResponder()
                     self?.txtVw_Description.resignFirstResponder()
                 }
-                
-                
             }
             vc.modalPresentationStyle = .overFullScreen
             self.present(vc, animated: true, completion: nil)
         }
     }
-    
-    
     
     @IBAction func action_address_mic(_ sender: UIButton) {
         //  handleMicTap(for: sender, textField: txtFld_Address, textView: nil)
@@ -251,15 +230,11 @@ class AddNewPlaceVC: UIViewController {
                     self?.txtFld_Address.resignFirstResponder()
                     self?.txtVw_Description.resignFirstResponder()
                 }
-                
-                
             }
             vc.modalPresentationStyle = .overFullScreen
             self.present(vc, animated: true, completion: nil)
         }
     }
-    
-    
     
     @IBAction func action_descritpion_mic(_ sender: UIButton) {
         // handleMicTap(for: sender, textField: nil, textView: txtVw_Description)
@@ -280,8 +255,6 @@ class AddNewPlaceVC: UIViewController {
                     self?.txtFld_Address.resignFirstResponder()
                     self?.txtVw_Description.resignFirstResponder()
                 }
-                
-                
             }
             vc.modalPresentationStyle = .overFullScreen
             self.present(vc, animated: true, completion: nil)
@@ -290,19 +263,18 @@ class AddNewPlaceVC: UIViewController {
     
     @IBAction func setLocation(_ sender: Any) {
         
-//        let storyboard = UIStoryboard(name: "Job", bundle: nil)
-//        if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonLocationListVC") as? CommonLocationListVC {
-//            settingVC.delegaet = self
-//            if isComeFromEdit == true {
-//                settingVC.isComeromEdit = isComeFromEdit
-//                settingVC.editLocationId = self.locationId
-//               // settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
-//            }
-//            self.navigationController?.pushViewController(settingVC, animated: true)
-//        } else {
-//            print("- Could not instantiate SettingVC")
-//        }
-        
+        //        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+        //        if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonLocationListVC") as? CommonLocationListVC {
+        //            settingVC.delegaet = self
+        //            if isComeFromEdit == true {
+        //                settingVC.isComeromEdit = isComeFromEdit
+        //                settingVC.editLocationId = self.locationId
+        //               // settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
+        //            }
+        //            self.navigationController?.pushViewController(settingVC, animated: true)
+        //        } else {
+        //            print("- Could not instantiate SettingVC")
+        //        }
         
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
@@ -322,13 +294,15 @@ class AddNewPlaceVC: UIViewController {
      ▿ Optional<Double>
      - some : 76.8485717
      */
-    func setUpLocationHeader(){
-        if lbl_Val_Location.text == "Current Location"{
+    
+    func setUpLocationHeader() {
+        if lbl_Val_Location.text == "Current Location" {
             self.lbl_Val_Location.textColor = UIColor(hex: "#9D9D9D")
-        }else{
+        } else {
             self.lbl_Val_Location.textColor = UIColor.black
         }
     }
+    
     @IBAction func actionCross(_ sender: Any) {
         currentlyRecordingButton = nil
         currentActiveTextField = nil
@@ -342,17 +316,15 @@ class AddNewPlaceVC: UIViewController {
         mediaPicker?.showMediaOptions(
             isFromNewAccommodation: true,
             singleImageHandler: { image in
-                if self.isComeFromEdit == true{
-                   
-                        let edt = EditedImage(name: "image_1.jpg", image: image, index: 1)
-                        self.editedImages.append(edt)
-                        self.editedimageStrings.append("image_\(1).jpg")
-                        self.editImages.append(image)
-                        self.selectedImages.append(image)
-                  
+                if self.isComeFromEdit == true {
                     
+                    let edt = EditedImage(name: "image_1.jpg", image: image, index: 1)
+                    self.editedImages.append(edt)
+                    self.editedimageStrings.append("image_\(1).jpg")
+                    self.editImages.append(image)
+                    self.selectedImages.append(image)
                     self.isMediaPickerTap = true
-                }else{
+                } else {
                     self.selectedImages.append(image)
                 }
                 self.imageCollectionView.reloadData()
@@ -367,9 +339,8 @@ class AddNewPlaceVC: UIViewController {
                         self.editImages.append(img)
                         self.selectedImages.append(img)
                     }
-                    
                     self.isMediaPickerTap = true
-                }else{
+                } else {
                     for img in images{
                         self.selectedImages.append(img)
                     }
@@ -377,9 +348,7 @@ class AddNewPlaceVC: UIViewController {
                 self.imageCollectionView.reloadData()
             }
         )
-        
     }
-    
     
     @IBAction func action_Save_Hangout(_ sender: Any) {
         currentlyRecordingButton = nil
@@ -410,35 +379,32 @@ class AddNewPlaceVC: UIViewController {
         ) else {
             return
         }
-        
         if self.activePlan == ApiConstants.Products.defaultFreePlan {
             if self.hangoutCount ?? 0 < 1 {
                 if isComeFromEdit == true{
                     self.editHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData, removedImages: self.removedStrings)
-                }else{
+                } else {
                     self.submitHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData, locationId: self.locationId ?? "")
                 }
-            }else{
+            } else {
                 AlertManager.showAlert(
                     on: self,
                     title: "Plan Limit Reached",
                     message: "You have reached your current plan limit. To add a new hangout, please upgrade your plan."
                 ){
-                        let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-                        if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
-                            self.navigationController?.pushViewController(vc, animated: true)
-                        }
+                    let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+                    if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+                        self.navigationController?.pushViewController(vc, animated: true)
+                    }
                 }
             }
-        }else{
-            if isComeFromEdit == true{
+        } else {
+            if isComeFromEdit == true {
                 self.editHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData, removedImages: self.removedStrings)
-            }else{
+            } else {
                 self.submitHangout(name: name, address: address, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: location, description: desc, image: imageData, imageArrayData: self.selectedImagesData, locationId: self.locationId ?? "")
             }
         }
-        
-        
     }
     
     @IBAction func action_cancle(_ sender: Any) {
@@ -449,9 +415,9 @@ class AddNewPlaceVC: UIViewController {
 extension AddNewPlaceVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if isComeFromEdit == true{
+        if isComeFromEdit == true {
             return editedImages.count
-        }else{
+        } else {
             return selectedImages.count
         }
     }
@@ -460,11 +426,11 @@ extension AddNewPlaceVC: UICollectionViewDataSource, UICollectionViewDelegateFlo
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CommonImagCVC", for: indexPath) as? CommonImagCVC else {
             return UICollectionViewCell()
         }
-        if isComeFromEdit == true{
+        if isComeFromEdit == true {
             cell.img_Vw.image = editedImages[indexPath.item].image
             cell.delegate = self
             cell.indexPath = indexPath
-        }else{
+        } else {
             cell.img_Vw.image = selectedImages[indexPath.item]
             cell.delegate = self
             cell.indexPath = indexPath
@@ -474,10 +440,10 @@ extension AddNewPlaceVC: UICollectionViewDataSource, UICollectionViewDelegateFlo
     
     // Optional: Cell size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
         return CGSize(width: 110, height: 100)
     }
 }
+
 extension AddNewPlaceVC: CommonImagCVCDelegate {
     func didTapRemove(at indexPath: IndexPath) {
         if isComeFromEdit == true{
@@ -501,13 +467,9 @@ extension AddNewPlaceVC: CommonImagCVCDelegate {
                     selectedImages.remove(at: index)
                 }
             }
-            
-            
-        }else{
+        } else {
             selectedImages.remove(at: indexPath.item)
-            
         }
-        
         imageCollectionView.reloadData()
     }
 }
@@ -529,6 +491,7 @@ extension AddNewPlaceVC: UITextFieldDelegate, UITextViewDelegate {
         return true
     }
 }
+
 extension AddNewPlaceVC : SetLocationDelegate,CommonLocationDelegate{
     func didSelectLocation(locationName: String, fullAddress: String, coordinate: CLLocationCoordinate2D) {
         lbl_Val_Location.text = locationName
@@ -538,6 +501,7 @@ extension AddNewPlaceVC : SetLocationDelegate,CommonLocationDelegate{
         self.latitude = coordinate.latitude
         self.longitude = coordinate.longitude
     }
+    
     func didSelectBackpacker(_ location: [LocationList]) {
         print("Location",location.last)
         if let loc = location.last{
@@ -549,11 +513,9 @@ extension AddNewPlaceVC : SetLocationDelegate,CommonLocationDelegate{
             AlertManager.showAlert(on: self, title: "Alert!", message: "Please select location")
         }
     }
-  
 }
 
-
-extension AddNewPlaceVC{
+extension AddNewPlaceVC {
     func submitHangout(name: String, address: String, lat: Double, long: Double, locationText: String, description: String, image: Data?,imageArrayData : [Data],locationId:String) {
         LoaderManager.shared.show()
         viewModel.uploadHangout(
@@ -608,9 +570,6 @@ extension AddNewPlaceVC{
             }
         }
     }
-    
-    
-    
     
     func editHangout(name: String, address: String, lat: Double, long: Double, locationText: String, description: String, image: Data?,imageArrayData : [Data],removedImages:String) {
         LoaderManager.shared.show()
@@ -695,7 +654,7 @@ extension AddNewPlaceVC{
                 AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select at least one image.")
                 return false
             }
-        }else{
+        } else {
             if selectedImages.count == 0  {
                 AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select at least one image.")
                 return false
@@ -708,6 +667,7 @@ extension AddNewPlaceVC{
         return true
     }
 }
+
 extension AddNewPlaceVC {
     private func setupSpeechCallbacks() {
         speechManager.onResult = { [weak self] text in
@@ -719,8 +679,6 @@ extension AddNewPlaceVC {
                 
                 if self?.btn_Address_mic.tag == 1 {
                     self?.txtFld_Address.text = text
-                    
-                    
                 }
                 
                 if self?.btn_description_mic.tag == 1 {
@@ -732,14 +690,14 @@ extension AddNewPlaceVC {
         speechManager.onError = { error in
             print("Speech error:", error.localizedDescription)
         }
-        
-        
     }
-    func setUpTag(){
+    
+    func setUpTag() {
         self.btn_Name_mic.tag = 0
         self.btn_Address_mic.tag = 0
         self.btn_description_mic.tag = 0
     }
+    
     func handleMicTap(for button: UIButton, textField: UITextField?, textView: UITextView?) {
         // Stop if same button tapped again
         if button == currentlyRecordingButton && button.tag == 1 {
@@ -784,31 +742,31 @@ extension AddNewPlaceVC {
         speechManager.startRecording()
     }
     
-    
     private func editHangoutDetail(){
         
     }
-    
 }
-extension AddNewPlaceVC{
+
+extension AddNewPlaceVC {
     @objc func keyboardWillShow(_ notification: Notification) {
         guard let userInfo = notification.userInfo,
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
-
+        
         let keyboardHeight = keyboardFrame.height
         let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
-
+        
         main_ScrollVw.contentInset = contentInsets
         main_ScrollVw.scrollIndicatorInsets = contentInsets
     }
-
+    
     @objc func keyboardWillHide(_ notification: Notification) {
         let contentInsets = UIEdgeInsets.zero
         main_ScrollVw.contentInset = contentInsets
         main_ScrollVw.scrollIndicatorInsets = contentInsets
     }
 }
-extension AddNewPlaceVC{
+
+extension AddNewPlaceVC {
     func getPriceFormStore() {
         //   LoaderManager.shared.show()
         
@@ -817,16 +775,13 @@ extension AddNewPlaceVC{
             
             let prices = result.prices
             let regionCode = result.region
-            
             print("REGION:", regionCode)
-            
             self.regionCode = regionCode
-            
             self.getListOfAllSubscriptions(regionCode: self.regionCode ?? "")
         }
     }
-    private func getListOfAllSubscriptions(regionCode:String)
-    {
+    
+    private func getListOfAllSubscriptions(regionCode:String) {
         LoaderManager.shared.show()
         viewModell.getlistOfSubscriptions(regionCode: regionCode) { [weak self] (success: Bool, result: SubscriptionPlansResponse?, statusCode: Int?) in
             guard let self = self else { return }
@@ -848,22 +803,20 @@ extension AddNewPlaceVC{
                                 self.plansN?.removeAll()
                                 self.plansN = result?.data ?? []
                                 guard let plans = self.plansN else { return }
-                                
                                 let activePlans = plans.first { $0.planStatus.lowercased() == "active" }
                                 let locationCount = activePlans?.locationCount ?? 0
                                 let jobCount = activePlans?.jobCount ?? 0
-                                if activePlans == nil{
+                                if activePlans == nil {
                                     self.activePlan = ApiConstants.Products.defaultFreePlan
-                                }else{
+                                } else {
                                     self.activePlan = activePlans?.iosAttributes.name ?? ""
                                 }
-                                print("active plan",activePlans)
+                                print("active plan", activePlans)
                                 print("Location Count:", locationCount)
                                 print("Job Count:", jobCount)
                                 self.activePlanJobCount = jobCount
                                 self.activePlanLocationCount = locationCount
-                                
-                            }else{
+                            } else {
                                 AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
                             }
                         } else {
@@ -885,7 +838,7 @@ extension AddNewPlaceVC{
                         
                     case .unauthorizedToken:
                         LoaderManager.shared.hide()
-                      
+                        
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
@@ -899,9 +852,8 @@ extension AddNewPlaceVC{
                         AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
                     case .internalServerError:
                         LoaderManager.shared.hide()
-                      
-                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
                         
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
                     }
                 }
             }

@@ -1,15 +1,13 @@
-//
 //  HomeTVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 04/07/25.
-//
 
 import UIKit
 import SDWebImage
 class HomeTVC: UITableViewCell {
     
     @IBOutlet weak var home_CollectionVw: UICollectionView!
+    
     var items: [String] = []
     var tableSection: Int = 0
     var onAddAccommodation: ((Int) -> Void)?
@@ -23,23 +21,22 @@ class HomeTVC: UITableViewCell {
     var isComeForHireDetailPage: Bool = false {
         didSet {
             print("isComeForHireDetailPage set to: \(isComeForHireDetailPage)")
-            if isComeForHireDetailPage == true{
+            if isComeForHireDetailPage == true {
                 if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
                     layout.scrollDirection = .horizontal
                 }
-            }else{
+            } else {
                 
             }
         }
     }
-    var isComeFromJobListSeeAll: Bool = false
     
+    var isComeFromJobListSeeAll: Bool = false
     var activeSections: [SectionType]?
     var activeSectionsList: [SectionTypeList]?
     var jobList : [JobItem]?
     var accomodationList : [AccommodationItem]?
     var hangoutList : [HangoutItem]?
-    
     var currentJobslist : [JobItem]?
     var newjobList : [JobItem]?
     var declinedjobList : [JobItem]?
@@ -49,10 +46,10 @@ class HomeTVC: UITableViewCell {
     var declinedJobCount : Int?
     var acceptedJobCount : Int?
     var employerJobList : [EmployerJob]?
-    
     var empCurrentJobslist : [EmployerJob]?
     var empNewjobList : [EmployerJob]?
     var empPostedjobList : [EmployerJob]?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         self.preservesSuperviewLayoutMargins = false
@@ -80,13 +77,14 @@ class HomeTVC: UITableViewCell {
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
         
-        // Configure the view for the selected state
     }
+    
     func configure(with items: [String], section: Int) {
         self.items = items
         self.tableSection = section
         home_CollectionVw.reloadData()
     }
+    
     func setupCollection(){
         let nib2 = UINib(nibName: "AddAccomodationCVC", bundle: nil)
         home_CollectionVw.register(nib2, forCellWithReuseIdentifier: "AddAccomodationCVC")
@@ -96,23 +94,22 @@ class HomeTVC: UITableViewCell {
             if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
                 layout.scrollDirection = .horizontal
             }
-        }else{
+        } else {
             if role == "3" || role == "4"  {
-                if isComeForHireDetailPage == false{
+                if isComeForHireDetailPage == false {
                     if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
                         layout.scrollDirection = .vertical
                     }
                 }
-                
-            }else{
+            } else {
                 if let layout = home_CollectionVw.collectionViewLayout as? UICollectionViewFlowLayout {
                     layout.scrollDirection = .horizontal
                 }
             }
-            
         }
     }
 }
+
 extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -131,26 +128,25 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             case .none:
                 return 0
             }
-        }else{
+        } else {
             
             let sectionType = activeSections?[tableSection]
             switch sectionType {
             case .banner:
                 // Assuming one banner cell that shows all banners
-                if role == "2"{
+                if role == "2" {
                     return 3
-                }else{
+                } else {
                     return 1
                 }
-                
             case .accommodations:
                 return accomodationList?.count ?? 0
             case .hangouts:
                 return hangoutList?.count ?? 0
             case .jobs:
-                if role == "2"{
+                if role == "2" {
                     return employerJobList?.count ?? 0
-                }else{
+                } else {
                     return jobList?.count ?? 0
                 }
                 
@@ -173,7 +169,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             case .none:
                 return 0
             }
-        }else{
+        } else {
             let sectionType = activeSections?[tableSection]
             switch sectionType {
             case .banner:
@@ -189,7 +185,6 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 return items.count
             }
         }
-        
         
 #endif
         
@@ -218,7 +213,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: isComeForHireDetailPage)
             
             return cell
-        }else{
+        } else {
             if isComeFromJobListSeeAll == true {
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
                     return UICollectionViewCell()
@@ -275,7 +270,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         
                         if empCurrentJobslist?[indexPath.item].favoriteStatus == 1 {
                             cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
-                        }else{
+                        } else {
                             cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
                         }
                         cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
@@ -333,7 +328,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         }
                         if empNewjobList?[indexPath.item].favoriteStatus == 1 {
                             cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
-                        }else{
+                        } else {
                             cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
                         }
                         
@@ -391,7 +386,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         }
                         if empPostedjobList?[indexPath.item].favoriteStatus == 1 {
                             cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
-                        }else{
+                        } else {
                             cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
                         }
                         
@@ -409,14 +404,10 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 }
                 
                 return cell
-                
-                
-                
-                
-            }else{
+            } else {
                 
 #if BackpackerHire
-                if role == "2"{
+                if role == "2" {
                     guard let sectionType = activeSections?[tableSection] else {
                         return UICollectionViewCell()
                     }
@@ -427,27 +418,27 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "JobCountCVC", for: indexPath) as? JobCountCVC else {
                             return UICollectionViewCell()
                         }
-                        if indexPath.item == 0{
+                        if indexPath.item == 0 {
                             if let total = self.totalJobCount {
                                 cell.lbl_Count.text = "\(total)"
-                            }else{
+                            } else {
                                 cell.lbl_Count.text = "-"
                             }
                             cell.lbl_title.text = "Total Job Offer"
                             cell.mainBgVw.backgroundColor = UIColor(hex: "#EDF6E9")
-                        }else if indexPath.item == 1{
+                        } else if indexPath.item == 1 {
                             
                             if let decline = self.declinedJobCount {
                                 cell.lbl_Count.text = "\(decline)"
-                            }else{
+                            } else {
                                 cell.lbl_Count.text = "-"
                             }
                             cell.lbl_title.text = "Declined"
                             cell.mainBgVw.backgroundColor = UIColor(hex: "#FFEAEA")
-                        }else if indexPath.item == 2{
+                        } else if indexPath.item == 2 {
                             if let accepted = self.acceptedJobCount {
                                 cell.lbl_Count.text = "\(accepted)"
-                            }else{
+                            } else {
                                 cell.lbl_Count.text = "-"
                             }
                             cell.lbl_title.text = "Accepted"
@@ -464,19 +455,19 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             return UICollectionViewCell()
                         }
                         cell.onTap = { [weak self]  index in
-                              guard let self = self else { return }
-                              print("Cell tapped at index: \(indexPath.item)")
-                              // Navigate or perform any action
-
+                            guard let self = self else { return }
+                            print("Cell tapped at index: \(indexPath.item)")
+                            // Navigate or perform any action
+                            
                             self.onTap?(indexPath.item)
-                          }
+                        }
                         cell.onFavTap = { [weak self]  index in
                             guard let self = self else { return }
                             print("Cell Fav tapped at index: \(indexPath.item)")
                             // Navigate or perform any action
                             self.onFavTap?(indexPath.item)
                         }
-
+                        
                         // Assign item to your label/image inside the cell
                         // cell.titleLabel.text = item
                         cell.setUpUI(iscomeFromAccept: true,isComeForHiredetailpagee: isComeForHireDetailPage)
@@ -490,9 +481,9 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             if let firstIMage = obj.image{
                                 let baseURL1 = ApiConstants.API.API_IMAGEURL
                                 let baseURL2 = ApiConstants.API.API_IMAGEURL
-
+                                
                                 let imageURLString = firstIMage.hasPrefix("http") ? firstIMage : baseURL1 + firstIMage
-
+                                
                                 cell.imgVw.sd_setImage(
                                     with: URL(string: imageURLString),
                                     placeholderImage: UIImage(named: "img_Placehodler")
@@ -505,8 +496,8 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                         )
                                     }
                                 }
-
-                            }else{
+                                
+                            } else {
                                 cell.imgVw.image = UIImage(named: "img_Placehodler")
                             }
                             let strtTime = obj.startTime
@@ -515,17 +506,16 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             cell.lbl_duration.text = "Duration \(duration1)"
                             if obj.favoriteStatus == 1 {
                                 cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
-                            }else{
+                            } else {
                                 cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
                             }
-                            
                         }
-
+                        
                         cell.setUpApeeranceOflbl_Amunt(isShow: true)
                         return cell
                     }
                     
-                }else{
+                } else {
                     guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
                         return UICollectionViewCell()
                     }
@@ -563,14 +553,13 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                     }
                                 }
                                 
-                            }else{
+                            } else {
                                 cell.imgVw.image = UIImage(named: "img_Placehodler")
                             }
                             cell.onItemTapped = { [weak self] item in
                                 
                                 print("Item",item)
                                 self?.onAddAccommodation?(item)
-                                
                             }
                         }
                         cell.lblAmount.isHidden = false
@@ -600,8 +589,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                         )
                                     }
                                 }
-                                
-                            }else{
+                            } else {
                                 cell.imgVw.image = UIImage(named: "img_Placehodler")
                             }
                         }
@@ -609,7 +597,6 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             
                             print("Item",item)
                             self?.onHangOut?(item)
-                            
                         }
                         cell.lblAmount.isHidden = true
                         cell.lblRating.isHidden = true
@@ -664,7 +651,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                     }
                                 }
                                 
-                            }else{
+                            } else {
                                 cell.imgVw.image = UIImage(named: "img_Placehodler")
                             }
                             let strtTime = obj.startTime
@@ -673,23 +660,20 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             cell.lbl_duration.text = "Duration \(duration1)"
                             if obj.favoriteStatus == 1 {
                                 cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
-                            }else{
+                            } else {
                                 cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
                             }
                         }
-                       
+                        
                         cell.setUpApeeranceOflbl_Amunt(isShow: true)
                         return cell
                     }
-                    
-                    
                 }
                 
 #endif
             }
             
         }
-        
         
 #else
         if isComeFromJob == false{
@@ -735,7 +719,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             }
                         }
                         
-                    }else{
+                    } else {
                         cell.imgVw.image = UIImage(named: "img_Placehodler")
                     }
                     cell.onItemTapped = { [weak self]  index in
@@ -746,7 +730,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     }
                     if accommodation.favoriteStatus == 1 {
                         cell.imgHeart.image = UIImage(named: "red_heart")
-                    }else{
+                    } else {
                         cell.imgHeart.image = UIImage(named: "Heart")
                     }
                 }
@@ -773,7 +757,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                             placeholderImage: UIImage(named: "img_Placehodler")
                         )
                         
-                    }else{
+                    } else {
                         cell.imgVw.image = UIImage(named: "img_Placehodler")
                     }
                     cell.onItemTapped = { [weak self]  index in
@@ -784,7 +768,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                     }
                     if hangout.favoriteStatus == 1 {
                         cell.imgHeart.image = UIImage(named: "red_heart")
-                    }else{
+                    } else {
                         cell.imgHeart.image = UIImage(named: "Heart")
                     }
                 }
@@ -795,7 +779,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
             
             return cell
             
-        }else{
+        } else {
             
             if isComeFromJobListSeeAll == true{
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
@@ -842,7 +826,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                                     cell.imgVw.sd_setImage(with: URL(string: port3001), placeholderImage: UIImage(named: "img_Placehodler"))
                                 }
                             }
-                           
+                            
                             if currentJobslist?[indexPath.item].favoriteStatus == 1 {
                                 cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
                             }else{
@@ -946,10 +930,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 
                 return cell
                 
-                
-                
-                
-            }else{
+            } else {
                 guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
                     return UICollectionViewCell()
                 }
@@ -1007,12 +988,11 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 cell.setUpUI(iscomeFromAccept: false,isComeForHiredetailpagee: true)
                 if jobList?[indexPath.item].favoriteStatus == 1 {
                     cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
-                }else{
+                } else {
                     cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
                 }
                 return cell
             }
-            
         }
         
 #endif
@@ -1026,15 +1006,16 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         if tableSection == 0 {
             if indexPath.item == 0{
                 self.onTapAcceptJob?(0)
-            }else if indexPath.item == 1{
+            } else if indexPath.item == 1 {
                 self.onTapAcceptJob?(1)
-            }else if indexPath.item == 2{
+            } else if indexPath.item == 2 {
                 self.onTapAcceptJob?(2)
             }
         }
         
 #endif
     }
+    
     // Size of each item (4 per row)
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
@@ -1046,7 +1027,7 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         case .banner:
             if isComeForHireDetailPage == false {
                 return CGSize(width: (width / 2) - 5, height: 150)
-            }else{
+            } else {
                 return CGSize(width: (width / 2) - 5, height: 180)
             }
             
@@ -1055,47 +1036,44 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         case  .hangouts:
             return CGSize(width: (width / 2) - 12, height: 210)
         case .jobs :
-            if isComeForHireDetailPage  == true{
+            if isComeForHireDetailPage  == true {
                 return CGSize(width: (width / 2) - 5, height: 200)
-            }else{
+            } else {
                 if isComeFromJobListSeeAll == true{
                     return CGSize(width: (width / 2) - 12, height: 185)
                 }else{
                     return CGSize(width: (width / 2) - 12, height: 190)
                 }
-                
             }
         case .none:
-            if isComeForHireDetailPage  == true{
+            if isComeForHireDetailPage  == true {
                 return CGSize(width: (width / 2) - 5, height: 180)
-            }else{
+            } else {
                 return CGSize(width: (width / 2) - 12, height: 180)
             }
         }
-        
 #else
-        
         
         let sectionType = activeSections?[tableSection]
         switch sectionType {
         case .banner:
             if isComeFromJob == false{
                 return CGSize(width: (width / 2) - 12, height: 215)
-            }else{
+            } else {
                 return CGSize(width: (width / 2) - 12, height: 180)
             }
         case .accommodations:
             if isComeFromJob == false{
                 return CGSize(width: (width / 2) - 12, height: 230)
-            }else{
+            } else {
                 return CGSize(width: (width / 2) - 12, height: 180)
             }
         case  .hangouts:
             return CGSize(width: (width / 2) - 12, height: 210)
         case .jobs :
-            if isComeFromJob == false{
+            if isComeFromJob == false {
                 return CGSize(width: (width / 2) - 12, height: 160)
-            }else{
+            } else {
                 return CGSize(width: (width / 2) - 12, height: 180)
             }
         case .none:
@@ -1103,7 +1081,6 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         }
         
 #endif
-        
         
     }
     
@@ -1130,25 +1107,21 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 
             }
             
-        }else{
+        } else {
 #if BackpackerHire
             if role == "4" {
                 return 0
-            }else if role == "3" {
+            } else if role == "3" {
                 return 0
-            }else{
+            } else {
                 return 10
             }
             
 #else
-            
             return 10
 #endif
             
-            
-            
         }
-        
     }
     
     // Section insets (padding from edges)
@@ -1158,9 +1131,8 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
         if tableSection == 0 {
             if isComeFromJob == true{
                 return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
-            }else{
-                
-                if isComeForHireDetailPage == true{
+            } else {
+                if isComeForHireDetailPage == true {
                     return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
                 }else{
                     return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -1168,24 +1140,18 @@ extension HomeTVC: UICollectionViewDelegate, UICollectionViewDataSource, UIColle
                 
             }
             
-        }else{
+        } else {
             
 #if BackpackerHire
             if role == "4" {
                 return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
-            }else{
+            } else {
                 return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
             }
-            
 #else
-            
             return UIEdgeInsets(top: 5, left: 8, bottom: 4, right: 8)
 #endif
             
-            
         }
-        
     }
-    
 }
-

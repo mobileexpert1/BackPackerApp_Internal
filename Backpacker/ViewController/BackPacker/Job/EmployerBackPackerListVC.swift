@@ -1,9 +1,6 @@
-//
 //  EmployerBackPackerListVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 23/07/25.
-//
 
 import UIKit
 
@@ -14,9 +11,8 @@ class EmployerBackPackerListVC: UIViewController {
     @IBOutlet weak var txtFldSearch: UITextField!
     @IBOutlet weak var searchVw: UIView!
     @IBOutlet weak var tbaleView: UITableView!
+    
     var iscomeFromEmployer : Bool = false
-    
-    
     var fullData: [Backpacker] = []
     var  selectedData : [Backpacker] = []
     var searchData: [Backpacker] = []
@@ -47,14 +43,14 @@ class EmployerBackPackerListVC: UIViewController {
         super.viewWillAppear(animated)
         isComeFromPullTorefresh = false
         self.btn_Close.isHidden = true
-        
     }
-    func setUpUI(){
+    
+    func setUpUI() {
         if isComeFromEmpJobSection == true {
             self.lbl_BackPacker.text = "Backpackers"
             self.lbl_BackPacker.isHidden = false
             self.top_TableViw.constant = 5.0
-        }else{
+        } else {
             self.lbl_BackPacker.isHidden = true
             self.top_TableViw.constant = 0.0
         }
@@ -72,10 +68,12 @@ class EmployerBackPackerListVC: UIViewController {
         self.setUpRefreshControl()
         self.backpackerListApiCall()
     }
+    
     func setUpRefreshControl() {
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         tbaleView.refreshControl = refreshControl
     }
+    
     @objc func handleRefresh() {
         self.page = 1
         self.isAllDataLoaded = false
@@ -90,7 +88,6 @@ class EmployerBackPackerListVC: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
             self.backpackerListApiCall()
         }
-        
     }
     
     @IBAction func action_ClearTxtFkd(_ sender: Any) {
@@ -100,11 +97,9 @@ class EmployerBackPackerListVC: UIViewController {
         txtFldSearch.resignFirstResponder()
         self.btn_Close.isHidden = true
         backpackerListApiCall()
-        
-        
-        
     }
-    func updateSearchtext(){
+    
+    func updateSearchtext() {
         if iscomeFromEmployer {
             txtFldSearch.attributedPlaceholder = NSAttributedString(
                 string: "Search Employer",
@@ -122,6 +117,7 @@ class EmployerBackPackerListVC: UIViewController {
         }
     }
 }
+
 extension EmployerBackPackerListVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchData.count // or your dataArray.count
@@ -133,11 +129,11 @@ extension EmployerBackPackerListVC : UITableViewDelegate,UITableViewDataSource{
         }
         print("iscomeForm",iscomeFromEmployer)
         let backpacker = searchData[indexPath.row]
-        if backpacker.name.isEmpty == true{
+        if backpacker.name.isEmpty == true {
             cell.lbl_Name.text = backpacker.mobileNumber
             let digit = firstDigit(of: backpacker.mobileNumber)
             cell.lbl_FrstLetter.text = digit
-        }else{
+        } else {
             cell.lbl_Name.text = backpacker.name
             let initials = getInitials(from: backpacker.name)
             cell.lbl_FrstLetter.text = initials
@@ -176,9 +172,7 @@ extension EmployerBackPackerListVC : UITableViewDelegate,UITableViewDataSource{
             self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
         }
 #endif
-        
     }
-    
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y < 0 {
@@ -196,7 +190,7 @@ extension EmployerBackPackerListVC : UITableViewDelegate,UITableViewDataSource{
         let contentHeight = scrollView.contentSize.height
         let frameHeight = scrollView.frame.size.height
         
-     
+        
         if offsetY > contentHeight - frameHeight - 300 {
             if isComeFromPullTorefresh == false{
                 if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
@@ -212,6 +206,7 @@ extension EmployerBackPackerListVC : UITableViewDelegate,UITableViewDataSource{
             
         }
     }
+    
     func getInitials(from name: String) -> String {
         return name
             .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -219,12 +214,11 @@ extension EmployerBackPackerListVC : UITableViewDelegate,UITableViewDataSource{
             .compactMap { $0.first?.uppercased() }
             .joined()
     }
+    
     func firstDigit(of number: String) -> String {
         return number.first.map { String($0) } ?? ""
     }
-    
 }
-
 
 extension EmployerBackPackerListVC :UITextFieldDelegate{
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -256,7 +250,6 @@ extension EmployerBackPackerListVC :UITextFieldDelegate{
                 self.backpackerListApiCall()
             }
         }
-        
         return true
     }
     
@@ -265,9 +258,7 @@ extension EmployerBackPackerListVC :UITextFieldDelegate{
         textField.resignFirstResponder()
         return true
     }
-    
 }
-
 
 extension EmployerBackPackerListVC {
     func backpackerListApiCall() {
@@ -322,7 +313,7 @@ extension EmployerBackPackerListVC {
                                 self.tbaleView.reloadData()
                                 self.refreshControl.endRefreshing()
                             }
-                           
+                            
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                             self.refreshControl.endRefreshing()
@@ -365,30 +356,29 @@ extension EmployerBackPackerListVC {
                         AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
                         if self.searchData.count <= 0 {
                             self.lbl_NoDataFound.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_NoDataFound.isHidden = true
                         }
                     case .methodNotAllowed:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         if self.searchData.count <= 0 {
                             self.lbl_NoDataFound.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_NoDataFound.isHidden = true
                         }
                     case .internalServerError:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         if self.searchData.count <= 0 {
                             self.lbl_NoDataFound.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_NoDataFound.isHidden = true
                         }
                     }
                 }
             }
         }
-        
-        
     }
+    
     func createTableFooterView() -> UIView {
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tbaleView.frame.width, height: 60))
         
@@ -417,8 +407,6 @@ extension EmployerBackPackerListVC {
             // Footer bottom anchor tied to label
             label.bottomAnchor.constraint(equalTo: footerView.bottomAnchor, constant: -8)
         ])
-        
-        
         return footerView
     }
     

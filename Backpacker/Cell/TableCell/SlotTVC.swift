@@ -1,15 +1,12 @@
-//
 //  SlotTVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 28/07/25.
-//
 
 import UIKit
 
 class SlotTVC: UITableViewCell {
-    @IBOutlet weak var lbl_timeSlot: UILabel!
     
+    @IBOutlet weak var lbl_timeSlot: UILabel!
     @IBOutlet weak var Bg_VwEndTime: UIView!
     @IBOutlet weak var BgVw_StartTime: UIView!
     @IBOutlet weak var Bg_MainVw: UIView!
@@ -18,26 +15,28 @@ class SlotTVC: UITableViewCell {
     @IBOutlet weak var lbl_EndTime: UILabel!
     @IBOutlet weak var lbl_Start_Time: UILabel!
     @IBOutlet weak var vw_Active: UIView!
+    
     var onDelete: (() -> Void)? // Closure to notify deletion
     private var startTimePicker: UIDatePicker?
     private var endTimePicker: UIDatePicker?
     private let timeFormatter: DateFormatter = {
-          let formatter = DateFormatter()
-          formatter.dateFormat = "h:mm a" // Show AM/PM
-          formatter.locale = Locale(identifier: "en_US")
-          return formatter
-      }()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a" // Show AM/PM
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
     var onTimeChanged: ((_ startTime: String, _ endTime: String) -> Void)?
     var parentController : UIViewController?
     var SlotsList : DayAvailability?
     var slotIndexPath : Int?
     var mainIndexPath : Int?
+    
     override func awakeFromNib() {
-           super.awakeFromNib()
-           setUpUI()
-           configureTimePickers()
+        super.awakeFromNib()
+        setUpUI()
+        configureTimePickers()
         
-       }
+    }
     
     func prefilledDataSetup() {
         if let slots = self.SlotsList?.slots, slots.count > 0 {
@@ -49,20 +48,20 @@ class SlotTVC: UITableViewCell {
             print("Slot cell data set")
         }
     }
-
+    
     func convertTo12HourFormat(time24: String) -> String? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "HH:mm"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-
+        
         guard let date = dateFormatter.date(from: time24) else {
             return nil
         }
-
+        
         dateFormatter.dateFormat = "hh:mm a"
         return dateFormatter.string(from: date)
     }
-
+    
     @objc private func startTimeChanged(_ sender: UIDatePicker) {
         let newStart = sender.date
         
@@ -86,7 +85,7 @@ class SlotTVC: UITableViewCell {
         txtFld_StartTime.text = timeFormatter.string(from: newStart)
         onTimeChanged?(txtFld_StartTime.text ?? "", txtFld_EndTime.text ?? "")
     }
-
+    
     @objc private func endTimeChanged(_ sender: UIDatePicker) {
         // ✅ Ensure Start Time exists
         guard let startText = txtFld_StartTime.text, !startText.isEmpty,
@@ -131,20 +130,16 @@ class SlotTVC: UITableViewCell {
         txtFld_EndTime.text = timeFormatter.string(from: sender.date)
         onTimeChanged?(txtFld_StartTime.text ?? "", txtFld_EndTime.text ?? "")
     }
-
-
-
-
-       @objc private func doneButtonTapped() {
-           txtFld_StartTime.resignFirstResponder()
-           txtFld_EndTime.resignFirstResponder()
-       }
-       
+    
+    @objc private func doneButtonTapped() {
+        txtFld_StartTime.resignFirstResponder()
+        txtFld_EndTime.resignFirstResponder()
+    }
+    
     @IBAction func action_cross(_ sender: Any) {
         onDelete?()
     }
-   
-
+    
     private func showValidationAlert(message: String) {
         guard let vc = parentController else { return }  // make sure parent exists
         let alert = UIAlertController(title: "Invalid Time",
@@ -153,9 +148,7 @@ class SlotTVC: UITableViewCell {
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         vc.present(alert, animated: true)
     }
-
 }
-
 
 extension SlotTVC {
     
@@ -177,13 +170,11 @@ extension SlotTVC {
         lbl_EndTime.font = FontManager.inter(.medium, size: 12.0)
     }
     
-
-    
     func configureTimePickers() {
         let startPicker = createTimePicker(selector: #selector(startTimeChanged(_:)))
         txtFld_StartTime.inputView = startPicker
         txtFld_StartTime.inputAccessoryView = createToolbar(for: txtFld_StartTime)
-
+        
         let endPicker = createTimePicker(selector: #selector(endTimeChanged(_:)))
         txtFld_EndTime.inputView = endPicker
         txtFld_EndTime.inputAccessoryView = createToolbar(for: txtFld_EndTime)
@@ -222,5 +213,4 @@ extension SlotTVC {
         toolbar.setItems([flex, done], animated: false)
         return toolbar
     }
-
 }

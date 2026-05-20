@@ -1,4 +1,3 @@
-//
 //  AccomodationDetailVC.swift
 //  BackpackerHire
 //  Created by Mobile on 23/07/25.
@@ -9,40 +8,32 @@ import MapKit
 import SKPhotoBrowser
 
 class AccomodationDetailVC: UIViewController {
+    
     @IBOutlet weak var lbl_MainHeader: UILabel!
     @IBOutlet weak var facilityCollectionVw: UICollectionView!
-    
     @IBOutlet weak var btn_delete: UIButton!
     @IBOutlet weak var btn_Availbility: UIButton!
-    
     @IBOutlet weak var main_bgVw_ImgCollection: UIView!
     @IBOutlet weak var btn_VwOnMap: UIButton!
     @IBOutlet weak var lbl_Review: UILabel!
     @IBOutlet weak var lbl_HotelName: UILabel!
-    
     @IBOutlet weak var lbl_price: UILabel!
-    
     @IBOutlet weak var btn_edit: UIButton!
     @IBOutlet weak var mapVw: MKMapView!
     @IBOutlet weak var lbl_ReviewCount: UILabel!
-    
     @IBOutlet weak var lbl_Addrees: UILabel!
     @IBOutlet weak var lbl_TitleAbout: UILabel!
     @IBOutlet weak var ratingVw: CosmosView!
-    
     @IBOutlet weak var lbl_AboutDescription: UILabel!
-    
     @IBOutlet weak var lbl_FaclityTitle: UILabel!
-    
     @IBOutlet weak var lbl_LocationTitle: UILabel!
-    
     @IBOutlet weak var facility_coll_height: NSLayoutConstraint!
-    
     @IBOutlet weak var img_Collection_Vw: UICollectionView!
-    
     @IBOutlet weak var lbl_ValPrice: UILabel!
     @IBOutlet weak var lbl_header_Price: UILabel!
     @IBOutlet weak var page_Controller: UIPageControl!
+    @IBOutlet weak var mainScrollVw: UIScrollView!
+    
     let facilities: [Facility] = [
         Facility(image: "pool", title: "Swimming Pool"),
         Facility(image: "wifi", title: "WiFi"),
@@ -54,17 +45,16 @@ class AccomodationDetailVC: UIViewController {
         Facility(image: "fitness", title: "Fitness Center")
     ]
     var facilitiesArray: [Facility]?
-    
     let viewMOdel = AccommodationViewModel()
     let viewModelAuth = LogInVM()
     var isLoading: Bool = true // true while loading, false once data is ready
     var accomodationDetailObj : AccommodationDetailData?
-    @IBOutlet weak var mainScrollVw: UIScrollView!
     var accomodationID : String?
     let refreshControl = UIRefreshControl()
     var localImages: [UIImage] = []   // your UIImage array
     var remoteImages: [String] = []   // your URL array
     private let viewModelJOb = JobVM()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -72,6 +62,7 @@ class AccomodationDetailVC: UIViewController {
         self.setUpUI()
         self.setupPullToRefresh()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 #if BackpackerHire
@@ -83,6 +74,7 @@ class AccomodationDetailVC: UIViewController {
         self.getDetailOfAccomodation()
 #endif
     }
+    
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
         refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
@@ -105,9 +97,9 @@ class AccomodationDetailVC: UIViewController {
             self.getDetailOfAccomodation()
 #endif
         }
-        
     }
-    private func setUpUI(){
+    
+    private func setUpUI() {
         self.lbl_header_Price.font = FontManager.inter(.semiBold, size: 14.0)
         self.lbl_ValPrice.font = FontManager.inter(.regular, size: 11.0)
         self.lbl_MainHeader.font =  FontManager.inter(.medium, size: 16.0)
@@ -134,12 +126,10 @@ class AccomodationDetailVC: UIViewController {
         img_Collection_Vw.isPagingEnabled = true
         img_Collection_Vw.showsHorizontalScrollIndicator = false
         img_Collection_Vw.decelerationRate = .fast
-        
         page_Controller.numberOfPages = 10
         page_Controller.currentPage = 0
         page_Controller.currentPageIndicatorTintColor = UIColor(hex: "#7EB268") // ← Your highlight color
         page_Controller.pageIndicatorTintColor =  UIColor(hex: "#D9D9D9")
-        
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumLineSpacing = 0
@@ -168,6 +158,7 @@ class AccomodationDetailVC: UIViewController {
             ])
         }
     }
+    
     @IBAction func action_delete(_ sender: Any) {
         
 #if BackpackerHire
@@ -186,15 +177,13 @@ class AccomodationDetailVC: UIViewController {
         
 #endif
         
-        
     }
+    
     @IBAction func action_Edit(_ sender: Any) {
         
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewAccomodationVC") as? AddNewAccomodationVC {
-            
             accVC.accomodationID = self.accomodationID
-            
             let addres = self.accomodationDetailObj?.accommodation.address ?? ""
             let name = self.accomodationDetailObj?.accommodation.name ?? ""
             let description = self.accomodationDetailObj?.accommodation.description ?? ""
@@ -222,23 +211,22 @@ class AccomodationDetailVC: UIViewController {
         } else {
             print("- Could not instantiate AddNewAccomodationVC")
         }
-        
     }
 }
+
 extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if isLoading == false{
-            if collectionView == img_Collection_Vw{
+        if isLoading == false {
+            if collectionView == img_Collection_Vw {
                 return self.accomodationDetailObj?.accommodation.image.count ?? 0
-            }else{
+            } else {
                 return facilitiesArray?.count ?? 0 // <-- Replace with your array count
             }
-        }else{
+        } else {
             return 1
         }
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -266,7 +254,6 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
                         )
                     }
                 }
-                
             } else {
                 cell.img_Vw.image = UIImage(named: "img_Placehodler")
             }
@@ -281,7 +268,6 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
 #else
             cell.Btn_Fav.isUserInteractionEnabled = false
             cell.Btn_Fav.setImage(UIImage(named: ""), for: .normal)
-            
 #endif
             cell.onFavoriteStatusChange = { index in
                 if let id = self.accomodationID{
@@ -289,7 +275,7 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
                 }
             }
             return cell
-        }else{
+        } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FacilityCVC", for: indexPath) as? FacilityCVC else {
                 return UICollectionViewCell()
             }
@@ -297,11 +283,10 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
                 let facility = facilitiesArray?[indexPath.item] // Use your model or static data
                 cell.setImageAndTitle(image: facility?.image ?? "", Title: facility?.title ?? "")
             }
-            
             return cell
         }
-        
     }
+    
     @objc func imageTapped(_ sender: UITapGestureRecognizer) {
         guard let tappedImageView = sender.view as? UIImageView else { return }
         let startIndex = tappedImageView.tag
@@ -324,7 +309,6 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
         present(browser, animated: true, completion: nil)
     }
     
-    
     // Optional: Set item size
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
@@ -332,45 +316,43 @@ extension AccomodationDetailVC: UICollectionViewDelegate, UICollectionViewDataSo
             let width = img_Collection_Vw.bounds.width
             
             return CGSize(width: width, height: 186)
-        }else{
+        } else {
             let spacing: CGFloat = 10  // inter-item spacing
             let itemsPerRow: CGFloat = 4
             
             let totalSpacing = (itemsPerRow - 1) * spacing
             let availableWidth = collectionView.bounds.width - totalSpacing
             let itemWidth = availableWidth / itemsPerRow
-            
             return CGSize(width: itemWidth, height: 75)
         }
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        if collectionView == img_Collection_Vw{
+        if collectionView == img_Collection_Vw {
             return 0
-        }else{
+        } else {
             return 2
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        if collectionView == img_Collection_Vw{
+        if collectionView == img_Collection_Vw {
             return 0
-        }else{
+        } else {
             return 10
         }
     }
+    
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let page = Int(scrollView.contentOffset.x / img_Collection_Vw.frame.width)
         page_Controller.currentPage = page
     }
-    
 }
 
 extension AccomodationDetailVC {
     
 #if BackpackerHire
-    func getDetailOfAccomodationEmployer(){
+    func getDetailOfAccomodationEmployer() {
         LoaderManager.shared.show()
         isLoading = true
         if accomodationID?.isEmpty == true {
@@ -380,9 +362,8 @@ extension AccomodationDetailVC {
                 title: "Alert",
                 message: "Accomodation ID is missing."
             )
-            
             return
-        }else{
+        } else {
             viewMOdel.getEmployerAcommodationDetail(accommodationID: accomodationID ?? ""){ [weak self] (success: Bool, result: AccommodationDetailResponse?, statusCode: Int?) in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
@@ -399,17 +380,16 @@ extension AccomodationDetailVC {
                         switch httpStatus {
                         case .ok, .created:
                             if success == true {
-                                if result?.data != nil{
+                                if result?.data != nil {
                                     self.accomodationDetailObj = result?.data
                                     self.setUpValues(obj: self.accomodationDetailObj!)
                                     
                                     self.isLoading = false
-                                }else{
+                                } else {
                                     AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
                                 }
                             } else {
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                                
                                 LoaderManager.shared.hide()
                             }
                             self.refreshControl.endRefreshing()
@@ -450,9 +430,9 @@ extension AccomodationDetailVC {
                 }
             }
         }
-        
     }
-    func empDeleteAccomodation(accID:String){
+    
+    func empDeleteAccomodation(accID:String) {
         LoaderManager.shared.show()
         isLoading = true
         if accID.isEmpty == true {
@@ -462,9 +442,8 @@ extension AccomodationDetailVC {
                 title: "Alert",
                 message: "Accommodation ID is missing."
             )
-            
             return
-        }else{
+        } else {
             viewMOdel.deletAccommodation(accommodationID: accID){ [weak self] (success: Bool, result: DeleteJobResponse?, statusCode: Int?) in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
@@ -504,7 +483,6 @@ extension AccomodationDetailVC {
                                     NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                                 }
                             }
-                            
                         case .unauthorizedToken:
                             LoaderManager.shared.hide()
                             self.refreshControl.endRefreshing()
@@ -530,9 +508,10 @@ extension AccomodationDetailVC {
             }
         }
     }
+    
 #endif
     
-    func getDetailOfAccomodation(){
+    func getDetailOfAccomodation() {
         LoaderManager.shared.show()
         isLoading = true
         if accomodationID?.isEmpty == true {
@@ -544,7 +523,7 @@ extension AccomodationDetailVC {
             )
             
             return
-        }else{
+        } else {
             viewMOdel.getBackPackerAcommodationDetail(accommodationID: accomodationID ?? ""){ [weak self] (success: Bool, result: AccommodationDetailResponse?, statusCode: Int?) in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
@@ -561,17 +540,16 @@ extension AccomodationDetailVC {
                         switch httpStatus {
                         case .ok, .created:
                             if success == true {
-                                if result?.data != nil{
+                                if result?.data != nil {
                                     self.accomodationDetailObj = result?.data
                                     self.setUpValues(obj: self.accomodationDetailObj!)
                                     
                                     self.isLoading = false
-                                }else{
+                                } else {
                                     AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
                                 }
                             } else {
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                                
                                 LoaderManager.shared.hide()
                             }
                             self.refreshControl.endRefreshing()
@@ -612,9 +590,9 @@ extension AccomodationDetailVC {
                 }
             }
         }
-        
     }
-    func setUpValues(obj : AccommodationDetailData){
+    
+    func setUpValues(obj : AccommodationDetailData) {
         DispatchQueue.main.async {
             self.lbl_Addrees.text = obj.accommodation.address
             self.lbl_AboutDescription.text = obj.accommodation.description
@@ -624,21 +602,18 @@ extension AccomodationDetailVC {
                 self.page_Controller.numberOfPages = 0
                 self.page_Controller.currentPage = 0
                 self.page_Controller.isHidden = true
-            }else{
+            } else {
                 self.page_Controller.numberOfPages = obj.accommodation.image.count
                 self.page_Controller.currentPage = 0
                 self.page_Controller.isHidden = false
             }
-            
             self.img_Collection_Vw.reloadData()
             self.setFacilities(obj: obj)
-            
         }
         self.setupMapAnnotations()
     }
     
-    
-    func setFacilities(obj : AccommodationDetailData){
+    func setFacilities(obj : AccommodationDetailData) {
         let facilities = obj.accommodation.facilities
         var objPfFacilty = [Facility]()
         for facility in facilities {
@@ -646,7 +621,7 @@ extension AccomodationDetailVC {
                 let obj = Facility(image: "wifi", title: "Free WiFi")
                 objPfFacilty.append(obj)
             }
-            if facility == "Swimming Pool" || facility == "swimming pool"{
+            if facility == "Swimming Pool" || facility == "swimming pool" {
                 let obj = Facility(image: "pool", title: "Swimming Pool")
                 objPfFacilty.append(obj)
             }
@@ -669,18 +644,16 @@ extension AccomodationDetailVC {
             self.facilitiesArray = objPfFacilty
             if facilitiesArray?.count ?? 0 <= 4 {
                 self.facility_coll_height.constant = 100
-            }else{
+            } else {
                 self.facility_coll_height.constant = 200
             }
-            
             DispatchQueue.main.async{
                 self.facilityCollectionVw.reloadData()
             }
-            
-            
         }
     }
-    func MakeJobAccomodationFav(id: String){
+    
+    func MakeJobAccomodationFav(id: String) {
         LoaderManager.shared.show()
         viewModelJOb.MakeAccomodationFAVOURATE(id: id) { success, message ,statusCode in
             guard let statusCode = statusCode else {
@@ -697,7 +670,6 @@ extension AccomodationDetailVC {
                         AlertManager.showAlert(on: self, title: "Success", message: message ?? "Job added to favorites"){
                             self.getDetailOfAccomodation()
                         }
-                        
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     }
@@ -731,18 +703,16 @@ extension AccomodationDetailVC: MKMapViewDelegate {
     
     func setupMapAnnotations() {
         guard let acc = self.accomodationDetailObj?.accommodation else { return }
-
+        
         let annotation = AccommodationAnnotation(accommodation: acc)
         mapVw.addAnnotation(annotation)
-
+        
         let coordinate = annotation.coordinate
-
         let region = MKCoordinateRegion(
             center: coordinate,
             latitudinalMeters: 500,      // 🔥 more zoom
             longitudinalMeters: 500
         )
-
         mapVw.setRegion(region, animated: true)
     }
     
@@ -770,11 +740,9 @@ extension AccomodationDetailVC: MKMapViewDelegate {
         } else {
             annotationView?.annotation = annotation
         }
-        
         return annotationView
     }
 }
-
 
 class AccommodationAnnotation: NSObject, MKAnnotation {
     let coordinate: CLLocationCoordinate2D
@@ -787,6 +755,7 @@ class AccommodationAnnotation: NSObject, MKAnnotation {
         self.subtitle = accommodation.locationText
     }
 }
+
 struct Facility {
     var image : String
     var title : String

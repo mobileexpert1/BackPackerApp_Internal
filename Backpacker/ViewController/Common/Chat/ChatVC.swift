@@ -1,21 +1,19 @@
-//
 //  ChatVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 15/07/25.
-//
 
 import UIKit
 
 class ChatVC: UIViewController {
-
+    
     @IBOutlet weak var chatTxtFLdVw_Bottom: NSLayoutConstraint!
     @IBOutlet weak var lbl_NDataFound: UILabel!
     @IBOutlet weak var tblVw: UITableView!
-   
     @IBOutlet weak var lbl_UserName: UILabel!
+    @IBOutlet weak var sendButton: UIButton!
+    @IBOutlet weak var txtFldChat: UITextField!
+    
     var headerUserName : String?
-   
     let viewModel = ChatViewModel()
     let viewModelReport = ReportIssueViewModel()
     let viewModelAuth = LogInVM()
@@ -26,12 +24,9 @@ class ChatVC: UIViewController {
     var page = 1
     let perPage = 100
     var totalAccomodations = Int()
-    @IBOutlet weak var sendButton: UIButton!
     var isLoadingMoreData = false
     var isAllDataLoaded = false
-    
     var isComeFromPullTorefresh : Bool = false
-    
     var searchDebounceTimer: Timer?
     var lastSearchedText: String = ""
     var isComFromSearch : Bool = false
@@ -39,44 +34,43 @@ class ChatVC: UIViewController {
     var resceiverID : String?
     var senderId : String?
     var chatList = [Chat]()
-    @IBOutlet weak var txtFldChat: UITextField!
     var chatMessageList = [ChatMessage]()
     var sendMessage = String()
     var ticketId = String()
     var isComeFromAdmin : Bool = false
     var titleOfChat : String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         self.setUpUI()
         if isComeFromAdmin == true{
             AdminlistOfChat()
-        }else{
+        } else {
             self.listOfChat()
         }
-       
+        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillShow(notification:)),
             name: UIResponder.keyboardWillShowNotification,
             object: nil
         )
-
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(keyboardWillHide(notification:)),
             name: UIResponder.keyboardWillHideNotification,
             object: nil
         )
-
     }
-   
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         appDelegate.isComeFromNotification = false
         isComeFromAdmin = false
     }
+    
     private func setupRefreshControl() {
         let refreshControl = UIRefreshControl()
         refreshControl.tintColor = .clear // hide default spinner
@@ -98,7 +92,7 @@ class ChatVC: UIViewController {
         
         tblVw.refreshControl = refreshControl
     }
-
+    
     @objc private func keyboardWillShow(notification: Notification) {
         guard let userInfo = notification.userInfo,
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
@@ -112,7 +106,7 @@ class ChatVC: UIViewController {
             self.view.layoutIfNeeded()
         }
     }
-
+    
     @objc private func keyboardWillHide(notification: Notification) {
         guard let userInfo = notification.userInfo,
               let duration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? Double else { return }
@@ -122,32 +116,29 @@ class ChatVC: UIViewController {
             self.view.layoutIfNeeded()
         }
     }
- 
-
-
+    
     @IBAction func action_sendChat(_ sender: Any) {
         guard let text = txtFldChat.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-                    !text.isEmpty else {
-                  print("⚠️ Cannot send empty message")
-                  return
-              }
-              
+              !text.isEmpty else {
+            print("⚠️ Cannot send empty message")
+            return
+        }
+        
         self.sendMessage = text
         if isComeFromAdmin == true{
             self.sendAdminChat()
-        }else{
+        } else {
             self.sendChat()
         }
         
-        
         // Clear text field
-    
-        
     }
+    
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
-    private func setUpUI(){
+    
+    private func setUpUI() {
         self.lbl_NDataFound.text = "No Chat Found"
         self.lbl_NDataFound.font = FontManager.inter(.medium, size: 12.0)
         self.lbl_NDataFound.isHidden = true
@@ -168,20 +159,20 @@ class ChatVC: UIViewController {
         )
         self.lbl_UserName.text = "Test"
         self.txtFldChat.delegate = self
-                sendButton.isEnabled = false // disable until there's text
+        sendButton.isEnabled = false // disable until there's text
         // Flip table view for reverse order
-       // tblVw.transform = CGAffineTransform(scaleX: 1, y: -1)
+        // tblVw.transform = CGAffineTransform(scaleX: 1, y: -1)
         tblVw.separatorStyle = .none
-       // tblVw.transform = CGAffineTransform(scaleX: 1, y: -1)
-
+        // tblVw.transform = CGAffineTransform(scaleX: 1, y: -1)
+        
         // Setup top loader
         self.setupRefreshControl()
     }
-  
-    func refreshData(){
+    
+    func refreshData() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         if  appDelegate.isComeFromNotification == true{
-          
+            
             if isComeFromAdmin == true{
                 self.AdminListChat.removeAll()
                 self.AdminlistOfChat()
@@ -189,12 +180,10 @@ class ChatVC: UIViewController {
                 self.ListChat.removeAll()
                 self.listOfChat()
             }
-          
         }
     }
-
-
 }
+
 extension ChatVC: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -219,16 +208,14 @@ extension ChatVC: UITableViewDelegate, UITableViewDataSource {
         // Replace with your actual data source count
         if isComeFromAdmin == true{
             return  self.AdminListChat.count
-            
-        }else{
+        } else {
             return  self.ListChat.count
         }
-        
     }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if isComeFromAdmin == true{
+        if isComeFromAdmin == true {
             guard indexPath.row < AdminListChat.count else { return UITableViewCell() }
             let chat = AdminListChat[indexPath.row]
             let currentSenderId = chat.sender?.id
@@ -253,7 +240,7 @@ extension ChatVC: UITableViewDelegate, UITableViewDataSource {
                 return cell
             }
             
-        }else{
+        } else {
             guard indexPath.row < ListChat.count else { return UITableViewCell() }
             let chat = ListChat[indexPath.row]
             let currentUserId = self.senderId
@@ -275,20 +262,16 @@ extension ChatVC: UITableViewDelegate, UITableViewDataSource {
                 return cell
             }
         }
-        
-      
     }
-
-
-
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
-
+    
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
+    
     func formatChatTime(_ isoString: String) -> String {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
@@ -300,19 +283,18 @@ extension ChatVC: UITableViewDelegate, UITableViewDataSource {
         }
         return ""
     }
-
+    
     private func scrollToBottom(animated: Bool = true) {
-         guard !ListChat.isEmpty else { return }
+        guard !ListChat.isEmpty else { return }
         if isComeFromAdmin == true {
             let indexPath = IndexPath(row: AdminListChat.count - 1, section: 0)
             tblVw.scrollToRow(at: indexPath, at: .bottom, animated: animated)
-        }else{
+        } else {
             let indexPath = IndexPath(row: ListChat.count - 1, section: 0)
             tblVw.scrollToRow(at: indexPath, at: .bottom, animated: animated)
         }
-      
-        
-     }
+    }
+    
     @objc private func loadOlderMessages() {
         guard !isLoadingMoreData, !isAllDataLoaded else {
             self.tblVw.refreshControl?.endRefreshing()
@@ -325,128 +307,122 @@ extension ChatVC: UITableViewDelegate, UITableViewDataSource {
         self.isComeFromPullTorefresh = true
         if isComeFromAdmin == true {
             AdminlistOfChat()
-        }else{
+        } else {
             listOfChat()
         }
-        
     }
 }
 
-
 extension ChatVC {
     
-    
-    private func listOfChat(){
-            if page == 1 {
-                self.isLoading = true
-                LoaderManager.shared.show()
-            } else {
-                isLoadingMoreData = true
-                self.tblVw.reloadSections(IndexSet(integer: 0), with: .none)
-            }
+    private func listOfChat() {
+        if page == 1 {
+            self.isLoading = true
+            LoaderManager.shared.show()
+        } else {
+            isLoadingMoreData = true
+            self.tblVw.reloadSections(IndexSet(integer: 0), with: .none)
+        }
         viewModel.getChatList(page: page, perPage: perPage,otherUserId: resceiverID){ [weak self] (success: Bool, result: ChatListResponse?, statusCode: Int?) in
-                    guard let self = self else { return }
-                    DispatchQueue.main.async {
-                        LoaderManager.shared.hide()
-                        
-                        guard let statusCode = statusCode else {
-                            LoaderManager.shared.hide()
-                            AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                
+                guard let statusCode = statusCode else {
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
+                    
+                    switch httpStatus {
+                    case .ok, .created:
+                        guard success, let newChats = result?.data?.chats else {
+                            self.isAllDataLoaded = true
+                            self.isLoadingMoreData = false
                             return
                         }
-                        let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                        self.titleOfChat = result?.data?.otherUserName
+                        self.lbl_UserName.text = self.titleOfChat
+                        self.senderId = result?.data?.user.id
+                        // Prevent duplicates
+                        let existingIds = Set(self.ListChat.map { $0.id })
+                        let filteredChats = newChats.filter { !existingIds.contains($0.id) && !$0.id.isEmpty }
                         
-                        DispatchQueue.main.async {
-                            
-                            switch httpStatus {
-                            case .ok, .created:
-                                guard success, let newChats = result?.data?.chats else {
-                                     self.isAllDataLoaded = true
-                                     self.isLoadingMoreData = false
-                                     return
-                                 }
-                                self.titleOfChat = result?.data?.otherUserName
-                                self.lbl_UserName.text = self.titleOfChat
-                                 self.senderId = result?.data?.user.id
-                                 // Prevent duplicates
-                                 let existingIds = Set(self.ListChat.map { $0.id })
-                                 let filteredChats = newChats.filter { !existingIds.contains($0.id) && !$0.id.isEmpty }
-
-                                 if self.page == 1 {
-                                     // First load → replace
-                                     self.ListChat = filteredChats
-                                     self.lbl_NDataFound.isHidden = !filteredChats.isEmpty
-                                     self.tblVw.reloadData()
-                                  //   self.scrollToBottom(animated: false)  // ✅ show latest at bottom
-                                 } else {
-                                     // Older messages prepend at top
-                                     let previousContentHeight = self.tblVw.contentSize.height
-                                     self.ListChat.insert(contentsOf: filteredChats, at: 0)
-                                     self.tblVw.reloadData()
-                                     self.tblVw.layoutIfNeeded()
-                                     let newContentHeight = self.tblVw.contentSize.height
-                                     self.tblVw.contentOffset.y += (newContentHeight - previousContentHeight)
-                                 }
-
-                                 self.isAllDataLoaded = filteredChats.count < self.perPage
-                                 self.isLoadingMoreData = false
-                                self.tblVw.refreshControl?.endRefreshing()
-                                if self.isComeFromPullTorefresh == false {
-                                    self.scrollToBottom()
-                                }
-                                self.isComeFromPullTorefresh = false
-                                self.topLoader.stopAnimating()
-                            case .badRequest:
-                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                                self.isComeFromPullTorefresh = false
-                            case .unauthorized :
-                                self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                                    if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                        self.listOfChat()
-                                    } else {
-                                        LoaderManager.shared.hide()
-                                        self.tblVw.refreshControl?.endRefreshing()
-                                        self.isLoading = false
-                                        self.lastContentOffset = 0.0
-                                        self.tblVw.setContentOffset(.zero, animated: true)
-                                        self.isComeFromPullTorefresh = false
-                                        self.lastContentOffset = 0.0
-                                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-                                    }
-                                }
-                                
-                            case .unauthorizedToken:
+                        if self.page == 1 {
+                            // First load → replace
+                            self.ListChat = filteredChats
+                            self.lbl_NDataFound.isHidden = !filteredChats.isEmpty
+                            self.tblVw.reloadData()
+                            //   self.scrollToBottom(animated: false)  // ✅ show latest at bottom
+                        } else {
+                            // Older messages prepend at top
+                            let previousContentHeight = self.tblVw.contentSize.height
+                            self.ListChat.insert(contentsOf: filteredChats, at: 0)
+                            self.tblVw.reloadData()
+                            self.tblVw.layoutIfNeeded()
+                            let newContentHeight = self.tblVw.contentSize.height
+                            self.tblVw.contentOffset.y += (newContentHeight - previousContentHeight)
+                        }
+                        
+                        self.isAllDataLoaded = filteredChats.count < self.perPage
+                        self.isLoadingMoreData = false
+                        self.tblVw.refreshControl?.endRefreshing()
+                        if self.isComeFromPullTorefresh == false {
+                            self.scrollToBottom()
+                        }
+                        self.isComeFromPullTorefresh = false
+                        self.topLoader.stopAnimating()
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                        self.isComeFromPullTorefresh = false
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.listOfChat()
+                            } else {
                                 LoaderManager.shared.hide()
                                 self.tblVw.refreshControl?.endRefreshing()
+                                self.isLoading = false
                                 self.lastContentOffset = 0.0
                                 self.tblVw.setContentOffset(.zero, animated: true)
                                 self.isComeFromPullTorefresh = false
-                                
-                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
-                            case .unknown:
-                                LoaderManager.shared.hide()
-                                self.tblVw.refreshControl?.endRefreshing()
                                 self.lastContentOffset = 0.0
-                                self.tblVw.setContentOffset(.zero, animated: true)
-                                self.isComeFromPullTorefresh = false
-                               
-                                AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
-                                    self.navigationController?.popViewController(animated: true)
-                                }
-                            case .methodNotAllowed:
-                                AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                            case .internalServerError:
-                                AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                                
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                             }
                         }
+                        
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.tblVw.refreshControl?.endRefreshing()
+                        self.lastContentOffset = 0.0
+                        self.tblVw.setContentOffset(.zero, animated: true)
+                        self.isComeFromPullTorefresh = false
+                        
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.tblVw.refreshControl?.endRefreshing()
+                        self.lastContentOffset = 0.0
+                        self.tblVw.setContentOffset(.zero, animated: true)
+                        self.isComeFromPullTorefresh = false
+                        
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
                     }
                 }
-            
+            }
         }
+    }
     
-    
-    private func sendChat(){
+    private func sendChat() {
         LoaderManager.shared.show()
         let req = ChatRequest(receiver: resceiverID ?? "", message: self.sendMessage)
         viewModel.sendChat(request: req) { success, message ,statusCode in
@@ -595,8 +571,8 @@ extension ChatVC {
             }
         }
     }
-
-    private func sendAdminChat(){
+    
+    private func sendAdminChat() {
         LoaderManager.shared.show()
         let req = AdminChatRequest(ticketId: self.ticketId, message: self.sendMessage, receiverId: self.resceiverID ?? "")
         viewModelReport.sendAdminChat(request: req) { success, message ,statusCode in
@@ -640,10 +616,11 @@ extension ChatVC {
             }
         }
     }
+    
     func convertISOTo12Hour(_ isoString: String) -> String {
         let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-
+        
         // Try parsing with fractional seconds first
         var date = isoFormatter.date(from: isoString)
         
@@ -652,11 +629,11 @@ extension ChatVC {
             isoFormatter.formatOptions = [.withInternetDateTime]
             date = isoFormatter.date(from: isoString)
         }
-
+        
         guard let validDate = date else {
             return ""
         }
-
+        
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "hh:mm a" // 12-hour format
         dateFormatter.amSymbol = "AM"
@@ -664,10 +641,8 @@ extension ChatVC {
         
         return dateFormatter.string(from: validDate)
     }
-
-
     
-    func setUpLocalData(){
+    func setUpLocalData() {
         let currentTimeISO = ISO8601DateFormatter().string(from: Date())
         let formattedTime = convertISOTo12Hour(currentTimeISO)
         
@@ -675,36 +650,33 @@ extension ChatVC {
             let adminChat = AdminChatMessageChatUser(id: self.resceiverID, name: "", email: "", image: "")
             let neChat = AdminChatMessage(id: "", ticketId: "", senderId: self.resceiverID, senderModel: "", receiverId: "", receiverModel: "", message: self.sendMessage, messageType: "", status: "", timestamp: formattedTime, sender: adminChat, receiver: nil, createdAt: formattedTime, updatedAt: formattedTime)
             self.AdminListChat.append(neChat)
-        }else{
+        } else {
             let newChat = Chat(
-                    id: UUID().uuidString,   // temporary local ID
-                    sender: self.senderId ?? "",
-                    receiver: self.resceiverID ?? "",
-                    message: self.sendMessage,
-                    messageType: "text",
-                    status: "sending",
-                    timestamp: formattedTime,
-                    createdAt: formattedTime,
-                    updatedAt: formattedTime,
-                    v: 0
-                )
-
+                id: UUID().uuidString,   // temporary local ID
+                sender: self.senderId ?? "",
+                receiver: self.resceiverID ?? "",
+                message: self.sendMessage,
+                messageType: "text",
+                status: "sending",
+                timestamp: formattedTime,
+                createdAt: formattedTime,
+                updatedAt: formattedTime,
+                v: 0
+            )
             self.ListChat.append(newChat)
         }
-       
         self.tblVw.reloadData()
         self.lbl_NDataFound.isHidden = true
         scrollToBottom(animated: true)
     }
-
 }
-
 
 struct ChatMessage {
     let sender: SenderType
     let message: String
     let time: String
 }
+
 enum SenderType {
     case user
     case employer

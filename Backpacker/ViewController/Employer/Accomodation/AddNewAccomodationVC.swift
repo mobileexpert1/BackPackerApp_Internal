@@ -1,59 +1,49 @@
-//
 //  AddNewAccomodationVC.swift
 //  BackpackerHire
-//
 //  Created by Mobile on 23/07/25.
-//
 
 import UIKit
 import CoreLocation
-
 
 class AddNewAccomodationVC: UIViewController {
     
     @IBOutlet weak var main_ScrollVw: UIScrollView!
     @IBOutlet weak var scroolHeight: NSLayoutConstraint!
     @IBOutlet weak var lbl_MainHeader: UILabel!
-    
     //@IBOutlet weak var btn_Remove: UIButton!
     @IBOutlet weak var tblVw: UITableView!
-    
     // @IBOutlet weak var tblHeight: NSLayoutConstraint!
     @IBOutlet weak var btn_Cancle: UIButton!
     @IBOutlet weak var btn_Save: UIButton!
     @IBOutlet weak var BgVwDescription: UIView!
     @IBOutlet weak var txtVwDescription: UITextView!
     @IBOutlet weak var lbl_description: UILabel!
-    
     @IBOutlet weak var imageCollectionView: UICollectionView!
-    
     //UploadImage outlets
-    var selectedImages: [UIImage] = []
-    var selectedImagesData: [Data] = []
     @IBOutlet weak var mainBgVw: UIView!
     @IBOutlet weak var lbl_UploadImg: UILabel!
     @IBOutlet weak var placeholderImg: UIImageView!
     @IBOutlet weak var uploadImgVw: UIView!
-    var mediaPicker: MediaPickerManager?
-    
     @IBOutlet weak var txtFldName: UITextField!
-    
     @IBOutlet weak var txtFldPrice: UITextField!
     @IBOutlet weak var headerPrice: UILabel!
     @IBOutlet weak var headerFacilities: UILabel!
     @IBOutlet weak var headerName: UILabel!
-    
     @IBOutlet weak var txtFldAddress: UITextField!
     @IBOutlet weak var valLocation: UILabel!
     @IBOutlet weak var headerAddress: UILabel!
     @IBOutlet weak var headerLocation: UILabel!
-    
     @IBOutlet weak var BgVwName: UIView!
-    
     @IBOutlet weak var BgVwLocation: UIView!
-    
     @IBOutlet weak var BgVwPrice: UIView!
     @IBOutlet weak var BgVwAddress: UIView!
+    @IBOutlet weak var btn_description_mic: UIButton!
+    @IBOutlet weak var btn_Name_Mic: UIButton!
+    @IBOutlet weak var btn_address_mic: UIButton!
+    
+    var selectedImages: [UIImage] = []
+    var selectedImagesData: [Data] = []
+    var mediaPicker: MediaPickerManager?
     var selectedFilterIndexes: Set<Int> = []
     let filterArrya = ["Free WiFi","Swimming Pool","Parking","Elevator","Fitness Center","24-hours Open"]
     let viewModel = AccommodationViewModel()
@@ -61,9 +51,6 @@ class AddNewAccomodationVC: UIViewController {
     var latitude: Double?
     var longitude: Double?
     //Mic outlets
-    @IBOutlet weak var btn_description_mic: UIButton!
-    @IBOutlet weak var btn_Name_Mic: UIButton!
-    @IBOutlet weak var btn_address_mic: UIButton!
     let speechManager = SpeechToTextManager()
     var currentActiveTextField: UITextField?
     var currentActiveTextVw: UITextView?
@@ -84,11 +71,8 @@ class AddNewAccomodationVC: UIViewController {
     var editedImages: [EditedImage] = []
     var isMediaPickerTap : Bool = false
     var locationId : String?
-    
     // Example of adding one
-    
     var accomodationID: String?
-    
     let viewModell = SubscriptionViewModel()
     let viewAuth = LogInVM()
     var plansN : [PlanS]?
@@ -96,10 +80,10 @@ class AddNewAccomodationVC: UIViewController {
     var activePlanLocationCount : Int?
     var activePlanJobCount: Int?
     var totalLocation : Int?
-    
     var countsLoc : CountsLoc?
     var accCount : Int?
     var activePlan = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print("backGround Acc list count",self.accCount)
@@ -114,13 +98,11 @@ class AddNewAccomodationVC: UIViewController {
         tblVw.tableFooterView = UIView()
         txtFldAddress.isUserInteractionEnabled = false
         tblVw.reloadData()
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
             self.tblVw.layoutIfNeeded()
             self.scroolHeight.constant = self.tblVw.contentSize.height
             self.view.layoutIfNeeded()
         }
-        
         self.setupui()
         self.setUpTxtFlds()
         self.setUPLocationText()
@@ -129,8 +111,8 @@ class AddNewAccomodationVC: UIViewController {
         self.imageCollectionView.dataSource = self
         self.setupSpeechCallbacks()
         self.setupEditData()
-        
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.getPriceFormStore()
@@ -147,7 +129,8 @@ class AddNewAccomodationVC: UIViewController {
             object: nil
         )
     }
-    func setupEditData(){
+    
+    func setupEditData() {
         if isComeFromEdit == true{
             self.lbl_MainHeader.text = "Edit Accommodation"
             self.btn_Save.setTitle("Update", for: .normal)
@@ -182,22 +165,22 @@ class AddNewAccomodationVC: UIViewController {
             self.longitude = editLongitude
             self.selectedImages.removeAll()
         }
-        
-        
     }
-    func setUPLocationText(){
+    
+    func setUPLocationText() {
         self.valLocation.font = FontManager.inter(.regular, size: 14.0)
-        if valLocation.text == "Current Location"{
+        if valLocation.text == "Current Location" {
             valLocation.textColor = UIColor(hex: "#9D9D9D")
-        }else{
+        } else {
             valLocation.textColor = UIColor.black
         }
     }
+    
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: false)
     }
     
-    private func setupui(){
+    private func setupui() {
         self.uploadImgVw.layer.cornerRadius = 10.0
         self.uploadImgVw.layer.borderWidth = 1.0
         self.uploadImgVw.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
@@ -209,52 +192,41 @@ class AddNewAccomodationVC: UIViewController {
         self.BgVwDescription.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
         self.BgVwDescription.layer.borderWidth = 1.0
         applyGradientButtonStyle(to: self.btn_Save)
-        
         headerName.font = FontManager.inter(.medium, size: 14.0)
         headerLocation.font = FontManager.inter(.medium, size: 14.0)
         headerAddress.font = FontManager.inter(.medium, size: 14.0)
         headerFacilities.font = FontManager.inter(.medium, size: 14.0)
         headerPrice.font = FontManager.inter(.medium, size: 14.0)
-        
         BgVwName.layer.cornerRadius = 10.0
         BgVwName.layer.borderWidth = 1.0
         BgVwName.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        
         BgVwName.layer.cornerRadius = 10.0
         BgVwName.layer.borderWidth = 1.0
         BgVwName.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        
         BgVwName.layer.cornerRadius = 10.0
         BgVwName.layer.borderWidth = 1.0
         BgVwName.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        
         BgVwName.layer.cornerRadius = 10.0
         BgVwName.layer.borderWidth = 1.0
         BgVwName.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        
         BgVwName.layer.cornerRadius = 10.0
         BgVwName.layer.borderWidth = 1.0
         BgVwName.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        
         BgVwLocation.layer.cornerRadius = 10.0
         BgVwLocation.layer.borderWidth = 1.0
         BgVwLocation.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        
         BgVwAddress.layer.cornerRadius = 10.0
         BgVwAddress.layer.borderWidth = 1.0
         BgVwAddress.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        
-        
         BgVwPrice.layer.cornerRadius = 10.0
         BgVwPrice.layer.borderWidth = 1.0
         BgVwPrice.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
-        
-        
     }
-    func setUpTxtFlds(){
+    
+    func setUpTxtFlds() {
         if valLocation.text == "Current Location"{
             valLocation.textColor = UIColor(hex: "#9D9D9D")
-        }else{
+        } else {
             valLocation.textColor = UIColor(hex: "#9D9D9D")
         }
         
@@ -265,9 +237,7 @@ class AddNewAccomodationVC: UIViewController {
                 .font: FontManager.inter(.regular, size: 14.0)
             ])
         
-        
         txtFldName.delegate = self
-        
         txtFldPrice.attributedPlaceholder = NSAttributedString(
             string: "Price",
             attributes: [
@@ -275,9 +245,7 @@ class AddNewAccomodationVC: UIViewController {
                 .font: FontManager.inter(.regular, size: 14.0)
             ])
         
-        
         txtFldPrice.delegate = self
-        
         
         txtFldAddress.attributedPlaceholder = NSAttributedString(
             string: "Address",
@@ -286,27 +254,24 @@ class AddNewAccomodationVC: UIViewController {
                 .font: FontManager.inter(.regular, size: 14.0)
             ])
         
-        
         txtFldAddress.delegate = self
     }
     
-    
-    
     @IBAction func action_Location(_ sender: Any) {
         
-//        let storyboard = UIStoryboard(name: "Job", bundle: nil)
-//        if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonLocationListVC") as? CommonLocationListVC {
-//            settingVC.delegaet = self
-//           
-//            if isComeFromEdit == true {
-//                settingVC.isComeromEdit = isComeFromEdit
-//                settingVC.editLocationId = self.locationId
-//               // settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
-//            }
-//            self.navigationController?.pushViewController(settingVC, animated: true)
-//        } else {
-//            print("- Could not instantiate SettingVC")
-//        }
+        //        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+        //        if let settingVC = storyboard.instantiateViewController(withIdentifier: "CommonLocationListVC") as? CommonLocationListVC {
+        //            settingVC.delegaet = self
+        //           
+        //            if isComeFromEdit == true {
+        //                settingVC.isComeromEdit = isComeFromEdit
+        //                settingVC.editLocationId = self.locationId
+        //               // settingVC.initialCoordinate = CLLocationCoordinate2D(latitude: self.editLat ?? 0.0, longitude: self.editLongitude ?? 0.0)
+        //            }
+        //            self.navigationController?.pushViewController(settingVC, animated: true)
+        //        } else {
+        //            print("- Could not instantiate SettingVC")
+        //        }
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetLocationVC") as? SetLocationVC {
             settingVC.delegate = self
@@ -318,7 +283,6 @@ class AddNewAccomodationVC: UIViewController {
             print("- Could not instantiate SettingVC")
         }
     }
-    
     
     func addDottedBorder(to view: UIView, color: UIColor = .black, cornerRadius: CGFloat = 8.0) {
         let shapeLayer = CAShapeLayer()
@@ -334,7 +298,6 @@ class AddNewAccomodationVC: UIViewController {
         
         view.layer.addSublayer(shapeLayer)
     }
-    
     
     @IBAction func action_Save(_ sender: Any) {
         currentlyRecordingButton = nil
@@ -380,39 +343,33 @@ class AddNewAccomodationVC: UIViewController {
                         .trimmingCharacters(in: .whitespacesAndNewlines)
                     if isComeFromEdit {
                         self.editAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: priceWithoutSymbol, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, accId: self.accomodationID ?? "", remvedImages: self.removedStrings, on: self)
-                    }else{
+                    } else {
                         self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: priceWithoutSymbol, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, locationId: self.locationId ?? "", on: self)
                     }
-                }else{
+                } else {
                     AlertManager.showAlert(
                         on: self,
                         title: "Plan Limit Reached",
                         message: "You have reached your current plan limit. To add a new accommodation, please upgrade your plan."
-                    ){
+                    ) {
                         let storyboard = UIStoryboard(name: "Setting", bundle: nil)
                         if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
                             self.navigationController?.pushViewController(vc, animated: true)
                         }
                     }
                 }
-            }else{
+            } else {
                 let priceWithoutSymbol = trimmedPrice
                     .replacingOccurrences(of: "$", with: "")
                     .trimmingCharacters(in: .whitespacesAndNewlines)
                 if isComeFromEdit {
                     self.editAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: priceWithoutSymbol, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, accId: self.accomodationID ?? "", remvedImages: self.removedStrings, on: self)
-                }else{
+                } else {
                     self.submitAccommodation(name: trimmedName, address: trimmedAddress, lat: self.latitude ?? 0.0, long: self.longitude ?? 0.0, locationText: trimmedLocationText, description: trimmedDescription, price: priceWithoutSymbol, facilitiesIndexes: selectedFilterIndexes, filterArray: selectedFacilities, image: imageData, ImagesData: selectedImagesData, mainImageView: self.placeholderImg, locationId: self.locationId ?? "", on: self)
                 }
             }
-            
-           
-            
         }
-        
-        
     }
-    
     
     @IBAction func action_Cancle(_ sender: Any) {
         currentlyRecordingButton = nil
@@ -427,21 +384,20 @@ class AddNewAccomodationVC: UIViewController {
         mediaPicker?.showMediaOptions(
             isFromNewAccommodation: true,
             singleImageHandler: { image in
-              
+                
                 if self.isComeFromEdit == true{
-                   
-                        let edt = EditedImage(name: "image_1.jpg", image: image, index: 1)
-                        self.editedImages.append(edt)
-                        self.editedimageStrings.append("image_\(1).jpg")
-                        self.editImages.append(image)
-                        self.selectedImages.append(image)
-                  
+                    
+                    let edt = EditedImage(name: "image_1.jpg", image: image, index: 1)
+                    self.editedImages.append(edt)
+                    self.editedimageStrings.append("image_\(1).jpg")
+                    self.editImages.append(image)
+                    self.selectedImages.append(image)
+                    
                     
                     self.isMediaPickerTap = true
-                }else{
+                } else {
                     self.selectedImages.append(image)
                 }
-                
                 self.imageCollectionView.reloadData()
             },
             multipleImagesHandler: { images in
@@ -456,16 +412,15 @@ class AddNewAccomodationVC: UIViewController {
                     }
                     
                     self.isMediaPickerTap = true
-                }else{
-                    for img in images{
+                } else {
+                    for img in images {
                         self.selectedImages.append(img)
                     }
                 }
-               
+                
                 self.imageCollectionView.reloadData()
             }
         )
-        
     }
     
     @IBAction func action_Btnname_Mic(_ sender: UIButton) {
@@ -544,34 +499,31 @@ class AddNewAccomodationVC: UIViewController {
             self.present(vc, animated: true, completion: nil)
         }
     }
-    
 }
 
 extension AddNewAccomodationVC: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if isComeFromEdit == true{
+        if isComeFromEdit == true {
             return editedImages.count
-        }else{
+        } else {
             return selectedImages.count
         }
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CommonImagCVC", for: indexPath) as? CommonImagCVC else {
             return UICollectionViewCell()
         }
-        if isComeFromEdit == true{
+        if isComeFromEdit == true {
             cell.img_Vw.image = editedImages[indexPath.item].image
             cell.delegate = self
             cell.indexPath = indexPath
-        }else{
+        } else {
             cell.img_Vw.image = selectedImages[indexPath.item]
             cell.delegate = self
             cell.indexPath = indexPath
         }
-        
         return cell
     }
     
@@ -581,6 +533,7 @@ extension AddNewAccomodationVC: UICollectionViewDataSource, UICollectionViewDele
         return CGSize(width: 110, height: 100)
     }
 }
+
 extension AddNewAccomodationVC: CommonImagCVCDelegate {
     func didTapRemove(at indexPath: IndexPath) {
         if isComeFromEdit == true{
@@ -604,21 +557,14 @@ extension AddNewAccomodationVC: CommonImagCVCDelegate {
                     selectedImages.remove(at: index)
                 }
             }
-            
-            
-        }else{
+        } else {
             selectedImages.remove(at: indexPath.item)
-            
         }
-        
-        
         imageCollectionView.reloadData()
     }
 }
 
-
-
-extension AddNewAccomodationVC : UITableViewDelegate,UITableViewDataSource{
+extension AddNewAccomodationVC : UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return filterArrya.count
     }
@@ -634,9 +580,8 @@ extension AddNewAccomodationVC : UITableViewDelegate,UITableViewDataSource{
             cell.imgCheckBox.image = UIImage(named: "Checkbox")
         }
         return cell
-        
-        
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Toggle selection for filter section
         if selectedFilterIndexes.contains(indexPath.row) {
@@ -644,15 +589,14 @@ extension AddNewAccomodationVC : UITableViewDelegate,UITableViewDataSource{
         } else {
             selectedFilterIndexes.insert(indexPath.row)
         }
-        
-        
         tblVw.reloadSections(IndexSet(integer: indexPath.section), with: .none)
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 30.0
     }
-    
 }
+
 extension AddNewAccomodationVC: UITextFieldDelegate, UITextViewDelegate {
     func textField(_ textField: UITextField,
                    shouldChangeCharactersIn range: NSRange,
@@ -682,11 +626,9 @@ extension AddNewAccomodationVC: UITextFieldDelegate, UITextViewDelegate {
             textView.resignFirstResponder()
             return false
         }
-        
         return true
     }
 }
-
 
 extension AddNewAccomodationVC : SetLocationDelegate ,CommonLocationDelegate{
     func didSelectLocation(locationName: String, fullAddress: String, coordinate: CLLocationCoordinate2D) {
@@ -697,6 +639,7 @@ extension AddNewAccomodationVC : SetLocationDelegate ,CommonLocationDelegate{
         self.latitude = coordinate.latitude
         self.longitude = coordinate.longitude
     }
+    
     func didSelectBackpacker(_ location: [LocationList]) {
         print("Location",location.last ?? "")
         if let loc = location.last{
@@ -705,11 +648,12 @@ extension AddNewAccomodationVC : SetLocationDelegate ,CommonLocationDelegate{
             txtFldAddress.text = loc.name
             self.latitude = loc.lat
             self.longitude = loc.long
-        }else{
+        } else {
             AlertManager.showAlert(on: self, title: "Alert!", message: "Please select location")
         }
     }
 }
+
 extension AddNewAccomodationVC {
     func validateAccommodationFields(
         name: String,
@@ -750,13 +694,13 @@ extension AddNewAccomodationVC {
             AlertManager.showAlert(on: viewController, title: "Missing Field", message: "Please enter description.")
             return false
         }
-        if isComeFromEdit == true{
+        if isComeFromEdit == true {
             if editImages.count == 0  {
                 AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select at least one image.")
                 return false
             }
-        }else{
-            if selectedImages.count == 0  {
+        } else {
+            if selectedImages.count == 0 {
                 AlertManager.showAlert(on: viewController, title: "Missing Image", message: "Please select at least one image.")
                 return false
             }
@@ -766,8 +710,6 @@ extension AddNewAccomodationVC {
             AlertManager.showAlert(on: viewController, title: "Alert!", message: "Please select a location")
             return false
         }
-        
-        
         return true
     }
     
@@ -845,6 +787,7 @@ extension AddNewAccomodationVC {
             }
         }
     }
+    
     func editAccommodation(
         name: String,
         address: String,
@@ -862,7 +805,6 @@ extension AddNewAccomodationVC {
         remvedImages : String,
         on viewController: UIViewController
     ) {
-        
         // Call API
         LoaderManager.shared.show()
         viewModel.editAccommodation(  name: name,
@@ -917,7 +859,6 @@ extension AddNewAccomodationVC {
             }
         }
     }
-    
 }
 
 extension AddNewAccomodationVC {
@@ -931,13 +872,10 @@ extension AddNewAccomodationVC {
             DispatchQueue.main.async {
                 if self?.btn_Name_Mic.tag == 1 {
                     self?.txtFldName.text = text
-                    
                 }
                 
                 if self?.btn_address_mic.tag == 1 {
                     self?.txtFldAddress.text = text
-                    
-                    
                 }
                 
                 if self?.btn_description_mic.tag == 1 {
@@ -949,9 +887,8 @@ extension AddNewAccomodationVC {
         speechManager.onError = { error in
             print("Speech error:", error.localizedDescription)
         }
-        
-        
     }
+    
     func handleMicTap(for button: UIButton, textField: UITextField?, textView: UITextView?) {
         // Stop if same button tapped again
         if button == currentlyRecordingButton && button.tag == 1 {
@@ -993,22 +930,20 @@ extension AddNewAccomodationVC {
         
         speechManager.startRecording()
     }
-    
-    
-    
 }
-extension AddNewAccomodationVC{
+
+extension AddNewAccomodationVC {
     @objc func keyboardWillShow(_ notification: Notification) {
         guard let userInfo = notification.userInfo,
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
-
+        
         let keyboardHeight = keyboardFrame.height
         let contentInsets = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
-
+        
         main_ScrollVw.contentInset = contentInsets
         main_ScrollVw.scrollIndicatorInsets = contentInsets
     }
-
+    
     @objc func keyboardWillHide(_ notification: Notification) {
         let contentInsets = UIEdgeInsets.zero
         main_ScrollVw.contentInset = contentInsets
@@ -1021,7 +956,8 @@ struct EditedImage {
     let image: UIImage // uiimage
     let index: Int     // position
 }
-extension AddNewAccomodationVC{
+
+extension AddNewAccomodationVC {
     func getPriceFormStore() {
         //   LoaderManager.shared.show()
         
@@ -1038,8 +974,8 @@ extension AddNewAccomodationVC{
             self.getListOfAllSubscriptions(regionCode: self.regionCode ?? "")
         }
     }
-    private func getListOfAllSubscriptions(regionCode:String)
-    {
+    
+    private func getListOfAllSubscriptions(regionCode:String) {
         LoaderManager.shared.show()
         viewModell.getlistOfSubscriptions(regionCode: regionCode) { [weak self] (success: Bool, result: SubscriptionPlansResponse?, statusCode: Int?) in
             guard let self = self else { return }
@@ -1057,7 +993,7 @@ extension AddNewAccomodationVC{
                     switch httpStatus {
                     case .ok, .created:
                         if success == true {
-                            if result?.data != nil{
+                            if result?.data != nil {
                                 self.plansN?.removeAll()
                                 self.plansN = result?.data ?? []
                                 guard let plans = self.plansN else { return }
@@ -1065,9 +1001,9 @@ extension AddNewAccomodationVC{
                                 let activePlans = plans.first { $0.planStatus.lowercased() == "active" }
                                 let locationCount = activePlans?.locationCount ?? 0
                                 let jobCount = activePlans?.jobCount ?? 0
-                                if activePlans == nil{
+                                if activePlans == nil {
                                     self.activePlan = ApiConstants.Products.defaultFreePlan
-                                }else{
+                                } else {
                                     self.activePlan = activePlans?.iosAttributes.name ?? ""
                                 }
                                 print("active plan",activePlans)
@@ -1076,7 +1012,7 @@ extension AddNewAccomodationVC{
                                 self.activePlanJobCount = jobCount
                                 self.activePlanLocationCount = locationCount
                                 
-                            }else{
+                            } else {
                                 AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
                             }
                         } else {
@@ -1085,7 +1021,6 @@ extension AddNewAccomodationVC{
                         }
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                        
                     case .unauthorized :
                         self.viewAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -1095,10 +1030,9 @@ extension AddNewAccomodationVC{
                                 NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                             }
                         }
-                        
                     case .unauthorizedToken:
                         LoaderManager.shared.hide()
-                      
+                        
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
@@ -1112,7 +1046,7 @@ extension AddNewAccomodationVC{
                         AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
                     case .internalServerError:
                         LoaderManager.shared.hide()
-                      
+                        
                         AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
                         
                     }

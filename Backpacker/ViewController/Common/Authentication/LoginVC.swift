@@ -1,20 +1,17 @@
-//
 //  LoginVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 02/07/25.
-//
 
 import UIKit
 import CountryPickerView
 
 class LoginVC: UIViewController {
     
+    //Outlet
     @IBOutlet weak var img_logo_bottom: NSLayoutConstraint! //50
     @IBOutlet weak var img_Logo_width: NSLayoutConstraint!//120
     @IBOutlet weak var img_logo_Height: NSLayoutConstraint!//120
     @IBOutlet weak var logo_Img: UIImageView!
-    //Outlet
     @IBOutlet weak var man_ScrollVw: UIScrollView!
     @IBOutlet weak var btn_term_Topconstraint: NSLayoutConstraint!
     @IBOutlet weak var lbl_temsandCondition: UILabel!
@@ -29,27 +26,27 @@ class LoginVC: UIViewController {
     @IBOutlet weak var lbl_phoneCode: UILabel!
     @IBOutlet weak var lbl_Error: UILabel!
     @IBOutlet weak var txtFld_PhoneNumber: UITextField!
-    //Variables
     @IBOutlet weak var imgFlg: UIImageView!
     @IBOutlet weak var lbl_EntrNumber: UILabel!
-    var countryName = String()
-    var phoneCode = String()
-    var flag = UIImage()
-    var viewModel = LogInVM()
-    
     @IBOutlet weak var lbl_herader_EnterEmail: UILabel!
-    
     @IBOutlet weak var btnSignIn: UIButton!
     @IBOutlet weak var lbl_emailError_height: NSLayoutConstraint!
     @IBOutlet weak var lbl_emailEror: UILabel!
     @IBOutlet weak var email_TxtFd: UITextField!
     @IBOutlet weak var MainVw_EmailTxtFld: UIView!
+    
+    //Variables
+    var countryName = String()
+    var phoneCode = String()
+    var flag = UIImage()
+    var viewModel = LogInVM()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUI()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
-          tapGesture.cancelsTouchesInView = false // important
-          self.view.addGestureRecognizer(tapGesture)
+        tapGesture.cancelsTouchesInView = false // important
+        self.view.addGestureRecognizer(tapGesture)
         self.setupRoundedBorder(for: vwTxtFld)
         self.setupRoundedBorder(for: phoneNumberVw)
         self.setupRoundedBorder(for: MainVw_EmailTxtFld)
@@ -70,6 +67,7 @@ class LoginVC: UIViewController {
         super.viewDidLayoutSubviews()
         
     }
+    
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
@@ -77,6 +75,7 @@ class LoginVC: UIViewController {
     @objc func dismissKeyboard() {
         self.view.endEditing(true)
     }
+    
     @objc func keyboardWillShow(notification: Notification) {
         if let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect {
             let keyboardHeight = keyboardFrame.height
@@ -85,11 +84,12 @@ class LoginVC: UIViewController {
             man_ScrollVw.scrollIndicatorInsets.bottom = keyboardHeight
         }
     }
-
+    
     @objc func keyboardWillHide(notification: Notification) {
         man_ScrollVw.contentInset.bottom = 0
         man_ScrollVw.scrollIndicatorInsets.bottom = 0
     }
+    
     func setupSignInText() {
         let fullText = "Already have an account? Sign In"
         let signInText = "Sign In"
@@ -111,6 +111,7 @@ class LoginVC: UIViewController {
         
         btnSignIn.setAttributedTitle(attributedString, for: .normal)
     }
+    
     func setUnderlinedButtonTitle(
         button: UIButton,
         title: String,
@@ -126,7 +127,8 @@ class LoginVC: UIViewController {
         let attributedTitle = NSAttributedString(string: title, attributes: attributes)
         button.setAttributedTitle(attributedTitle, for: .normal)
     }
-    private func setUI(){
+    
+    private func setUI() {
         self.btn_term_Topconstraint.constant = 0.0
         self.btn_trmcondition.tag = 0
         self.lbl_temsandCondition.textColor = UIColor(named: "subTitleColor")
@@ -172,13 +174,14 @@ class LoginVC: UIViewController {
         self.img_logo_bottom.constant = 0
         self.img_Logo_width.constant = 180
         self.img_logo_Height.constant = 180
-        #else
+#else
         self.logo_Img.image = UIImage(named: "launchBP")
         self.img_logo_bottom.constant = 50
         self.img_Logo_width.constant = 120
         self.img_logo_Height.constant = 120
 #endif
     }
+    
     private func setupTermsLabel() {
         let text = "I have read and agree to the Privacy Policy and Terms & Conditions"
         
@@ -209,6 +212,7 @@ class LoginVC: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapOnLabel(_:)))
         lbl_temsandCondition.addGestureRecognizer(tapGesture)
     }
+    
     func validateEmail() -> Bool {
         
         let email = email_TxtFd.text?
@@ -244,6 +248,7 @@ class LoginVC: UIViewController {
             return false
         }
     }
+    
     @objc private func handleTapOnLabel(_ gesture: UITapGestureRecognizer) {
         guard let label = gesture.view as? UILabel,
               let attributedText = label.attributedText else { return }
@@ -294,7 +299,6 @@ class LoginVC: UIViewController {
         }
     }
     
-    
     private func openURL(_ urlString: String) {
         if let url = URL(string: urlString) {
             UIApplication.shared.open(url)
@@ -310,7 +314,6 @@ class LoginVC: UIViewController {
         textContainer.lineFragmentPadding = 0.0
         textContainer.maximumNumberOfLines = label.numberOfLines
         textContainer.lineBreakMode = label.lineBreakMode
-        
         layoutManager.addTextContainer(textContainer)
         textStorage.addLayoutManager(layoutManager)
         
@@ -318,6 +321,7 @@ class LoginVC: UIViewController {
         let index = layoutManager.characterIndex(for: location, in: textContainer, fractionOfDistanceBetweenInsertionPoints: nil)
         return NSRange(location: index, length: 1)
     }
+    
     @objc func termsLabelTapped() {
 #if BackpackerHire
         if let url = URL(string: "https://backpacker.csdevhub.com/terms-condition/employer") {
@@ -328,21 +332,20 @@ class LoginVC: UIViewController {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
 #endif
-        
     }
     
-    private func handleTermConditionBtn(){
-        if self.btn_trmcondition.tag == 0{
+    private func handleTermConditionBtn() {
+        if self.btn_trmcondition.tag == 0 {
             self.btn_trmcondition.tag = 1
             self.btn_trmcondition.setImage(UIImage(named: "Checkbox2"), for: .normal)
-        }else{
+        } else {
             self.btn_trmcondition.tag = 0
             self.btn_trmcondition.setImage(UIImage(named: "Checkbox"), for: .normal)
         }
     }
+    
     @objc func selectCountryAction(_ sender: Any) {
         picker_Vw.showCountriesList(from: self)
-        
     }
     
     //MARK: - Action
@@ -371,6 +374,7 @@ class LoginVC: UIViewController {
         // All good ✅
         loginApiCall()
     }
+    
     func setupRoundedBorder(for view: UIView) {
         view.layer.cornerRadius = 10
         view.layer.borderWidth = 1.0
@@ -391,15 +395,16 @@ class LoginVC: UIViewController {
         
     }
     @IBAction func action_LoginViaEmail(_ sender: UIButton) {
-     
+        
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let viewController = storyboard.instantiateViewController(withIdentifier: "EmailVC") as? EmailVC{
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
 }
+
 //MARK: - EXtension
-extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITextFieldDelegate{
+extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITextFieldDelegate {
     func countryPickerView(_ countryPickerView: CountryPickerView, didSelectCountry country: Country) {
         // Only countryPickerInternal has it's delegate set
         self.lbl_phoneCode.text  = country.phoneCode
@@ -407,7 +412,6 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
         if txtFld_PhoneNumber.text?.isEmpty == false{
             let _ =   self.validatePhoneNumber()
         }
-        
     }
     
     //DatatSource
@@ -418,11 +422,12 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
     func showCountryCodeInList(in countryPickerView: CountryPickerView) -> Bool {
         return true
     }
+    
     func preferredCountries(in countryPickerView: CountryPickerView) -> [Country] {
         
         return ["NG", "US", "GB"].compactMap { countryPickerView.getCountryByCode($0) }
-        
     }
+    
     func validatePhoneNumber() -> Bool {
         let phoneNumber = txtFld_PhoneNumber.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let phoneCode = picker_Vw.selectedCountry.phoneCode.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -463,23 +468,19 @@ extension LoginVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITex
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 _ = self.validatePhoneNumber()
             }
-        }else{
+        } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
                 _ = self.validateEmail()
             }
         }
-        
         return true
     }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder() // -Dismiss keyboard
         return true
     }
-    
-    
 }
-
-
 
 extension LoginVC {
     private func loginApiCall(){
@@ -561,6 +562,5 @@ extension LoginVC {
                 AlertManager.showAlert(on: self, title: "Error", message: "Something went wrong.")
             }
         }
-        
     }
 }

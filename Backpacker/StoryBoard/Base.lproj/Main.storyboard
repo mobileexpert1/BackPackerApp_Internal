@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="JWw-jM-1G8">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="24506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="JWw-jM-1G8">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24504"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -23,7 +23,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4im-es-nCb">
-                                <rect key="frame" x="0.0" y="59" width="393" height="739"/>
+                                <rect key="frame" x="0.0" y="118" width="393" height="566"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Iyj-yh-Vup">
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="795.66666666666663"/>
@@ -41,7 +41,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hgm-Z5-0qs">
-                                                <rect key="frame" x="18" y="403.33333333333331" width="357" height="50"/>
+                                                <rect key="frame" x="18" y="403.33333333333337" width="357" height="50"/>
                                                 <subviews>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ec7-Xc-ovn">
                                                         <rect key="frame" x="2" y="0.0" width="70" height="50"/>
@@ -279,7 +279,7 @@
                                 <viewLayoutGuide key="frameLayoutGuide" id="Ce4-xf-KvW"/>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="q7U-xG-HHO">
-                                <rect key="frame" x="20" y="798" width="353" height="50"/>
+                                <rect key="frame" x="20" y="684" width="353" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="KN9-1o-Dav"/>
                                 </constraints>
@@ -299,7 +299,7 @@
                             <constraint firstItem="q7U-xG-HHO" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="Vo4-2P-s6i"/>
                             <constraint firstItem="q7U-xG-HHO" firstAttribute="top" secondItem="4im-es-nCb" secondAttribute="bottom" id="X7p-jJ-sxU"/>
                             <constraint firstItem="4im-es-nCb" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="wQj-ss-ZYl"/>
-                            <constraint firstItem="q7U-xG-HHO" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="30" id="z8g-x1-G1K"/>
+                            <constraint firstItem="q7U-xG-HHO" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" constant="-50" id="z8g-x1-G1K"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="HDe-IB-QU5"/>
@@ -345,7 +345,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HsI-aF-nns">
-                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
+                                <rect key="frame" x="0.0" y="118" width="393" height="666"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fij-P1-AWO">
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="831.66666666666663"/>
@@ -382,7 +382,7 @@ number</string>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5AP-DO-rgc">
-                                                <rect key="frame" x="15" y="141.66666666666666" width="358" height="59.666666666666657"/>
+                                                <rect key="frame" x="15" y="141.66666666666669" width="358" height="59.666666666666657"/>
                                                 <string key="text">We’ve sent an SMS with an activation code to your 
 phone number </string>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
@@ -506,7 +506,7 @@ phone number </string>
                                                 </constraints>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="Awz-y1-zXh">
-                                                <rect key="frame" x="52.333333333333343" y="436.66666666666669" width="288.33333333333326" height="50"/>
+                                                <rect key="frame" x="52.333333333333343" y="436.66666666666663" width="288.33333333333326" height="50"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="I didn’t receive a code" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OMK-0R-4rN">
                                                         <rect key="frame" x="0.0" y="0.0" width="167.33333333333334" height="50"/>
@@ -647,13 +647,13 @@ phone number </string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select User Role" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ngY-2K-ehd">
-                                <rect key="frame" x="133.66666666666666" y="69" width="125.66666666666666" height="20.333333333333329"/>
+                                <rect key="frame" x="133.66666666666666" y="127.99999999999999" width="125.66666666666666" height="20.333333333333329"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fLt-l1-Imj">
-                                <rect key="frame" x="12" y="59" width="40" height="40"/>
+                                <rect key="frame" x="12" y="118" width="40" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="40" id="Iau-i3-wgO"/>
                                     <constraint firstAttribute="height" constant="40" id="uFA-Og-1TK"/>
@@ -665,7 +665,7 @@ phone number </string>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bgs-Kc-1F8">
-                                <rect key="frame" x="20" y="748" width="353" height="50"/>
+                                <rect key="frame" x="20" y="714" width="353" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="U3e-9n-zcr"/>
                                 </constraints>
@@ -683,7 +683,7 @@ phone number </string>
                                 </connections>
                             </button>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dTe-za-Cft">
-                                <rect key="frame" x="0.0" y="109.33333333333331" width="393" height="638.66666666666674"/>
+                                <rect key="frame" x="0.0" y="168.33333333333331" width="393" height="545.66666666666674"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="chd-r9-d9Z">
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="560"/>
@@ -728,7 +728,7 @@ phone number </string>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Post jobs, find talent, and manage jobs" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m8w-E4-q7T">
-                                                                        <rect key="frame" x="95" y="50.333333333333343" width="244" height="40.666666666666657"/>
+                                                                        <rect key="frame" x="95" y="50.333333333333371" width="244" height="40.666666666666657"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                         <color key="textColor" red="0.36862745098039218" green="0.36862745098039218" blue="0.36862745098039218" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -784,7 +784,7 @@ phone number </string>
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uX5-KB-s2j">
-                                                        <rect key="frame" x="0.0" y="124.99999999999997" width="353" height="110"/>
+                                                        <rect key="frame" x="0.0" y="125" width="353" height="110"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jbx-V7-qyb">
                                                                 <rect key="frame" x="2" y="2" width="349" height="106"/>
@@ -876,7 +876,7 @@ phone number </string>
                                                         </constraints>
                                                     </view>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6R2-o7-vjc">
-                                                        <rect key="frame" x="0.0" y="250" width="353" height="110"/>
+                                                        <rect key="frame" x="0.0" y="250.00000000000006" width="353" height="110"/>
                                                         <subviews>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2vx-p4-xwG">
                                                                 <rect key="frame" x="2" y="2" width="349" height="106"/>
@@ -912,7 +912,7 @@ phone number </string>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Add Hangout Places" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d6R-Z1-4MI">
-                                                                        <rect key="frame" x="95" y="50.333333333333371" width="244" height="20.333333333333329"/>
+                                                                        <rect key="frame" x="95" y="50.333333333333258" width="244" height="20.333333333333329"/>
                                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                         <color key="textColor" red="0.36862745099999999" green="0.36862745099999999" blue="0.36862745099999999" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -1039,7 +1039,7 @@ phone number </string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="History" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GrN-nE-Xgm">
-                                <rect key="frame" x="169.33333333333334" y="450" width="54.666666666666657" height="21"/>
+                                <rect key="frame" x="169.33333333333334" y="467.66666666666669" width="54.666666666666657" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -1065,7 +1065,7 @@ phone number </string>
                     <tabBarItem key="tabBarItem" title="History" image="Resume" id="aat-sC-3gm"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="fjJ-bR-eQh">
-                        <rect key="frame" x="0.0" y="59" width="393" height="44"/>
+                        <rect key="frame" x="0.0" y="118" width="393" height="54"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -1103,7 +1103,7 @@ phone number </string>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H7x-yr-Fv2">
-                                <rect key="frame" x="0.0" y="59" width="393" height="759"/>
+                                <rect key="frame" x="0.0" y="118" width="393" height="666"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c1B-Dd-gvH">
                                         <rect key="frame" x="0.0" y="0.0" width="393" height="1020"/>
@@ -1153,7 +1153,7 @@ phone number </string>
                                                                 <nil key="highlightedColor"/>
                                                             </label>
                                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ysk-eu-qAt">
-                                                                <rect key="frame" x="2" y="45" width="349" height="50"/>
+                                                                <rect key="frame" x="2" y="45.000000000000057" width="349" height="50"/>
                                                                 <subviews>
                                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IoV-Rd-Ss9">
                                                                         <rect key="frame" x="0.0" y="0.0" width="349" height="50"/>

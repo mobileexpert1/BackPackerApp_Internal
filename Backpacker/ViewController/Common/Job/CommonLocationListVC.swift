@@ -1,21 +1,20 @@
-//
 //  CommonLocationListVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 30/09/25.
-//
 
 import UIKit
+
 protocol CommonLocationDelegate: AnyObject {
     func didSelectBackpacker(_ location: [LocationList])
 }
+
 class CommonLocationListVC: UIViewController {
+    
     @IBOutlet weak var btn_cross: UIButton!
     @IBOutlet weak var Btn_Save: UIButton!
     @IBOutlet weak var txtFld_Search: UITextField!
     @IBOutlet weak var searchVw: UIView!
     @IBOutlet weak var lbl_MainHeader: UILabel!
-    
     @IBOutlet weak var lbl_No_backpacker: UILabel!
     @IBOutlet weak var tblVw: UITableView!
     
@@ -39,15 +38,11 @@ class CommonLocationListVC: UIViewController {
     var isComeFromEdit : Bool = false
     let profileVm = ProfileVM()
     var  locations: [LocationList]?
-    
-    
     var totalAccomodations = Int()
-    
     var isComFromSearch : Bool = false
     var editLocationId : String?
     weak var delegaet : CommonLocationDelegate?
     var isComeromEdit : Bool = false
-    
     let viewModell = SubscriptionViewModel()
     let viewAuth = LogInVM()
     var plansN : [PlanS]?
@@ -55,17 +50,16 @@ class CommonLocationListVC: UIViewController {
     var activePlanLocationCount : Int?
     var activePlanJobCount: Int?
     var totalLocation : Int?
-    
     var countsLoc : CountsLoc?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.setUpUI()
-        
         self.setUpRefreshControl()
         self.getListOfLocationAll()
         // Do any additional setup after loading the view.
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         isComeFromPullTorefresh = false
@@ -74,10 +68,12 @@ class CommonLocationListVC: UIViewController {
             self.handleEditcase()
         }
     }
+    
     func setUpRefreshControl() {
         refreshControl.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         tblVw.refreshControl = refreshControl
     }
+    
     func getPriceFormStore() {
         //   LoaderManager.shared.show()
         
@@ -94,9 +90,8 @@ class CommonLocationListVC: UIViewController {
             self.getListOfAllSubscriptions(regionCode: self.regionCode ?? "")
         }
     }
+    
     @objc func handleRefresh() {
-        
-        
         self.page = 1
         self.isAllDataLoaded = false
         self.isLoadingMoreData = false
@@ -110,9 +105,9 @@ class CommonLocationListVC: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
             self.getListOfLocationAll()
         }
-        
     }
-    func setUpUI(){
+    
+    func setUpUI() {
         self.btn_cross.isHidden = true
         applyGradientButtonStyle(to: self.Btn_Save)
         self.Btn_Save.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
@@ -128,7 +123,6 @@ class CommonLocationListVC: UIViewController {
         self.txtFld_Search.delegate = self
         self.tblVw.delegate = self
         self.tblVw.dataSource = self
-        
     }
     
     @IBAction func action_txtFldClear(_ sender: Any) {
@@ -139,8 +133,8 @@ class CommonLocationListVC: UIViewController {
         txtFld_Search.resignFirstResponder()
         self.btn_cross.isHidden = true
         getListOfLocationAll()
-        
     }
+    
     @IBAction func action_Save(_ sender: Any) {
         if let id = self.selectedData.first?.id {
             getLocationDetailOfPruchase(locID: id) { success in
@@ -148,7 +142,7 @@ class CommonLocationListVC: UIViewController {
                     if (self.countsLoc?.jobs ?? 0) < (self.activePlanJobCount ?? 0) {
                         self.delegaet?.didSelectBackpacker(self.selectedData)
                         self.navigationController?.popViewController(animated: true)
-                    }else{
+                    } else {
                         AlertManager.showAlert(
                             on: self,
                             title: "Plan Limit Reached",
@@ -159,23 +153,17 @@ class CommonLocationListVC: UIViewController {
                                 self.navigationController?.pushViewController(vc, animated: true)
                             }
                         }
-                        
                     }
-                }else{
-                    
+                } else {
                 }
             }
-            
         }
-        
-        
     }
     
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
 }
-
 
 extension CommonLocationListVC: UITableViewDelegate, UITableViewDataSource {
     
@@ -229,12 +217,13 @@ extension CommonLocationListVC: UITableViewDelegate, UITableViewDataSource {
         tableView.reloadData()
     }
     
-    func handleEditcase(){
+    func handleEditcase() {
         let data = LocationList(id: self.editLocationId ?? "", userId: "", businessCompanyId: "", name: "", lat: 0.0, long: 0.0, createdAt: "", updatedAt:     "", v: 0)
         self.selectedData.removeAll()
         self.selectedData.append(data)
         self.tblVw.reloadData()
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
     }
@@ -262,16 +251,15 @@ extension CommonLocationListVC: UITableViewDelegate, UITableViewDataSource {
                     isLoadingMoreData = true
                     page += 1
                     tblVw.tableFooterView = createTableFooterView()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5 ){
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5 ) {
                         self.getListOfLocationAll()
                     }
-                    
                 }
             }
-            
         }
     }
 }
+
 extension CommonLocationListVC: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -304,12 +292,13 @@ extension CommonLocationListVC: UITextFieldDelegate {
                 self.getListOfLocationAll()
             }
         }
-        
         return true
     }
+    
     func textFieldDidBeginEditing(_ textField: UITextField) {
-            btn_cross.isHidden = false
-        }
+        btn_cross.isHidden = false
+    }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.btn_cross.isHidden = true
         textField.resignFirstResponder()
@@ -344,8 +333,6 @@ extension CommonLocationListVC: UITextFieldDelegate {
             // Footer bottom anchor tied to label
             label.bottomAnchor.constraint(equalTo: footerView.bottomAnchor, constant: -8)
         ])
-        
-        
         return footerView
     }
     
@@ -353,8 +340,9 @@ extension CommonLocationListVC: UITextFieldDelegate {
         tblVw.tableFooterView = nil
     }
 }
+
 extension CommonLocationListVC {
-    func getListOfLocationAll(){
+    func getListOfLocationAll() {
         let trimmedSearch = ""
         if page == 1 {
             self.isLoading = true
@@ -397,21 +385,20 @@ extension CommonLocationListVC {
                             // Pagination end check
                             self.isAllDataLoaded = newLocations?.count ?? 0 < self.perPage
                             
-                            
                             self.isLoadingMoreData = false
                             self.isComeFromPullTorefresh = false
                             self.lastContentOffset = 0.0
                             
-                            if self.isComeFromSearch == false{
+                            if self.isComeFromSearch == false {
                                 if self.searchData.count == 0 {
                                     self.showAddLocationAlert()
-                                }else{
+                                } else {
                                     self.lbl_No_backpacker.isHidden = true
                                 }
-                            }else{
+                            } else {
                                 if self.searchData.count == 0 {
                                     self.lbl_No_backpacker.isHidden = false
-                                }else{
+                                } else {
                                     self.lbl_No_backpacker.isHidden = true
                                 }
                             }
@@ -467,7 +454,7 @@ extension CommonLocationListVC {
         }
     }
     
-    private func moveToAccountScreen(){
+    private func moveToAccountScreen() {
         let storyboard = UIStoryboard(name: "Setting", bundle: nil)
         
         if let vc = storyboard.instantiateViewController(withIdentifier: "CommonDetailVC") as? CommonDetailVC {
@@ -475,7 +462,6 @@ extension CommonLocationListVC {
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
-    
     
     private func showAddLocationAlert() {
         AlertManager.showAlert(on: self, title: "Action Required", message: "Please Add Location") {
@@ -498,11 +484,10 @@ extension CommonLocationListVC {
             }
         }
     }
-    
 }
-extension CommonLocationListVC{
-    private func getListOfAllSubscriptions(regionCode:String)
-    {
+
+extension CommonLocationListVC {
+    private func getListOfAllSubscriptions(regionCode:String) {
         //LoaderManager.shared.show()
         viewModell.getlistOfSubscriptions(regionCode: regionCode) { [weak self] (success: Bool, result: SubscriptionPlansResponse?, statusCode: Int?) in
             guard let self = self else { return }
@@ -535,7 +520,7 @@ extension CommonLocationListVC{
                                 self.activePlanJobCount = jobCount
                                 self.activePlanLocationCount = locationCount
                                 
-                            }else{
+                            } else {
                                 AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
                             }
                         } else {
@@ -575,7 +560,6 @@ extension CommonLocationListVC{
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
                         AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                        
                     }
                 }
             }
@@ -602,19 +586,19 @@ extension CommonLocationListVC{
                     switch httpStatus {
                     case .ok, .created:
                         guard success, let data = result?.data else {
-                                AlertManager.showAlert(
-                                    on: self,
-                                    title: "Success",
-                                    message: result?.message ?? "Completed successfully."
-                                )
-                                completion(false)
-                                return
-                            }
-
-                            self.isLoading = false
-                            self.plansN?.removeAll()
-                            self.countsLoc = data.counts
-                            completion(true)
+                            AlertManager.showAlert(
+                                on: self,
+                                title: "Success",
+                                message: result?.message ?? "Completed successfully."
+                            )
+                            completion(false)
+                            return
+                        }
+                        
+                        self.isLoading = false
+                        self.plansN?.removeAll()
+                        self.countsLoc = data.counts
+                        completion(true)
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         completion(false)
@@ -632,7 +616,6 @@ extension CommonLocationListVC{
                                         }
                                     }
                                 }
-                                
                             } else {
                                 LoaderManager.shared.hide()
                                 self.isLoading = false
@@ -660,7 +643,6 @@ extension CommonLocationListVC{
                         LoaderManager.shared.hide()
                         self.refreshControl.endRefreshing()
                         AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                        
                     }
                 }
             }

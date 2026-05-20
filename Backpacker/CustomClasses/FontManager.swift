@@ -1,9 +1,6 @@
-//
 //  FontManager.swift
 //  Backpacker
-//
 //  Created by Mobile on 02/07/25.
-//
 
 import Foundation
 import UIKit
@@ -27,34 +24,34 @@ final class FontManager {
     }
     
     static func poppins(_ weight: PoppinsWeight, size: CGFloat) -> UIFont {
-   //     return UIFont(name: weight.rawValue, size: size) ?? UIFont.systemFont(ofSize: size)
+        //     return UIFont(name: weight.rawValue, size: size) ?? UIFont.systemFont(ofSize: size)
         var adjustedSize = size
-
-            // Increase fonts for iPad & larger devices
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                adjustedSize = size * 1.2   // Increase by 20%
-            }
-
-            let font = UIFont(name: weight.rawValue, size: adjustedSize)
-                ?? UIFont.systemFont(ofSize: adjustedSize)
-
-            return UIFontMetrics.default.scaledFont(for: font) // Ensure dynamic scaling
-    }
-    static func inter(_ weight: InterWeight, size: CGFloat) -> UIFont {
-      //  return UIFont(name: weight.rawValue, size: size) ?? UIFont.systemFont(ofSize: size)
-        var adjustedSize = size
-
-            // Increase fonts for iPad & larger devices
-            if UIDevice.current.userInterfaceIdiom == .pad {
-                adjustedSize = size * 1.2   // Increase by 20%
-            }
-
-            let font = UIFont(name: weight.rawValue, size: adjustedSize)
-                ?? UIFont.systemFont(ofSize: adjustedSize)
-
-            return UIFontMetrics.default.scaledFont(for: font) // Ensure dynamic scaling
+        
+        // Increase fonts for iPad & larger devices
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            adjustedSize = size * 1.2   // Increase by 20%
+        }
+        
+        let font = UIFont(name: weight.rawValue, size: adjustedSize)
+        ?? UIFont.systemFont(ofSize: adjustedSize)
+        
+        return UIFontMetrics.default.scaledFont(for: font) // Ensure dynamic scaling
     }
     
+    static func inter(_ weight: InterWeight, size: CGFloat) -> UIFont {
+        //  return UIFont(name: weight.rawValue, size: size) ?? UIFont.systemFont(ofSize: size)
+        var adjustedSize = size
+        
+        // Increase fonts for iPad & larger devices
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            adjustedSize = size * 1.2   // Increase by 20%
+        }
+        
+        let font = UIFont(name: weight.rawValue, size: adjustedSize)
+        ?? UIFont.systemFont(ofSize: adjustedSize)
+        
+        return UIFontMetrics.default.scaledFont(for: font) // Ensure dynamic scaling
+    }
     
     func applyGradientButtonStyle(to button: UIButton,
                                   startColor: UIColor = UIColor(hex: "#29A1F8"),
@@ -62,10 +59,10 @@ final class FontManager {
                                   cornerRadius: CGFloat = 10,
                                   borderColor: UIColor = .white,
                                   borderWidth: CGFloat = 1.0) {
-
+        
         // Remove any existing gradient
         button.layer.sublayers?.removeAll(where: { $0 is CAGradientLayer })
-
+        
         // Create gradient layer
         let gradientLayer = CAGradientLayer()
         gradientLayer.frame = button.bounds
@@ -73,13 +70,13 @@ final class FontManager {
         gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
         gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
         gradientLayer.cornerRadius = cornerRadius
-
+        
         // Apply corner radius & border to button itself
         button.layer.cornerRadius = cornerRadius
         button.clipsToBounds = true
         button.layer.borderColor = borderColor.cgColor
         button.layer.borderWidth = borderWidth
-
+        
         button.layer.insertSublayer(gradientLayer, at: 0)
     }
 }

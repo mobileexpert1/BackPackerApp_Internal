@@ -1,9 +1,6 @@
-//
 //  DescriptionController.swift
 //  Backpacker
-//
 //  Created by Mobile on 07/07/25.
-//
 
 import UIKit
 import MapKit
@@ -18,13 +15,10 @@ class DescriptionController: UIViewController {
     @IBOutlet weak var description_Scroll: UIScrollView!
     @IBOutlet weak var mapVw: MKMapView!
     //Outlet
-    
     @IBOutlet weak var lbl_Duration: UILabel!
     @IBOutlet weak var lbl_Location: UILabel!
     @IBOutlet weak var lbl_Requirment: UILabel!
     @IBOutlet weak var lbl_JobDescription: UILabel!
-    
-    
     
     //Value Outlets
     
@@ -38,14 +32,12 @@ class DescriptionController: UIViewController {
     @IBOutlet weak var lblDate: UILabel!
     @IBOutlet weak var lbl_Description_Value: UILabel!
     @IBOutlet weak var lbl_RequirmentValue: UILabel!
-    
     @IBOutlet weak var lbl_MapLocation_Value: UILabel!
     @IBOutlet weak var btn_VwOnMap: UIButton!
-    
     @IBOutlet weak var vwStartTime: UIView!
     @IBOutlet weak var vwDate: UIView!
-    
     @IBOutlet weak var vwEndTime: UIView!
+    
     var objJobDetail : JobDetail?
     var EmpobjJobDetail : EmployerJobDetail?
     var lbl_Descripyion_ContentHeight : CGFloat?
@@ -58,22 +50,22 @@ class DescriptionController: UIViewController {
         mapVw.delegate = self
         setupButtonBorders()
         self.setUpFonts()
-
-        
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 #if BackpackerHire
         if let obj = self.EmpobjJobDetail {
             self.setUpUIEmployer(obj: obj)
         }
-        #else
+#else
         
         if let obj = self.objJobDetail {
             self.setUpUI(obj: obj)
         }
 #endif
     }
+    
     func refreshData(obj: EmployerJobDetail) {
         if let formatted = obj.startDate.formattedISODate() {
             self.lbl_Val_StartDate.text = formatted
@@ -98,7 +90,7 @@ class DescriptionController: UIViewController {
         let lon = obj.long
         showMarkerOnMap(latitude: lat, longitude: lon, title: obj.address)
         self.setUpHeight()
-      }
+    }
     
     func refreshDatabp(obj: JobDetail) {
         if let formatted = obj.startDate.formattedISODate() {
@@ -124,17 +116,17 @@ class DescriptionController: UIViewController {
         let lon = obj.long
         showMarkerOnMap(latitude: lat, longitude: lon, title: obj.address)
         self.setUpHeight()
-      }
+    }
+    
     private func setupButtonBorders() {
         self.header_raterPerhour.font = FontManager.inter(.semiBold, size: 14.0)
         self.val_Rate.font = FontManager.inter(.medium, size: 14.0)
-      
+        
         self.vwDate.addShadowAllSides(radius: 2)
         self.vwStartTime.addShadowAllSides(radius: 2)
         self.vwEndTime.addShadowAllSides(radius: 2)
-
+        
     }
-    
     
     private func setUpFonts(){
         lbl_Duration.font = FontManager.inter(.semiBold, size: 14.0)
@@ -145,11 +137,9 @@ class DescriptionController: UIViewController {
         lbl_Description_Value.font = FontManager.inter(.regular, size: 12.0)
         lbl_RequirmentValue.font = FontManager.inter(.regular, size: 12.0)
         lbl_MapLocation_Value.font = FontManager.inter(.regular, size: 12.0)
-        
         self.lblDate.font = FontManager.inter(.regular, size: 12.0)
         self.lblStartTime.font = FontManager.inter(.regular, size: 12.0)
         self.lbl_EndTime.font = FontManager.inter(.regular, size: 12.0)
-        
         self.lbl_Val_EndTime.font = FontManager.inter(.semiBold, size: 12.0)
         self.lbl_Val_StartTime.font = FontManager.inter(.semiBold, size: 12.0)
         self.lbl_Val_StartDate.font = FontManager.inter(.semiBold, size: 12.0)
@@ -157,12 +147,12 @@ class DescriptionController: UIViewController {
     
     @IBAction func action_Accept(_ sender: Any) {
         
-        
     }
+    
     @IBAction func action_Decline(_ sender: Any) {
         
-        
     }
+    
     @IBAction func action_OpenMAp(_ sender: Any) {
         
 #if BackpackerHire
@@ -171,15 +161,16 @@ class DescriptionController: UIViewController {
             openJobLocation(lat: lat, long: long)
         }
         
-        #else
+#else
         
         if let lat = self.objJobDetail?.lat,
            let long = self.objJobDetail?.long {
             openJobLocation(lat: lat, long: long)
         }
 #endif
-       
+        
     }
+    
     func openJobLocation(lat: Double, long: Double, title: String = "Job Location") {
         let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
         let placemark = MKPlacemark(coordinate: coordinate)
@@ -190,7 +181,7 @@ class DescriptionController: UIViewController {
             MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05))
         ])
     }
-
+    
     func setUpUI(obj: JobDetail){
         if let formatted = obj.startDate.formattedISODate() {
             self.lbl_Val_StartDate.text = formatted
@@ -216,6 +207,7 @@ class DescriptionController: UIViewController {
         showMarkerOnMap(latitude: lat, longitude: lon, title: obj.address)
         self.setUpHeight()
     }
+    
     func setUpUIEmployer(obj: EmployerJobDetail){
         if let formatted = obj.startDate.formattedISODate() {
             self.lbl_Val_StartDate.text = formatted
@@ -241,6 +233,7 @@ class DescriptionController: UIViewController {
         showMarkerOnMap(latitude: lat, longitude: lon, title: obj.address)
         self.setUpHeight()
     }
+    
     func setUpHeight() {
         let descriptionHeight = lbl_Descripyion_ContentHeight ?? 50
         let requirementHeight = lbl_requirment__ContentHeight ?? 50
@@ -251,13 +244,9 @@ class DescriptionController: UIViewController {
         let addHeight = totalHeight
         self.description_Scroll.contentSize.height = addHeight
         delegate?.descriptionController(self, didUpdateHeight:  addHeight)
-        
-        
     }
-    
-    
-    
 }
+
 extension DescriptionController: MKMapViewDelegate {
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -284,33 +273,35 @@ extension DescriptionController: MKMapViewDelegate {
         
         return annotationView
     }
+    
     func showMarkerOnMap(latitude: CLLocationDegrees,
                          longitude: CLLocationDegrees,
                          title: String = "Location",
                          subtitle: String? = nil) {
-
+        
         let coordinate = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
-
+        
         // Remove old annotations except user location
         let nonUserAnnotations = mapVw.annotations.filter { !($0 is MKUserLocation) }
         mapVw.removeAnnotations(nonUserAnnotations)
-
+        
         // Create annotation
         let annotation = MKPointAnnotation()
         annotation.coordinate = coordinate
         annotation.title = title
         annotation.subtitle = subtitle
         mapVw.addAnnotation(annotation)
-
+        
         // 🔥 Focus & Zoom Properly
         let camera = MKMapCamera()
         camera.centerCoordinate = coordinate
         camera.pitch = 0
         camera.altitude = 2000   // 👈 smaller = more zoom
         camera.heading = 0
-
+        
         mapVw.setCamera(camera, animated: true)
     }
+    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let title = view.annotation?.title ?? nil {
             print("Marker selected: \(title)")
@@ -319,5 +310,4 @@ extension DescriptionController: MKMapViewDelegate {
             //            setUpHeight()
         }
     }
-    
 }

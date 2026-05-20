@@ -1,9 +1,7 @@
-//
 //  MainTabBarEmpController.swift
 //  BackpackerHire
-//
 //  Created by Mobile on 22/07/25.
-//
+
 import Foundation
 import UIKit
 
@@ -15,7 +13,7 @@ class MainTabBarEmpController: UITabBarController,UITabBarControllerDelegate {
         setupTabsForUserRole()
     }
     
-     func setupTabsForUserRole() {
+    func setupTabsForUserRole() {
         let role = UserDefaults.standard.string(forKey: "UserRoleType")
         
         var viewControllers: [UIViewController] = []
@@ -46,8 +44,6 @@ class MainTabBarEmpController: UITabBarController,UITabBarControllerDelegate {
                 createTab(fromStoryboard: "Setting", identifier: "SettingVC", title: "Settings", image: "Setting")
             ]
         }
-        
-        
         self.viewControllers = viewControllers
     }
     
@@ -61,7 +57,6 @@ class MainTabBarEmpController: UITabBarController,UITabBarControllerDelegate {
         nav.tabBarItem.image = UIImage(named: image )
         return nav
     }
-
     
     private func configureTabBarAppearance() {
         let appearance = UITabBarAppearance()
@@ -90,9 +85,7 @@ class MainTabBarEmpController: UITabBarController,UITabBarControllerDelegate {
         path.fill()
         let pillImage = UIGraphicsGetImageFromCurrentImageContext()?.resizableImage(withCapInsets: .zero)
         UIGraphicsEndImageContext()
-        
         appearance.selectionIndicatorImage = pillImage
-        
         appearance.stackedLayoutAppearance.normal.titleTextAttributes = [
             .font: FontManager.inter(.regular, size: 10.0),
             .foregroundColor: UIColor.black
@@ -108,7 +101,6 @@ class MainTabBarEmpController: UITabBarController,UITabBarControllerDelegate {
         if #available(iOS 15.0, *) {
             tabBar.scrollEdgeAppearance = appearance
         }
-        
         tabBar.tintColor = selectedColor
         tabBar.unselectedItemTintColor = .black
     }

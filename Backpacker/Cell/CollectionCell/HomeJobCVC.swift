@@ -1,14 +1,11 @@
-//
 //  HomeCollectionCellCollectionViewCell.swift
 //  Backpacker
-//
 //  Created by Mobile on 04/07/25.
-//
 
 import UIKit
 
 class HomeJobCVC: UICollectionViewCell {
-
+    
     @IBOutlet weak var imgVw: UIImageView!
     @IBOutlet weak var lbl_duration: UILabel!
     @IBOutlet weak var duration_Vw: UIView!
@@ -16,66 +13,65 @@ class HomeJobCVC: UICollectionViewCell {
     @IBOutlet weak var lbl_Address: UILabel!
     @IBOutlet weak var lbl_Title: UILabel!
     @IBOutlet weak var mainView: UIView!
-   
     @IBOutlet weak var vw_Status_Height: NSLayoutConstraint!
     @IBOutlet weak var lblAmount: UILabel!
     @IBOutlet weak var tap_Button: UIButton!
     @IBOutlet weak var lbl_SubTitle: UILabel!
     // Closure to handle tap
     @IBOutlet weak var lbl_AmountHeight: NSLayoutConstraint!  // 20 in UI
-    
     @IBOutlet weak var statusVw: UIView!
     @IBOutlet weak var lbl_jobStatus: UILabel!
+    
     var onTap: ((Int) -> Void)?
     var onFavTap: ((Int) -> Void)?
     var isComeFormAccpetedJobs : Bool = false
     var isComeForHiredetailpage : Bool = false
     var indexPath : Int = 0
+    
     override func awakeFromNib() {
-           super.awakeFromNib()
-           setupUI()
+        super.awakeFromNib()
+        setupUI()
         tap_Button.addTarget(self, action: #selector(tapButtonTapped), for: .touchUpInside)
         
 #if BackpackerHire
         self.btn_fav.isHidden = true
-        #else
+#else
         self.btn_fav.isHidden = false
 #endif
-       }
+    }
     
-    func SetUpHeight(isHeightShow : Bool = false){
-        if isHeightShow == false{
+    func SetUpHeight(isHeightShow : Bool = false) {
+        if isHeightShow == false {
             self.vw_Status_Height.constant = 0.0
-        }else{
+        } else {
             self.vw_Status_Height.constant = 20.0
         }
     }
-    func setUpUI(iscomeFromAccept : Bool = false,isComeForHiredetailpagee : Bool = false){
+    
+    func setUpUI(iscomeFromAccept : Bool = false,isComeForHiredetailpagee : Bool = false) {
 #if BackpackerHire
         
         if iscomeFromAccept {
             self.lbl_AmountHeight.constant = 20.0
             self.lbl_jobStatus.isHidden = false
             self.statusVw.isHidden = false
-        }else{
-            if isComeForHiredetailpagee == true{
+        } else {
+            if isComeForHiredetailpagee == true {
                 self.lbl_AmountHeight.constant = 20.0
                 self.lbl_jobStatus.isHidden = true
                 self.statusVw.isHidden = true
-            }else{
+            } else {
                 self.lbl_AmountHeight.constant = 0.0
                 self.lbl_jobStatus.isHidden = true
                 self.statusVw.isHidden = true
             }
-            
         }
-    
-        #else
-        if isComeForHiredetailpagee == true{
+#else
+        if isComeForHiredetailpagee == true {
             self.lbl_AmountHeight.constant = 20.0
             self.lbl_jobStatus.isHidden = true
             self.statusVw.isHidden = true
-        }else{
+        } else {
             self.lbl_AmountHeight.constant = 20.0
             self.lbl_jobStatus.isHidden = true
             self.statusVw.isHidden = true
@@ -83,39 +79,38 @@ class HomeJobCVC: UICollectionViewCell {
 #endif
     }
     
-    func setUpApeeranceOflbl_Amunt(isShow: Bool = false){
+    func setUpApeeranceOflbl_Amunt(isShow: Bool = false) {
         if isShow == true{
             self.lbl_AmountHeight.constant = 20.0
-        }else{
+        } else {
             self.lbl_AmountHeight.constant = 0.0
         }
         self.lbl_jobStatus.isHidden = true
         self.statusVw.isHidden = true
     }
     
-       private func setupUI() {
-           self.lbl_jobStatus.font = FontManager.inter(.medium, size: 10.0)
-           self.lblAmount.font = FontManager.inter(.medium, size: 12.0)
-           lbl_Title.font = FontManager.inter(.medium, size: 14.0)
-           lbl_Address.font = FontManager.inter(.regular, size: 12.0)
-           lbl_duration.font = FontManager.inter(.regular, size: 10.0)
-           mainView.layer.cornerRadius = 10
-           mainView.clipsToBounds = false
-           mainView.layer.cornerRadius = 10
-           mainView.layer.shadowColor = UIColor.black.withAlphaComponent(0.5).cgColor
-
-           mainView.layer.shadowOpacity = 0.2
-           mainView.layer.shadowOffset = CGSize(width: 0, height: 0) // all sides
-           mainView.layer.shadowRadius = 2
-           mainView.layer.masksToBounds = false
-           duration_Vw.layer.cornerRadius = 15
-           duration_Vw.clipsToBounds = true
-           
-       }
+    private func setupUI() {
+        self.lbl_jobStatus.font = FontManager.inter(.medium, size: 10.0)
+        self.lblAmount.font = FontManager.inter(.medium, size: 12.0)
+        lbl_Title.font = FontManager.inter(.medium, size: 14.0)
+        lbl_Address.font = FontManager.inter(.regular, size: 12.0)
+        lbl_duration.font = FontManager.inter(.regular, size: 10.0)
+        mainView.layer.cornerRadius = 10
+        mainView.clipsToBounds = false
+        mainView.layer.cornerRadius = 10
+        mainView.layer.shadowColor = UIColor.black.withAlphaComponent(0.5).cgColor
+        
+        mainView.layer.shadowOpacity = 0.2
+        mainView.layer.shadowOffset = CGSize(width: 0, height: 0) // all sides
+        mainView.layer.shadowRadius = 2
+        mainView.layer.masksToBounds = false
+        duration_Vw.layer.cornerRadius = 15
+        duration_Vw.clipsToBounds = true
+    }
+    
     @objc private func tapButtonTapped() {
         onTap?(indexPath)
     }
-    
     
     @IBAction func action_JobFav(_ sender: Any) {
         onFavTap?(indexPath)

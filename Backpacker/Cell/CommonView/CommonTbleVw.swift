@@ -1,23 +1,21 @@
-//
 //  CommonTbleVw.swift
 //  Backpacker
-//
 //  Created by Mobile on 10/07/25.
-//
 
 import Foundation
 import UIKit
 
 class CommonTbleVw: UIView, UITableViewDelegate, UITableViewDataSource {
     
-    
     @IBOutlet weak var tblVw: UITableView!
+    
     var nibName = "CommonTbleVw"
     var contentView: UIView?
     var isComeFromRating : Bool = false
     var dataArray: [String] = [] // Replace with your actual model
     var tableHeight = CGFloat()
     var onItemSelected: ((String) -> Void)?
+    
     // MARK: - IBOutlets connection
     @IBAction override func awakeFromNib() {
         super.awakeFromNib()
@@ -34,7 +32,6 @@ class CommonTbleVw: UIView, UITableViewDelegate, UITableViewDataSource {
         commonInit()
     }
     
-    
     private func commonInit() {
         let bundle = Bundle(for: type(of: self))
         contentView = bundle.loadNibNamed(nibName, owner: self, options: nil)?.first as? UIView
@@ -49,8 +46,6 @@ class CommonTbleVw: UIView, UITableViewDelegate, UITableViewDataSource {
         tblVw.delegate = self
         tblVw.dataSource = self
         self.tblVw.reloadData()
-        
-       
     }
     
     // MARK: - Public Method to set data
@@ -80,6 +75,7 @@ class CommonTbleVw: UIView, UITableViewDelegate, UITableViewDataSource {
         print("-Selected row at index: \(indexPath.row), Value: \(selectedValue)")
         onItemSelected?(selectedValue)
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 35
     }

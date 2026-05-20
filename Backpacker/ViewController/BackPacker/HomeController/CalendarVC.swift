@@ -1,16 +1,13 @@
-//
 //  CalendarVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 03/07/25.
-//
 
 import UIKit
 import FSCalendar
-
 import UIKit
 import EventKit
 import EventKitUI
+
 class CalendarVC: UIViewController {
     
     @IBOutlet weak var toggle_OverAllAvailibilty: UISwitch!
@@ -20,7 +17,6 @@ class CalendarVC: UIViewController {
     @IBOutlet weak var mini_Vw_Avalable: UIView!
     @IBOutlet weak var monthCollectionVw: UICollectionView!
     @IBOutlet weak var calendarVw: FSCalendar!
-    
     @IBOutlet weak var lbl_Year: UILabel!
     @IBOutlet weak var bgVwAvailibility: UIView!
     @IBOutlet weak var bgVwMonth: UIView!
@@ -28,18 +24,13 @@ class CalendarVC: UIViewController {
     @IBOutlet weak var lbl_Value_Date: UILabel!
     @IBOutlet weak var lbl_HeaderAvailable: UILabel!
     @IBOutlet weak var lbl_headrDate: UILabel!
-    
-    
     @IBOutlet weak var lbl_availinity: UILabel!
-    
     @IBOutlet weak var lbl_Header_SelectDate: UILabel!
     @IBOutlet weak var lbl_SetAvailibily: UILabel!
-    
     @IBOutlet weak var lbl_HeaderSelectMonth: UILabel!
     
     var selectedDate: Date?
     var selectedMonthIndex = Calendar.current.component(.month, from: Date()) - 1
-    
     var monthsArray: [Date] = []
     private var yearPicker: UIPickerView!
     private var years: [Int] = []
@@ -49,37 +40,35 @@ class CalendarVC: UIViewController {
     var selectedDay = String()
     var overAllAvailibilityStatus : Bool = false
     var SlotsListMain = [DayAvailability]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-           
-           // Example usage
-         
+        // Example usage
+        
         if selectedDate == nil {
             selectedDate = Date()
             calendarVw.select(selectedDate)
             let dateFormatter = DateFormatter()
-               dateFormatter.dateFormat = "EEEE" // Full weekday name: "Sunday", "Monday"
-               
-               let dayName = dateFormatter.string(from: selectedDate!)
-               print("Selected day name: \(dayName)")
+            dateFormatter.dateFormat = "EEEE" // Full weekday name: "Sunday", "Monday"
+            
+            let dayName = dateFormatter.string(from: selectedDate!)
+            print("Selected day name: \(dayName)")
             self.selectedDay = dayName
         }
         
         bgVwMonth.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
         bgVwAvailibility.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
-       VwSetAvailibilty2.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
+        VwSetAvailibilty2.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
         self.registerCell()
         self.setUpCalendar()
         self.setUpFonts()
         let currentYear = Calendar.current.component(.year, from: Date())
         years = Array(currentYear...2035)
         self.getUserAvailabilityApiCall()
-        
     }
     
-    
     @IBAction func actionOverAllAvailibilty(_ sender: UISwitch) {
-            self.overAllAvailibilityStatus = sender.isOn
+        self.overAllAvailibilityStatus = sender.isOn
         
         self.UpdateOverAllAvailibiltyApiCall()
     }
@@ -88,12 +77,12 @@ class CalendarVC: UIViewController {
         calendarVw.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
         let nib = UINib(nibName: "CalendarMonthCell", bundle: nil)
         monthCollectionVw.register(nib, forCellWithReuseIdentifier: "CalendarMonthCell")
-        
     }
-    private func setUpCalendar(){
+    
+    private func setUpCalendar() {
         let currentYear = Calendar.current.component(.year, from: Date())
         self.lbl_Year.text = "\(currentYear)"
-           monthsArray = getAllMonths(from: currentYear, to: 2035) // dynamic start year
+        monthsArray = getAllMonths(from: currentYear, to: 2035) // dynamic start year
         
         monthCollectionVw.delegate = self
         monthCollectionVw.dataSource = self
@@ -145,7 +134,7 @@ class CalendarVC: UIViewController {
         calendarVw.appearance.borderSelectionColor = UIColor.clear
     }
     
-    private func setUpFonts(){
+    private func setUpFonts() {
         //        self.settingBgVw.addShadowAllSides(radius:2)
         //        self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 16.0)
         self.lbl_Year.font = FontManager.inter(.medium, size: 14)
@@ -155,11 +144,9 @@ class CalendarVC: UIViewController {
         self.lbl_Header_SelectDate.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_headrDate.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_HeaderAvailable.font = FontManager.inter(.medium, size: 14.0)
-        
         self.lbl_Value_Date.font = FontManager.inter(.regular, size: 14.0)
         self.lbl_Value_Hour.font = FontManager.inter(.regular, size: 14.0)
         self.lbl_Value_Date.text = dateToString(selectedDate ?? Date())
-
     }
     
     @IBAction func btn_previous(_ sender: Any) {
@@ -168,6 +155,7 @@ class CalendarVC: UIViewController {
             scrollToSelectedMonth()
         }
     }
+    
     @IBAction func btn_Next(_ sender: Any) {
         if selectedMonthIndex < monthsArray.count - 1 {
             selectedMonthIndex += 1
@@ -184,6 +172,7 @@ class CalendarVC: UIViewController {
         
         monthCollectionVw.reloadData()
     }
+    
     @IBAction func action_Setting(_ sender: Any) {
     }
     
@@ -220,14 +209,13 @@ class CalendarVC: UIViewController {
         let storyboard = UIStoryboard(name: "Calendar", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SetAvailibilityVC") as? SetAvailibilityVC {
             
-           // settingVC.SlotsListMain = ManageSlots()
+            // settingVC.SlotsListMain = ManageSlots()
             self.navigationController?.pushViewController(settingVC, animated: true)
         } else {
             print("- Could not instantiate SetAvailibilityVC")
         }
     }
     
-
     func ManageSlots() -> [DayAvailability] {
         guard let days = self.responseAvaiability?.data?.days else { return [] }
         
@@ -240,10 +228,8 @@ class CalendarVC: UIViewController {
         
         return result
     }
-
-
-
 }
+
 extension CalendarVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return monthsArray.count
@@ -263,6 +249,7 @@ extension CalendarVC : UICollectionViewDelegate,UICollectionViewDataSource,UICol
         cell.configure(month: month, isSelected: isSelected)
         return cell
     }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedMonthIndex = indexPath.row
         collectionView.reloadData()
@@ -279,9 +266,8 @@ extension CalendarVC : UICollectionViewDelegate,UICollectionViewDataSource,UICol
         let width = collectionView.frame.width
         return CGSize(width: width / 3.75, height: height)
     }
-    
-    
 }
+
 extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegateAppearance {
     func minimumDate(for calendar: FSCalendar) -> Date {
         return Calendar.current.date(from: DateComponents(year: 2015, month: 1, day: 1))!
@@ -296,6 +282,7 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at position: FSCalendarMonthPosition) {
         cell.isHidden = false
     }
+    
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
         let currentMonth = calendar.currentPage
         let calendarUnit = Calendar.current
@@ -316,9 +303,6 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
         return position == .current
     }
     
-    
-    
-    
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         // Deselect previously selected date (if any)
         if let previous = selectedDate {
@@ -332,19 +316,19 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
         print("User selected: \(dateToString(date))")
         self.lbl_Value_Date.text = dateToString(date)
         //  Get weekday name
-           let dateFormatter = DateFormatter()
-           dateFormatter.dateFormat = "EEEE"   // Full day name (e.g. Sunday, Monday)
-           let weekdayName = dateFormatter.string(from: date)
-           print("Day is: \(weekdayName)")
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE"   // Full day name (e.g. Sunday, Monday)
+        let weekdayName = dateFormatter.string(from: date)
+        print("Day is: \(weekdayName)")
         self.selectedDay = weekdayName
         // Combine date and time (10:15 AM as example)
         let selectedDateWithTime = CalendarEventManager.combine(date: date, hour: 9, minute: 0)!
         
         // self.showEventEditUI(with: selectedDateWithTime)
-    
-
+        
         self.getUserAvailabilityApiCall()
     }
+    
     func promptCalendarAccess() {
         let alert = UIAlertController(
             title: "Calendar Access Required",
@@ -360,7 +344,6 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
         UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true)
     }
     
-    
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
         let visibleMonth = calendar.currentPage
         let components = Calendar.current.dateComponents([.year, .month], from: visibleMonth)
@@ -375,17 +358,15 @@ extension CalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegat
             monthCollectionVw.scrollToItem(at: IndexPath(item: index, section: 0), at: .centeredHorizontally, animated: true)
             monthCollectionVw.reloadData()
         }
-        
         calendarVw.reloadData()
     }
+    
     func dateToString(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat =  "dd-MM-yyyy"
         return dateFormatter.string(from: date)
     }
-    
 }
-
 
 import UIKit
 import EventKit
@@ -432,7 +413,6 @@ extension CalendarVC: EKEventEditViewDelegate {
     }
 }
 
-
 extension CalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
     // MARK: - PickerView Delegate & DataSource
     
@@ -447,6 +427,7 @@ extension CalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return "\(years[row])"
     }
+    
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
         return 30 // each row 50 points tall
     }
@@ -456,21 +437,22 @@ extension CalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
         let selectedYear = years[selectedRow]
         self.lbl_Year.text = "\(selectedYear)"
         monthsArray = getAllMonths(for: selectedYear)
-          monthCollectionVw.reloadData()
-          
-          // Scroll to current month if current year selected
-          let currentYear = Calendar.current.component(.year, from: Date())
-          let currentMonthIndex = (selectedYear == currentYear)
-              ? Calendar.current.component(.month, from: Date()) - 1
-              : 0
-
-          selectedMonthIndex = currentMonthIndex
-          DispatchQueue.main.async {
+        monthCollectionVw.reloadData()
+        
+        // Scroll to current month if current year selected
+        let currentYear = Calendar.current.component(.year, from: Date())
+        let currentMonthIndex = (selectedYear == currentYear)
+        ? Calendar.current.component(.month, from: Date()) - 1
+        : 0
+        
+        selectedMonthIndex = currentMonthIndex
+        DispatchQueue.main.async {
             //  self.monthCollectionVw.scrollToItem(at: IndexPath(item: currentMonthIndex, section: 0), at: .centeredHorizontally, animated: false)
-              self.scrollToSelectedMonth()
-          }
+            self.scrollToSelectedMonth()
+        }
         dismiss(animated: true)
     }
+    
     private func getAllMonths(for year: Int) -> [Date] {
         var months = [Date]()
         let calendar = Calendar.current
@@ -487,7 +469,7 @@ extension CalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
         }
         return months
     }
-
+    
     func ShowYearPicker() {
         // 1. Picker and Toolbar
         yearPicker = UIPickerView()
@@ -541,13 +523,11 @@ extension CalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
         // 5. Present
         self.present(dimmedVC, animated: true)
     }
-    
 }
-
 
 extension CalendarVC {
     
-    func getUserAvailabilityApiCall(){
+    func getUserAvailabilityApiCall() {
         LoaderManager.shared.show()
         viewModel.getUserAvailability { [weak self] (success: Bool, result: GetAvailabilityResponse?, statusCode: Int?) in
             guard let self = self else { return }
@@ -569,14 +549,14 @@ extension CalendarVC {
                                 self.responseAvaiability = availability
                                 print("Availability assigned:", availability)
                                 if let overallAvailability = availability.data?.overallAvailability {
-                                            self.overAllAvailibilityStatus = overallAvailability
-                                            self.toggle_OverAllAvailibilty.isOn = overallAvailability
-                                        } else {
-                                            // Handle the case where availability.data is nil or overallAvailability is missing
-                                            print("No availability data available")
-                                            self.overAllAvailibilityStatus = false
-                                            self.toggle_OverAllAvailibilty.isOn = false
-                                        }
+                                    self.overAllAvailibilityStatus = overallAvailability
+                                    self.toggle_OverAllAvailibilty.isOn = overallAvailability
+                                } else {
+                                    // Handle the case where availability.data is nil or overallAvailability is missing
+                                    print("No availability data available")
+                                    self.overAllAvailibilityStatus = false
+                                    self.toggle_OverAllAvailibilty.isOn = false
+                                }
                                 self.getCalculateTotalHours()
                             } else {
                                 AlertManager.showAlert(on: self, title: "Success", message: "No availability data found.")
@@ -617,9 +597,9 @@ extension CalendarVC {
                 }
             }
         }
-        
     }
-    func UpdateOverAllAvailibiltyApiCall(){
+    
+    func UpdateOverAllAvailibiltyApiCall() {
         LoaderManager.shared.show()
         let request = OverAllAvailabilityRequest(overallAvailability: self.overAllAvailibilityStatus)
         viewModel.setOverAllAvaiabilty(request: request) { success, message ,statusCode in
@@ -634,10 +614,8 @@ extension CalendarVC {
                 switch httpStatus {
                 case .ok, .created:
                     if success == true {
-                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "OverAllAvailability updated successfully"){
-                           
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "OverAllAvailability updated successfully") {
                         }
-                        
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     }
@@ -663,29 +641,26 @@ extension CalendarVC {
                     AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 }
             }
-               }
-        
+        }
     }
     
-    func getCalculateTotalHours(){
+    func getCalculateTotalHours() {
         if let response = responseAvaiability { // your API response
             let totalHours = totalWorkHours(for: selectedDay, from: response)
             print("Total work for \(selectedDay): \(totalHours) hours")
             self.updateUiForAvailabilty(hour: totalHours)
-            
-        }else{
+        } else {
             self.lbl_HeaderAvailable.text = "Not Available"
             self.lbl_Value_Hour.text = ""
             self.BotomLine_avaiable.isHidden = true
             self.mini_Vw_Avalable.backgroundColor = UIColor.red
         }
     }
-
+    
     func totalWorkHours(for selectedDay: String, from response: GetAvailabilityResponse) -> Int {
         guard let dayData = response.data?.days?.first(where: { $0.day == selectedDay }) else {
             return 0
         }
-        
         var totalMinutes = 0
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
@@ -702,27 +677,28 @@ extension CalendarVC {
         
         return totalMinutes / 60
     }
-    func updateUiForAvailabilty(hour:Int){
+    
+    func updateUiForAvailabilty(hour:Int) {
         if hour == 0{
             self.lbl_HeaderAvailable.text = "Not Available"
             self.lbl_Value_Hour.text = ""
             self.BotomLine_avaiable.isHidden = true
             self.mini_Vw_Avalable.backgroundColor = UIColor.red
-        }else{
+        } else {
             self.lbl_HeaderAvailable.text = "Available"
             self.lbl_Value_Hour.text = "\(hour) Hours"
             self.BotomLine_avaiable.isHidden = false
             self.mini_Vw_Avalable.backgroundColor = UIColor(hex: "00CD18")
-           
         }
+        
         guard let dayData = responseAvaiability?.data?.days?.first(where: { $0.day == selectedDay }) else {
             return
         }
-
+        
         let inputFormatter = DateFormatter()
         inputFormatter.dateFormat = "HH:mm"
         inputFormatter.locale = Locale(identifier: "en_US_POSIX")
-
+        
         let outputFormatter = DateFormatter()
         outputFormatter.dateFormat = "h:mm a"   // 12 hr format with AM/PM
         outputFormatter.locale = Locale(identifier: "en_US_POSIX")
@@ -732,7 +708,7 @@ extension CalendarVC {
                 view.removeFromSuperview()
             }
         }
-
+        
         for slot in dayData.slots {
             if let startDate = inputFormatter.date(from: slot.start),
                let endDate = inputFormatter.date(from: slot.end) {
@@ -750,7 +726,5 @@ extension CalendarVC {
                 BottomStakView.addArrangedSubview(bottomView)
             }
         }
-
     }
-
 }

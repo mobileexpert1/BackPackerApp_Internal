@@ -1,9 +1,6 @@
-//
 //  HangOutVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 24/07/25.
-//
 
 import UIKit
 import MapKit
@@ -17,6 +14,7 @@ class HangOutVC: UIViewController {
     @IBOutlet weak var lbl_MainHeader: UILabel!
     @IBOutlet weak var collectIOnVw: UICollectionView!
     @IBOutlet weak var btn_cleartxtFld: UIButton!
+    
     private let viewModelJOb = JobVM()
     var filteredDesignations: [String] = []
     let viewModel = HangoutViewModel()
@@ -24,14 +22,12 @@ class HangOutVC: UIViewController {
     var isLoading : Bool = true
     let refreshControl = UIRefreshControl()
     var hangOutList = [BackPackerHangoutItem]()
-    
     var page = 1
     let perPage = 10
     var totalAccomodations = Int()
     var isLoadingMoreData = false
     var isAllDataLoaded = false
     var isComeFromPullTorefresh : Bool = false
-    
     var radius : Int?
     var facilities : String?
     var sortByPrice : String?
@@ -39,7 +35,6 @@ class HangOutVC: UIViewController {
     var lastSearchedText: String = ""
     var isComFromSearch : Bool = false
     var lastContentOffset: CGFloat = 0
-    
     var regionCode: String?
     let viewModell = SubscriptionViewModel()
     var plansN : [PlanS]?
@@ -47,21 +42,19 @@ class HangOutVC: UIViewController {
     var activePlanLocationCount : Int?
     var activePlanJobCount: Int?
     var totalLocation : Int?
-    
     var countsLoc : CountsLoc?
     var accCount : Int?
     var activePlan = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.setUpUI()
-        
-        
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 #if Backapacker
@@ -72,7 +65,8 @@ class HangOutVC: UIViewController {
         self.listOfAllEmployerHangOuts()
 #endif
     }
-    func setUpUI(){
+    
+    func setUpUI() {
         
         self.btn_cleartxtFld.isHidden = true
         let nib2 = UINib(nibName: "SkeltonCVC", bundle: nil)
@@ -115,6 +109,7 @@ class HangOutVC: UIViewController {
         }
         self.setupPullToRefresh()
     }
+    
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
         refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
@@ -141,9 +136,7 @@ class HangOutVC: UIViewController {
 #else
             self.listOfAllEmployerHangOuts()
 #endif
-            
         }
-        
     }
     
     @IBAction func action_ClearTExtFld(_ sender: Any) {
@@ -198,39 +191,35 @@ class HangOutVC: UIViewController {
                     self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
                 }
                 
-            }else{
+            } else {
                 AlertManager.showAlert(
                     on: self,
                     title: "Plan Limit Reached",
                     message: "You have reached your current plan limit. To add a new hangout, please upgrade your plan."
-                ){
+                ) {
                     let storyboard = UIStoryboard(name: "Setting", bundle: nil)
                     if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
                         self.navigationController?.pushViewController(vc, animated: true)
                     }
                 }
             }
-        }else{
+        } else {
             let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
             if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "AddNewPlaceVC") as? AddNewPlaceVC {
                 jobDescriptionVC.hangoutCount = self.hangOutList.count
                 // Optional: pass selected job title
                 self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
             }
-            
-            
         }
-        
-        
-        
     }
 }
+
 extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if isLoading ==  true{
+        if isLoading ==  true {
             return 15
-        }else{
+        } else {
             return hangOutList.count
         }
     }
@@ -242,7 +231,7 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
                 return UICollectionViewCell()
             }
             return cell
-        }else{
+        } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "AccomodationCVC", for: indexPath) as? AccomodationCVC else {
                 return UICollectionViewCell()
             }
@@ -273,7 +262,7 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
                         }
                     }
                     
-                }else{
+                } else {
                     cell.imgVw.image = UIImage(named: "img_Placehodler")
                 }
                 cell.onItemTapped = { [weak self] val in
@@ -288,24 +277,21 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
 #endif
                         
                     }
-                    
                 }
+                
                 if hangOut.favoriteStatus == 1 {
                     cell.imgHeart.image = UIImage(named: "red_heart")
-                }else{
+                } else {
                     cell.imgHeart.image = UIImage(named: "Heart")
                 }
                 return cell
-            }else{
+            } else {
                 return UICollectionViewCell()
             }
-            
-            
         }
-        
-        
     }
-    private func moveToDetail(id : String){
+    
+    private func moveToDetail(id : String) {
         if id.isEmpty == false {
             let storyboard = UIStoryboard(name: "HangOut", bundle: nil)
             if let accVC = storyboard.instantiateViewController(withIdentifier: "HangOutDetailVC") as? HangOutDetailVC {
@@ -316,6 +302,7 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
             }
         }
     }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let id  = hangOutList[indexPath.item].id
@@ -325,9 +312,8 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
             // Optional: pass selected job title
             self.navigationController?.pushViewController(jobDescriptionVC, animated: true)
         }
-        
-        
     }
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         guard kind == UICollectionView.elementKindSectionFooter else {
@@ -358,6 +344,7 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
         
         return footer
     }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Skip if pulling down from top
         if scrollView.contentOffset.y < 0 {
@@ -403,7 +390,6 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
      }
      */
     
-    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -416,10 +402,9 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
         let width = (collectionView.bounds.width - totalSpacing) / columns
         if isLoading {
             return CGSize(width: width, height: 225) // height as per your content
-        }else{
+        } else {
             return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 210) // Adjust height based on content
         }
-        
     }
     
     // Horizontal spacing between items
@@ -442,13 +427,12 @@ extension HangOutVC: UICollectionViewDelegate, UICollectionViewDataSource, UICol
                         insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
+    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForFooterInSection section: Int) -> CGSize {
         return isLoadingMoreData ? CGSize(width: collectionView.frame.width, height: 100) : .zero
     }
-    
-    
 }
 
 extension HangOutVC{
@@ -586,8 +570,8 @@ extension HangOutVC{
                 }
             }
         }
-        
     }
+    
     func MakeJobHangOutFav(id:String){
         LoaderManager.shared.show()
         viewModelJOb.MakeHangoutFAVOURATE(id: id) { success, message ,statusCode in
@@ -634,7 +618,6 @@ extension HangOutVC{
         }
     }
     
-    
 #endif
     
 #if BackpackerHire
@@ -659,7 +642,7 @@ extension HangOutVC{
                 )
             }
             return
-        }else{
+        } else {
             viewModel.getEmployerHangoutList(page: page, perPage: perPage, lat: lat ?? 0.0, long: long ?? 0.0,radius: self.radius,search: self.lastSearchedText){ [weak self] (success: Bool, result: BackPackerHangoutResponse?, statusCode: Int?) in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
@@ -768,12 +751,12 @@ extension HangOutVC{
                 }
             }
         }
-        
     }
     
 #endif
     
 }
+
 extension HangOutVC: SkeletonCollectionViewDataSource {
     
     func collectionSkeletonView(_ skeletonView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -784,6 +767,7 @@ extension HangOutVC: SkeletonCollectionViewDataSource {
         return "SkeltonCVC" // Your skeleton cell identifier
     }
 }
+
 extension HangOutVC : UITextFieldDelegate{
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         // Get the new text after the change
@@ -821,10 +805,6 @@ extension HangOutVC : UITextFieldDelegate{
                 self.listOfAllEmployerHangOuts()
 #endif
             }
-            
-            
-            
-            
         }
         return true
     }
@@ -834,10 +814,9 @@ extension HangOutVC : UITextFieldDelegate{
         textField.resignFirstResponder()
         return true
     }
-    
-    
 }
-extension HangOutVC{
+
+extension HangOutVC {
     
 #if BackpackerHire
     func getPriceFormStore() {
@@ -856,8 +835,8 @@ extension HangOutVC{
             self.getListOfAllSubscriptions(regionCode: self.regionCode ?? "")
         }
     }
-    private func getListOfAllSubscriptions(regionCode:String)
-    {
+    
+    private func getListOfAllSubscriptions(regionCode:String) {
         LoaderManager.shared.show()
         viewModell.getlistOfSubscriptions(regionCode: regionCode) { [weak self] (success: Bool, result: SubscriptionPlansResponse?, statusCode: Int?) in
             guard let self = self else { return }
@@ -883,18 +862,18 @@ extension HangOutVC{
                                 let activePlans = plans.first { $0.planStatus.lowercased() == "active" }
                                 let locationCount = activePlans?.locationCount ?? 0
                                 let jobCount = activePlans?.jobCount ?? 0
-                                if activePlans == nil{
+                                if activePlans == nil {
                                     self.activePlan = ApiConstants.Products.defaultFreePlan
-                                }else{
+                                } else {
                                     self.activePlan = activePlans?.iosAttributes.name ?? ""
                                 }
-                                print("active plan",activePlans)
+                                print("active plan", activePlans)
                                 print("Location Count:", locationCount)
                                 print("Job Count:", jobCount)
                                 self.activePlanJobCount = jobCount
                                 self.activePlanLocationCount = locationCount
                                 
-                            }else{
+                            } else {
                                 AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
                             }
                         } else {
@@ -932,7 +911,6 @@ extension HangOutVC{
                         LoaderManager.shared.hide()
                         
                         AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                        
                     }
                 }
             }

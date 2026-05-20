@@ -1,13 +1,11 @@
-//
 //  LogInVM.swift
 //  Backpacker
-//
 //  Created by Mobile on 04/07/25.
-//
 
 import Foundation
 import Foundation
 import Alamofire
+
 class LogInVM {
     
     func loginUser(
@@ -18,6 +16,7 @@ class LogInVM {
             completion(true, result, statusCode)
         }
     }
+    
     func SignUPUser(
         loginRequest: LoginRequest,
         completion: @escaping (_ success: Bool, _ result: LoginResponse?, _ statusCode: Int?) -> Void
@@ -26,6 +25,7 @@ class LogInVM {
             completion(true, result, statusCode)
         }
     }
+    
     func SendOtp(
         otpRequest: OtpRequest,
         completion: @escaping (_ success: Bool, _ result: OtpResponse?, _ statusCode: Int?) -> Void
@@ -41,7 +41,7 @@ class LogInVM {
                     UserDefaultsManager.shared.bearerToken = val.data?.accessToken
                     UserDefaultsManager.shared.refreshToken = val.data?.refreshToken
 #endif
-                 
+                    
                 }
                 completion(true, result, statusCode)
             } else {
@@ -50,7 +50,7 @@ class LogInVM {
             }
         }
     }
-
+    
     func ReSendOtp(
         otpRequest: ResendOtpRequest,
         completion: @escaping (_ success: Bool, _ result: LoginResponse?, _ statusCode: Int?) -> Void
@@ -65,7 +65,6 @@ class LogInVM {
             }
         }
     }
-
     
     func refreshToken(completion: @escaping (_ success: Bool, _ result: OtpResponse?, _ statusCode: Int?) -> Void) {
         UserStore.shared.refreshToken { (success, result: OtpResponse?, statusCode: Int?) in
@@ -79,8 +78,6 @@ class LogInVM {
                     UserDefaultsManager.shared.bearerToken = val.data?.accessToken
                     UserDefaultsManager.shared.refreshToken = val.data?.refreshToken
 #endif
-                 
-                
                 }
                 completion(true, result, statusCode)
             } else {
@@ -89,7 +86,7 @@ class LogInVM {
             }
         }
     }
-
+    
     func chooseRoleType(
         otpRequest: ChooseRoleTypeRequest,
         completion: @escaping (_ success: Bool, _ result: RoleTypeResponse?, _ statusCode: Int?) -> Void
@@ -106,24 +103,18 @@ class LogInVM {
                     UserDefaultsManager.shared.bearerToken = val.data?.accessToken
                     UserDefaultsManager.shared.refreshToken = val.data?.refreshToken
 #endif
-              
+                    
                     UserDefaults.standard.set(val.data?.subRoleType, forKey: "UserRoleType")
                     UserDefaults.standard.synchronize() // optional
                 }
-                
-                
                 completion(true, result, statusCode)
             } else {
                 print("- Refresh token failed")
                 completion(true, result, statusCode)
             }
         }
-        
-        
     }
     
-    
-  
     func locationUpdate(
         lat: String,
         long: String,
@@ -131,20 +122,19 @@ class LogInVM {
     ) {
 #if BackpackerHire
         let bearerToken = UserDefaultsManager.shared.employerbearerToken
-  #else
-  let bearerToken = UserDefaultsManager.shared.bearerToken
-  #endif
-  
-  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
-      print("⚠️ No refresh token found.")
-      completion(false, nil,nil)
-      return
-  }
-
+#else
+        let bearerToken = UserDefaultsManager.shared.bearerToken
+#endif
+        
+        guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+            print("⚠️ No refresh token found.")
+            completion(false, nil,nil)
+            return
+        }
         let url = ApiConstants.API.LOCATION_UPDATE
-
+        
         let request = LocationRequest(latitude: lat, longitude: long)
-
+        
         let jsonBody: String
         do {
             let data = try JSONEncoder().encode(request)
@@ -154,9 +144,9 @@ class LogInVM {
             completion(false, nil, nil)
             return
         }
-
+        
         print("Request JSON:", jsonBody)
-   let headers = ServiceManager.sharedInstance.getHeaders()
+        let headers = ServiceManager.sharedInstance.getHeaders()
         
         ServiceManager.sharedInstance.requestValidatedApiCreateAvailabilty(
             url,
@@ -172,6 +162,5 @@ class LogInVM {
                 completion(false, error.customDescription, statusCode)
             }
         }
-        
     }
 }

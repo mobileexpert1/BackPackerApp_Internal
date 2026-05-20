@@ -1,15 +1,13 @@
-//
 //  AccommodationViewModel.swift
 //  Backpacker
-//
 //  Created by Mobile on 31/07/25.
-//
 
 import Foundation
 import Alamofire
+
 class AccommodationViewModel {
     
-//MARK: Add New Accommodation
+    //MARK: Add New Accommodation
     func uploadAccommodation(
         name: String,
         address: String,
@@ -26,34 +24,34 @@ class AccommodationViewModel {
     ) {
 #if BackpackerHire
         let bearerToken = UserDefaultsManager.shared.employerbearerToken
-  #else
-  let bearerToken = UserDefaultsManager.shared.bearerToken
-  #endif
-  
-  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
-      print("⚠️ No refresh token found.")
-      completion(false, nil, nil)
-      return
-  }
-
+#else
+        let bearerToken = UserDefaultsManager.shared.bearerToken
+#endif
+        
+        guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+            print("⚠️ No refresh token found.")
+            completion(false, nil, nil)
+            return
+        }
+        
         let url = ApiConstants.API.ADD_ACCOMMODATION // 🔁 Replace with correct endpoint
-
+        
         var params: Parameters = [
-                    "name": name,
-                    "address": address,
-                    "lat": lat,
-                    "long": long,
-                    "locationText": locationText,
-                    "description": description,
-                    "price": price,
-                    "locationId": locationId
-                ]
+            "name": name,
+            "address": address,
+            "lat": lat,
+            "long": long,
+            "locationText": locationText,
+            "description": description,
+            "price": price,
+            "locationId": locationId
+        ]
         
         // Append array of string correctly as comma-separated string
         if !facilities.isEmpty {
             params["facilities"] = facilities.joined(separator: ",")
         }
-
+        
         let headers = ServiceManager.sharedInstance.getHeaders()
         ServiceManager.sharedInstance.requestMultipartMultiAPI(
             url,
@@ -66,84 +64,80 @@ class AccommodationViewModel {
             case .success(let data, let statusCode):
                 print("Accommodation uploaded successfully.")
                 completion(true, data?.message ?? "Accommodation Added", statusCode)
-
+                
             case .failure(let error, let statusCode):
                 print("Accommodation upload failed:", error.localizedDescription)
                 completion(false, error.localizedDescription, statusCode)
             }
         }
-        
-        
     }
+    
     //MARK: Edit  New Accommodation
-        func editAccommodation(
-            name: String,
-            address: String,
-            lat: Double,
-            long: Double,
-            locationText: String,
-            description: String,
-            price: String,
-            facilities: [String],
-            image: Data?,
-            imagesArrayData : [Data],
-            removedImages : String,
-            accId: String,
-            locationId: String,
-            completion: @escaping (Bool, String?, Int?) -> Void
-        ) {
-    #if BackpackerHire
-            let bearerToken = UserDefaultsManager.shared.employerbearerToken
-      #else
-      let bearerToken = UserDefaultsManager.shared.bearerToken
-      #endif
-      
-      guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
-          print("⚠️ No refresh token found.")
-          completion(false, nil, nil)
-          return
-      }
-
-            let url = ApiConstants.API.EDITACCOMMODATION(accomodation: accId) // 🔁 Replace with correct endpoint
-
-            var params: Parameters = [
-                        "name": name,
-                        "address": address,
-                        "lat": lat,
-                        "long": long,
-                        "locationText": locationText,
-                        "description": description,
-                        "price": price,
-                        "removedImages":removedImages,
-                        "locationId":locationId
-                    ]
-            
-            // Append array of string correctly as comma-separated string
-            if !facilities.isEmpty {
-                params["facilities"] = facilities.joined(separator: ",")
-            }
-
-            let headers = ServiceManager.sharedInstance.getHeaders()
-            ServiceManager.sharedInstance.requestMultipartMultiAPI(
-                url,
-                images: imagesArrayData,
-                method: .put,
-                parameters: params,
-                headers: headers
-            ) { (result: ApiResult<ApiResponseModel<UpdateData>, APIError>) in
-                switch result {
-                case .success(let data, let statusCode):
-                    print("Accommodation updated successfully.")
-                    completion(true, data?.message ?? "Accommodation Added", statusCode)
-
-                case .failure(let error, let statusCode):
-                    print("Accommodation updtE   failed:", error.localizedDescription)
-                    completion(false, error.localizedDescription, statusCode)
-                }
-            }
-            
-            
+    func editAccommodation(
+        name: String,
+        address: String,
+        lat: Double,
+        long: Double,
+        locationText: String,
+        description: String,
+        price: String,
+        facilities: [String],
+        image: Data?,
+        imagesArrayData : [Data],
+        removedImages : String,
+        accId: String,
+        locationId: String,
+        completion: @escaping (Bool, String?, Int?) -> Void
+    ) {
+#if BackpackerHire
+        let bearerToken = UserDefaultsManager.shared.employerbearerToken
+#else
+        let bearerToken = UserDefaultsManager.shared.bearerToken
+#endif
+        
+        guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+            print("⚠️ No refresh token found.")
+            completion(false, nil, nil)
+            return
         }
+        let url = ApiConstants.API.EDITACCOMMODATION(accomodation: accId) // 🔁 Replace with correct endpoint
+        
+        var params: Parameters = [
+            "name": name,
+            "address": address,
+            "lat": lat,
+            "long": long,
+            "locationText": locationText,
+            "description": description,
+            "price": price,
+            "removedImages":removedImages,
+            "locationId":locationId
+        ]
+        
+        // Append array of string correctly as comma-separated string
+        if !facilities.isEmpty {
+            params["facilities"] = facilities.joined(separator: ",")
+        }
+        
+        let headers = ServiceManager.sharedInstance.getHeaders()
+        ServiceManager.sharedInstance.requestMultipartMultiAPI(
+            url,
+            images: imagesArrayData,
+            method: .put,
+            parameters: params,
+            headers: headers
+        ) { (result: ApiResult<ApiResponseModel<UpdateData>, APIError>) in
+            switch result {
+            case .success(let data, let statusCode):
+                print("Accommodation updated successfully.")
+                completion(true, data?.message ?? "Accommodation Added", statusCode)
+                
+            case .failure(let error, let statusCode):
+                print("Accommodation updtE   failed:", error.localizedDescription)
+                completion(false, error.localizedDescription, statusCode)
+            }
+        }
+    }
     
     // MARK: - BackPacker: List of All Accommodation
     func getAccommodationList<T: Codable>(
@@ -167,7 +161,7 @@ class AccommodationViewModel {
             facilities: facilities,
             search: search
         )
-
+        
         ServiceManager.sharedInstance.requestApi(
             url,
             method: .get,
@@ -177,7 +171,7 @@ class AccommodationViewModel {
             completion(success, result, statusCode)
         }
     }
-
+    
     //MARK: - Backpacker Accomodation detail
     
     // MARK: - BackPacker: JobDetail
@@ -196,7 +190,6 @@ class AccommodationViewModel {
         }
     }
     
-    
     //MARK: - Emplyer accomodtion Home
     
     func getEmployerAccommodationHomeData(
@@ -204,16 +197,16 @@ class AccommodationViewModel {
     ) {
 #if BackpackerHire
         let bearerToken = UserDefaultsManager.shared.employerbearerToken
-  #else
-  let bearerToken = UserDefaultsManager.shared.bearerToken
-  #endif
-  
-  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
-      print("⚠️ No refresh token found.")
-      completion(false, nil, "Authorization token is missing.", nil)
-      return
-  }
-
+#else
+        let bearerToken = UserDefaultsManager.shared.bearerToken
+#endif
+        
+        guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+            print("⚠️ No refresh token found.")
+            completion(false, nil, "Authorization token is missing.", nil)
+            return
+        }
+        
         let url = ApiConstants.API.EMPLOYER_ACCOMODATION_HOME  // e.g., BASE_URL + "api/backpackers/home"
         
         let headers = ServiceManager.sharedInstance.getHeaders()
@@ -231,7 +224,6 @@ class AccommodationViewModel {
                 completion(false, nil, error.customDescription, statusCode)
             }
         }
-
     }
     
     // MARK: - BackPacker: List of All Accommodation
@@ -256,7 +248,7 @@ class AccommodationViewModel {
             facilities: facilities,
             search: search
         )
-
+        
         ServiceManager.sharedInstance.requestApi(
             url,
             method: .get,
@@ -266,6 +258,7 @@ class AccommodationViewModel {
             completion(success, result, statusCode)
         }
     }
+    
     // MARK: - BackPacker: JobDetail
     func getEmployerAcommodationDetail<T: Codable>(
         accommodationID:String,
@@ -310,7 +303,7 @@ class AccommodationViewModel {
             perPage: perPage,
             search: search
         )
-
+        
         ServiceManager.sharedInstance.requestApi(
             url,
             method: .get,
@@ -333,7 +326,7 @@ class AccommodationViewModel {
             perPage: perPage,
             search: search
         )
-
+        
         ServiceManager.sharedInstance.requestApi(
             url,
             method: .get,
@@ -356,7 +349,7 @@ class AccommodationViewModel {
             perPage: perPage,
             search: search
         )
-
+        
         ServiceManager.sharedInstance.requestApi(
             url,
             method: .get,
@@ -367,9 +360,11 @@ class AccommodationViewModel {
         }
     }
 }
+
 struct AccommodationResponseData: Codable {
     let _id: String
 }
+
 struct UpdateAccommodationResponse: Codable {
     let success: Bool
     let message: String

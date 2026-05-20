@@ -14,9 +14,9 @@
             filePath = "Backpacker/ViewController/BackPacker/PopUp/ForceUpdateVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
-            landmarkName = "updateProfileInfo(name:email:state:area:visaType:)"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -30,40 +30,10 @@
             filePath = "Backpacker/ViewController/BackPacker/PopUp/ForceUpdateVC.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
-            landmarkName = "updateProfileInfo(name:email:state:area:visaType:)"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "viewDidLoad()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "8FFF870D-7C3D-4A17-B722-4FA71C20282C - c482c581a6fe134b"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 @Swift.MainActor () -&gt; () in closure #1 (Swift.Bool, Swift.Optional&lt;BackpackerHire.UpdateProfileResponse&gt;, Swift.Optional&lt;Swift.Int&gt;) -&gt; () in BackpackerHire.ForceUpdateVC.updateProfileInfo(name: Swift.String, email: Swift.String, state: Swift.String, area: Swift.String, visaType: Swift.String) -&gt; ()"
-                  moduleName = "BackpackerHire.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mobile/Documents/GitProjects/BackPacker_Internal/Backpacker/ViewController/BackPacker/PopUp/ForceUpdateVC.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "83"
-                  endingLineNumber = "83">
-               </Location>
-               <Location
-                  uuid = "8FFF870D-7C3D-4A17-B722-4FA71C20282C - 425ac79ff055ca76"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in closure #1 @Swift.MainActor () -&gt; () in closure #1 (Swift.Bool, Swift.Optional&lt;BackpackerHire.UpdateProfileResponse&gt;, Swift.Optional&lt;Swift.Int&gt;) -&gt; () in BackpackerHire.ForceUpdateVC.updateProfileInfo(name: Swift.String, email: Swift.String, state: Swift.String, area: Swift.String, visaType: Swift.String) -&gt; ()"
-                  moduleName = "BackpackerHire.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mobile/Documents/GitProjects/BackPacker_Internal/Backpacker/ViewController/BackPacker/PopUp/ForceUpdateVC.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "84"
-                  endingLineNumber = "84">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -76,9 +46,9 @@
             filePath = "Backpacker/ViewModel/AccommodationViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
-            landmarkName = "uploadAccommodation(name:address:lat:long:locationText:description:price:facilities:image:imagesArrayData:completion:)"
+            startingLineNumber = "57"
+            endingLineNumber = "57"
+            landmarkName = "uploadAccommodation(name:address:lat:long:locationText:description:price:facilities:image:imagesArrayData:locationId:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -92,9 +62,9 @@
             filePath = "Backpacker/ViewModel/AccommodationViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "63"
-            endingLineNumber = "63"
-            landmarkName = "uploadAccommodation(name:address:lat:long:locationText:description:price:facilities:image:imagesArrayData:completion:)"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
+            landmarkName = "uploadAccommodation(name:address:lat:long:locationText:description:price:facilities:image:imagesArrayData:locationId:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -108,9 +78,57 @@
             filePath = "Backpacker/ViewModel/AccommodationViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "uploadAccommodation(name:address:lat:long:locationText:description:price:facilities:image:imagesArrayData:locationId:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EA66E568-7579-4394-91A5-63D93D043A2B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Backpacker/ViewController/Common/Authentication/LoginVC.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "393"
+            endingLineNumber = "393"
+            landmarkName = "action_signIN(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E1B5C708-60FD-453E-A851-8E3B02B8B823"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Backpacker/ViewController/Common/Authentication/EmailVC.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "viewDidLoad()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B42F0097-3D47-4568-8D1C-4BE307496AE5"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Backpacker/ViewController/Common/Authentication/EmailVC.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
             startingLineNumber = "49"
             endingLineNumber = "49"
-            landmarkName = "uploadAccommodation(name:address:lat:long:locationText:description:price:facilities:image:imagesArrayData:completion:)"
+            landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

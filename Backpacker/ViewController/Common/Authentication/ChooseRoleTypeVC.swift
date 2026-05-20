@@ -1,17 +1,13 @@
-//
 //  ChooseRoleTypeVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 28/07/25.
-//
 
 import UIKit
 
 class ChooseRoleTypeVC: UIViewController {
+    
     @IBOutlet weak var tick_Image_Accomodation: UIImageView!
-    let empRoleType = "2"
-    let accomodationRoleType = "3"
-    let hangOutRoleType = "4"
+    @IBOutlet weak var back_Btn: UIButton!
     @IBOutlet weak var Subtitle_Accomodation: UILabel!
     @IBOutlet weak var subTitle_Emp: UILabel!
     @IBOutlet weak var titleEmp: UILabel!
@@ -25,18 +21,22 @@ class ChooseRoleTypeVC: UIViewController {
     @IBOutlet weak var subttle_Hangout: UILabel!
     @IBOutlet weak var BgVwHangout: UIView!
     @IBOutlet weak var btn_Save: UIButton!
+    
     var viewModel = LogInVM()
-    @IBOutlet weak var back_Btn: UIButton!
+    let empRoleType = "2"
+    let accomodationRoleType = "3"
+    let hangOutRoleType = "4"
     var isBackButtonHidden : Bool = false
     var selectedRoleType  : String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUi()
-        if isBackButtonHidden == true{
+        if isBackButtonHidden == true {
             back_Btn.setImage(UIImage(named:""), for: .normal)
             back_Btn.isHidden = true
             back_Btn.isUserInteractionEnabled = false
-        }else{
+        } else {
             back_Btn.setImage(UIImage(named:"back_icon"), for: .normal)
             back_Btn.isHidden = false
             back_Btn.isUserInteractionEnabled = true
@@ -47,15 +47,12 @@ class ChooseRoleTypeVC: UIViewController {
         // Do any additional setup after loading the view.
     }
     
-    
-    func setUpUi(){
+    func setUpUi() {
         
         self.title_Hangiut.font = FontManager.inter(.medium, size: 15.0)
         self.subttle_Hangout.font = FontManager.inter(.regular, size: 12.0)
-        
         self.titleEmp.font = FontManager.inter(.medium, size: 15.0)
         self.subTitle_Emp.font = FontManager.inter(.regular, size: 12.0)
-        
         self.ttle_Accomodation.font = FontManager.inter(.medium, size: 15.0)
         self.Subtitle_Accomodation.font = FontManager.inter(.regular, size: 12.0)
         self.tick_Image_Hangout.isHidden = true
@@ -64,29 +61,24 @@ class ChooseRoleTypeVC: UIViewController {
         self.BgVwHangout.layer.cornerRadius = 10
         self.BgVwHangout.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwHangout.layer.borderWidth = 1.0
-        
         self.BgVwAccomodation.layer.cornerRadius = 10
         self.BgVwAccomodation.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwAccomodation.layer.borderWidth = 1.0
-        
         self.BgVwEmp.layer.cornerRadius = 10
         self.BgVwEmp.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwEmp.layer.borderWidth = 1.0
-        
     }
+    
     @IBAction func action_Employer(_ sender: Any) {
         self.tick_Image_Hangout.isHidden = true
         self.tick_Image_Accomodation.isHidden = true
         self.Tick_Img_Emp.isHidden = false
-        
         self.BgVwHangout.layer.cornerRadius = 10
         self.BgVwHangout.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwHangout.layer.borderWidth = 1.0
-        
         self.BgVwAccomodation.layer.cornerRadius = 10
         self.BgVwAccomodation.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwAccomodation.layer.borderWidth = 1.0
-        
         self.BgVwEmp.layer.cornerRadius = 10
         self.BgVwEmp.layer.borderColor = UIColor(hex: "#785DC2").cgColor
         self.BgVwEmp.layer.borderWidth = 1.0
@@ -97,15 +89,12 @@ class ChooseRoleTypeVC: UIViewController {
         self.tick_Image_Hangout.isHidden = false
         self.tick_Image_Accomodation.isHidden = true
         self.Tick_Img_Emp.isHidden = true
-        
         self.BgVwHangout.layer.cornerRadius = 10
         self.BgVwHangout.layer.borderColor = UIColor(hex: "#7EB268").cgColor
         self.BgVwHangout.layer.borderWidth = 1.0
-        
         self.BgVwAccomodation.layer.cornerRadius = 10
         self.BgVwAccomodation.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwAccomodation.layer.borderWidth = 1.0
-        
         self.BgVwEmp.layer.cornerRadius = 10
         self.BgVwEmp.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwEmp.layer.borderWidth = 1.0
@@ -119,11 +108,9 @@ class ChooseRoleTypeVC: UIViewController {
         self.BgVwHangout.layer.cornerRadius = 10
         self.BgVwHangout.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwHangout.layer.borderWidth = 1.0
-        
         self.BgVwAccomodation.layer.cornerRadius = 10
         self.BgVwAccomodation.layer.borderColor = UIColor(hex: "#F76BA7").cgColor
         self.BgVwAccomodation.layer.borderWidth = 1.0
-        
         self.BgVwEmp.layer.cornerRadius = 10
         self.BgVwEmp.layer.borderColor = UIColor(hex: "#DDDDDD").cgColor
         self.BgVwEmp.layer.borderWidth = 1.0
@@ -134,9 +121,11 @@ class ChooseRoleTypeVC: UIViewController {
         UserDefaults.standard.set(type, forKey: "UserRoleType")
         UserDefaults.standard.synchronize()
     }
+    
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
+    
     @IBAction func action_Save(_ sender: Any) {
         if selectedRoleType?.isEmpty ?? true {
             AlertManager.showAlert(
@@ -147,10 +136,7 @@ class ChooseRoleTypeVC: UIViewController {
         } else {
             ChooseRoleTypeApiCall()
         }
-        
-        
     }
-    
     
     private func ChooseRoleTypeApiCall() {
         LoaderManager.shared.show()
@@ -201,9 +187,7 @@ class ChooseRoleTypeVC: UIViewController {
                 case .internalServerError:
                     AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                 }
-                
             }
         }
-        
     }
 }

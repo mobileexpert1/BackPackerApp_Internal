@@ -1,21 +1,17 @@
-//
 //  EmplyerChatTVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 15/07/25.
-//
 
 import UIKit
 
 class EmplyerChatTVC: UITableViewCell {
-
+    
     @IBOutlet weak var TimeLbl_Height: NSLayoutConstraint!
     @IBOutlet weak var lbl_Time: UILabel!
     @IBOutlet weak var txtLbl: UILabel!
     @IBOutlet weak var msgVw: UIView!
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
         self.lbl_Time.font = FontManager.inter(.regular, size: 12.0)
         self.txtLbl.font = FontManager.inter(.regular, size: 14.0)
         msgVw.layer.cornerRadius = 12 // Or any radius you want
@@ -25,13 +21,11 @@ class EmplyerChatTVC: UITableViewCell {
             .layerMaxXMaxYCorner   // bottom-right
         ]
         msgVw.clipsToBounds = true
-
     }
-
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+        
     }
     
     func handleApeearcnceForLblTime(){

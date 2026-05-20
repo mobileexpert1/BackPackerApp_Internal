@@ -1,9 +1,6 @@
-//
 //  Constants.swift
 //  Backpacker
-//
 //  Created by Mobile on 03/07/25.
-//
 
 import Foundation
 
@@ -81,6 +78,7 @@ struct ApiConstants {
             
             return url
         }
+        
         static func getBACKPACKER_ACCOMMODATION_URL(
             page: Int,
             perPage: Int,
@@ -122,6 +120,7 @@ struct ApiConstants {
             }
             return url
         }
+        
         static func getBACKPACKER_HANGOUT_URL(
             page: Int,
             perPage: Int,
@@ -153,6 +152,7 @@ struct ApiConstants {
             }
             return url
         }
+        
         static func getBACKPACKER_HANGOUTDETAIL(hangoutID: String?) -> String {
             var url = "\(BASE_URL)api/backpackers/hangout/"
             if let hangoutID = hangoutID {
@@ -160,9 +160,9 @@ struct ApiConstants {
             }
             return url
         }
+        
         static func getBACKPACKER_AccomodationDETAIL(accommodationID: String?)
-        -> String
-        {
+        -> String {
             var url = "\(BASE_URL)api/backpackers/accommodation/"
             if let accommodationID = accommodationID {
                 url += "\(accommodationID)"
@@ -186,22 +186,21 @@ struct ApiConstants {
         BASE_URL + "api/employer/home/hangout"
         static let EMPLOYER_JOB_TODAY = BASE_URL + "api/employer/job"
         static func getEMPLOYER_JOBSSEEALLURLWITHTYPE(
-            page: Int, perPage: Int, search: String? = nil, type: Int
-        ) -> String {
-            var url =
-            "\(BASE_URL)api/employer/job/seeAll?page=\(page)&perPage=\(perPage)&type=\(type)"
-            
-            if let searchText = search?.trimmingCharacters(
-                in: .whitespacesAndNewlines), !searchText.isEmpty
-            {
-                let encodedSearch =
-                searchText.addingPercentEncoding(
-                    withAllowedCharacters: .urlQueryAllowed) ?? ""
-                url += "&search=\(encodedSearch)"
+            page: Int, perPage: Int, search: String? = nil, type: Int) -> String {
+                var url =
+                "\(BASE_URL)api/employer/job/seeAll?page=\(page)&perPage=\(perPage)&type=\(type)"
+                
+                if let searchText = search?.trimmingCharacters(
+                    in: .whitespacesAndNewlines), !searchText.isEmpty
+                {
+                    let encodedSearch =
+                    searchText.addingPercentEncoding(
+                        withAllowedCharacters: .urlQueryAllowed) ?? ""
+                    url += "&search=\(encodedSearch)"
+                }
+                
+                return url
             }
-            
-            return url
-        }
         
         static func getEMPLOYER_JOBDETAIL(jobID: String?) -> String {
             var url = "\(BASE_URL)api/employer/job/"
@@ -253,8 +252,7 @@ struct ApiConstants {
             return url
         }
         static func getAccomodation_AccomodationDETAIL(accommodationID: String?)
-        -> String
-        {
+        -> String {
             var url = "\(BASE_URL)api/employer/accommodation/"
             if let accommodationID = accommodationID {
                 url += "\(accommodationID)"
@@ -268,23 +266,22 @@ struct ApiConstants {
             lat: Double,
             long: Double,
             radius: Int? = nil,
-            search: String? = nil
-        ) -> String {
-            var url =
-            "\(BASE_URL)api/employer/hangout?page=\(page)&perPage=\(perPage)&lat=\(lat)&long=\(long)"
-            if let radius = radius {
-                url += "&radius=\(radius)"
+            search: String? = nil) -> String {
+                var url =
+                "\(BASE_URL)api/employer/hangout?page=\(page)&perPage=\(perPage)&lat=\(lat)&long=\(long)"
+                if let radius = radius {
+                    url += "&radius=\(radius)"
+                }
+                if let searchText = search?.trimmingCharacters(
+                    in: .whitespacesAndNewlines), !searchText.isEmpty
+                {
+                    let encodedSearch =
+                    searchText.addingPercentEncoding(
+                        withAllowedCharacters: .urlQueryAllowed) ?? ""
+                    url += "&search=\(encodedSearch)"
+                }
+                return url
             }
-            if let searchText = search?.trimmingCharacters(
-                in: .whitespacesAndNewlines), !searchText.isEmpty
-            {
-                let encodedSearch =
-                searchText.addingPercentEncoding(
-                    withAllowedCharacters: .urlQueryAllowed) ?? ""
-                url += "&search=\(encodedSearch)"
-            }
-            return url
-        }
         
         static func getEMPLOYER_HANGOUTDETAIL(hangoutID: String?) -> String {
             var url = "\(BASE_URL)api/employer/hangout/"

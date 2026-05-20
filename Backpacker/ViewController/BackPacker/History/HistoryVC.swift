@@ -1,19 +1,18 @@
-//
 //  HistoryVC.swift
 //  Backpacker
-//
 //  Created by Sahil Sharma on 12/07/25.
-//
 
 import UIKit
 import SkeletonView
-class HistoryVC: UIViewController {
 
+class HistoryVC: UIViewController {
+    
     @IBOutlet weak var historyCV: UICollectionView!
-  //  @IBOutlet weak var Main_SettinhgVw: UIView!
+    //  @IBOutlet weak var Main_SettinhgVw: UIView!
     @IBOutlet weak var lbl_SubHeader: UILabel!
- //   @IBOutlet weak var lblHeader: UILabel!
+    //   @IBOutlet weak var lblHeader: UILabel!
     @IBOutlet weak var lbl_No_AccomdodationFound: UILabel!
+    
     var filteredDesignations: [String] = []
     let refreshControl = UIRefreshControl()
     var page = 1
@@ -28,6 +27,7 @@ class HistoryVC: UIViewController {
     var lastContentOffset: CGFloat = 0
     var jobData : [CompletedJob]?
     var jobId : String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lbl_No_AccomdodationFound.text = "No Data Found"
@@ -40,11 +40,9 @@ class HistoryVC: UIViewController {
         self.historyCV.register(snib2, forCellWithReuseIdentifier: "SkeltonCVC")
         historyCV.isSkeletonable = true
         historyCV.register(UINib(nibName: "LoaderFooterViewCVC", bundle: nil),
-                         forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
-                         withReuseIdentifier: "LoaderFooterViewCVC")
+                           forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
+                           withReuseIdentifier: "LoaderFooterViewCVC")
         
-        
-      
         self.setupPullToRefresh()
         self.getHistoryJobsList()
         self.historyCV.delegate = self
@@ -52,8 +50,8 @@ class HistoryVC: UIViewController {
         if let layout = historyCV.collectionViewLayout as? UICollectionViewFlowLayout {
             layout.scrollDirection = .vertical
         }
-        
     }
+    
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
         refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
@@ -63,7 +61,7 @@ class HistoryVC: UIViewController {
     
     @objc private func refreshCollectionData() {
         // Reset pagination and loading flags
-
+        
         self.page = 1
         self.isAllDataLoaded = false
         self.isLoadingMoreData = false
@@ -76,21 +74,20 @@ class HistoryVC: UIViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
 #if Backapacker
             self.getHistoryJobsList()
-                
-                #else
+            
+#else
 #endif
-       
+            
         }
-        
     }
-
+    
     @IBAction func action_Setting(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Setting", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "SettingVC") as? SettingVC {
-               self.navigationController?.pushViewController(settingVC, animated: true)
-           } else {
-               print("- Could not instantiate SettingVC")
-           }
+            self.navigationController?.pushViewController(settingVC, animated: true)
+        } else {
+            print("- Could not instantiate SettingVC")
+        }
     }
 }
 
@@ -111,7 +108,7 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
                 return UICollectionViewCell()
             }
             return cell
-        }else{
+        } else {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HomeJobCVC", for: indexPath) as? HomeJobCVC else {
                 return UICollectionViewCell()
             }
@@ -119,12 +116,11 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
                 cell.onTap = { [weak self]  index in
                     guard let self = self else { return }
                     print("Cell tapped at index: \(indexPath.item)")
-                  //  if let id =  declineJob.id {
-                        print("Cell id tapped at index: \(declineJob.id)")
-                        self.jobId = declineJob.id
-                        self.navigateToDescriptionVC()
-                  //  }
-                 
+                    //  if let id =  declineJob.id {
+                    print("Cell id tapped at index: \(declineJob.id)")
+                    self.jobId = declineJob.id
+                    self.navigateToDescriptionVC()
+                    //  }
                 }
                 cell.btn_fav.isHidden = true
                 cell.btn_fav.isUserInteractionEnabled = false
@@ -132,7 +128,7 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
                 // cell.titleLabel.text = item
                 cell.lbl_Title.text = declineJob.name
                 let amnt = declineJob.price
-                    cell.lblAmount.text = "$\(amnt) per day"//per day
+                cell.lblAmount.text = "$\(amnt) per day"//per day
                 
                 cell.lbl_SubTitle.text = declineJob.description
                 if declineJob.image.hasPrefix("http") {
@@ -149,10 +145,10 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
                             cell.imgVw.sd_setImage(with: URL(string: port3001), placeholderImage: UIImage(named: "img_Placehodler"))
                         }
                     }
-                   
+                    
                     if declineJob.favoriteStatus == 1 {
                         cell.btn_fav.setImage(UIImage(named: "red_heart"), for: .normal)
-                    }else{
+                    } else {
                         cell.btn_fav.setImage(UIImage(named: "Heart"), for: .normal)
                     }
                 }
@@ -163,15 +159,14 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
                 let duration1 = Date.durationString(from: strtTime , to: endTime ) // "8 hr"
                 cell.lbl_duration.text = "Duration \(duration1)"
             }
-    #if Backapacker
+#if Backapacker
             cell.setUpUI(iscomeFromAccept: false)
             
-    #else
+#else
             cell.setUpUI(iscomeFromAccept: true)
-    #endif
+#endif
             return cell
         }
-  
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -179,8 +174,6 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: (collectionView.bounds.width/2) - 5 , height: 180) // Adjust height based on content
     }
-
-
     
     // Horizontal spacing between items
     func collectionView(_ collectionView: UICollectionView,
@@ -202,11 +195,13 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
                         insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     }
+    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         referenceSizeForFooterInSection section: Int) -> CGSize {
         return isLoadingMoreData ? CGSize(width: collectionView.frame.width, height: 100) : .zero
     }
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         guard kind == UICollectionView.elementKindSectionFooter else {
@@ -237,6 +232,7 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
         
         return footer
     }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Skip if pulling down from top
         if scrollView.contentOffset.y < 0 {
@@ -256,7 +252,7 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
         
         // Check if near bottom
         if offsetY > contentHeight - frameHeight - 500 {
-     
+            
             if !isComeFromPullTorefresh {
                 if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
                     isLoadingMoreData = true
@@ -265,9 +261,8 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
 #if Backapacker
                         self.getHistoryJobsList()
-                
-                #else
                         
+#else
 #endif
                     }
                 }
@@ -276,103 +271,101 @@ extension HistoryVC : UICollectionViewDelegate,UICollectionViewDataSource,UIColl
     }
 }
 
-
 extension HistoryVC {
     
     
     private func getHistoryJobsList(){
         self.isLoading = true
-            let trimmedSearch = ""
-            LoaderManager.shared.show()
+        let trimmedSearch = ""
+        LoaderManager.shared.show()
         viewModel.getCompletedJob(page: page, perPage: perPage, search: trimmedSearch)  { [weak self] (success: Bool, result: CompletedJobsResponse?, statusCode: Int?) in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                self.isLoading = false
+                guard let statusCode = statusCode else {
                     LoaderManager.shared.hide()
-                    self.isLoading = false
-                    guard let statusCode = statusCode else {
-                        LoaderManager.shared.hide()
-                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
-                        return
-                    }
-                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
                     
-                    DispatchQueue.main.async {
-                        
-                        switch httpStatus {
-                        case .ok, .created:
-                            if success == true {
-                                let newAccommodations = result?.data.completedJobsList ?? []
-                                
-                                if self.page == 1 {
-                                    if newAccommodations.isEmpty {
-                                        self.lbl_No_AccomdodationFound.isHidden = false
-                                        self.jobData?.removeAll()
-                                        self.jobData = newAccommodations
-                                    } else {
-                                        self.isLoading = false
-                                      self.lbl_No_AccomdodationFound.isHidden = true
-                                        self.jobData = newAccommodations
-                                    }
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            let newAccommodations = result?.data.completedJobsList ?? []
+                            
+                            if self.page == 1 {
+                                if newAccommodations.isEmpty {
+                                    self.lbl_No_AccomdodationFound.isHidden = false
+                                    self.jobData?.removeAll()
+                                    self.jobData = newAccommodations
                                 } else {
-                                   
-                                    self.jobData?.append(contentsOf: newAccommodations)
+                                    self.isLoading = false
+                                    self.lbl_No_AccomdodationFound.isHidden = true
+                                    self.jobData = newAccommodations
                                 }
-                                self.totalAccomodations = result?.data.total ?? 0
-                                // Pagination end check
-                                self.isAllDataLoaded = newAccommodations.count < self.perPage
-                                
-                                self.isLoading = false
-                                self.isComeFromPullTorefresh = false
-                                self.isLoadingMoreData = false
-                                self.historyCV.reloadData()
-                                self.refreshControl.endRefreshing()
                             } else {
-                                self.isLoading = false
-                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                
+                                self.jobData?.append(contentsOf: newAccommodations)
+                            }
+                            self.totalAccomodations = result?.data.total ?? 0
+                            // Pagination end check
+                            self.isAllDataLoaded = newAccommodations.count < self.perPage
+                            
+                            self.isLoading = false
+                            self.isComeFromPullTorefresh = false
+                            self.isLoadingMoreData = false
+                            self.historyCV.reloadData()
+                            self.refreshControl.endRefreshing()
+                        } else {
+                            self.isLoading = false
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            self.refreshControl.endRefreshing()
+                            self.historyCV.setContentOffset(.zero, animated: true)
+                            LoaderManager.shared.hide()
+                        }
+                    case .badRequest:
+                        self.isLoading = false
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getHistoryJobsList()
+                            } else {
+                                LoaderManager.shared.hide()
                                 self.refreshControl.endRefreshing()
                                 self.historyCV.setContentOffset(.zero, animated: true)
-                                LoaderManager.shared.hide()
+                                NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
                             }
-                        case .badRequest:
-                            self.isLoading = false
-                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                        case .unauthorized :
-                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                    self.getHistoryJobsList()
-                                } else {
-                                    LoaderManager.shared.hide()
-                                    self.refreshControl.endRefreshing()
-                                    self.historyCV.setContentOffset(.zero, animated: true)
-                                    NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
-                                    
-                                }
-                            }
-                        case .unauthorizedToken:
-                            LoaderManager.shared.hide()
-                            self.isLoading = false
-                            self.refreshControl.endRefreshing()
-                            self.historyCV.setContentOffset(.zero, animated: true)
-                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-                        case .unknown:
-                            self.isLoading = false
-                            LoaderManager.shared.hide()
-                            self.refreshControl.endRefreshing()
-                            self.historyCV.setContentOffset(.zero, animated: true)
-                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
-                        case .methodNotAllowed:
-                            self.isLoading = false
-                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                        case .internalServerError:
-                            self.isLoading = false
-                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         }
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.isLoading = false
+                        self.refreshControl.endRefreshing()
+                        self.historyCV.setContentOffset(.zero, animated: true)
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                    case .unknown:
+                        self.isLoading = false
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.historyCV.setContentOffset(.zero, animated: true)
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
+                    case .methodNotAllowed:
+                        self.isLoading = false
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        self.isLoading = false
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     }
                 }
-                }
+            }
+        }
     }
-    
 }
+
 extension HistoryVC: SkeletonCollectionViewDataSource {
     
     func collectionSkeletonView(_ skeletonView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -382,6 +375,7 @@ extension HistoryVC: SkeletonCollectionViewDataSource {
     func collectionSkeletonView(_ skeletonView: UICollectionView, cellIdentifierForItemAt indexPath: IndexPath) -> ReusableCellIdentifier {
         return "SkeltonCVC" // Your skeleton cell identifier
     }
+    
     private func navigateToDescriptionVC(animation: Bool = true){
         let storyboard = UIStoryboard(name: "Job", bundle: nil)
         if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
@@ -393,7 +387,5 @@ extension HistoryVC: SkeletonCollectionViewDataSource {
             // Optional: pass selected job title
             self.navigationController?.pushViewController(jobDescriptionVC, animated: animation)
         }
-        
-        
     }
 }

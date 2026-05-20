@@ -1,9 +1,6 @@
-//
 //  EmployerController.swift
 //  Backpacker
-//
 //  Created by Mobile on 07/07/25.
-//
 
 import UIKit
 import MapKit
@@ -20,7 +17,9 @@ class EmployerController: UIViewController {
     @IBOutlet weak var lbl_Name_Value: UILabel!
     @IBOutlet weak var lbl_CompletedJobsValue: UILabel!
     @IBOutlet weak var lbl_Address_Value: UILabel!
+    
     var objJobDetail : JobDetail?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         ///  setUpAttributedText()
@@ -29,8 +28,9 @@ class EmployerController: UIViewController {
         self.lbl_Emplyeer_Detail.isHidden = true
         
     }
+    
     override func viewWillAppear(_ animated: Bool) {
-      //  self.setupUI()
+        //  self.setupUI()
     }
     
     private func setUpFonts(){
@@ -42,7 +42,6 @@ class EmployerController: UIViewController {
         lblName.font = FontManager.inter(.regular, size: 13.0)
         lbl_CompletedJobs.font = FontManager.inter(.regular, size: 13.0)
         lbl_Address.font = FontManager.inter(.regular, size: 13.0)
-        
     }
     
     private func setUpAttributedText() {
@@ -62,9 +61,7 @@ class EmployerController: UIViewController {
             // Address
             lbl_Address_Value.text = (empObj.state.isEmpty == false) ? empObj.state : ""
             
-                showMarkerOnMap(latitude: empObj.lat, longitude: empObj.long)
-           
-
+            showMarkerOnMap(latitude: empObj.lat, longitude: empObj.long)
         }
     }
     
@@ -83,8 +80,9 @@ class EmployerController: UIViewController {
         label.attributedText = attributedText
     }
 }
-extension EmployerController: MKMapViewDelegate {
 
+extension EmployerController: MKMapViewDelegate {
+    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         // Skip the user location blue dot
         if annotation is MKUserLocation {
@@ -106,7 +104,6 @@ extension EmployerController: MKMapViewDelegate {
             
             annotationView?.annotation = annotation
         }
-        
         return annotationView
     }
     
@@ -134,6 +131,7 @@ extension EmployerController: MKMapViewDelegate {
                                         longitudinalMeters: 2000)
         mapViw.setRegion(region, animated: true)
     }
+    
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         if let title = view.annotation?.title ?? nil {
             print("Marker selected: \(title)")
@@ -142,5 +140,4 @@ extension EmployerController: MKMapViewDelegate {
             //            setUpHeight()
         }
     }
-
 }

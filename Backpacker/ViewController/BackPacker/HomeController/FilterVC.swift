@@ -1,17 +1,13 @@
-//
 //  FilterVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 23/07/25.
-//
 
 import UIKit
 
 class FilterVC: UIViewController {
-
+    
     @IBOutlet weak var mainView: UIView!
     @IBOutlet weak var ViewHeight: NSLayoutConstraint!
-    
     @IBOutlet weak var btn_ClearAll: UIButton!
     @IBOutlet weak var lbl_ValDistance: UILabel!
     @IBOutlet weak var lbl_Distance: UILabel!
@@ -20,30 +16,27 @@ class FilterVC: UIViewController {
     @IBOutlet weak var TblVw: UITableView!
     @IBOutlet weak var btn_Submit: UIButton!
     @IBOutlet weak var slider: UISlider!
+    
     let header = ["Facilities","Sort by"]
     let filterArrya = ["Free WiFi","Swimming Pool","Parking","Elevator","Fitness Center","24-hours Open"]
-    
-
     let SortrArrya = ["Price (lowest first)","Price (highest first)"]
     var selectedFilterIndexes: Set<Int> = []
-
     var selectedSortIndex: Int?
     var sortByPrice : String?
     var radius : String?
     var facilities : String?
     var onApplyFilters: ((_ facilities: String?, _ sortBy: String?, _ radius: String?) -> Void)?
-
-    
     var initialFacilities: String?
     var initialSortBy: String?
     var initialRadius: String?
     var isComeFromHangOut : Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-      
         self.setUpUI()
         self.applyInitialSelections()
     }
+    
     func applyInitialSelections() {
         // Facilities
         if isComeFromHangOut == false {
@@ -55,7 +48,7 @@ class FilterVC: UIViewController {
                     }
                 }
             }
-
+            
             // Sort by
             if let sort = initialSortBy {
                 if sort.lowercased() == "asc" {
@@ -65,8 +58,7 @@ class FilterVC: UIViewController {
                 }
             }
         }
-      
-
+        
         // Radius
         if let radiusStr = initialRadius, let radiusFloat = Float(radiusStr) {
             slider.value = radiusFloat
@@ -76,8 +68,8 @@ class FilterVC: UIViewController {
         }
         self.TblVw.reloadData()
     }
-
-    func setUpUI(){
+    
+    func setUpUI() {
         self.lbl_Distance.font = FontManager.inter(.medium, size: 14)
         self.lbl_ValDistance.font = FontManager.inter(.medium, size: 14)
         self.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
@@ -90,7 +82,6 @@ class FilterVC: UIViewController {
         self.TblVw.register(nib, forCellReuseIdentifier: "FacilityTVC")
         let nib2 = UINib(nibName: "SortTByVC", bundle: nil)
         self.TblVw.register(nib2, forCellReuseIdentifier: "SortTByVC")
-        
         self.TblVw.delegate = self
         self.TblVw.dataSource = self
         TblVw.showsVerticalScrollIndicator = false
@@ -99,8 +90,8 @@ class FilterVC: UIViewController {
         TblVw.sectionHeaderTopPadding = 0 // for iOS 15+
         self.lbl_MainHeader.font = FontManager.inter(.semiBold, size: 20.0)
         TblVw.isScrollEnabled = false // Disable scrolling
-           TblVw.reloadData()
-        if isComeFromHangOut == false{
+        TblVw.reloadData()
+        if isComeFromHangOut == false {
             DispatchQueue.main.async {
                 self.TblVw.layoutIfNeeded()
                 let sortArrCount = self.SortrArrya.count
@@ -108,7 +99,7 @@ class FilterVC: UIViewController {
                 let adddON = (sortArrCount + filterarr) * 30
                 self.scroolViewHeight.constant = CGFloat(adddON) + 280
             }
-        }else{
+        } else {
             DispatchQueue.main.async {
                 self.TblVw.layoutIfNeeded()
                 self.TblVw.contentSize.height = 0.0
@@ -117,10 +108,10 @@ class FilterVC: UIViewController {
                 self.ViewHeight.constant = 250
             }
         }
-         
+        
         slider.setThumbImage(UIImage(named: "sliderThumb"), for: .normal)
-            slider.minimumTrackTintColor = UIColor(hex: "#7EB268") // Start color"#7EB268"#7EB268
-            slider.maximumTrackTintColor = UIColor(hex: "#E8EDF0") // End color
+        slider.minimumTrackTintColor = UIColor(hex: "#7EB268") // Start color"#7EB268"#7EB268
+        slider.maximumTrackTintColor = UIColor(hex: "#E8EDF0") // End color
         self.btn_Submit.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
         slider.minimumValue = 100
         slider.maximumValue = 500
@@ -131,75 +122,70 @@ class FilterVC: UIViewController {
         self.lbl_ValDistance.text = "\(minDistance) to \(maxDistance) km"
         self.btn_ClearAll.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
     }
+    
     @objc func sliderValueChanged(_ sender: UISlider) {
         let step: Float = 10
         let roundedValue = round(sender.value / step) * step
         sender.value = roundedValue
-
         let distance = "\(Int(roundedValue))"
         let maxDistance = "\(Int(sender.maximumValue))"
-
         lbl_ValDistance.text = "\(distance) to \(maxDistance) km"
     }
-
-
+    
     @IBAction func acion_Cross(_ sender: Any) {
         self.dismiss(animated: true)
     }
     
- 
     @IBAction func action_ClearAllFilter(_ sender: Any) {
         onApplyFilters?("", "", "100")
-
+        
         // Dismiss the filter screen
         self.dismiss(animated: true)
     }
+    
     @IBAction func action_submit(_ sender: Any) {
-    
+        
         var facilitiesString = ""
-           if !selectedFilterIndexes.isEmpty {
-               let selectedFacilities = selectedFilterIndexes.map { filterArrya[$0] }
-               facilitiesString = selectedFacilities.joined(separator: ", ")
-           }
-
-           // Prepare sort value
-           var sortValue = ""
-           if let index = selectedSortIndex {
-               let selectedSort = SortrArrya[index]
-               sortValue = selectedSort.contains("lowest") ? "asc" : "desc"
-           }
-
-           // Prepare radius
-           var radiusString = ""
-           if slider.value > slider.minimumValue {
-               radiusString = String(format: "%.0f", slider.value)
-           }
-
-           // Call the callback
-           onApplyFilters?(facilitiesString, sortValue, radiusString)
-
-           // Dismiss the filter screen
-           self.dismiss(animated: true)
+        if !selectedFilterIndexes.isEmpty {
+            let selectedFacilities = selectedFilterIndexes.map { filterArrya[$0] }
+            facilitiesString = selectedFacilities.joined(separator: ", ")
+        }
+        
+        // Prepare sort value
+        var sortValue = ""
+        if let index = selectedSortIndex {
+            let selectedSort = SortrArrya[index]
+            sortValue = selectedSort.contains("lowest") ? "asc" : "desc"
+        }
+        
+        // Prepare radius
+        var radiusString = ""
+        if slider.value > slider.minimumValue {
+            radiusString = String(format: "%.0f", slider.value)
+        }
+        
+        // Call the callback
+        onApplyFilters?(facilitiesString, sortValue, radiusString)
+        
+        // Dismiss the filter screen
+        self.dismiss(animated: true)
     }
-    
 }
-
 
 extension FilterVC: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        if isComeFromHangOut == true{
+        if isComeFromHangOut == true {
             return 0// 2 sections: "Filter", "Sort by"
-        }else{
+        } else {
             return header.count // 2 sections: "Filter", "Sort by"
         }
-        
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isComeFromHangOut == true{
             return 0// 2 sections: "Filter", "Sort by"
-        }else{
+        } else {
             if section == 0 {
                 return filterArrya.count
             } else if section == 1 {
@@ -207,82 +193,81 @@ extension FilterVC: UITableViewDelegate, UITableViewDataSource {
             }
             return 0
         }
-        
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 30
     }
-
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-            return 40
-        }
-
-        func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-            let headerView = UIView()
-            headerView.backgroundColor = UIColor.white // Customize background here
-
-            let titleLabel = UILabel()
-            titleLabel.translatesAutoresizingMaskIntoConstraints = false
-            titleLabel.text = header[section]
-            titleLabel.font = FontManager.inter(.medium, size: 14.0) // Customize font here
-            titleLabel.textColor = UIColor(hex: "#171725") // Customize text color here
-
-            headerView.addSubview(titleLabel)
-
-            NSLayoutConstraint.activate([
-                titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
-                titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor)
-            ])
-
-            return headerView
-        }
-
+        return 40
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView()
+        headerView.backgroundColor = UIColor.white // Customize background here
+        
+        let titleLabel = UILabel()
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.text = header[section]
+        titleLabel.font = FontManager.inter(.medium, size: 14.0) // Customize font here
+        titleLabel.textColor = UIColor(hex: "#171725") // Customize text color here
+        
+        headerView.addSubview(titleLabel)
+        
+        NSLayoutConstraint.activate([
+            titleLabel.leadingAnchor.constraint(equalTo: headerView.leadingAnchor, constant: 16),
+            titleLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor)
+        ])
+        
+        return headerView
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+        
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "FacilityTVC", for: indexPath) as! FacilityTVC
             cell.lblTitle.text = filterArrya[indexPath.row]
-
+            
             if selectedFilterIndexes.contains(indexPath.row) {
                 cell.imgCheckBox.image = UIImage(named: "Checkbox2")
             } else {
                 cell.imgCheckBox.image = UIImage(named: "Checkbox")
             }
             return cell
-
-         } else {
-             let cell = tableView.dequeueReusableCell(withIdentifier: "SortTByVC", for: indexPath) as! SortTByVC
-             cell.lblTitle.text = SortrArrya[indexPath.row]
-             
-             if selectedSortIndex == indexPath.row {
-                 cell.imgVwSort.image = UIImage(named: "RadioButton4")
-             } else {
-                 cell.imgVwSort.image = UIImage(named: "RadioButton3")
-             }
-             return cell
-         }
+            
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "SortTByVC", for: indexPath) as! SortTByVC
+            cell.lblTitle.text = SortrArrya[indexPath.row]
+            
+            if selectedSortIndex == indexPath.row {
+                cell.imgVwSort.image = UIImage(named: "RadioButton4")
+            } else {
+                cell.imgVwSort.image = UIImage(named: "RadioButton3")
+            }
+            return cell
+        }
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-                // Toggle selection for filter section
+            // Toggle selection for filter section
             if selectedFilterIndexes.contains(indexPath.row) {
-                   selectedFilterIndexes.remove(indexPath.row)
-               } else {
-                   selectedFilterIndexes.insert(indexPath.row)
-               }
-            } else if indexPath.section == 1 {
-                // Toggle selection for sort section
-                if selectedSortIndex == indexPath.row {
-                    selectedSortIndex = nil
-                } else {
-                    selectedSortIndex = indexPath.row
-                }
+                selectedFilterIndexes.remove(indexPath.row)
+            } else {
+                selectedFilterIndexes.insert(indexPath.row)
             }
+        } else if indexPath.section == 1 {
+            // Toggle selection for sort section
+            if selectedSortIndex == indexPath.row {
+                selectedSortIndex = nil
+            } else {
+                selectedSortIndex = indexPath.row
+            }
+        }
         facilities = selectedFilterIndexes.map { filterArrya[$0] }.joined(separator: ", ")
         sortByPrice = selectedSortIndex != nil ? SortrArrya[selectedSortIndex!] : nil
-
+        
         TblVw.reloadSections(IndexSet(integer: indexPath.section), with: .none)
     }
 }
-

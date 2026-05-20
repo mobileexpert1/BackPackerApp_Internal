@@ -1,13 +1,11 @@
-//
 //  BackPackerHomeVM.swift
 //  Backpacker
-//
 //  Created by Mobile on 04/08/25.
-//
 
 import Foundation
 import UIKit
 import Alamofire
+
 class BackPackerHomeVM {
     
     func getBackpackerHomeData(
@@ -17,16 +15,16 @@ class BackPackerHomeVM {
     ) {
 #if BackpackerHire
         let bearerToken = UserDefaultsManager.shared.employerbearerToken
-  #else
-  let bearerToken = UserDefaultsManager.shared.bearerToken
-  #endif
-  
-  guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
-      print("⚠️ No refresh token found.")
-      completion(false, nil, "Authorization token is missing.", nil)
-      return
-  }
-
+#else
+        let bearerToken = UserDefaultsManager.shared.bearerToken
+#endif
+        
+        guard let bearerToken = bearerToken, !bearerToken.isEmpty else {
+            print("⚠️ No refresh token found.")
+            completion(false, nil, "Authorization token is missing.", nil)
+            return
+        }
+        
         let url = ApiConstants.API.BACKPACKER_HOME  // e.g., BASE_URL + "api/backpackers/home"
         
         let params: Parameters = [
@@ -49,8 +47,6 @@ class BackPackerHomeVM {
                 completion(false, nil, error.customDescription, statusCode)
             }
         }
-
+        
     }
-
 }
-

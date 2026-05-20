@@ -1,12 +1,10 @@
-//
 //  CommonCalendarPopUpVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 01/08/25.
-//
 
 import UIKit
 import FSCalendar
+
 protocol CommonCalendarPopUpVCDelegate: AnyObject {
     func calendarDidSelectSingleDate(_ date: Date)
     func calendarDidSelectRange(startDate: Date, endDate: Date)
@@ -18,11 +16,12 @@ class CommonCalendarPopUpVC: UIViewController {
     @IBOutlet weak var lbl_SelectYear: UILabel!
     @IBOutlet weak var vw_SelectYear: UIView!
     @IBOutlet weak var calendarView: FSCalendar!
-    var selectedDate: Date?
     @IBOutlet weak var btn_save: UIButton!
+    @IBOutlet weak var btn_SelectYear: UIButton!
+    
     var startDate: Date?
     var endDate: Date?
-    @IBOutlet weak var btn_SelectYear: UIButton!
+    var selectedDate: Date?
     private var dropdownHelper: DropdownHelper?
     private let dateFormatter: DateFormatter = {
         let df = DateFormatter()
@@ -31,15 +30,15 @@ class CommonCalendarPopUpVC: UIViewController {
     }()
     weak var delegate: CommonCalendarPopUpVCDelegate?
     var isComeFromEdit : Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupUI()
         self.setUpCalendar()
         self.setUpYearList()
-        // Do any additional setup after loading the view.
     }
     
-    func setUpYearList(){
+    func setUpYearList() {
         let currentYear = Calendar.current.component(.year, from: Date())
         let years = (currentYear...2035).map { "\($0)" }
         
@@ -81,45 +80,44 @@ class CommonCalendarPopUpVC: UIViewController {
                     self.selectedDate = targetDate
                 }
             }
-            
             self.endDate = nil
         }
         
         /* Prevous work code
          
          dropdownHelper?.onOptionSelected = { [weak self] selectedYear in
-             guard let self = self else { return }
-             
-             print("-Selected year:", selectedYear)
-             self.lbl_year.text = selectedYear
-             
-             // 1. Deselect all selected dates
-             self.calendarView.selectedDates.forEach { self.calendarView.deselect($0) }
-             
-             // 2. Scroll and select Jan 1st of selected year
-             if let yearInt = Int(selectedYear) {
-                 var components = DateComponents()
-                 components.year = yearInt
-                 components.month = 1
-                 components.day = 1
-                 
-                 if let targetDate = Calendar.current.date(from: components) {
-                     self.calendarView.setCurrentPage(targetDate, animated: true)
-                     
-                     // -Select Jan 1st
-                     self.calendarView.select(targetDate)
-                     self.startDate = targetDate
-                     self.selectedDate = targetDate
-                 }
-             }
-             
-             // 3. Reset end date if range was previously selected
-             self.endDate = nil
+         guard let self = self else { return }
+         
+         print("-Selected year:", selectedYear)
+         self.lbl_year.text = selectedYear
+         
+         // 1. Deselect all selected dates
+         self.calendarView.selectedDates.forEach { self.calendarView.deselect($0) }
+         
+         // 2. Scroll and select Jan 1st of selected year
+         if let yearInt = Int(selectedYear) {
+         var components = DateComponents()
+         components.year = yearInt
+         components.month = 1
+         components.day = 1
+         
+         if let targetDate = Calendar.current.date(from: components) {
+         self.calendarView.setCurrentPage(targetDate, animated: true)
+         
+         // -Select Jan 1st
+         self.calendarView.select(targetDate)
+         self.startDate = targetDate
+         self.selectedDate = targetDate
+         }
+         }
+         
+         // 3. Reset end date if range was previously selected
+         self.endDate = nil
          }
          */
-
     }
-    func setupUI(){
+    
+    func setupUI() {
         self.lbl_year.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_SelectYear.font = FontManager.inter(.medium, size: 14.0)
         self.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
@@ -128,13 +126,16 @@ class CommonCalendarPopUpVC: UIViewController {
         applyGradientButtonStyle(to: self.btn_save)
         self.btn_save.titleLabel?.font = FontManager.inter(.semiBold, size: 16.0)
     }
+    
     @IBAction func action_Cross(_ sender: Any) {
         self.dismiss(animated: true)
     }
+    
     @IBAction func action_selctYear(_ sender: Any) {
         dropdownHelper?.toggleDropdown()
     }
-    private func setUpCalendar(){
+    
+    private func setUpCalendar() {
         
         calendarView.appearance.headerTitleFont = FontManager.inter(.semiBold, size: 22.0)
         calendarView.appearance.weekdayFont = FontManager.inter(.semiBold, size: 12.0)
@@ -149,19 +150,16 @@ class CommonCalendarPopUpVC: UIViewController {
         self.calendarView.appearance.headerMinimumDissolvedAlpha = 0.0
         calendarView.appearance.headerDateFormat = "MMMM"
         calendarView.appearance.selectionColor = UIColor(red: 126/255, green: 178/255, blue: 104/255, alpha: 1)
-        
         calendarView.firstWeekday = 1
         calendarView.appearance.todayColor = UIColor(red: 126/255, green: 178/255, blue: 104/255, alpha: 1)
         calendarView.appearance.titleDefaultColor = .black
         calendarView.appearance.headerMinimumDissolvedAlpha = 0.0
         calendarView.headerHeight = 50
         calendarView.appearance.headerMinimumDissolvedAlpha = 0.0
-        
         let bottomLine = UIView()
         bottomLine.backgroundColor = UIColor(hex:"#EBEBEB")
         bottomLine.translatesAutoresizingMaskIntoConstraints = false
         calendarView.addSubview(bottomLine)
-        
         NSLayoutConstraint.activate([
             bottomLine.topAnchor.constraint(equalTo: calendarView.calendarWeekdayView.bottomAnchor),
             bottomLine.leadingAnchor.constraint(equalTo: calendarView.leadingAnchor),
@@ -193,16 +191,13 @@ class CommonCalendarPopUpVC: UIViewController {
                 calendarView.setCurrentPage(today, animated: false)
                 self.selectedDate = today
                 lbl_year.text = formatter.string(from: selectedDate ?? Date())
-            }else{
+            } else {
                 calendarView.today = nil
             }
-            
-            
         }
         calendarView.delegate = self
         calendarView.dataSource = self
     }
-    
     
     @IBAction func action_Save(_ sender: Any) {
         if let start = startDate, let end = endDate {
@@ -214,11 +209,8 @@ class CommonCalendarPopUpVC: UIViewController {
         } else {
             print("⚠️ No date selected")
         }
-        
         self.dismiss(animated: true)
     }
-    
-    
 }
 
 // MARK: - FSCalendarDelegate & DataSource
@@ -263,6 +255,7 @@ extension CommonCalendarPopUpVC: FSCalendarDelegate, FSCalendarDataSource,FSCale
     //         }
     //         return nil
     //     }
+    
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
         let cal = Calendar.current
         
@@ -291,8 +284,6 @@ extension CommonCalendarPopUpVC: FSCalendarDelegate, FSCalendarDataSource,FSCale
         return .black
     }
     
-    
-    
     func minimumDate(for calendar: FSCalendar) -> Date {
         let currentYear = Calendar.current.component(.year, from: Date())
         
@@ -303,6 +294,7 @@ extension CommonCalendarPopUpVC: FSCalendarDelegate, FSCalendarDataSource,FSCale
         
         return Calendar.current.date(from: components)!
     }
+    
     func maximumDate(for calendar: FSCalendar) -> Date {
         return Calendar.current.date(from: DateComponents(year: 2035, month: 12, day: 31))!
     }
@@ -324,6 +316,7 @@ extension CommonCalendarPopUpVC: FSCalendarDelegate, FSCalendarDataSource,FSCale
     //         }
     //         return date >= Calendar.current.startOfDay(for: Date()) && monthPosition == .current
     //     }
+    
     func calendar(_ calendar: FSCalendar, shouldSelect date: Date, at monthPosition: FSCalendarMonthPosition) -> Bool {
         // Only block past days
         guard monthPosition == .current else { return false }
@@ -381,10 +374,7 @@ extension CommonCalendarPopUpVC: FSCalendarDelegate, FSCalendarDataSource,FSCale
             print("🔄 New single date selected: \(dateToString(date))")
         }
         calendar.reloadData()
-        
     }
-    
-    
     
     func calendar(_ calendar: FSCalendar, didDeselect date: Date) {
         startDate = nil
@@ -392,15 +382,13 @@ extension CommonCalendarPopUpVC: FSCalendarDelegate, FSCalendarDataSource,FSCale
         selectedDate = nil
     }
     
-    
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
         self.calendarView.reloadData()
-    } 
+    }
+    
     func dateToString(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat =  "dd/MM/yyyy"
         return dateFormatter.string(from: date)
     }
-    
 }
-

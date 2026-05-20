@@ -1,15 +1,12 @@
-//
 //  MessageLisVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 15/07/25.
-//
 
 import UIKit
 
 class MessageLisVC: UIViewController {
-    @IBOutlet weak var btn_Close: UIButton!
     
+    @IBOutlet weak var btn_Close: UIButton!
     @IBOutlet weak var lbl_NDataFound: UILabel!
     @IBOutlet weak var tblVw: UITableView!
     @IBOutlet weak var btn_Admin: UIButton!
@@ -21,6 +18,7 @@ class MessageLisVC: UIViewController {
     @IBOutlet weak var txtFldSearch: UITextField!
     @IBOutlet weak var searchVw: UIView!
     @IBOutlet weak var lbl_MainHeader: UILabel!
+    
     var isComeFromNotification : Bool = false
     var isComefFromAdmin : Bool = false
     // MARK: - Sample Array
@@ -37,14 +35,12 @@ class MessageLisVC: UIViewController {
     var isLoading : Bool = true
     let refreshControl = UIRefreshControl()
     var employerList = [EmployerChat]()
-    
     var page = 1
     let perPage = 20
     var totalAccomodations = Int()
     var isLoadingMoreData = false
     var isAllDataLoaded = false
     var isComeFromPullTorefresh : Bool = false
-    
     var searchDebounceTimer: Timer?
     var lastSearchedText: String = ""
     var isComFromSearch : Bool = false
@@ -53,13 +49,14 @@ class MessageLisVC: UIViewController {
     var receiverId : String?
     var ticketId : String?
     var ticketList =  [Ticket]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setUpUI()
         // Do any additional setup after loading the view.
     }
     
-    private func setUpUI(){
+    private func setUpUI() {
         self.lbl_NDataFound.font = FontManager.inter(.medium, size: 12.0)
         self.lbl_NDataFound.isHidden = true
         self.lbl_MainHeader.font = FontManager.inter(.medium, size: 16.0)
@@ -72,10 +69,9 @@ class MessageLisVC: UIViewController {
         self.searchVw.layer.borderWidth = 1.0
 #if Backapacker
         self.lbl_Employer.text = "Employer"
-        #else
+#else
         self.lbl_Employer.text = "Backpacker"
 #endif
-     
         self.lbl_Admin.text = "Admin"
         let nib = UINib(nibName: "EmployerTVC", bundle: nil)
         self.tblVw.register(nib, forCellReuseIdentifier: "EmployerTVC")
@@ -93,48 +89,48 @@ class MessageLisVC: UIViewController {
         
         self.btn_Close.isHidden = true
         self.UpdateBtnAppearance()
-        
         self.setupPullToRefresh()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if btn_Employer.tag == 1 {
 #if BackpackerHire
             self.listOfAllBackpacker()
-            #else
+#else
             
             self.listOfAllEmployer()
 #endif
             self.refreshData()
-        }else{
-            if btn_Admin.tag == 1{
+        } else {
+            if btn_Admin.tag == 1 {
                 self.getListOfTickets()
                 self.refreshData()
             }
         }
     }
     
-    func refreshViaApiCall(){
+    func refreshViaApiCall() {
         if isComefFromAdmin == true {
             self.btn_Admin.tag = 1
             self.btn_Employer.tag =  0
             
             self.UpdateBtnAppearance()
             self.getListOfTickets()
-        }else{
+        } else {
             if btn_Employer.tag == 1 {
-    #if BackpackerHire
+#if BackpackerHire
                 self.listOfAllBackpacker()
-                #else
+#else
                 
                 self.listOfAllEmployer()
-    #endif
-            }else{
+#endif
+            } else {
                 self.getListOfTickets()
             }
         }
- 
     }
+    
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
         refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
@@ -153,32 +149,30 @@ class MessageLisVC: UIViewController {
             self.isLoading = true
             
             // Start refreshing UI
-            
             self.isComeFromPullTorefresh = true
             // Fetch data
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 if self.btn_Employer.tag == 1 {
-        #if BackpackerHire
+#if BackpackerHire
                     self.listOfAllBackpacker()
-                    #else
+#else
                     
                     self.listOfAllEmployer()
-        #endif
-                   
-                }else{
+#endif
+                    
+                } else {
                     if self.btn_Admin.tag == 1 {
-            #if BackpackerHire
+#if BackpackerHire
                         self.getListOfTickets()
-                        #else
+#else
                         self.getListOfTickets()
-            #endif
-                       
+#endif
                     }
                 }
             }
         }
     }
-
+    
     @IBAction func action_btn_Close(_ sender: Any) {
         self.txtFldSearch.text = ""
         self.btn_Close.isHidden = true
@@ -186,31 +180,30 @@ class MessageLisVC: UIViewController {
         self.txtFldSearch.resignFirstResponder()
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             if self.btn_Employer.tag == 1 {
-    #if BackpackerHire
+#if BackpackerHire
                 self.listOfAllBackpacker()
-                #else
+#else
                 
                 self.listOfAllEmployer()
-    #endif
-               
-            }else{
+#endif
+                
+            } else {
                 if self.btn_Admin.tag == 1 {
-        #if BackpackerHire
+#if BackpackerHire
                     self.getListOfTickets()
-                    #else
+#else
                     self.getListOfTickets()
-        #endif
-                   
+#endif
                 }
             }
         }
     }
     
-    
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
-    private func UpdateBtnAppearance(){
+    
+    private func UpdateBtnAppearance() {
         if btn_Employer.tag == 1{
             self.lbl_MainHeader.text = "Messages"
             self.Vw_Employer.backgroundColor = UIColor(named: "themeColor")
@@ -218,7 +211,7 @@ class MessageLisVC: UIViewController {
             self.lbl_Employer.textColor = .white
             self.Vw_Admin.backgroundColor = .clear
             self.lbl_Admin.textColor = .black
-        }else{
+        } else {
             self.lbl_MainHeader.text = "Chat"
             self.Vw_Admin.backgroundColor = UIColor(named: "themeColor")
             self.Vw_Admin.layer.cornerRadius = 10.0
@@ -231,7 +224,6 @@ class MessageLisVC: UIViewController {
     @IBAction func action_AdminToggle(_ sender: Any) {
         self.btn_Admin.tag = 1
         self.btn_Employer.tag =  0
-        
         self.UpdateBtnAppearance()
         self.page = 1
         self.isAllDataLoaded = false
@@ -240,17 +232,15 @@ class MessageLisVC: UIViewController {
         if self.btn_Admin.tag == 1 {
 #if BackpackerHire
             self.getListOfTickets()
-            #else
+#else
             self.getListOfTickets()
 #endif
-           
         }
     }
     
     @IBAction func action_EmplyerToggle(_ sender: Any) {
         self.btn_Admin.tag = 0
         self.btn_Employer.tag =  1
-        
         self.UpdateBtnAppearance()
         self.page = 1
         self.isAllDataLoaded = false
@@ -259,32 +249,26 @@ class MessageLisVC: UIViewController {
         if self.btn_Employer.tag == 1 {
 #if BackpackerHire
             self.listOfAllBackpacker()
-            #else
-            
+#else
             self.listOfAllEmployer()
 #endif
-           
         }
-        
     }
 }
 
-
-extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
+extension MessageLisVC : UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//#if Backapacker
+        //#if Backapacker
         if btn_Employer.tag == 1 {
             return employerList.count
-        }else{
+        } else {
             return ticketList.count
         }
-       
-//        #else
+        //        #else
         
-       // return userList.count
+        // return userList.count
         
-//#endif
-        
+        //#endif
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -321,11 +305,11 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
                 cell.lbl_SeenTime.text = "" // clear if no timestamp
             }
             
-        }else{
+        } else {
             let user = ticketList[indexPath.row]
             
             // Header & short name
-                cell.lblHeader.text =  user.title
+            cell.lblHeader.text =  user.title
             cell.lbl_ShortName.text = getFirstLetter(of: user.title ?? "Admin")
             
             // Last message
@@ -346,10 +330,9 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
                 cell.lbl_SeenTime.text = "" // clear if no timestamp
             }
         }
-      
         return cell
     }
-
+    
     func extractTime(from isoString: String, is24Hour: Bool = false, useLocalTime: Bool = true) -> String? {
         let isoFormatter = ISO8601DateFormatter()
         isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
@@ -364,7 +347,7 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
         
         return timeFormatter.string(from: date)
     }
-
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if btn_Employer.tag == 1 {
@@ -373,26 +356,26 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
                 settingVC.isComeFromAdmin = false
                 settingVC.headerUserName = employerList[indexPath.row].name
                 settingVC.resceiverID  = employerList[indexPath.row].id
-                   self.navigationController?.pushViewController(settingVC, animated: true)
-               } else {
-                   print("- Could not instantiate SettingVC")
-               }
+                self.navigationController?.pushViewController(settingVC, animated: true)
+            } else {
+                print("- Could not instantiate SettingVC")
+            }
             
             
-        }else{
-           // AlertManager.showAlert(on: self, title: "Admin Chat", message: "In Progress")
+        } else {
+            // AlertManager.showAlert(on: self, title: "Admin Chat", message: "In Progress")
             let storyboard = UIStoryboard(name: "Chat", bundle: nil)
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "ChatVC") as? ChatVC {
                 settingVC.isComeFromAdmin = true
                 settingVC.headerUserName = ticketList[indexPath.row].title
                 settingVC.ticketId  = ticketList[indexPath.row].id ?? ""
-                   self.navigationController?.pushViewController(settingVC, animated: true)
-               } else {
-                   print("- Could not instantiate SettingVC")
-               }
+                self.navigationController?.pushViewController(settingVC, animated: true)
+            } else {
+                print("- Could not instantiate SettingVC")
+            }
         }
-      
     }
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y < 0 {
             return
@@ -409,7 +392,7 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
         let contentHeight = scrollView.contentSize.height
         let frameHeight = scrollView.frame.size.height
         
-     
+        
         if offsetY > contentHeight - frameHeight - 300 {
             if isComeFromPullTorefresh == false{
                 if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
@@ -418,29 +401,28 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
                     tblVw.tableFooterView = createTableFooterView()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5 ){
                         if self.btn_Employer.tag == 1 {
-                #if BackpackerHire
+#if BackpackerHire
                             self.listOfAllBackpacker()
-                            #else
+#else
                             
                             self.listOfAllEmployer()
-                #endif
-                           
+#endif
+                            
                         }else{
 #if BackpackerHire
                             
-            #else
-            
+#else
+                            
                             self.getListOfTickets()
 #endif
-        
+                            
                         }
                     }
-                    
                 }
             }
-            
         }
     }
+    
     func createTableFooterView() -> UIView {
         let footerView = UIView(frame: CGRect(x: 0, y: 0, width: tblVw.frame.width, height: 60))
         
@@ -452,14 +434,13 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
         label.translatesAutoresizingMaskIntoConstraints = false
 #if BackpackerHire
         label.text = "Loading more backpackers..."
-        #else
+#else
         
         label.text = "Loading more employers..."
 #endif
-      
+        
         label.font = FontManager.inter(.medium, size: 12.0)
         label.textColor = .gray
-        
         footerView.addSubview(spinner)
         footerView.addSubview(label)
         
@@ -476,19 +457,19 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
             label.bottomAnchor.constraint(equalTo: footerView.bottomAnchor, constant: -8)
         ])
         
-        
         return footerView
     }
     
     func removeTableFooterView() {
         tblVw.tableFooterView = nil
     }
+    
     func getFirstLetter(of name: String) -> String {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmedName.first.map { String($0).uppercased() } ?? ""
     }
     
-    func refreshData(){
+    func refreshData() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
         if appDelegate.isComeFromNotification == true{
             let storyboard = UIStoryboard(name: "Chat", bundle: nil)
@@ -507,14 +488,15 @@ extension MessageLisVC : UITableViewDelegate,UITableViewDataSource{
                     self.UpdateBtnAppearance()
                 }
                 settingVC.resceiverID  = senderId
-                   self.navigationController?.pushViewController(settingVC, animated: true)
-               } else {
-                   print("- Could not instantiate SettingVC")
-               }
+                self.navigationController?.pushViewController(settingVC, animated: true)
+            } else {
+                print("- Could not instantiate SettingVC")
+            }
         }
     }
 }
-extension MessageLisVC :UITextFieldDelegate{
+
+extension MessageLisVC :UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let currentText = textField.text ?? ""
         
@@ -525,7 +507,6 @@ extension MessageLisVC :UITextFieldDelegate{
         
         guard let stringRange = Range(range, in: currentText) else { return true }
         let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
-        
         let hasText = !updatedText.trimmingCharacters(in: .whitespaces).isEmpty
         self.btn_Close.isHidden = !hasText
         
@@ -543,25 +524,22 @@ extension MessageLisVC :UITextFieldDelegate{
                 removeTableFooterView()
                 if btn_Employer.tag == 1{
 #if BackpackerHire
-                self.listOfAllBackpacker()
-                
+                    self.listOfAllBackpacker()
+                    
 #else
-                
-                self.listOfAllEmployer()
+                    
+                    self.listOfAllEmployer()
 #endif
                 }else{
 #if BackpackerHire
                     self.getListOfTickets()
 #else
-                
+                    
                     self.getListOfTickets()
 #endif
                 }
-
-               
             }
         }
-        
         return true
     }
     
@@ -570,10 +548,9 @@ extension MessageLisVC :UITextFieldDelegate{
         textField.resignFirstResponder()
         return true
     }
-    
 }
 
-extension MessageLisVC   {
+extension MessageLisVC {
 #if Backapacker
     func listOfAllEmployer(){
         if page == 1 {
@@ -581,344 +558,331 @@ extension MessageLisVC   {
             LoaderManager.shared.show()
         } else {
             isLoadingMoreData = true
-           // self.tblVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
+            // self.tblVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
         }
-            viewModel.getEmployerChatList(page: page, perPage: perPage,search: self.lastSearchedText){ [weak self] (success: Bool, result: EmployerChatListResponse?, statusCode: Int?) in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
+        viewModel.getEmployerChatList(page: page, perPage: perPage,search: self.lastSearchedText){ [weak self] (success: Bool, result: EmployerChatListResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
                     LoaderManager.shared.hide()
-                    guard let statusCode = statusCode else {
-                        LoaderManager.shared.hide()
-                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
-                        return
-                    }
-                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
                     
-                    DispatchQueue.main.async {
-                        
-                        switch httpStatus {
-                        case .ok, .created:
-                            if success == true {
-                                let newAccommodations = result?.data?.employers ?? []
-                                
-                                if self.page == 1 {
-                                    if newAccommodations.isEmpty {
-                                        self.lbl_NDataFound.isHidden = false
-                                        self.employerList.removeAll()
-                                        self.employerList = newAccommodations
-                                    } else {
-                                        self.employerList.removeAll()
-                                        self.lbl_NDataFound.isHidden = true
-                                        self.isLoading = false
-                                        self.employerList = newAccommodations
-                                    }
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            let newAccommodations = result?.data?.employers ?? []
+                            
+                            if self.page == 1 {
+                                if newAccommodations.isEmpty {
+                                    self.lbl_NDataFound.isHidden = false
+                                    self.employerList.removeAll()
+                                    self.employerList = newAccommodations
                                 } else {
+                                    self.employerList.removeAll()
+                                    self.lbl_NDataFound.isHidden = true
                                     self.isLoading = false
-                                    self.employerList.append(contentsOf: newAccommodations)
+                                    self.employerList = newAccommodations
                                 }
-                                self.totalAccomodations = result?.data?.total ?? 0
-                                // Pagination end check
-                                self.isAllDataLoaded = newAccommodations.count < self.perPage
-                                
-                             
-                                self.isLoadingMoreData = false
-                                self.tblVw.reloadData()
-                                self.refreshControl.endRefreshing()
-                                self.isComeFromPullTorefresh = false
-                                self.lastContentOffset = 0.0
                             } else {
-                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                self.isLoading = false
+                                self.employerList.append(contentsOf: newAccommodations)
+                            }
+                            self.totalAccomodations = result?.data?.total ?? 0
+                            // Pagination end check
+                            self.isAllDataLoaded = newAccommodations.count < self.perPage
+                            
+                            
+                            self.isLoadingMoreData = false
+                            self.tblVw.reloadData()
+                            self.refreshControl.endRefreshing()
+                            self.isComeFromPullTorefresh = false
+                            self.lastContentOffset = 0.0
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            self.refreshControl.endRefreshing()
+                            self.tblVw.setContentOffset(.zero, animated: true)
+                            self.isLoadingMoreData = false
+                            self.isComeFromPullTorefresh = false
+                            self.lastContentOffset = 0.0
+                            LoaderManager.shared.hide()
+                        }
+                        self.removeTableFooterView()
+                        
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.listOfAllEmployer()
+                            } else {
+                                LoaderManager.shared.hide()
                                 self.refreshControl.endRefreshing()
+                                self.isLoading = false
+                                self.lastContentOffset = 0.0
                                 self.tblVw.setContentOffset(.zero, animated: true)
-                                self.isLoadingMoreData = false
                                 self.isComeFromPullTorefresh = false
                                 self.lastContentOffset = 0.0
-                                LoaderManager.shared.hide()
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                             }
-                            self.removeTableFooterView()
-                            
-                        case .badRequest:
-                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                        case .unauthorized :
-                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                    self.listOfAllEmployer()
-                                } else {
-                                    LoaderManager.shared.hide()
-                                    self.refreshControl.endRefreshing()
-                                    self.isLoading = false
-                                    self.lastContentOffset = 0.0
-                                    self.tblVw.setContentOffset(.zero, animated: true)
-                                    self.isComeFromPullTorefresh = false
-                                    self.lastContentOffset = 0.0
-                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-                                }
-                            }
-                            
-                        case .unauthorizedToken:
-                            LoaderManager.shared.hide()
-                            self.refreshControl.endRefreshing()
-                            self.lastContentOffset = 0.0
-                            self.tblVw.setContentOffset(.zero, animated: true)
-                            self.isComeFromPullTorefresh = false
-                            
-                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
-                        case .unknown:
-                            LoaderManager.shared.hide()
-                            self.refreshControl.endRefreshing()
-                            self.lastContentOffset = 0.0
-                            self.tblVw.setContentOffset(.zero, animated: true)
-                            self.isComeFromPullTorefresh = false
-                           
-                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
-                                self.navigationController?.popViewController(animated: true)
-                            }
-                        case .methodNotAllowed:
-                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                        case .internalServerError:
-                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                            
                         }
+                        
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.lastContentOffset = 0.0
+                        self.tblVw.setContentOffset(.zero, animated: true)
+                        self.isComeFromPullTorefresh = false
+                        
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.lastContentOffset = 0.0
+                        self.tblVw.setContentOffset(.zero, animated: true)
+                        self.isComeFromPullTorefresh = false
+                        
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        
                     }
                 }
             }
-        
+        }
     }
     
-    
-    
-    
 #else
-    func listOfAllBackpacker(){
+    func listOfAllBackpacker() {
         if page == 1 {
             self.isLoading = true
             LoaderManager.shared.show()
         } else {
             isLoadingMoreData = true
-           // self.tblVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
+            // self.tblVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
         }
-            viewModel.getBackpackerChatList(page: page, perPage: perPage,search: self.lastSearchedText){ [weak self] (success: Bool, result: BackpackerChatListResponse?, statusCode: Int?) in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
+        viewModel.getBackpackerChatList(page: page, perPage: perPage,search: self.lastSearchedText){ [weak self] (success: Bool, result: BackpackerChatListResponse?, statusCode: Int?) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
                     LoaderManager.shared.hide()
-                    guard let statusCode = statusCode else {
-                        LoaderManager.shared.hide()
-                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
-                        return
-                    }
-                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
                     
-                    DispatchQueue.main.async {
-                        
-                        switch httpStatus {
-                        case .ok, .created:
-                            if success == true {
-                                let newAccommodations = result?.data?.backpacker ?? []
-                                
-                                if self.page == 1 {
-                                    if newAccommodations.isEmpty {
-                                        self.lbl_NDataFound.isHidden = false
-                                        self.employerList.removeAll()
-                                        self.employerList = newAccommodations
-                                    } else {
-                                        self.employerList.removeAll()
-                                        self.lbl_NDataFound.isHidden = true
-                                        self.isLoading = false
-                                        self.employerList = newAccommodations
-                                    }
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            let newAccommodations = result?.data?.backpacker ?? []
+                            
+                            if self.page == 1 {
+                                if newAccommodations.isEmpty {
+                                    self.lbl_NDataFound.isHidden = false
+                                    self.employerList.removeAll()
+                                    self.employerList = newAccommodations
                                 } else {
+                                    self.employerList.removeAll()
+                                    self.lbl_NDataFound.isHidden = true
                                     self.isLoading = false
-                                    self.employerList.append(contentsOf: newAccommodations)
+                                    self.employerList = newAccommodations
                                 }
-                                self.totalAccomodations = result?.data?.total ?? 0
-                                // Pagination end check
-                                self.isAllDataLoaded = newAccommodations.count < self.perPage
-                                
-                             
-                                self.isLoadingMoreData = false
-                                self.tblVw.reloadData()
-                                self.refreshControl.endRefreshing()
-                                self.isComeFromPullTorefresh = false
-                                self.lastContentOffset = 0.0
                             } else {
-                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                                self.refreshControl.endRefreshing()
-                                self.tblVw.setContentOffset(.zero, animated: true)
-                                self.isLoadingMoreData = false
-                                self.isComeFromPullTorefresh = false
-                                self.lastContentOffset = 0.0
-                                LoaderManager.shared.hide()
+                                self.isLoading = false
+                                self.employerList.append(contentsOf: newAccommodations)
                             }
-                            self.removeTableFooterView()
-                        case .badRequest:
+                            self.totalAccomodations = result?.data?.total ?? 0
+                            // Pagination end check
+                            self.isAllDataLoaded = newAccommodations.count < self.perPage
+                            
+                            
+                            self.isLoadingMoreData = false
+                            self.tblVw.reloadData()
+                            self.refreshControl.endRefreshing()
+                            self.isComeFromPullTorefresh = false
+                            self.lastContentOffset = 0.0
+                        } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                        case .unauthorized :
-                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                    
-                                    if self.btn_Employer.tag == 1 {
+                            self.refreshControl.endRefreshing()
+                            self.tblVw.setContentOffset(.zero, animated: true)
+                            self.isLoadingMoreData = false
+                            self.isComeFromPullTorefresh = false
+                            self.lastContentOffset = 0.0
+                            LoaderManager.shared.hide()
+                        }
+                        self.removeTableFooterView()
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                
+                                if self.btn_Employer.tag == 1 {
 #if BackpackerHire
-                                        
 #else
-                                        
-                                        self.listOfAllEmployer()
+                                    self.listOfAllEmployer()
 #endif
-                                    }
-                                } else {
-                                    LoaderManager.shared.hide()
-                                    self.refreshControl.endRefreshing()
-                                    self.isLoading = false
-                                    self.lastContentOffset = 0.0
-                                    self.tblVw.setContentOffset(.zero, animated: true)
-                                    self.isComeFromPullTorefresh = false
-                                    self.lastContentOffset = 0.0
-                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                                 }
+                            } else {
+                                LoaderManager.shared.hide()
+                                self.refreshControl.endRefreshing()
+                                self.isLoading = false
+                                self.lastContentOffset = 0.0
+                                self.tblVw.setContentOffset(.zero, animated: true)
+                                self.isComeFromPullTorefresh = false
+                                self.lastContentOffset = 0.0
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                             }
-                            
-                        case .unauthorizedToken:
-                            LoaderManager.shared.hide()
-                            self.refreshControl.endRefreshing()
-                            self.lastContentOffset = 0.0
-                            self.tblVw.setContentOffset(.zero, animated: true)
-                            self.isComeFromPullTorefresh = false
-                            
-                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
-                        case .unknown:
-                            LoaderManager.shared.hide()
-                            self.refreshControl.endRefreshing()
-                            self.lastContentOffset = 0.0
-                            self.tblVw.setContentOffset(.zero, animated: true)
-                            self.isComeFromPullTorefresh = false
-                           
-                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
-                                self.navigationController?.popViewController(animated: true)
-                            }
-                        case .methodNotAllowed:
-                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                        case .internalServerError:
-                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                            
                         }
+                        
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.lastContentOffset = 0.0
+                        self.tblVw.setContentOffset(.zero, animated: true)
+                        self.isComeFromPullTorefresh = false
+                        
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.lastContentOffset = 0.0
+                        self.tblVw.setContentOffset(.zero, animated: true)
+                        self.isComeFromPullTorefresh = false
+                        
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
                     }
                 }
             }
-        
+        }
     }
-    
-    
-    
 #endif
-   
     
-    
-    func getListOfTickets(){
+    func getListOfTickets() {
         if page == 1 {
             self.isLoading = true
             LoaderManager.shared.show()
         } else {
             isLoadingMoreData = true
-           // self.tblVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
+            // self.tblVw.reloadSections(IndexSet(integer: 0)) // Show footer loader
         }
         viewModelReport.getTicketList(page: page, perPage: perPage){ [weak self] (success: Bool, result: TicketsResponse?, statusCode: Int?) in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
                     LoaderManager.shared.hide()
-                    guard let statusCode = statusCode else {
-                        LoaderManager.shared.hide()
-                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
-                        return
-                    }
-                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
                     
-                    DispatchQueue.main.async {
-                        
-                        switch httpStatus {
-                        case .ok, .created:
-                            if success == true {
-                              //  ticketList
-                                let newAccommodations = result?.data?.tickets ?? []
-                                
-                                if self.page == 1 {
-                                    if newAccommodations.isEmpty {
-                                        self.lbl_NDataFound.isHidden = false
-                                        self.ticketList.removeAll()
-                                        self.ticketList = newAccommodations
-                                    } else {
-                                        self.ticketList.removeAll()
-                                        self.lbl_NDataFound.isHidden = true
-                                        self.isLoading = false
-                                        self.ticketList = newAccommodations
-                                    }
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            //  ticketList
+                            let newAccommodations = result?.data?.tickets ?? []
+                            
+                            if self.page == 1 {
+                                if newAccommodations.isEmpty {
+                                    self.lbl_NDataFound.isHidden = false
+                                    self.ticketList.removeAll()
+                                    self.ticketList = newAccommodations
                                 } else {
+                                    self.ticketList.removeAll()
+                                    self.lbl_NDataFound.isHidden = true
                                     self.isLoading = false
-                                    self.ticketList.append(contentsOf: newAccommodations)
+                                    self.ticketList = newAccommodations
                                 }
-                                self.totalAccomodations = result?.data?.total ?? 0
-                                // Pagination end check
-                                self.isAllDataLoaded = newAccommodations.count < self.perPage
-                                
-                             
-                                self.isLoadingMoreData = false
-                                self.tblVw.reloadData()
-                                self.refreshControl.endRefreshing()
-                                self.isComeFromPullTorefresh = false
-                                self.lastContentOffset = 0.0
                             } else {
-                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                                self.isLoading = false
+                                self.ticketList.append(contentsOf: newAccommodations)
+                            }
+                            self.totalAccomodations = result?.data?.total ?? 0
+                            // Pagination end check
+                            self.isAllDataLoaded = newAccommodations.count < self.perPage
+                            
+                            
+                            self.isLoadingMoreData = false
+                            self.tblVw.reloadData()
+                            self.refreshControl.endRefreshing()
+                            self.isComeFromPullTorefresh = false
+                            self.lastContentOffset = 0.0
+                        } else {
+                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                            self.refreshControl.endRefreshing()
+                            self.tblVw.setContentOffset(.zero, animated: true)
+                            self.isLoadingMoreData = false
+                            self.isComeFromPullTorefresh = false
+                            self.lastContentOffset = 0.0
+                            LoaderManager.shared.hide()
+                        }
+                        self.removeTableFooterView()
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getListOfTickets()
+                            } else {
+                                LoaderManager.shared.hide()
                                 self.refreshControl.endRefreshing()
+                                self.isLoading = false
+                                self.lastContentOffset = 0.0
                                 self.tblVw.setContentOffset(.zero, animated: true)
-                                self.isLoadingMoreData = false
                                 self.isComeFromPullTorefresh = false
                                 self.lastContentOffset = 0.0
-                                LoaderManager.shared.hide()
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                             }
-                            self.removeTableFooterView()
-                        case .badRequest:
-                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                        case .unauthorized :
-                            self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                    self.getListOfTickets()
-                                } else {
-                                    LoaderManager.shared.hide()
-                                    self.refreshControl.endRefreshing()
-                                    self.isLoading = false
-                                    self.lastContentOffset = 0.0
-                                    self.tblVw.setContentOffset(.zero, animated: true)
-                                    self.isComeFromPullTorefresh = false
-                                    self.lastContentOffset = 0.0
-                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-                                }
-                            }
-                            
-                        case .unauthorizedToken:
-                            LoaderManager.shared.hide()
-                            self.refreshControl.endRefreshing()
-                            self.lastContentOffset = 0.0
-                            self.tblVw.setContentOffset(.zero, animated: true)
-                            self.isComeFromPullTorefresh = false
-                            
-                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
-                        case .unknown:
-                            LoaderManager.shared.hide()
-                            self.refreshControl.endRefreshing()
-                            self.lastContentOffset = 0.0
-                            self.tblVw.setContentOffset(.zero, animated: true)
-                            self.isComeFromPullTorefresh = false
-                           
-                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
-                                self.navigationController?.popViewController(animated: true)
-                            }
-                        case .methodNotAllowed:
-                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                        case .internalServerError:
-                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                            
                         }
+                        
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.lastContentOffset = 0.0
+                        self.tblVw.setContentOffset(.zero, animated: true)
+                        self.isComeFromPullTorefresh = false
+                        
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        self.lastContentOffset = 0.0
+                        self.tblVw.setContentOffset(.zero, animated: true)
+                        self.isComeFromPullTorefresh = false
+                        
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                        
                     }
                 }
             }
+        }
     }
 }
 
@@ -928,4 +892,3 @@ struct MessageUser {
     let subHeader: String
     let seenTime: String
 }
-

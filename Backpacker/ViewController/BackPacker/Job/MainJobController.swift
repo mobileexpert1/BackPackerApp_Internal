@@ -1,9 +1,6 @@
-//
 //  MainJobController.swift
 //  Backpacker
-//
 //  Created by Mobile on 21/07/25.
-//
 
 import UIKit
 
@@ -11,13 +8,12 @@ class MainJobController: UIViewController {
     
     @IBOutlet weak var lbl_noDataFound: UILabel!
     @IBOutlet weak var title_Header: UILabel!
-    
     @IBOutlet weak var BtnAddJob: UIButton!
     @IBOutlet weak var containerVw: UIView!
     @IBOutlet weak var collVw: UICollectionView!
+    
 #if BackpackerHire
     let colArray = ["Job Post","Backpackers","Calendar"]
-    
     let designationsJobs : [JobsDesignation] = [
         JobsDesignation(Name: "Software Engineer", star: "5 Star",distance: "10 Km"),
         JobsDesignation(Name: "UI/UX Designer", star: "2 Star",distance: "2 Km"),
@@ -42,6 +38,7 @@ class MainJobController: UIViewController {
     var isLoading : Bool = false
     var currentPlanOfUser : SubscriptionData?
     var subscriptionStatus : String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lbl_noDataFound.isHidden = true
@@ -52,8 +49,6 @@ class MainJobController: UIViewController {
 #else
         self.BtnAddJob.isHidden = false
         self.BtnAddJob.isUserInteractionEnabled = true
-       
-        
 #endif
         self.BtnAddJob.titleLabel?.font = FontManager.inter(.medium, size: 12.0)
         collVw.register(UINib(nibName: "MainJobCVC", bundle: nil), forCellWithReuseIdentifier: "MainJobCVC")
@@ -67,7 +62,7 @@ class MainJobController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 #if BackpackerHire
-        #endif
+#endif
         collVw.reloadData()
         // Select and trigger index 0 after reload
         DispatchQueue.main.async { [self] in
@@ -76,6 +71,7 @@ class MainJobController: UIViewController {
             self.collectionView(self.collVw, didSelectItemAt: defaultIndexPath)
         }
     }
+    
     func refreshData(){
         self.selectedIndex =   AppState.shared.selectedJobIndex
         collVw.reloadData()
@@ -85,29 +81,27 @@ class MainJobController: UIViewController {
             self.collectionView(self.collVw, didSelectItemAt: defaultIndexPath)
         }
     }
+    
     @IBAction func action_AddJob(_ sender: Any) {
-//        if subscriptionStatus == "inactive"{
-//            AlertManager.showConfirmationAlert(on: self, title: "Upgrade Required", message: "Your current plan is inactive. Please upgrade your subscription to continue using all features.") {
-//                let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-//                if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
-//                    self.navigationController?.pushViewController(vc, animated: true)
-//                }
-//            }
-//        }else{
-            let storyboard = UIStoryboard(name: "Job", bundle: nil)
-            if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewJobVC") as? AddNewJobVC {
-                self.navigationController?.pushViewController(accVC, animated: true)
-            } else {
-                print("- Could not instantiate AddNewAccomodationVC")
-            }
+        //        if subscriptionStatus == "inactive"{
+        //            AlertManager.showConfirmationAlert(on: self, title: "Upgrade Required", message: "Your current plan is inactive. Please upgrade your subscription to continue using all features.") {
+        //                let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+        //                if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+        //                    self.navigationController?.pushViewController(vc, animated: true)
+        //                }
+        //            }
+        //        }else{
+        let storyboard = UIStoryboard(name: "Job", bundle: nil)
+        if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewJobVC") as? AddNewJobVC {
+            self.navigationController?.pushViewController(accVC, animated: true)
+        } else {
+            print("- Could not instantiate AddNewAccomodationVC")
+        }
         //}
-       
-        
-        
     }
 }
-extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout
-{
+
+extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSource,UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return colArray.count
@@ -122,6 +116,7 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
         cell.showBottomView(indexPath.item == selectedIndex)
         return cell
     }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let previousIndex = selectedIndex
         selectedIndex = indexPath.item
@@ -160,32 +155,32 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
         
         if let newVC = loadViewController(from: storyboardName, identifier: vcIdentifier) {
             // Pass data based on controller type
-                switch newVC {
-                case let homeVC as HomeVC:
-                    
-                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                        if  appDelegate.isComeFromNotification == true  {
-                            homeVC.isComeFromNotification = true
-                            homeVC.jobId = self.JobId
-                        }
-                        
-                    }else{
-                        break
+            switch newVC {
+            case let homeVC as HomeVC:
+                
+                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                    if  appDelegate.isComeFromNotification == true  {
+                        homeVC.isComeFromNotification = true
+                        homeVC.jobId = self.JobId
                     }
-                case let listVC as EmployerBackPackerListVC:
-                    listVC.iscomeFromEmployer = false
-                    listVC.isComeFromEmpJobSection = true
-                default:
+                    
+                } else {
                     break
                 }
-
-                addChild(newVC)
-                newVC.view.frame = containerVw.bounds
-                containerVw.addSubview(newVC.view)
-                newVC.didMove(toParent: self)
+            case let listVC as EmployerBackPackerListVC:
+                listVC.iscomeFromEmployer = false
+                listVC.isComeFromEmpJobSection = true
+            default:
+                break
+            }
+            
+            addChild(newVC)
+            newVC.view.frame = containerVw.bounds
+            containerVw.addSubview(newVC.view)
+            newVC.didMove(toParent: self)
         }
         
-        #else
+#else
         switch selectedIndex {
         case 0:
             storyboardName = "Home"
@@ -208,41 +203,41 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
         
         if let newVC = loadViewController(from: storyboardName, identifier: vcIdentifier) {
             // Pass data based on controller type
-                switch newVC {
-                case let homeVC as HomeVC:
-                    if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
-                        if  appDelegate.isComeFromNotification == true  {
-                            homeVC.isComeFromNotification = true
-                            homeVC.jobId = self.JobId
-                        }
-                        
-                    }else{
-                        break
+            switch newVC {
+            case let homeVC as HomeVC:
+                if let appDelegate = UIApplication.shared.delegate as? AppDelegate {
+                    if  appDelegate.isComeFromNotification == true  {
+                        homeVC.isComeFromNotification = true
+                        homeVC.jobId = self.JobId
                     }
-
-                case let listVC as EmployerBackPackerListVC:
-                    if selectedIndex == 1 {
-                        listVC.iscomeFromEmployer = true
-                    }else{
-                        listVC.iscomeFromEmployer = false
-                    }
-                case let calendarVC as CalendarVC:
-                    break
-
-                case let historyVC as HistoryVC:
-                    break
-                default:
+                    
+                }else{
                     break
                 }
-
-                addChild(newVC)
-                newVC.view.frame = containerVw.bounds
-                containerVw.addSubview(newVC.view)
-                newVC.didMove(toParent: self)
+                
+            case let listVC as EmployerBackPackerListVC:
+                if selectedIndex == 1 {
+                    listVC.iscomeFromEmployer = true
+                }else{
+                    listVC.iscomeFromEmployer = false
+                }
+            case let calendarVC as CalendarVC:
+                break
+                
+            case let historyVC as HistoryVC:
+                break
+            default:
+                break
+            }
+            
+            addChild(newVC)
+            newVC.view.frame = containerVw.bounds
+            containerVw.addSubview(newVC.view)
+            newVC.didMove(toParent: self)
         }
         
 #endif
-       
+        
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -257,17 +252,17 @@ extension MainJobController: UICollectionViewDelegate, UICollectionViewDataSourc
         
         return CGSize(width: textWidth + padding, height: 50) // Adjust height as per design
     }
+    
     func loadViewController(from storyboardName: String, identifier: String) -> UIViewController? {
         let storyboard = UIStoryboard(name: storyboardName, bundle: nil)
         return storyboard.instantiateViewController(withIdentifier: identifier)
     }
-    
 }
 
 extension MainJobController {
     
     func getCurrentPlanOfUser(){
-            self.isLoading = true
+        self.isLoading = true
         viewModel.getCurrentPlan { [weak self] (success: Bool, result: SubscriptionResponse?, statusCode: Int?) in
             guard let self = self else { return }
             DispatchQueue.main.async {
@@ -287,7 +282,7 @@ extension MainJobController {
                             self.currentPlanOfUser = result?.data
                             if self.currentPlanOfUser?.subscriptionStatus == "inactive"{
                                 self.subscriptionStatus = "inactive"
-                               
+                                
                             }else{
                                 self.subscriptionStatus = "active"
                             }
@@ -295,7 +290,7 @@ extension MainJobController {
                         }
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                     
+                        
                     case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -309,19 +304,18 @@ extension MainJobController {
                         }
                     case .unauthorizedToken:
                         LoaderManager.shared.hide()
-                      //  self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                        //  self.jobs_TblVw.setContentOffset(.zero, animated: true)
                         NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                     case .unknown:
                         LoaderManager.shared.hide()
-                     //   self.jobs_TblVw.setContentOffset(.zero, animated: true)
+                        //   self.jobs_TblVw.setContentOffset(.zero, animated: true)
                         AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
-                     
+                        
                     case .methodNotAllowed:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                     
+                        
                     case .internalServerError:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                    
                     }
                 }
             }

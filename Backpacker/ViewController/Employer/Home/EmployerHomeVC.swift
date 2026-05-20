@@ -1,12 +1,10 @@
-//
 //  EmployerHomeVC.swift
 //  BackpackerHire
-//
 //  Created by Mobile on 22/07/25.
-//
 
 import UIKit
 import SkeletonView
+
 class EmployerHomeVC: UIViewController {
     
     @IBOutlet weak var lblnodataFound: UILabel!
@@ -17,9 +15,9 @@ class EmployerHomeVC: UIViewController {
     @IBOutlet weak var BgVwNotification: UIView!
     @IBOutlet weak var cahtBgVw: UIView!
     @IBOutlet weak var lbl_MainHeader: UILabel!
-    
     @IBOutlet weak var headerIMg_Width: NSLayoutConstraint!
     @IBOutlet weak var tblVw: UITableView!
+    
     let roleType = UserDefaults.standard.string(forKey: "UserRoleType")
     var sectionTitles = ["", "Accomodations", "Jobs"]
     let viewModel = EmployerHomeVM()
@@ -47,16 +45,17 @@ class EmployerHomeVC: UIViewController {
     var isComeFromNotification :Bool = false
     var isComeFromAdmin : Bool = false
     var ticketId = String()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lblnodataFound.isHidden = true
         self.lblnodataFound.font = FontManager.inter(.medium, size: 16.0)
         if roleType == "2" {
             sectionTitles = ["", "Jobs"]
-           // self.lblnodataFound.text = ""
-        }else if roleType == "3" {
+            // self.lblnodataFound.text = ""
+        } else if roleType == "3" {
             sectionTitles = ["", "Accomodations"]
-        }else{
+        } else {
             sectionTitles = ["", "HangOuts"]
         }
         let nib = UINib(nibName: "HomeTVC", bundle: nil)
@@ -65,12 +64,10 @@ class EmployerHomeVC: UIViewController {
         let Bnib = UINib(nibName: "EmployerJobTVC", bundle: nil)
         self.tblVw.register(Bnib, forCellReuseIdentifier: "EmployerJobTVC")
 #endif
-        
         tblVw.register(UINib(nibName: "HomeHeaderView", bundle: nil),
                        forHeaderFooterViewReuseIdentifier: "HomeHeaderView")
         let nib4 = UINib(nibName: "SkeltonTVC", bundle: nil)
         self.tblVw.register(nib4, forCellReuseIdentifier: "SkeltonTVC")
-        
         let nib5 = UINib(nibName: "SkeltonCollectionTVC", bundle: nil)
         self.tblVw.register(nib5, forCellReuseIdentifier: "SkeltonCollectionTVC")
         self.tblVw.delegate = self
@@ -86,27 +83,28 @@ class EmployerHomeVC: UIViewController {
         self.setupPullToRefresh()
         self.handleNotificationBadgeVw()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 #if BackpackerHire
-        if roleType == "2"{
+        if roleType == "2" {
             self.HomeApi()
         }
-        if roleType == "4"{
+        if roleType == "4" {
             self.HomeApi()
         }
 #endif
     }
     
-    func refreshData(){
-        if isComeFromNotification == true{
+    func refreshData() {
+        if isComeFromNotification == true {
             let storyboard = UIStoryboard(name: "Chat", bundle: nil)
             if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
                 settingVC.isComeFromNotification = true
                 if isComeFromAdmin == true {
                     settingVC.isComefFromAdmin = true
                     settingVC.ticketId = self.ticketId
-                }else{
+                } else {
                     settingVC.isComefFromAdmin = false
                 }
                 settingVC.senderId = senderId
@@ -117,6 +115,7 @@ class EmployerHomeVC: UIViewController {
             }
         }
     }
+    
     @IBAction func action_MessageView(_ sender: Any) {
         let storyboard = UIStoryboard(name: "Chat", bundle: nil)
         if let settingVC = storyboard.instantiateViewController(withIdentifier: "MessageLisVC") as? MessageLisVC {
@@ -124,21 +123,22 @@ class EmployerHomeVC: UIViewController {
         } else {
             print("- Could not instantiate SettingVC")
         }
-        
     }
+    
     func showTopView(isShow : Bool = false,title : String = "Employer"){
-        if isShow == true{
+        if isShow == true {
             self.lbl_MainHeader.text = title
             cahtBgVw.isHidden = true
             BgVwNotification.isHidden = true
             self.headerIMg_Width.constant = 0.0
-        }else{
+        } else {
             self.lbl_MainHeader.text = "Employer"
             cahtBgVw.isHidden = false
             BgVwNotification.isHidden = false
             self.headerIMg_Width.constant = 22.0
         }
     }
+    
     private func setupPullToRefresh() {
         refreshControl = UIRefreshControl()
         refreshControl?.attributedTitle = NSAttributedString(string: "Refresh")
@@ -154,47 +154,40 @@ class EmployerHomeVC: UIViewController {
         } else {
             print("- Could not instantiate SettingVC")
         }
-        
-        
     }
+    
     @objc private func refreshTableData() {
         // Call your API
 #if BackpackerHire
         self.isLoading = true
         LoaderManager.shared.show()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5)
-        {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.HomeApi()
         }
 #endif
     }
-    
 }
 
 extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         if isLoading == true {
             return 1
-        }else{
+        } else {
             //            return sectionTitles.count
             let count = activeSections.count
-            if count == 0{
+            if count == 0 {
                 return 0
-            }else{
+            } else {
                 return count
             }
         }
-        
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isLoading == true {
-            
             return 15
-        }else{
-            
+        } else {
             let sectionType = activeSections[section]
-            
             switch sectionType {
             case .banner:
                 return 1
@@ -207,36 +200,30 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
             case .accommodations:
                 return 1
             }
-            
-            
-            
         }
-        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         if isLoading {
-//            if indexPath.section == 0{
-//                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonTVC", for: indexPath) as? SkeltonTVC else {
-//                    return UITableViewCell()
-//                }
-//                return cell
-//            }else{
-                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonCollectionTVC", for: indexPath) as? SkeltonCollectionTVC else {
-                    return UITableViewCell()
-                }
-                return cell
-                
-//            }
+            //            if indexPath.section == 0{
+            //                guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonTVC", for: indexPath) as? SkeltonTVC else {
+            //                    return UITableViewCell()
+            //                }
+            //                return cell
+            //            }else{
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "SkeltonCollectionTVC", for: indexPath) as? SkeltonCollectionTVC else {
+                return UITableViewCell()
+            }
+            return cell
+            //            }
             
-            
-        }else{
+        } else {
             let sectionType = activeSections[indexPath.section]
             
             switch sectionType {
             case .banner:
-                if roleType == "2"{
+                if roleType == "2" {
                     
                     //      if indexPath.section == 0  {
                     guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
@@ -260,7 +247,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                     cell.activeSections = activeSections
                     return cell
                     
-                }else{
+                } else {
                     if indexPath.section == 0 || indexPath.section == 1 {
                         guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
                             return UITableViewCell()
@@ -279,7 +266,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                         }
                         cell.activeSections = activeSections
                         return cell
-                    }else{
+                    } else {
                         guard let cell = tableView.dequeueReusableCell(withIdentifier: "EmployerJobTVC", for: indexPath) as? EmployerJobTVC else {
                             return UITableViewCell()
                         }
@@ -289,12 +276,11 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                     }
                 }
                 
-                
             case .jobs:
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTVC", for: indexPath) as? HomeTVC else {
                     return UITableViewCell()
                 }
-                if role == "2"{
+                if role == "2" {
                     cell.isComeForHireDetailPage = false
                     //        let sectionItems = itemsPerSection[indexPath.section]
                     cell.employerJobList = self.homeData?.jobslist
@@ -316,7 +302,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                         self.navigateToDescriptionVC()
                     }
                     cell.activeSections = activeSections
-                }else{
+                } else {
                     cell.isComeForHireDetailPage = false
                     //        let sectionItems = itemsPerSection[indexPath.section]
                     cell.configure(with: sectionTitles,section: indexPath.section)
@@ -331,25 +317,14 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
                     }
                     cell.activeSections = activeSections
                 }
-                
                 return cell
-                
-                
             case .hangouts:
                 break
-                
             case .accommodations:
-                
                 break
             }
         }
-        
-        
         return UITableViewCell()
-        
-        
-        
-        
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -362,7 +337,7 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         header.contentView.backgroundColor = .white // prevent background flicker
 #if BackpackerHire
         
-        if roleType == "2"{
+        if roleType == "2" {
             
             header.headerButton.isHidden = true
             header.headerButton.isUserInteractionEnabled = false
@@ -384,12 +359,11 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         }
         if self.homeData?.jobslist?.count ?? 0 > 0 {
             return 40
-        }else{
+        } else {
             return 0
         }
-        
-        
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.section == 0  {
             if isLoading {
@@ -407,15 +381,15 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
             case .accommodations:
                 return 360
             }
-           
-        }else if   indexPath.section == 1  {
+            
+        } else if   indexPath.section == 1 {
             return 400
             
-        }else{
+        } else {
             return 160
         }
-        
     }
+    
     private func moveToAddAccomodationVC() {
         let storyboard = UIStoryboard(name: "Accomodation", bundle: nil)
         if let accVC = storyboard.instantiateViewController(withIdentifier: "AddNewAccomodationVC") as? AddNewAccomodationVC {
@@ -435,9 +409,9 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
             accVC.isComeFromAcceptDeclineJobs = true
             if index == 0 {
                 accVC.selectedIndexHeader = 0
-            }else if index == 1{
+            } else if index == 1 {
                 accVC.selectedIndexHeader = 1
-            }else{
+            } else {
                 accVC.selectedIndexHeader = 0
             }
             self.navigationController?.pushViewController(accVC, animated: true)
@@ -446,9 +420,10 @@ extension EmployerHomeVC : UITableViewDelegate , UITableViewDataSource {
         }
     }
 }
-extension EmployerHomeVC{
+
+extension EmployerHomeVC {
     
-    func HomeApi(){
+    func HomeApi() {
         LoaderManager.shared.show()
         
         viewModel.getEmployerHomeData() { [weak self] success, data, message, statusCode in
@@ -523,6 +498,7 @@ extension EmployerHomeVC{
         }
     }
 }
+
 extension  EmployerHomeVC: SkeletonTableViewDataSource {
     func numSections(in collectionSkeletonView: UITableView) -> Int {
         return 2 // Or your actual section count
@@ -540,7 +516,6 @@ extension  EmployerHomeVC: SkeletonTableViewDataSource {
         }
     }
     
-    
     func showForceUpdatePopUp(email:String){
         let storyboard = UIStoryboard(name: "Home", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "ForceUpdateVC") as! ForceUpdateVC
@@ -549,14 +524,15 @@ extension  EmployerHomeVC: SkeletonTableViewDataSource {
         self.present(vc, animated: true)
     }
     
-    private func showNoData(isShow : Bool = false){
-        if isShow == true{
+    private func showNoData(isShow : Bool = false) {
+        if isShow == true {
             self.lblnodataFound.isHidden = false
-        }else{
+        } else {
             self.lblnodataFound.isHidden = true
         }
     }
-    private func navigateToDescriptionVC(){
+    
+    private func navigateToDescriptionVC() {
         if self.jobID.isEmpty == false{
             let storyboard = UIStoryboard(name: "Job", bundle: nil)
             if let jobDescriptionVC = storyboard.instantiateViewController(withIdentifier: "JobDescriptionVC") as? JobDescriptionVC {
@@ -566,11 +542,12 @@ extension  EmployerHomeVC: SkeletonTableViewDataSource {
             }
         }
     }
-    private func handleNotificationBadgeVw(){
+    
+    private func handleNotificationBadgeVw() {
         if self.homeData?.notificationCount ?? 0 <= 0 {
             self.notificatiobBadgeVw.isHidden = true
             self.lbl_NotificationCount.isHidden = true
-        }else{
+        } else {
             self.notificatiobBadgeVw.isHidden = false
             self.lbl_NotificationCount.isHidden = false
             if let count = self.homeData?.notificationCount  {

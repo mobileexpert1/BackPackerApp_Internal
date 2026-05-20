@@ -1,16 +1,13 @@
-//
 //  CompanyDetailVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 04/08/25.
-//
 
 import UIKit
 import CountryPickerView
 
 class CompanyDetailVC: UIViewController {
-    @IBOutlet weak var scroll_Height: NSLayoutConstraint!
     
+    @IBOutlet weak var scroll_Height: NSLayoutConstraint!
     @IBOutlet weak var emailVw: CommonTxtFldLblVw!
     @IBOutlet weak var btn_edit: UIButton!
     @IBOutlet weak var websiteVw: CommonTxtFldLblVw!
@@ -30,15 +27,14 @@ class CompanyDetailVC: UIViewController {
     @IBOutlet weak var vw_SelectIndustry: UIView!
     @IBOutlet weak var lbl_Industry: UILabel!
     @IBOutlet weak var bussinesName_Vw: CommonTxtFldLblVw!
-    
     @IBOutlet weak var lbl_Placeholder: UILabel!
     @IBOutlet weak var placeholde_Img: UIImageView!
     @IBOutlet weak var selected_Image: UIImageView!
-    
     @IBOutlet weak var main_scrollVw: UIScrollView!
     @IBOutlet weak var MainVw_Industries: UIView!
     @IBOutlet weak var btn_Industry: UIButton!
     @IBOutlet weak var placeholder_Vw: UIView!
+    
     var isComeFromUpdate : Bool = false
     var isLoading : Bool = false
     var iscomeFromCamera : Bool = false
@@ -51,15 +47,12 @@ class CompanyDetailVC: UIViewController {
     var industryId : String?
     var  locations: [LocationList]?
     var companyDetailObj : CompanyDetail?
-    
-    
     var page = 1
     let perPage = 20
     var totalAccomodations = Int()
     var isLoadingMoreData = false
     var isAllDataLoaded = false
     var isComeFromPullTorefresh : Bool = false
-    
     var searchDebounceTimer: Timer?
     var lastSearchedText: String = ""
     var isComFromSearch : Bool = false
@@ -68,10 +61,10 @@ class CompanyDetailVC: UIViewController {
     var objComapny : CompanyList?
     var industryTapped : Bool = false
     private lazy var refreshControl: UIRefreshControl = {
-           let rc = UIRefreshControl()
-           rc.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
-           return rc
-       }()
+        let rc = UIRefreshControl()
+        rc.addTarget(self, action: #selector(didPullToRefresh), for: .valueChanged)
+        return rc
+    }()
     let viewModel = SubscriptionViewModel()
     let viewAuth = LogInVM()
     var plansN : [PlanS]?
@@ -82,18 +75,16 @@ class CompanyDetailVC: UIViewController {
     var iscameraOpen : Bool = false
     
     @IBOutlet weak var img_Flag: UIImageView!
-
     @IBOutlet weak var lbl_countrycode: UILabel!
-    
     @IBOutlet weak var txtFld_PhoneNUmber: UITextField!
     @IBOutlet weak var picker_Vw: CountryPickerView!
     @IBOutlet weak var btnPicker: UIButton!
-    
     @IBOutlet weak var backVw: UIView!
     @IBOutlet weak var phoneNUmberVw: UIView!
     @IBOutlet weak var phpneNUmbeMianVw: UIView!
     @IBOutlet weak var lbl_ErrorPhonenUmber: UILabel!
     @IBOutlet weak var lbl_EntrNumber: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.attachRefreshControl()
@@ -101,8 +92,7 @@ class CompanyDetailVC: UIViewController {
         self.setupCountryPickerVw()
         registerForKeyboardNotifications()
     }
-
- 
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.getPriceFormStore()
@@ -111,31 +101,34 @@ class CompanyDetailVC: UIViewController {
         self.btn_edit.isUserInteractionEnabled = true
         self.getIndustriesList()
         if iscomeFromCamera == false && isComeFromUpdate == true{
-          //  self.getCompanyInfo()
+            //  self.getCompanyInfo()
             self.getListOfLocationAll()
         }
         self.setupData()
     }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-       /// jobs_Tble_Height.constant = CGFloat(locations?.count ?? 0) * (100 + 10)
+        /// jobs_Tble_Height.constant = CGFloat(locations?.count ?? 0) * (100 + 10)
     }
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    
     func registerForKeyboardNotifications() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillShow),
                                                name: UIResponder.keyboardWillShowNotification,
                                                object: nil)
-
+        
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillHide),
                                                name: UIResponder.keyboardWillHideNotification,
                                                object: nil)
     }
+    
     func setupCountryPickerVw() {
-       self.setupRoundedBorder(for:phoneNUmberVw)
+        self.setupRoundedBorder(for:phoneNUmberVw)
         self.setupRoundedBorder(for:backVw)
         picker_Vw.isHidden = false
         picker_Vw.delegate = self
@@ -170,48 +163,50 @@ class CompanyDetailVC: UIViewController {
         // Button Action
         btnPicker.addTarget(self, action: #selector(selectCountryAction(_:)), for: .touchUpInside)
     }
+    
     @objc func keyboardWillShow(notification: NSNotification) {
         guard let userInfo = notification.userInfo,
               let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
-
+        
         let keyboardHeight = keyboardFrame.height
-
+        
         main_scrollVw.contentInset.bottom = keyboardHeight
         main_scrollVw.scrollIndicatorInsets.bottom = keyboardHeight
     }
-
+    
     @objc func keyboardWillHide(notification: NSNotification) {
         main_scrollVw.contentInset.bottom = 0
         main_scrollVw.scrollIndicatorInsets.bottom = 0
     }
+    
     func setupRoundedBorder(for view: UIView) {
         view.layer.cornerRadius = 10
         view.layer.borderWidth = 1.0
         view.layer.borderColor = UIColor(named:"borderColor")?.cgColor
         view.clipsToBounds = true
     }
+    
     @objc func selectCountryAction(_ sender: Any) {
         picker_Vw.showCountriesList(from: self)
         
     }
+    
     func getPriceFormStore() {
-     //   LoaderManager.shared.show()
+        //   LoaderManager.shared.show()
         
         Task {
             let result = await SubscriptionManager.shared.fetchLocalizedPricesForAllPlans()
             
             let prices = result.prices
             let regionCode = result.region
-            
             print("REGION:", regionCode)
-            
             self.regionCode = regionCode
-            
             self.getListOfAllSubscriptions(regionCode: self.regionCode ?? "")
         }
     }
-    private func setupData(){
-        if isComeFromUpdate == true && iscameraOpen == false{
+    
+    private func setupData() {
+        if isComeFromUpdate == true && iscameraOpen == false {
             self.bussinesName_Vw.txtFld.text = self.objComapny?.name
             self.txtFld_PhoneNUmber.text = self.objComapny?.contactNumber
             self.websiteVw.txtFld.text = self.objComapny?.website
@@ -221,14 +216,12 @@ class CompanyDetailVC: UIViewController {
             self.industryId = self.objComapny?.industryType.id
             let image = objComapny?.logo
             let baseURL1 = ApiConstants.API.API_IMAGEURL
-
             let imageURLString: String
             if ((image?.hasPrefix("http")) != nil) {
                 imageURLString = image ?? ""
             } else {
                 imageURLString = baseURL1 + (image ?? "")
             }
-
             self.selected_Image.sd_setImage(
                 with: URL(string: imageURLString),
                 placeholderImage: UIImage(named: "BgUploadImage"),
@@ -249,10 +242,8 @@ class CompanyDetailVC: UIViewController {
                                 placeholderImage: UIImage(named: "BgUploadImage")
                             )
                         }
-                        
                     }
                 }
-               
             )
             self.selected_Image.layer.cornerRadius = 10.0
             self.btn_remove.isHidden = false
@@ -260,14 +251,16 @@ class CompanyDetailVC: UIViewController {
             self.placeholde_Img.isHidden = true
             self.lbl_Placeholder.isHidden = true
             
-        }else{
+        } else {
             self.iscameraOpen = false
         }
     }
+    
     private func attachRefreshControl() {
-                main_scrollVw.refreshControl = refreshControl
-       
-        }
+        main_scrollVw.refreshControl = refreshControl
+        
+    }
+    
     @objc private func didPullToRefresh() {
         if isComeFromUpdate == true {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2){
@@ -278,16 +271,15 @@ class CompanyDetailVC: UIViewController {
                     }else{
                         self.getIndustriesList()
                     }
-                        
-                    }
+                    
+                }
             }
-        }else{
+        } else {
             self.refreshControl.endRefreshing()
         }
-      
-          
-      }
-    func setUpUI(){
+    }
+    
+    func setUpUI() {
         self.btn_edit.tag = 0
         isEditap()
         self.updateAppearanceOfBottomBtns()
@@ -301,17 +293,13 @@ class CompanyDetailVC: UIViewController {
         self.bussinesName_Vw.setTitleLabel("Business Name")
         self.bussinesName_Vw.setPlaceholder("Business Name")
         self.bussinesName_Vw.setError("")
-    
-        
         self.websiteVw.setTitleLabel("Website")
         self.websiteVw.setPlaceholder("Website Url")
         self.websiteVw.setError("")
         self.websiteVw.txtFld.keyboardType = .URL
-        
         self.emailVw.setTitleLabel("Email")
         self.emailVw.setPlaceholder("Email")
         self.emailVw.setError("")
-        
         self.lbl_Industry.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_Val_SelctedIndustry.font = FontManager.inter(.regular, size: 14.0)
         lbl_CompanyLOgi.font = FontManager.inter(.medium, size: 14.0)
@@ -325,7 +313,6 @@ class CompanyDetailVC: UIViewController {
         handleRemoveBtnVisibility()
         self.tblVw.register(UINib(nibName: "ReportIssueTVC", bundle: nil), forCellReuseIdentifier: "ReportIssueTVC")
         self.jobs_TblVw.register(UINib(nibName: "CompanyDetailTVC", bundle: nil), forCellReuseIdentifier: "CompanyDetailTVC")
-        
         self.tblVw.delegate = self
         self.tblVw.dataSource = self
         applyGradientButtonStyle(to: btn_Save)
@@ -338,24 +325,23 @@ class CompanyDetailVC: UIViewController {
         self.updateAppearanceOfBottomBtns()
     }
     
-    func setUpLblIndustryColor(){
-        if lbl_Val_SelctedIndustry.text == "Select Industry"{
-            
+    func setUpLblIndustryColor() {
+        if lbl_Val_SelctedIndustry.text == "Select Industry" {
             self.lbl_Val_SelctedIndustry.textColor = UIColor(hex: "#9D9D9D")
-        }else{
+        } else {
             self.lbl_Val_SelctedIndustry.textColor = UIColor.black
         }
     }
+    
     @IBAction func action_remove(_ sender: Any) {
         self.selected_Image.image = nil
         self.selected_Image.image = UIImage(named: "BgUploadImage")
         self.setUpImagePlacehoder()
-        
     }
+    
     @IBAction func action_uploadImage(_ sender: Any) {
         
         mediaPicker = MediaPickerManager(presentingVC: self)
-        
         mediaPicker?.showMediaOptions(isFromNewAccommodation: false) { image in
             print("Selected image: \(image)")
             self.iscameraOpen = true
@@ -370,51 +356,52 @@ class CompanyDetailVC: UIViewController {
         if self.btn_edit.tag == 0 {
             self.btn_edit.tag = 1
             self.isComeFromUpdate = true
-        }else{
+        } else {
             self.btn_edit.tag = 0
             self.isComeFromUpdate = false
         }
         isEditap()
         self.updateAppearanceOfBottomBtns()
-        
     }
+    
     @IBAction func action_back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
+    
     @IBAction func action_save(_ sender: Any) {
         guard let name = bussinesName_Vw.txtFld.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-                  !name.isEmpty else {
-                AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter business name")
-                return
-            }
-            
+              !name.isEmpty else {
+            AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter business name")
+            return
+        }
+        
         guard let contctNumber = self.txtFld_PhoneNUmber.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-                  !contctNumber.isEmpty else {
-                AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter contact number")
-                return
-            }
+              !contctNumber.isEmpty else {
+            AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter contact number")
+            return
+        }
         
         guard let website = websiteVw.txtFld.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-                  !website.isEmpty else {
-                AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter website url")
-                return
-            }
+              !website.isEmpty else {
+            AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter website url")
+            return
+        }
         guard let email = emailVw.txtFld.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-                  !email.isEmpty else {
-                AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter your email")
-                return
-            }
+              !email.isEmpty else {
+            AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter your email")
+            return
+        }
         
-            guard let industry = lbl_Val_SelctedIndustry.text,
-                  !industry.isEmpty,
-                  industry != "Select Industry" else {
-                AlertManager.showAlert(on: self, title: "Field Missing", message: "Please select industry")
-                return
-            }
-            
+        guard let industry = lbl_Val_SelctedIndustry.text,
+              !industry.isEmpty,
+              industry != "Select Industry" else {
+            AlertManager.showAlert(on: self, title: "Field Missing", message: "Please select industry")
+            return
+        }
+        
         if selected_Image.image == UIImage(named: "BgUploadImage") {
             AlertManager.showAlert(on: self, title: "Image Missing", message: "Please choose image")
-        }else{
+        } else {
             guard let imageData = selected_Image.image?.jpegData(compressionQuality: 0.8) else {
                 AlertManager.showAlert(on: self, title: "Error", message: "Could not process image")
                 return
@@ -435,13 +422,13 @@ class CompanyDetailVC: UIViewController {
             }
             
             guard let email = emailVw.txtFld.text?.trimmingCharacters(in: .whitespacesAndNewlines),
-                      !name.isEmpty else {
-                    AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter email")
-                    return
-                }
-           
-                let contactNumber = contctNumber
-                let website = website
+                  !name.isEmpty else {
+                AlertManager.showAlert(on: self, title: "Field Missing", message: "Please enter email")
+                return
+            }
+            
+            let contactNumber = contctNumber
+            let website = website
             if isComeFromUpdate == true {
                 self.updateCompany(
                     name: name,
@@ -450,7 +437,7 @@ class CompanyDetailVC: UIViewController {
                     website: website, email: email,
                     logo: imageData
                 )
-            }else{
+            } else {
                 self.createCompany(
                     name: name,
                     industryTypeId: industryTypeId,
@@ -459,17 +446,14 @@ class CompanyDetailVC: UIViewController {
                     logo: imageData
                 )
             }
-              
         }
-        
     }
-    
     
     @IBAction func action_cancle(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
     
-    func setUpImagePlacehoder(){
+    func setUpImagePlacehoder() {
         DispatchQueue.main.async {
             if self.selected_Image.image == UIImage(named: "BgUploadImage"){
                 self.selected_Image.layer.cornerRadius = 0.0
@@ -477,7 +461,7 @@ class CompanyDetailVC: UIViewController {
                 self.btn_remove.isUserInteractionEnabled = false
                 self.placeholde_Img.isHidden = false
                 self.lbl_Placeholder.isHidden = false
-            }else{
+            } else {
                 self.selected_Image.layer.cornerRadius = 10.0
                 self.btn_remove.isHidden = false
                 self.btn_remove.isUserInteractionEnabled = true
@@ -485,8 +469,8 @@ class CompanyDetailVC: UIViewController {
                 self.lbl_Placeholder.isHidden = true
             }
         }
-      
     }
+    
     func reloadTableData() {
         jobs_TblVw.reloadData()
         jobs_TblVw.layoutIfNeeded()
@@ -494,129 +478,126 @@ class CompanyDetailVC: UIViewController {
         let constantHeight = CGFloat(locations?.count ?? 0) * (105)
         let mainScrolHeight = self.scroll_Height.constant - constantHeight
         self.scroll_Height.constant = ( mainScrolHeight + jobs_Tble_Height.constant) //- 300
-
     }
-
+    
     @IBAction func action_IsTapppedIndustry(_ sender: Any) {
         if  self.btn_Industry.tag  == 0{
             self.btn_Industry.tag = 1
             self.industryTapped = true
-        }else{
+        } else {
             self.btn_Industry.tag = 0
             self.industryTapped = false
         }
         self.manageHeight()
-       
     }
     
-    func manageHeight(){
+    func manageHeight() {
         self.btn_Industry.isUserInteractionEnabled = true
-        if  self.btn_Industry.tag  == 0{
+        if  self.btn_Industry.tag  == 0 {
             self.vw_Table_Height.constant = 0.0
             self.tbl_Height.constant = 0.0
-        }else{
+        } else {
             self.vw_Table_Height.constant = 190
             self.tbl_Height.constant = 176.0
         }
         self.handleRemoveBtnVisibility()
     }
     
-    func handleRemoveBtnVisibility(){
+    func handleRemoveBtnVisibility() {
         if  self.btn_Industry.tag  == 0{
             self.MainVw_Industries.layer.cornerRadius = 0.0
             self.MainVw_Industries.layer.borderColor = UIColor.clear.cgColor
             self.MainVw_Industries.layer.borderWidth = 0.0
-        }else{
+        } else {
             self.MainVw_Industries.layer.cornerRadius = 10.0
             self.MainVw_Industries.layer.borderColor = UIColor(hex: "#E5E5E5").cgColor
             self.MainVw_Industries.layer.borderWidth = 1.0
         }
     }
+    
     @IBAction func actio_addLocation(_ sender: Any) {
         if (self.totalLocation ?? 0) < (self.activePlanLocationCount ?? 0)  {
-            if  self.objComapny?.id != nil{
+            if  self.objComapny?.id != nil {
                 let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-                   if let locationVC = storyboard.instantiateViewController(withIdentifier: "CompanyLocationVC") as? CompanyLocationVC {
-                       locationVC.companyID = self.objComapny?.id
-                       locationVC.modalPresentationStyle = .overFullScreen
-                          locationVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.2) // dim effect
-                       locationVC.delegate = self
-                          let nav = UINavigationController(rootViewController: locationVC)
-                          nav.navigationBar.isHidden = true
-                          nav.modalPresentationStyle = .overFullScreen   // 👈 keeps transparency
-                          
-                          self.present(nav, animated: true)
-                   }
-            }else{
+                if let locationVC = storyboard.instantiateViewController(withIdentifier: "CompanyLocationVC") as? CompanyLocationVC {
+                    locationVC.companyID = self.objComapny?.id
+                    locationVC.modalPresentationStyle = .overFullScreen
+                    locationVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.2) // dim effect
+                    locationVC.delegate = self
+                    let nav = UINavigationController(rootViewController: locationVC)
+                    nav.navigationBar.isHidden = true
+                    nav.modalPresentationStyle = .overFullScreen   // 👈 keeps transparency
+                    
+                    self.present(nav, animated: true)
+                }
+            } else {
                 AlertManager.showAlert(on: self, title: "Error", message: "Please add company first.")
             }
-        }else{
-                AlertManager.showAlert(
-                        on: self,
-                        title: "Plan Limit Reached",
-                        message: "Please update your plan to add more locations."
-                ){
-                    let storyboard = UIStoryboard(name: "Setting", bundle: nil)
-                    if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
-                        self.navigationController?.pushViewController(vc, animated: true)
-                    }
+        } else {
+            AlertManager.showAlert(
+                on: self,
+                title: "Plan Limit Reached",
+                message: "Please update your plan to add more locations."
+            ){
+                let storyboard = UIStoryboard(name: "Setting", bundle: nil)
+                if let vc = storyboard.instantiateViewController(withIdentifier: "SubscriptionVC") as? SubscriptionVC {
+                    self.navigationController?.pushViewController(vc, animated: true)
                 }
-            
+            }
         }
-       
-       
     }
 }
+
 extension CompanyDetailVC: CommonDetailChildDelegate {
     func enableEditing(_ isEnabled: Bool) {
-            // Enable or disable editing UI
-            if isEnabled {
-                self.isComeFromUpdate = true
-               
-            } else {
-                self.isComeFromUpdate = false
-            }
+        // Enable or disable editing UI
+        if isEnabled {
+            self.isComeFromUpdate = true
+            
+        } else {
+            self.isComeFromUpdate = false
+        }
         isEditap()
         self.updateAppearanceOfBottomBtns()
-        }
-    func updateAppearanceOfBottomBtns() {
-            DispatchQueue.main.async { [self] in
-                if isComeFromUpdate == true{
-                    self.btn_btnHeight.constant = 50.0
-                    self.btn_Save.isHidden = false
-                    self.btn_Cancle.isHidden = false
-                    self.btn_Save.setTitle("Update", for: .normal)
-                    applyGradientButtonStyle(to: self.btn_Save)
-                }else{
-                                self.btn_btnHeight.constant = 50.0
-                                self.btn_Save.isHidden = false
-                                self.btn_Cancle.isHidden = false
-                                self.btn_Save.setTitle("Save", for: .normal)
-                                applyGradientButtonStyle(to: self.btn_Save)
-                }
-                
-            }
     }
     
-    func isEditap(){
+    func updateAppearanceOfBottomBtns() {
+        DispatchQueue.main.async { [self] in
+            if isComeFromUpdate == true{
+                self.btn_btnHeight.constant = 50.0
+                self.btn_Save.isHidden = false
+                self.btn_Cancle.isHidden = false
+                self.btn_Save.setTitle("Update", for: .normal)
+                applyGradientButtonStyle(to: self.btn_Save)
+            } else {
+                self.btn_btnHeight.constant = 50.0
+                self.btn_Save.isHidden = false
+                self.btn_Cancle.isHidden = false
+                self.btn_Save.setTitle("Save", for: .normal)
+                applyGradientButtonStyle(to: self.btn_Save)
+            }
+        }
+    }
+    
+    func isEditap() {
 #if BackpackerHire
-        if isComeFromUpdate == true{
+        if isComeFromUpdate == true {
             self.btn_btnHeight.constant = 50.0
-        }else{
+        } else {
             self.isComeFromUpdate = false
             self.btn_btnHeight.constant = 0.0
         }
-        #endif
+#endif
     }
 }
+
 extension CompanyDetailVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tableView == jobs_TblVw{
+        if tableView == jobs_TblVw {
             return locations?.count ?? 0
-        }else{
+        } else {
             return listOfIndeustries?.count ?? 0
         }
-       
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -628,7 +609,7 @@ extension CompanyDetailVC : UITableViewDelegate,UITableViewDataSource{
             cell.onDeleteButtonTapped = { [weak self] in
                 guard let self = self else { return }
                 let locationId = self.locations?[indexPath.row].id
-
+                
                 AlertManager.showConfirmationAlert(
                     on: self,
                     title: "Delete Location",
@@ -642,22 +623,17 @@ extension CompanyDetailVC : UITableViewDelegate,UITableViewDataSource{
                     }
                 )
             }
-
-                                                   
-                                                   
             return cell
-       
-        }else{
+            
+        } else {
             guard let cell = tableView.dequeueReusableCell(withIdentifier: "ReportIssueTVC", for: indexPath) as? ReportIssueTVC else {
                 return UITableViewCell()
             }
-
             cell.lbl_Issue.text = listOfIndeustries?[indexPath.row].name // assuming your cell has `lbl_title`
             return cell
         }
-       
-        
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView != jobs_TblVw{
             let selectedIssue = listOfIndeustries?[indexPath.row]
@@ -668,37 +644,33 @@ extension CompanyDetailVC : UITableViewDelegate,UITableViewDataSource{
             self.manageHeight()
             self.setUpLblIndustryColor()
         }
-       
-
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if tableView != jobs_TblVw{
+        if tableView != jobs_TblVw {
             return 50.0
-        }else{
+        } else {
             return 100.0
         }
-        
     }
-    
-    
 }
 
-extension CompanyDetailVC{
+extension CompanyDetailVC {
     
-    private func setCompanyDetail(_ obj: CompanyDetail){
+    private func setCompanyDetail(_ obj: CompanyDetail) {
         self.bussinesName_Vw.txtFld.text = obj.name
         self.lbl_Val_SelctedIndustry.text = obj.industryType?.name ?? ""
         self.industryId = obj.industryType?.id ?? ""
         let image = obj.logo
         let baseURL1 = ApiConstants.API.API_IMAGEURL
-
+        
         let imageURLString: String
         if ((image?.hasPrefix("http")) != nil) {
             imageURLString = image ?? ""
         } else {
             imageURLString = baseURL1 + (image ?? "")
         }
-
+        
         self.selected_Image.sd_setImage(
             with: URL(string: imageURLString),
             placeholderImage: UIImage(named: "BgUploadImage"),
@@ -721,87 +693,84 @@ extension CompanyDetailVC{
                     }
                 }
             }
-           
         )
         self.selected_Image.layer.cornerRadius = 10.0
         self.btn_remove.isHidden = false
         self.btn_remove.isUserInteractionEnabled = true
         self.placeholde_Img.isHidden = true
         self.lbl_Placeholder.isHidden = true
-    
     }
     
     func getCompanyInfo() {
-            LoaderManager.shared.show()
+        LoaderManager.shared.show()
+        
+        profileVm.getCompanyDetail { [weak self] (success: Bool, result: CompanyCreateResponse?, statusCode: Int?) in
+            guard let self = self else { return }
             
-            profileVm.getCompanyDetail { [weak self] (success: Bool, result: CompanyCreateResponse?, statusCode: Int?) in
-                guard let self = self else { return }
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
                 
-                guard let statusCode = statusCode else {
-                    LoaderManager.shared.hide()
-                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
-                    return
-                }
-                
-                let httpStatus = HTTPStatusCode(rawValue: statusCode)
-                
-                DispatchQueue.main.async {
-                    LoaderManager.shared.hide()
-                    
-                    switch httpStatus {
-                    case .ok, .created:
-                        if success, let profileData = result?.data {
-                            print("User Profile data fetched result:", profileData)
-                            if let company = profileData.company {
-                                self.companyDetailObj = company
-                                if company.id == nil {
-                                    self.companyDetailObj = nil
-                                }else{
-                                    self.setCompanyDetail(company)
-                                }
-                               
-                            }else{
+                switch httpStatus {
+                case .ok, .created:
+                    if success, let profileData = result?.data {
+                        print("User Profile data fetched result:", profileData)
+                        if let company = profileData.company {
+                            self.companyDetailObj = company
+                            if company.id == nil {
                                 self.companyDetailObj = nil
-                            }
-                            self.updateAppearanceOfBottomBtns()
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
-                                self.setUpImagePlacehoder()
-                            }
-                            self.setUpLblIndustryColor()
-                           
-                        } else {
-                            AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                        }
-                        self.refreshControl.endRefreshing()
-                    case .badRequest:
-                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                    case .unauthorized :
-                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                self.getCompanyInfo() // Retry on token refresh success
                             } else {
-                                self.refreshControl.endRefreshing()
-                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
+                                self.setCompanyDetail(company)
                             }
+                        } else {
+                            self.companyDetailObj = nil
                         }
-                    case .unauthorizedToken:
-                        LoaderManager.shared.hide()
-                        self.refreshControl.endRefreshing()
-                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-                    case .unknown:
-                        LoaderManager.shared.hide()
-                        self.refreshControl.endRefreshing()
-                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
-                    case .methodNotAllowed:
-                        self.refreshControl.endRefreshing()
-                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                    case .internalServerError:
-                        self.refreshControl.endRefreshing()
+                        self.updateAppearanceOfBottomBtns()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0){
+                            self.setUpImagePlacehoder()
+                        }
+                        self.setUpLblIndustryColor()
+                        
+                    } else {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     }
+                    self.refreshControl.endRefreshing()
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.getCompanyInfo() // Retry on token refresh success
+                        } else {
+                            self.refreshControl.endRefreshing()
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Session expired. Please log in again.")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    self.refreshControl.endRefreshing()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    self.refreshControl.endRefreshing()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    self.refreshControl.endRefreshing()
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                case .internalServerError:
+                    self.refreshControl.endRefreshing()
+                    AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                 }
             }
         }
+    }
     
     func getIndustriesList() {
         profileVm.getIndustriesList() { [weak self] (success: Bool, result: IndustryResponse?, statusCode: Int?) in
@@ -824,7 +793,7 @@ extension CompanyDetailVC{
                         print("User Profile data fetched result:", profileData)
                         self.listOfIndeustries = result?.data.industries
                         self.tblVw.reloadData()
-                       
+                        
                     } else {
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                     }
@@ -856,121 +825,113 @@ extension CompanyDetailVC{
     }
     
     func createCompany(name: String,
-                               industryTypeId: String,
-                               contactNumber: String,
-                               website: String,
+                       industryTypeId: String,
+                       contactNumber: String,
+                       website: String,
                        email:String,
-                               logo: Data?){
-            LoaderManager.shared.show()
-
+                       logo: Data?){
+        LoaderManager.shared.show()
+        
         profileVm.addCompanyDetail(name: name, industryTypeId: industryTypeId, logo: logo, website: website, contactNumber: contactNumber, email: email){ success, message ,statusCode in
-                guard let statusCode = statusCode else {
-                    LoaderManager.shared.hide()
-                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
-                    return
-                }
-                let httpStatus = HTTPStatusCode(rawValue: statusCode)
-                DispatchQueue.main.async {
-                    LoaderManager.shared.hide()
-                    switch httpStatus {
-                    case .ok, .created:
-                        if success == true {
-                            AlertManager.showAlert(on: self, title: "Success", message: message ?? "Comapny Added."){
-                                self.navigationController?.popViewController(animated: true)
-                            }
-                            
-                        } else {
-                            AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Comapny Added."){
+                            self.navigationController?.popViewController(animated: true)
                         }
-                    case .badRequest:
-                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
-                    case .unauthorized :
-                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                self.createCompany(name: name, industryTypeId: industryTypeId, contactNumber: contactNumber, website: website, email: email, logo: logo)
-                            } else {
-                                NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
-                            }
-                        }
-                    case .unauthorizedToken:
-                        LoaderManager.shared.hide()
-                        NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
-                    case .unknown:
-                        LoaderManager.shared.hide()
-                        AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
-                    case .methodNotAllowed:
-                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
-                    case .internalServerError:
+                    } else {
                         AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.createCompany(name: name, industryTypeId: industryTypeId, contactNumber: contactNumber, website: website, email: email, logo: logo)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 }
-                
             }
-            
-        
+        }
     }
     
     func updateCompany(name: String,
-                               industryTypeId: String,
-                               contactNumber: String,
-                               website: String,
+                       industryTypeId: String,
+                       contactNumber: String,
+                       website: String,
                        email:String,
-                               logo: Data?){
-            LoaderManager.shared.show()
-
+                       logo: Data?) {
+        LoaderManager.shared.show()
+        
         profileVm.updateComapnyDetail(comapnyId: self.objComapny?.id ?? "", name: name, industryTypeId: industryTypeId, logo: logo, website: website, contactNumber: contactNumber, email: email){ success, message ,statusCode in
-                guard let statusCode = statusCode else {
-                    LoaderManager.shared.hide()
-                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
-                    return
-                }
-                let httpStatus = HTTPStatusCode(rawValue: statusCode)
-                DispatchQueue.main.async {
-                    LoaderManager.shared.hide()
-                    switch httpStatus {
-                    case .ok, .created:
-                        if success == true {
-                            AlertManager.showAlert(on: self, title: "Success", message: message ?? "Comapny Added."){
-                      //          self.getCompanyInfo()
-                                self.navigationController?.popViewController(animated: true)
-                            }
-                            
-                        } else {
-                            AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+            guard let statusCode = statusCode else {
+                LoaderManager.shared.hide()
+                AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                return
+            }
+            let httpStatus = HTTPStatusCode(rawValue: statusCode)
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                switch httpStatus {
+                case .ok, .created:
+                    if success == true {
+                        AlertManager.showAlert(on: self, title: "Success", message: message ?? "Comapny Added."){
+                            //          self.getCompanyInfo()
+                            self.navigationController?.popViewController(animated: true)
                         }
-                    case .badRequest:
-                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
-                    case .unauthorized :
-                        self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                self.updateCompany(name: name, industryTypeId: industryTypeId, contactNumber: contactNumber, website: website, email: email, logo: logo)
-                            } else {
-                                NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
-                            }
-                        }
-                    case .unauthorizedToken:
-                        LoaderManager.shared.hide()
-                        NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
-                    case .unknown:
-                        LoaderManager.shared.hide()
-                        AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
-                    case .methodNotAllowed:
-                        AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
-                    case .internalServerError:
+                    } else {
                         AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                     }
+                case .badRequest:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .unauthorized :
+                    self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                        if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                            self.updateCompany(name: name, industryTypeId: industryTypeId, contactNumber: contactNumber, website: website, email: email, logo: logo)
+                        } else {
+                            NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                        }
+                    }
+                case .unauthorizedToken:
+                    LoaderManager.shared.hide()
+                    NavigationHelper.showLoginRedirectAlert(on: self, message: message ?? "Internal Server Error")
+                case .unknown:
+                    LoaderManager.shared.hide()
+                    AlertManager.showAlert(on: self, title: "Server Error", message: message ?? "Something went wrong. Try again later.")
+                case .methodNotAllowed:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
+                case .internalServerError:
+                    AlertManager.showAlert(on: self, title: "Error", message: message ?? "Something went wrong.")
                 }
-                
             }
-            
-        
+        }
     }
-    func getListOfLocationAll(){
+    
+    func getListOfLocationAll() {
         guard let id = self.objComapny?.id else {
             AlertManager.showAlert(on: self, title: "Error", message: "Company ID not found.")
             return
         }
-
         let trimmedSearch = ""
         if page == 1 {
             self.isLoading = true
@@ -1013,14 +974,11 @@ extension CompanyDetailVC{
                             // Pagination end check
                             self.isAllDataLoaded = newLocations?.count ?? 0 < self.perPage
                             
-                         
                             self.isLoadingMoreData = false
                             self.isComeFromPullTorefresh = false
                             self.lastContentOffset = 0.0
-                           
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                       
                             self.isLoadingMoreData = false
                             self.isComeFromPullTorefresh = false
                             self.lastContentOffset = 0.0
@@ -1030,7 +988,7 @@ extension CompanyDetailVC{
                         self.hideBottomLoader()
                     case .badRequest:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                     
+                        
                     case .unauthorized :
                         self.viewModelAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
                             if refreshSuccess, [200, 201].contains(refreshStatusCode) {
@@ -1039,7 +997,6 @@ extension CompanyDetailVC{
                                 LoaderManager.shared.hide()
                                 self.jobs_TblVw.setContentOffset(.zero, animated: true)
                                 NavigationHelper.showLoginRedirectAlert(on: self, message:  result?.message ?? "Internal Server Error")
-                                
                             }
                         }
                     case .unauthorizedToken:
@@ -1050,32 +1007,30 @@ extension CompanyDetailVC{
                         LoaderManager.shared.hide()
                         self.jobs_TblVw.setContentOffset(.zero, animated: true)
                         AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later.")
-                     
+                        
                     case .methodNotAllowed:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                     
+                        
                     case .internalServerError:
                         AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                    
                     }
                 }
             }
-            }
+        }
     }
     
-    func deleteLocation(loactionId:String){
+    func deleteLocation(loactionId:String) {
         LoaderManager.shared.show()
         isLoading = true
         if loactionId.isEmpty == true {
             LoaderManager.shared.hide()
-                AlertManager.showAlert(
-                    on: self,
-                    title: "Alert",
-                    message: "Location ID is missing."
-                )
-            
+            AlertManager.showAlert(
+                on: self,
+                title: "Alert",
+                message: "Location ID is missing."
+            )
             return
-        }else{
+        } else {
             profileVm.delete(locationID: loactionId){ [weak self] (success: Bool, result: DeleteJobResponse?, statusCode: Int?) in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
@@ -1094,7 +1049,7 @@ extension CompanyDetailVC{
                             if success == true {
                                 AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Location deleted successfully"){
                                     self.page = 1
-                             self.getListOfLocationAll()
+                                    self.getListOfLocationAll()
                                 }
                             } else {
                                 AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
@@ -1113,7 +1068,6 @@ extension CompanyDetailVC{
                                     NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
                                 }
                             }
-                            
                         case .unauthorizedToken:
                             LoaderManager.shared.hide()
                             NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
@@ -1128,57 +1082,51 @@ extension CompanyDetailVC{
                         case .internalServerError:
                             LoaderManager.shared.hide()
                             AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                            
                         }
                     }
                 }
             }
         }
-        
     }
 }
 
-
 extension CompanyDetailVC: UIScrollViewDelegate {
-
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // Skip if pulling down from top
         if scrollView.contentOffset.y < 0 { return }
-
+        
         // Detect scroll direction
         let isScrollingDown = scrollView.contentOffset.y > lastContentOffset
         lastContentOffset = scrollView.contentOffset.y
-
+        
         guard isScrollingDown else { return }
-
+        
         let offsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
         let frameHeight = scrollView.frame.size.height
-
+        
         // Check if near bottom (300pt threshold)
         if offsetY > contentHeight - frameHeight - 300 {
             if !isLoading && !isLoadingMoreData && !isAllDataLoaded {
-                    isLoadingMoreData = true
-                   // showBottomLoader()
-
-                    page += 1
-
-                    // Simulate data fetch or call your API
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                        if self.iscomeFromCamera == false && self.isComeFromUpdate == true{
-                            self.getListOfLocationAll()
-                        }
-                        
+                isLoadingMoreData = true
+                // showBottomLoader()
+                
+                page += 1
+                // Simulate data fetch or call your API
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    if self.iscomeFromCamera == false && self.isComeFromUpdate == true{
+                        self.getListOfLocationAll()
                     }
-              
+                }
             }
         }
     }
-
+    
     private func showBottomLoader() {
         // Avoid adding multiple loaders
         if main_scrollVw.viewWithTag(9999) != nil { return }
-
+        
         let loader = UIActivityIndicatorView(style: .medium)
         loader.tag = 9999
         loader.center = CGPoint(
@@ -1188,103 +1136,100 @@ extension CompanyDetailVC: UIScrollViewDelegate {
         loader.startAnimating()
         main_scrollVw.addSubview(loader)
     }
-
+    
     private func hideBottomLoader() {
         if let loader = main_scrollVw.viewWithTag(9999) as? UIActivityIndicatorView {
             loader.removeFromSuperview()
         }
         isLoadingMoreData = false
     }
-
-    
 }
+
 extension CompanyDetailVC : CompanyLocationVCDelegate {
     func didLocationAdded(success: Bool) {
-        if success == true{
+        if success == true {
             self.getListOfLocationAll()
         }
     }
-    private func getListOfAllSubscriptions(regionCode:String)
-    {
+    
+    private func getListOfAllSubscriptions(regionCode:String) {
         //LoaderManager.shared.show()
         viewModel.getlistOfSubscriptions(regionCode: regionCode) { [weak self] (success: Bool, result: SubscriptionPlansResponse?, statusCode: Int?) in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                LoaderManager.shared.hide()
+                guard let statusCode = statusCode else {
                     LoaderManager.shared.hide()
-                    guard let statusCode = statusCode else {
-                        LoaderManager.shared.hide()
-                        AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
-                        return
-                    }
-                    let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                    AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
+                    return
+                }
+                let httpStatus = HTTPStatusCode(rawValue: statusCode)
+                
+                DispatchQueue.main.async {
                     
-                    DispatchQueue.main.async {
-                        
-                        switch httpStatus {
-                        case .ok, .created:
-                            if success == true {
-                                if result?.data != nil{
-                                    self.isLoading = false
-                                    self.plansN?.removeAll()
-                                    self.plansN = result?.data ?? []
-                                    guard let plans = self.plansN else { return }
-
-                                    let activePlan = plans.first { $0.planStatus.lowercased() == "active" }
-                                    let locationCount = activePlan?.locationCount ?? 0
-                                    let jobCount = activePlan?.jobCount ?? 0
-                                    print("active plan",activePlan)
-                                    print("Location Count:", locationCount)
-                                    print("Job Count:", jobCount)
-                                    self.activePlanJobCount = jobCount
-                                    self.activePlanLocationCount = locationCount
-
-                                }else{
-                                    AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
-                                }
+                    switch httpStatus {
+                    case .ok, .created:
+                        if success == true {
+                            if result?.data != nil {
+                                self.isLoading = false
+                                self.plansN?.removeAll()
+                                self.plansN = result?.data ?? []
+                                guard let plans = self.plansN else { return }
+                                
+                                let activePlan = plans.first { $0.planStatus.lowercased() == "active" }
+                                let locationCount = activePlan?.locationCount ?? 0
+                                let jobCount = activePlan?.jobCount ?? 0
+                                print("active plan",activePlan)
+                                print("Location Count:", locationCount)
+                                print("Job Count:", jobCount)
+                                self.activePlanJobCount = jobCount
+                                self.activePlanLocationCount = locationCount
+                                
                             } else {
-                                AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                                LoaderManager.shared.hide()
+                                AlertManager.showAlert(on: self, title: "Success", message: result?.message ?? "Something went wrong.")
                             }
-                        case .badRequest:
+                        } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
-                            
-                        case .unauthorized :
-                            self.viewAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
-                                if refreshSuccess, [200, 201].contains(refreshStatusCode) {
-                                    self.getListOfAllSubscriptions(regionCode: regionCode)
-                                } else {
-                                    LoaderManager.shared.hide()
-                                    self.isLoading = false
-                                    self.refreshControl.endRefreshing()
-                                    NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
-                                }
-                            }
-                            
-                        case .unauthorizedToken:
                             LoaderManager.shared.hide()
-                            self.refreshControl.endRefreshing()
-                            NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
-                        case .unknown:
-                            LoaderManager.shared.hide()
-                            self.refreshControl.endRefreshing()
-                            AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
-                                self.navigationController?.popViewController(animated: true)
-                            }
-                        case .methodNotAllowed:
-                            LoaderManager.shared.hide()
-                            self.refreshControl.endRefreshing()
-                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                        case .internalServerError:
-                            LoaderManager.shared.hide()
-                            self.refreshControl.endRefreshing()
-                            AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                            
                         }
+                    case .badRequest:
+                        AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
+                    case .unauthorized :
+                        self.viewAuth.refreshToken { refreshSuccess, _, refreshStatusCode in
+                            if refreshSuccess, [200, 201].contains(refreshStatusCode) {
+                                self.getListOfAllSubscriptions(regionCode: regionCode)
+                            } else {
+                                LoaderManager.shared.hide()
+                                self.isLoading = false
+                                self.refreshControl.endRefreshing()
+                                NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message ?? "Internal Server Error")
+                            }
+                        }
+                    case .unauthorizedToken:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        NavigationHelper.showLoginRedirectAlert(on: self, message: result?.message  ?? "Internal Server Error")
+                    case .unknown:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        AlertManager.showAlert(on: self, title: "Server Error", message: result?.message ?? "Something went wrong. Try again later."){
+                            self.navigationController?.popViewController(animated: true)
+                        }
+                    case .methodNotAllowed:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
+                    case .internalServerError:
+                        LoaderManager.shared.hide()
+                        self.refreshControl.endRefreshing()
+                        AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
                     }
                 }
             }
+        }
     }
 }
+
 extension CompanyDetailVC : CountryPickerViewDelegate,CountryPickerViewDataSource ,UITextFieldDelegate{
     
     func countryPickerView(_ countryPickerView: CountryPickerView, didSelectCountry country: Country) {
@@ -1294,7 +1239,6 @@ extension CompanyDetailVC : CountryPickerViewDelegate,CountryPickerViewDataSourc
         if txtFld_PhoneNUmber.text?.isEmpty == false{
             let _ =   self.validatePhoneNumber()
         }
-        
     }
     
     //DatatSource
@@ -1305,11 +1249,12 @@ extension CompanyDetailVC : CountryPickerViewDelegate,CountryPickerViewDataSourc
     func showCountryCodeInList(in countryPickerView: CountryPickerView) -> Bool {
         return true
     }
+    
     func preferredCountries(in countryPickerView: CountryPickerView) -> [Country] {
         
         return ["NG", "US", "GB"].compactMap { countryPickerView.getCountryByCode($0) }
-        
     }
+    
     func validatePhoneNumber() -> Bool {
         let phoneNumber = txtFld_PhoneNUmber.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let phoneCode = picker_Vw.selectedCountry.phoneCode.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -1346,12 +1291,11 @@ extension CompanyDetailVC : CountryPickerViewDelegate,CountryPickerViewDataSourc
                 _ = self.validatePhoneNumber()
             }
         }
-        
         return true
     }
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder() // -Dismiss keyboard
         return true
     }
 }
-

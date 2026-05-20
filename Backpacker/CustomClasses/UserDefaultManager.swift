@@ -1,14 +1,11 @@
-//
 //  UserDefaultManager.swift
 //  Backpacker
-//
 //  Created by Mobile on 14/07/25.
-//
 
 import Foundation
 import UIKit
 class UserDefaultsManager {
-
+    
     // MARK: - Keys
     private enum Keys {
         static let fcmToken = "fcmToken"
@@ -22,42 +19,42 @@ class UserDefaultsManager {
         static let HireuserId = "HireuserId"
         static let HIreisLoggedIn = "HireisLoggedIn"
     }
-
+    
     // MARK: - Shared Instance
     static let shared = UserDefaultsManager()
     private let defaults = UserDefaults.standard
     private init() {}
-
+    
     // MARK: - FCM Token
     var fcmToken: String? {
         get { defaults.string(forKey: Keys.fcmToken) }
         set { defaults.set(newValue, forKey: Keys.fcmToken) }
     }
-
+    
     // MARK: - Bearer Token
     var bearerToken: String? {
         get { defaults.string(forKey: Keys.bearerToken) }
         set { defaults.set(newValue, forKey: Keys.bearerToken) }
     }
-
+    
     // MARK: - Refresh Token
     var refreshToken: String? {
         get { defaults.string(forKey: Keys.refreshToken) }
         set { defaults.set(newValue, forKey: Keys.refreshToken) }
     }
-
+    
     // MARK: - User ID
     var userId: String? {
         get { defaults.string(forKey: Keys.userId) }
         set { defaults.set(newValue, forKey: Keys.userId) }
     }
-
+    
     // MARK: - Login State
     var isLoggedIn: Bool {
         get { defaults.bool(forKey: Keys.isLoggedIn) }
         set { defaults.set(newValue, forKey: Keys.isLoggedIn) }
     }
-
+    
     // MARK: - Clear All (e.g. on logout)
     func clearAll() {
         defaults.removeObject(forKey: Keys.fcmToken)
@@ -67,8 +64,6 @@ class UserDefaultsManager {
         defaults.removeObject(forKey: Keys.isLoggedIn)
     }
     
-    
-    
     //MARK: -  Emploer
     
     // MARK: - FCM Token
@@ -76,35 +71,31 @@ class UserDefaultsManager {
         get { defaults.string(forKey: Keys.HirefcmToken) }
         set { defaults.set(newValue, forKey: Keys.HirefcmToken) }
     }
-
+    
     // MARK: - Bearer Token
     var employerbearerToken: String? {
         get { defaults.string(forKey: Keys.HirebearerToken) }
         set { defaults.set(newValue, forKey: Keys.HirebearerToken) }
     }
-
+    
     // MARK: - Refresh Token
     var employerrefreshToken: String? {
         get { defaults.string(forKey: Keys.HirerefreshToken) }
         set { defaults.set(newValue, forKey: Keys.HirerefreshToken) }
     }
-
+    
     // MARK: - User ID
     var employeruserId: String? {
         get { defaults.string(forKey: Keys.HireuserId) }
         set { defaults.set(newValue, forKey: Keys.HireuserId) }
     }
-
+    
     // MARK: - Login State
     var employerisLoggedIn: Bool {
         get { defaults.bool(forKey: Keys.HIreisLoggedIn) }
         set { defaults.set(newValue, forKey: Keys.HIreisLoggedIn) }
     }
-
 }
-
-
-
 
 func getDeviceInfo() -> DeviceInfo {
     // App version & build
@@ -126,7 +117,7 @@ func getDeviceInfo() -> DeviceInfo {
     let deviceBrand = "Apple"
     let deviceModel = UIDevice.current.model
     let deviceId = UIDevice.current.identifierForVendor?.uuidString ?? "Unknown"
-
+    
     return DeviceInfo(
         appVersion: appVersion,
         buildNumber: buildNumber,
@@ -137,6 +128,7 @@ func getDeviceInfo() -> DeviceInfo {
         deviceId: deviceId
     )
 }
+
 struct DeviceInfo {
     let appVersion: String
     let buildNumber: String

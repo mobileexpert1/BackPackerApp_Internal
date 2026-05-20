@@ -1,9 +1,6 @@
-//
 //  SubscriptionManager.swift
 //  Backpacker
-//
 //  Created by Mobile on 07/10/25.
-//
 
 import Foundation
 import StoreKit
@@ -161,7 +158,6 @@ final class SubscriptionManager {
         }
     }
     
-    
     func getAppStoreRegion() -> String? {
         if let storefront = SKPaymentQueue.default().storefront {
             return storefront.countryCode // Example: "US", "IN", "AE"
@@ -174,6 +170,7 @@ final class SubscriptionManager {
     func getPlan(for tier: SubscriptionTier) -> SubscriptionPlan? {
         getAllPlans().first { $0.tier == tier }
     }
+    
     func uuidFromString(_ string: String) -> UUID {
         let data = Data(string.utf8)
         let hash = SHA256.hash(data: data)
@@ -226,7 +223,6 @@ final class SubscriptionManager {
         return UUID(uuidString: uuidString.uppercased())
     }
     
-    
     // MARK: - Purchase Plan
     func purchasePlan(tier: SubscriptionTier) async {
         guard let plan = getPlan(for: tier),
@@ -260,12 +256,12 @@ final class SubscriptionManager {
                         title: "Purchase Successful",
                         message: """
                         Your \(tier.rawValue) subscription has been successfully activated.
-
+                        
                         Please note: It may take up to 1 minute for your plan to reflect in the app.
                         """
                     )
                 }
-
+                
                 let purchaseRequest = createUserPlanRequest(from: transaction)
                 self.purchasePlanDetail = purchaseRequest
             case .userCancelled:
@@ -321,6 +317,7 @@ final class SubscriptionManager {
             }
         }
     }
+    
     // MARK: - Handle verified transaction
     private func handle(_ transaction: Transaction) async {
         guard let plan = getAllPlans().first(where: { $0.productID == transaction.productID }) else { return }
@@ -359,8 +356,6 @@ final class SubscriptionManager {
         }
     }
     
-    
-    
     // MARK: - Tier Access Control
     func canAccessFeature(requiredTier: SubscriptionTier) -> Bool {
         let tiers = SubscriptionTier.allCases
@@ -383,6 +378,7 @@ final class SubscriptionManager {
         guard let raw = UserDefaults.standard.string(forKey: activeTierKey) else { return nil }
         return SubscriptionTier(rawValue: raw)
     }
+    
     func createUserPlanRequest(from transaction: Transaction) -> CreateUserPlanRequest {
         return CreateUserPlanRequest(
             appTransactionId: String(transaction.id),
@@ -402,6 +398,4 @@ final class SubscriptionManager {
             subscriptionId: UUID().uuidString
         )
     }
-    
 }
-

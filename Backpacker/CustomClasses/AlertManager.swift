@@ -1,15 +1,12 @@
-//
 //  AlertManager.swift
 //  Backpacker
-//
 //  Created by Mobile on 03/07/25.
-//
 
 import Foundation
 import UIKit
 
 class AlertManager {
-
+    
     static func showAlert(on viewController: UIViewController,
                           title: String,
                           message: String,
@@ -21,21 +18,21 @@ class AlertManager {
                                       preferredStyle: .alert)
         
         // Apply font to message
-              let messageAttr = NSAttributedString(string: message, attributes: [
-                .font: FontManager.inter(.regular, size: 14.0),
-                  .foregroundColor: UIColor.black.withAlphaComponent(0.7)
-              ])
-              alert.setValue(messageAttr, forKey: "attributedMessage")
-
-              let action = UIAlertAction(title: buttonTitle, style: .default) { _ in
-                  completion?()
-              }
-
+        let messageAttr = NSAttributedString(string: message, attributes: [
+            .font: FontManager.inter(.regular, size: 14.0),
+            .foregroundColor: UIColor.black.withAlphaComponent(0.7)
+        ])
+        alert.setValue(messageAttr, forKey: "attributedMessage")
+        
+        let action = UIAlertAction(title: buttonTitle, style: .default) { _ in
+            completion?()
+        }
+        
         
         alert.addAction(action)
         viewController.present(alert, animated: true, completion: nil)
     }
-
+    
     static func showConfirmationAlert(on viewController: UIViewController,
                                       title: String,
                                       message: String,
@@ -49,11 +46,11 @@ class AlertManager {
                                       preferredStyle: .alert)
         
         let messageAttr = NSAttributedString(string: message, attributes: [
-                    .font: FontManager.inter(.regular, size: 14.0),
-                    .foregroundColor:UIColor.black.withAlphaComponent(0.7)
-                ])
-                alert.setValue(messageAttr, forKey: "attributedMessage")
-
+            .font: FontManager.inter(.regular, size: 14.0),
+            .foregroundColor:UIColor.black.withAlphaComponent(0.7)
+        ])
+        alert.setValue(messageAttr, forKey: "attributedMessage")
+        
         
         
         let yesAction = UIAlertAction(title: confirmTitle, style: .default) { _ in
@@ -77,7 +74,7 @@ class AlertManager {
                                       action: (() -> Void)? = nil) {
         
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-
+        
         // Set attributed message
         let messageFont = [NSAttributedString.Key.font: font,
                            NSAttributedString.Key.foregroundColor: UIColor.black.withAlphaComponent(0.7)]
@@ -92,6 +89,4 @@ class AlertManager {
         alert.addAction(okAction)
         viewController.present(alert, animated: true, completion: nil)
     }
-
-
 }

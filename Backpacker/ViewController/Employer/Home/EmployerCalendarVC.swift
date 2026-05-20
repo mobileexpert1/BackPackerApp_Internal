@@ -1,9 +1,6 @@
-//
 //  EmployerCalendarVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 30/07/25.
-//
 
 import UIKit
 import FSCalendar
@@ -12,32 +9,26 @@ class EmployerCalendarVC: UIViewController {
     
     @IBOutlet weak var tblVw: UITableView!
     @IBOutlet weak var Vw_Month: UIView!
-    
     @IBOutlet weak var mainScrollVw: UIScrollView!
     @IBOutlet weak var lbl_No_Backpacker: UILabel!
     @IBOutlet weak var haderSelectDate: UILabel!
     @IBOutlet weak var lbl_SelectedYear: UILabel!
     @IBOutlet weak var header_selctMonth: UILabel!
-    
-    
     @IBOutlet weak var header_backpackers: UILabel!
-    
     @IBOutlet weak var collVw: UICollectionView!
     @IBOutlet weak var calendarVw: FSCalendar!
+    @IBOutlet weak var scroll_Height: NSLayoutConstraint!
+    @IBOutlet weak var tbl_Heught: NSLayoutConstraint!
     
     var selectedDate: Date?
     var selectedMonthIndex = Calendar.current.component(.month, from: Date()) - 1
-    
-    @IBOutlet weak var scroll_Height: NSLayoutConstraint!
     var monthsArray: [Date] = []
-    @IBOutlet weak var tbl_Heught: NSLayoutConstraint!
     private var yearPicker: UIPickerView!
     private var years: [Int] = []
     let viewModel = SetAvailabilityViewModel()
     let viewModelAuth = LogInVM()
     var selectedDateForApi : String?
     var availableBackpaker : [AvailableBackpacker]?
-    
     var totalJobs = Int()
     var isLoading : Bool = true
     let refreshControl = UIRefreshControl()
@@ -49,8 +40,6 @@ class EmployerCalendarVC: UIViewController {
     var isAllDataLoaded = false
     var isComeFromPullTorefresh : Bool = false
     var scrollFooterLoader: UIActivityIndicatorView?
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,9 +59,6 @@ class EmployerCalendarVC: UIViewController {
             self.getBackpackerList()
         }
         
-        
-        
-        
         Vw_Month.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
         // Do any additional setup after loading the view.
         self.registerCell()
@@ -84,20 +70,20 @@ class EmployerCalendarVC: UIViewController {
         self.tblVw.dataSource = self
         tblVw.isScrollEnabled = false
         
-        
-        
         self.manageHeight()
         self.lbl_SelectedYear.isHidden = true
         
         self.setupPullToRefresh()
         tblVw.reloadData()
     }
+    
     private func setupPullToRefresh() {
         refreshControl.attributedTitle = NSAttributedString(string: "Refresh")
         refreshControl.tintColor = .gray // Default loader color (you can set .systemBlue etc.)
         refreshControl.addTarget(self, action: #selector(refreshCollectionData), for: .valueChanged)
         self.mainScrollVw.refreshControl = refreshControl
     }
+    
     private func manageHeight() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             let tableHeight = CGFloat((self.availableBackpaker?.count ?? 1) * 92)  // 92 = row height
@@ -131,24 +117,22 @@ class EmployerCalendarVC: UIViewController {
 #endif
             
         }
-        
     }
     
-    
-    private func setUpFonts(){
+    private func setUpFonts() {
         self.header_backpackers.font = FontManager.inter(.medium, size: 14.0)
         self.header_selctMonth.font = FontManager.inter(.medium, size: 14.0)
         self.haderSelectDate.font = FontManager.inter(.medium, size: 14.0)
         self.lbl_SelectedYear.font = FontManager.inter(.regular, size: 14.0)
     }
     
-    private func registerCell(){
+    private func registerCell() {
         calendarVw.addShadowAllSides(color: UIColor(hex: "#BDBDBD40"),opacity: 0.25,radius:2)
         let nib = UINib(nibName: "CalendarMonthCell", bundle: nil)
         collVw.register(nib, forCellWithReuseIdentifier: "CalendarMonthCell")
-        
         tblVw.register(UINib(nibName: "CommonEmpListTVC", bundle: nil), forCellReuseIdentifier: "CommonEmpListTVC")
     }
+    
     private func setUpCalendar(){
         //        let selectedYear = Calendar.current.component(.year, from: Date()) // or any selected year
         //        monthsArray = getAllMonths(for: selectedYear) // replace with your year
@@ -214,27 +198,21 @@ class EmployerCalendarVC: UIViewController {
             selectedMonthIndex += 1
             scrollToSelectedMonth()
         }
-        
-        
     }
-    
     
     func scrollToSelectedMonth() {
         let indexPath = IndexPath(item: selectedMonthIndex, section: 0)
         collVw.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-        
         let selectedMonthDate = monthsArray[selectedMonthIndex]
         calendarVw.setCurrentPage(selectedMonthDate, animated: true)
-        
         collVw.reloadData()
     }
+    
     @IBAction func action_SelectYear(_ sender: Any) {
         
         //  self.ShowYearPicker()
     }
 }
-
-
 
 extension EmployerCalendarVC : UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout{
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -255,10 +233,10 @@ extension EmployerCalendarVC : UICollectionViewDelegate,UICollectionViewDataSour
         cell.configure(month: month, isSelected: isSelected)
         return cell
     }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedMonthIndex = indexPath.row
         collectionView.reloadData()
-        
         let selectedDate = monthsArray[indexPath.row]
         calendarVw.setCurrentPage(selectedDate, animated: true)
     }
@@ -271,9 +249,8 @@ extension EmployerCalendarVC : UICollectionViewDelegate,UICollectionViewDataSour
         let width = collectionView.frame.width
         return CGSize(width: width / 3.75, height: height)
     }
-    
-    
 }
+
 extension EmployerCalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalendarDelegateAppearance {
     func minimumDate(for calendar: FSCalendar) -> Date {
         return Calendar.current.date(from: DateComponents(year: 2015, month: 1, day: 1))!
@@ -288,6 +265,7 @@ extension EmployerCalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalenda
     func calendar(_ calendar: FSCalendar, willDisplay cell: FSCalendarCell, for date: Date, at position: FSCalendarMonthPosition) {
         cell.isHidden = false
     }
+    
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
         let currentMonth = calendar.currentPage
         let calendarUnit = Calendar.current
@@ -307,9 +285,6 @@ extension EmployerCalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalenda
     func calendar(_ calendar: FSCalendar, shouldSelect date: Date, at position: FSCalendarMonthPosition) -> Bool {
         return position == .current
     }
-    
-    
-    
     
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         // Deselect previously selected date (if any)
@@ -335,6 +310,7 @@ extension EmployerCalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalenda
         
         self.getBackpackerList()
     }
+    
     func promptCalendarAccess() {
         let alert = UIAlertController(
             title: "Calendar Access Required",
@@ -350,7 +326,6 @@ extension EmployerCalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalenda
         UIApplication.shared.keyWindow?.rootViewController?.present(alert, animated: true)
     }
     
-    
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
         let visibleMonth = calendar.currentPage
         let components = Calendar.current.dateComponents([.year, .month], from: visibleMonth)
@@ -365,17 +340,15 @@ extension EmployerCalendarVC: FSCalendarDelegate, FSCalendarDataSource,FSCalenda
             collVw.scrollToItem(at: IndexPath(item: index, section: 0), at: .centeredHorizontally, animated: true)
             collVw.reloadData()
         }
-        
         calendarVw.reloadData()
     }
+    
     func dateToString(_ date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat =  "dd-MM-yyyy"
         return dateFormatter.string(from: date)
     }
-    
 }
-
 
 import UIKit
 import EventKit
@@ -422,7 +395,6 @@ extension EmployerCalendarVC: EKEventEditViewDelegate {
     }
 }
 
-
 extension EmployerCalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
     // MARK: - PickerView Delegate & DataSource
     
@@ -437,6 +409,7 @@ extension EmployerCalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return "\(years[row])"
     }
+    
     func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
         return 30 // each row 50 points tall
     }
@@ -447,6 +420,7 @@ extension EmployerCalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
         //  self.lbl_Year.text = "\(selectedYear)"
         dismiss(animated: true)
     }
+    
     func getAllMonths(from startYear: Int, to endYear: Int) -> [Date] {
         var months: [Date] = []
         let calendar = Calendar.current
@@ -463,9 +437,9 @@ extension EmployerCalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
                 }
             }
         }
-        
         return months
     }
+    
     func ShowYearPicker() {
         // 1. Picker and Toolbar
         yearPicker = UIPickerView()
@@ -519,10 +493,7 @@ extension EmployerCalendarVC :  UIPickerViewDelegate, UIPickerViewDataSource {
         // 5. Present
         self.present(dimmedVC, animated: true)
     }
-    
 }
-
-
 
 extension EmployerCalendarVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -549,9 +520,11 @@ extension EmployerCalendarVC : UITableViewDelegate,UITableViewDataSource{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
     }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 92
     }
+    
     func getFirstLetter(of name: String) -> String {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmedName.first.map { String($0).uppercased() } ?? ""
@@ -586,7 +559,6 @@ extension EmployerCalendarVC : UITableViewDelegate,UITableViewDataSource{
             label.bottomAnchor.constraint(equalTo: footerView.bottomAnchor, constant: -8)
         ])
         
-        
         return footerView
     }
     
@@ -594,6 +566,7 @@ extension EmployerCalendarVC : UITableViewDelegate,UITableViewDataSource{
         tblVw.tableFooterView = nil
     }
 }
+
 extension EmployerCalendarVC: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -602,7 +575,6 @@ extension EmployerCalendarVC: UIScrollViewDelegate {
             if scrollView.contentOffset.y < 0 {
                 return
             }
-            
             // Detect scroll direction
             
             
@@ -635,9 +607,9 @@ extension EmployerCalendarVC: UIScrollViewDelegate {
                     }
                 }
             }
-            
         }
     }
+    
     func addScrollFooterLoader() {
         if scrollFooterLoader == nil {
             scrollFooterLoader = UIActivityIndicatorView(style: .medium)
@@ -653,19 +625,18 @@ extension EmployerCalendarVC: UIScrollViewDelegate {
         } else {
             scrollFooterLoader?.startAnimating()
         }
-        
         // Update scroll content size if needed
         mainScrollVw.layoutIfNeeded()
     }
+    
     func removeScrollFooterLoader() {
         scrollFooterLoader?.stopAnimating()
         scrollFooterLoader?.removeFromSuperview()
         scrollFooterLoader = nil
     }
-    
 }
+
 extension EmployerCalendarVC   {
-    
     
     private func getBackpackerList(){
         LoaderManager.shared.show()
@@ -692,12 +663,10 @@ extension EmployerCalendarVC   {
                                         self.availableBackpaker?.removeAll()
                                         self.availableBackpaker = list
                                     } else {
-                                        
                                         self.isLoading = false
                                         self.availableBackpaker = list
                                     }
                                 } else {
-                                    
                                     self.isLoading = false
                                     self.availableBackpaker?.append(contentsOf: list)
                                 }
@@ -709,21 +678,18 @@ extension EmployerCalendarVC   {
                                 }
                                 self.isComeFromPullTorefresh = false
                                 self.isLoadingMoreData = false
-                                
                                 self.tblVw.reloadData()
                                 self.refreshControl.endRefreshing()
                             }
-                            
                             self.manageHeight()
-                            
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                             LoaderManager.shared.hide()
                         }
                         
-                        if self.availableBackpaker?.count ?? 0 <= 0{
+                        if self.availableBackpaker?.count ?? 0 <= 0 {
                             self.lbl_No_Backpacker.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_No_Backpacker.isHidden = true
                         }
                         self.refreshControl.endRefreshing()
@@ -764,7 +730,6 @@ extension EmployerCalendarVC   {
                         self.refreshControl.endRefreshing()
                         self.removeScrollFooterLoader()
                         AlertManager.showAlert(on: self, title: "Error", message:  result?.message ?? "Something went wrong.")
-                        
                     }
                 }
             }

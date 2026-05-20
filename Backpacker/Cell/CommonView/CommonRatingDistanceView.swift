@@ -1,42 +1,39 @@
-//
 //  CommonRatingDistanceView.swift
 //  Backpacker
-//
 //  Created by Mobile on 10/07/25.
-//
 
 import Foundation
 import  UIKit
 class CommonRatingDistanceView: UIView {
-
-    @IBOutlet weak var lbl_Title: UILabel!
     
+    @IBOutlet weak var lbl_Title: UILabel!
     @IBOutlet weak var lbl_Distance: UILabel!
     @IBOutlet weak var lbl_Rating: UILabel!
     @IBOutlet weak var distanceTbleHeight: NSLayoutConstraint!
     @IBOutlet weak var ratingTblHeight: NSLayoutConstraint!
     @IBOutlet weak var distanceTblVw: CommonTbleVw!
     @IBOutlet weak var ratingTbleVw: CommonTbleVw!
+    
     var nibName = "CommonRatingDistanceView"
     var contentView: UIView?
     var filterItemSelected: ((String) -> Void)?
+    
     // MARK: - IBOutlets connection
     @IBAction override func awakeFromNib() {
-           super.awakeFromNib()
-           contentView = self
-       }
-
+        super.awakeFromNib()
+        contentView = self
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
     }
-
+    
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         commonInit()
     }
-
-
+    
     private func commonInit() {
         let bundle = Bundle(for: type(of: self))
         contentView = bundle.loadNibNamed(nibName, owner: self, options: nil)?.first as? UIView
@@ -60,7 +57,6 @@ class CommonRatingDistanceView: UIView {
             self?.filterItemSelected?(selectedItem)
         }
     }
-   
     
     @IBAction func action_BtnRating(_ sender: Any) {
         self.distanceTbleHeight.constant = 0
@@ -68,12 +64,9 @@ class CommonRatingDistanceView: UIView {
         self.ratingTbleVw.tblVw.reloadData()
     }
     
-    
     @IBAction func action_Btndistance(_ sender: Any) {
         self.ratingTblHeight.constant = 0
         self.distanceTbleHeight.constant = self.distanceTblVw.tableHeight //+ 50.0
         self.distanceTblVw.tblVw.reloadData()
     }
-    
 }
-

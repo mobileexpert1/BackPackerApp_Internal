@@ -1,30 +1,29 @@
-//
 //  TermsConditionVC.swift
 //  Backpacker
-//
 //  Created by Mobile on 04/07/25.
-//
 
 import UIKit
 
 class TermsConditionVC: UIViewController {
-
+    
     @IBOutlet weak var lbl_nodatFound: UILabel!
     @IBOutlet weak var lbl_Header: UILabel!
     @IBOutlet weak var txt_Vw: UITextView!
+    
     var isComeFromPrivacy = false
     let viewModel = ProfileVM()
     let viewModelAuth = LogInVM()
     var key = String()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.lbl_nodatFound.font = FontManager.inter(.medium, size: 12.0)
         self.lbl_nodatFound.isHidden = true
         self.lbl_nodatFound.text = "No Data Found"
-        if isComeFromPrivacy{
+        if isComeFromPrivacy {
             self.lbl_Header.text = "Privacy Policy"
             self.key = "privacyPolicy"
-        }else{
+        } else {
             self.lbl_Header.text = "Terms & Conditions"
             self.key = "termsAndConditions"
         }
@@ -33,29 +32,27 @@ class TermsConditionVC: UIViewController {
         self.getContentApiCall(key: key)
     }
     
-
     /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destination.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
     @IBAction func action_Back(_ sender: Any) {
         self.navigationController?.popViewController(animated: true)
     }
-    
 }
-
 
 extension TermsConditionVC {
     
-    func getContentApiCall(key:String){
+    func getContentApiCall(key:String) {
         LoaderManager.shared.show()
         
-        if key == "privacyPolicy"{
+        if key == "privacyPolicy" {
             viewModel.getContent(key: key) { [weak self] (success: Bool, result: PrivacyPolicyResponse?, statusCode: Int?) in
                 guard let self = self else { return }
                 
@@ -79,9 +76,9 @@ extension TermsConditionVC {
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         }
-                        if result?.data.privacyPolicy.content == nil{
+                        if result?.data.privacyPolicy.content == nil {
                             self.lbl_nodatFound.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_nodatFound.isHidden = true
                         }
                     case .badRequest:
@@ -107,7 +104,7 @@ extension TermsConditionVC {
                     }
                 }
             }
-        }else{
+        } else {
             viewModel.getContent(key: key) { [weak self] (success: Bool, result: TermsAndConditionsResponse?, statusCode: Int?) in
                 guard let self = self else { return }
                 
@@ -116,9 +113,7 @@ extension TermsConditionVC {
                     AlertManager.showAlert(on: self, title: "Error", message: "No response from server.")
                     return
                 }
-                
                 let httpStatus = HTTPStatusCode(rawValue: statusCode)
-                
                 DispatchQueue.main.async {
                     LoaderManager.shared.hide()
                     
@@ -128,13 +123,13 @@ extension TermsConditionVC {
                             print("User Profile data fetched result:", profileData)
                             let plainContent = result?.data.termsAndConditions.content.htmlToPlainText
                             self.txt_Vw.text =   plainContent
-
+                            
                         } else {
                             AlertManager.showAlert(on: self, title: "Error", message: result?.message ?? "Something went wrong.")
                         }
                         if result?.data.termsAndConditions.content == nil{
                             self.lbl_nodatFound.isHidden = false
-                        }else{
+                        } else {
                             self.lbl_nodatFound.isHidden = true
                         }
                     case .badRequest:
@@ -161,6 +156,5 @@ extension TermsConditionVC {
                 }
             }
         }
-      
     }
 }
